@@ -37,7 +37,7 @@ def get_batches(X, y, batch_size, distort=True):
 
 
 ## read data from tfrecords file
-def read_and_decode_single_example(filenames, label_type='label_normal', num_epochs=None):
+def read_and_decode_single_example(filenames, label_type='label_normal', normalize=True, num_epochs=None):
     filename_queue = tf.train.string_input_producer(filenames, num_epochs=num_epochs)
 
     reader = tf.TFRecordReader()
@@ -59,7 +59,9 @@ def read_and_decode_single_example(filenames, label_type='label_normal', num_epo
 
     # reshape and scale the image
     image = tf.reshape(image, [299, 299, 1])
-    image = tf.image.per_image_standardization(image)
+
+    if normalize:
+        image = tf.image.per_image_standardization(image)
 
     # return the image and the label
     return image, label
