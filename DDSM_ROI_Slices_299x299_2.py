@@ -94,6 +94,7 @@ def load_validation_data(how="class", percentage=0.5):
     
     return X_cv, y_cv
 
+## evaluate the model to see the predictions
 def evaluate_model(graph, config):
     X_cv, y_cv = load_validation_data(how="normal")
 
@@ -188,6 +189,7 @@ train_files = [train_path_0, train_path_1, train_path_2, train_path_3]
 
 ## Build the graph
 graph = tf.Graph()
+
 # whether to retrain model from scratch or use saved model
 init = True
 model_name = "model_s0.0.21"
