@@ -642,7 +642,8 @@ with tf.Session(graph=graph, config=config) as sess:
             # write the summary
             if log_to_tensorboard:
                 train_writer.add_summary(summary, step)
-
+                train_writer.add_run_metadata(run_metadata, 'step %d' % step)
+                
         # save checkpoint every nth epoch
         if(epoch % checkpoint_every == 0):
             print("Saving checkpoint")
