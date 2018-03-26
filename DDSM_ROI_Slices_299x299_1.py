@@ -27,8 +27,8 @@ steps_per_epoch = int(22539 / batch_size)
 print("Steps per epoch:", steps_per_epoch)
 
 # lambdas
-lamC = 0.00010
-lamF = 0.00100
+lamC = 0.00000
+lamF = 0.00010
 
 # use dropout
 dropout = False
@@ -49,9 +49,10 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s0.0.0.6"
-# increase pool3 to 3x3 with stride 3
-#  0.0.0.6 - reduce pool 3 stride back to 2
+model_name = "model_s0.0.0.7"
+# 0.0.0.4 - increase pool3 to 3x3 with stride 3
+# 0.0.0.6 - reduce pool 3 stride back to 2
+# 0.0.0.7 - reduce lambda for l2 reg
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
