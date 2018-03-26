@@ -49,10 +49,11 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s0.0.0.7"
+model_name = "model_s0.0.0.8"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
+# 0.0.0.8 - increase conv1 to 7x7 stride 2
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -82,8 +83,8 @@ with graph.as_default():
         conv1 = tf.layers.conv2d(
             X,  # Input data
             filters=32,  # 32 filters
-            kernel_size=(5, 5),  # Kernel size: 5x5
-            strides=(1, 1),  # Stride: 2
+            kernel_size=(7, 7),  # Kernel size: 5x5
+            strides=(2, 2),  # Stride: 2
             padding='SAME',  # "same" padding
             activation=None,  # None
             kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=10),
