@@ -79,6 +79,8 @@ with graph.as_default():
         X = tf.placeholder_with_default(X_def, shape=[None, 299, 299, 1])
         y = tf.placeholder_with_default(y_def, shape=[None])
 
+        X = tf.cast(X, dtype=tf.float32)
+
     # Convolutional layer 1
     with tf.name_scope('conv1') as scope:
         conv1 = tf.layers.conv2d(
