@@ -76,7 +76,7 @@ with graph.as_default():
                                               min_after_dequeue=1000)
 
         # Placeholders
-        X = tf.placeholder_with_default(X_def, shape=[None, 299, 299, 1])
+        X = tf.placeholder_with_default(X_def, shape=[None, 299, 299, 1], dtype=tf.float64)
         y = tf.placeholder_with_default(y_def, shape=[None])
 
     # Convolutional layer 1
