@@ -63,6 +63,8 @@ def read_and_decode_single_example(filenames, label_type='label_normal', normali
     if normalize:
         image = tf.image.per_image_standardization(image)
 
+    tf.cast(image, dtype=tf.float64)
+
     # return the image and the label
     return image, label
 
