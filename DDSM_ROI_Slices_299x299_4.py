@@ -25,7 +25,7 @@ decay_factor = 0.85
 staircase = True
 
 # learning rate decay variables
-steps_per_epoch = int(22539 / batch_size)
+steps_per_epoch = int(26772 / batch_size)
 print("Steps per epoch:", steps_per_epoch)
 
 # lambdas
@@ -78,6 +78,8 @@ with graph.as_default():
         # Placeholders
         X = tf.placeholder_with_default(X_def, shape=[None, 299, 299, 1])
         y = tf.placeholder_with_default(y_def, shape=[None])
+
+        X = tf.cast(X, dtype=tf.float32)
 
     # Convolutional layer 1
     with tf.name_scope('conv1') as scope:
