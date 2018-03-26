@@ -49,18 +49,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s0.0.21"
-# 0.0.2 - reducing size of model to avoid runtime crashing
-# 0.0.4 - increasing model size since we have memory now
-# 0.0.9 - added pool0 between conv1 and conv2
-# 0.0.10 - reduced lambdaF from, changed stride of conv1 to 2
-# 0.0.11 - remove pool0, added conv7 and pool6 to further reduce data before fc layers
-# 0.0.14 - try weighted cross entropy to improve recall
-# 0.0.15 - increase batch size
-# 0.0.17 - per example weighting to improve recall
-# 0.0.18 - increase filter size for conv1, give it a stride of 2 and add another conv layer between conv1 and pool1
-# 0.0.20 - conv dropout turned off, removed conv7
-# 0.0.21 - upped filters in conv6
+model_name = "model_s0.0.0.1"
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -90,8 +79,8 @@ with graph.as_default():
         conv1 = tf.layers.conv2d(
             X,  # Input data
             filters=32,  # 32 filters
-            kernel_size=(7, 7),  # Kernel size: 5x5
-            strides=(2, 2),  # Stride: 2
+            kernel_size=(5, 5),  # Kernel size: 5x5
+            strides=(1, 1),  # Stride: 2
             padding='SAME',  # "same" padding
             activation=None,  # None
             kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=10),
@@ -207,7 +196,7 @@ with graph.as_default():
     with tf.name_scope('pool2') as scope:
         pool2 = tf.layers.max_pooling2d(
             conv2_bn_relu,  # Input
-            pool_size=(3, 3),  # Pool size: 3x3
+            pool_size=(2, 2),  # Pool size: 3x3
             strides=(2, 2),  # Stride: 2
             padding='SAME',  # "same" padding
             name='pool1'
@@ -221,9 +210,9 @@ with graph.as_default():
     with tf.name_scope('conv3') as scope:
         conv3 = tf.layers.conv2d(
             pool2,  # Input data
-            filters=96,  # 48 filters
+            filters=128,  # 48 filters
             kernel_size=(3, 3),  # Kernel size: 5x5
-            strides=(1, 1),  # Stride: 1
+            strides=(2, 2),  # Stride: 1
             padding='SAME',  # "same" padding
             activation=None,  # None
             kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=10),
@@ -266,156 +255,9 @@ with graph.as_default():
             # dropout at 10%
             pool3 = tf.layers.dropout(pool3, rate=convdropout_rate, seed=1, training=training)
 
-    # Convolutional layer 4
-    with tf.name_scope('conv4') as scope:
-        conv4 = tf.layers.conv2d(
-            pool3,  # Input data
-            filters=128,  # 64 filters
-            kernel_size=(3, 3),  # Kernel size: 3x3
-            strides=(1, 1),  # Stride: 1
-            padding='SAME',  # "same" padding
-            activation=None,  # None
-            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=10),
-            kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
-            name='conv4'
-        )
-
-        bn4 = tf.layers.batch_normalization(
-            conv4,
-            axis=-1,
-            momentum=0.99,
-            epsilon=epsilon,
-            center=True,
-            scale=True,
-            beta_initializer=tf.zeros_initializer(),
-            gamma_initializer=tf.ones_initializer(),
-            moving_mean_initializer=tf.zeros_initializer(),
-            moving_variance_initializer=tf.ones_initializer(),
-            training=training,
-            name='bn4'
-        )
-
-        # apply relu
-        conv4_bn_relu = tf.nn.relu(bn4, name='relu4')
-
-        if dropout:
-            conv4_bn_relu = tf.layers.dropout(conv4_bn_relu, rate=convdropout_rate, seed=9, training=training)
-
-    # Max pooling layer 4
-    with tf.name_scope('pool4') as scope:
-        pool4 = tf.layers.max_pooling2d(
-            conv4_bn_relu,  # Input
-            pool_size=(2, 2),  # Pool size: 2x2
-            strides=(2, 2),  # Stride: 2
-            padding='SAME',  # "same" padding
-            name='pool4'
-        )
-
-        if dropout:
-            # dropout at 10%
-            pool4 = tf.layers.dropout(pool4, rate=convdropout_rate, seed=1, training=training)
-
-    # Convolutional layer 5
-    with tf.name_scope('conv5') as scope:
-        conv5 = tf.layers.conv2d(
-            pool4,  # Input data
-            filters=256,  # 64 filters
-            kernel_size=(3, 3),  # Kernel size: 5x5
-            strides=(1, 1),  # Stride: 1
-            padding='SAME',  # "same" padding
-            activation=None,  # None
-            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=10),
-            kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
-            name='conv5'
-        )
-
-        bn5 = tf.layers.batch_normalization(
-            conv5,
-            axis=-1,
-            momentum=0.99,
-            epsilon=epsilon,
-            center=True,
-            scale=True,
-            beta_initializer=tf.zeros_initializer(),
-            gamma_initializer=tf.ones_initializer(),
-            moving_mean_initializer=tf.zeros_initializer(),
-            moving_variance_initializer=tf.ones_initializer(),
-            training=training,
-            name='bn5'
-        )
-
-        # apply relu
-        conv5_bn_relu = tf.nn.relu(bn5, name='relu5')
-
-        if dropout:
-            conv5_bn_relu = tf.layers.dropout(conv5_bn_relu, rate=convdropout_rate, seed=9, training=training)
-
-    # Max pooling layer 5
-    with tf.name_scope('pool5') as scope:
-        pool5 = tf.layers.max_pooling2d(
-            conv5_bn_relu,  # Input
-            pool_size=(2, 2),  # Pool size: 2x2
-            strides=(2, 2),  # Stride: 2
-            padding='SAME',  # "same" padding
-            name='pool5'
-        )
-
-        if dropout:
-            # dropout at 10%
-            pool5 = tf.layers.dropout(pool5, rate=convdropout_rate, seed=1, training=training)
-
-    # Convolutional layer 6
-    with tf.name_scope('conv6') as scope:
-        conv6 = tf.layers.conv2d(
-            pool5,  # Input data
-            filters=512,  # 48 filters
-            kernel_size=(3, 3),  # Kernel size: 5x5
-            strides=(1, 1),  # Stride: 1
-            padding='SAME',  # "same" padding
-            activation=None,  # None
-            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=10),
-            kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
-            name='conv6'
-        )
-
-        bn6 = tf.layers.batch_normalization(
-            conv6,
-            axis=-1,
-            momentum=0.99,
-            epsilon=epsilon,
-            center=True,
-            scale=True,
-            beta_initializer=tf.zeros_initializer(),
-            gamma_initializer=tf.ones_initializer(),
-            moving_mean_initializer=tf.zeros_initializer(),
-            moving_variance_initializer=tf.ones_initializer(),
-            training=training,
-            name='bn6'
-        )
-
-        # apply relu
-        conv6_bn_relu = tf.nn.relu(bn6, name='relu6')
-
-        if dropout:
-            conv6_bn_relu = tf.layers.dropout(conv6_bn_relu, rate=convdropout_rate, seed=9, training=training)
-
-    with tf.name_scope('pool6') as scope:
-        # Max pooling layer 6
-        pool6 = tf.layers.max_pooling2d(
-            conv6_bn_relu,  # Input
-            pool_size=(2, 2),  # Pool size: 2x2
-            strides=(2, 2),  # Stride: 2
-            padding='SAME',  # "same" padding
-            name='pool6'
-        )
-
-        if dropout:
-            # dropout at 10%
-            pool6 = tf.layers.dropout(pool6, rate=convdropout_rate, seed=1, training=training)
-
     # Flatten output
     with tf.name_scope('flatten') as scope:
-        flat_output = tf.contrib.layers.flatten(pool6)
+        flat_output = tf.contrib.layers.flatten(pool3)
 
         # dropout at 10%
         flat_output = tf.layers.dropout(flat_output, rate=fcdropout_rate, seed=5, training=training)
@@ -643,7 +485,7 @@ with tf.Session(graph=graph, config=config) as sess:
             if log_to_tensorboard:
                 train_writer.add_summary(summary, step)
                 train_writer.add_run_metadata(run_metadata, 'step %d' % step)
-
+                
         # save checkpoint every nth epoch
         if(epoch % checkpoint_every == 0):
             print("Saving checkpoint")
