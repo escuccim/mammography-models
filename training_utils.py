@@ -55,15 +55,15 @@ def read_and_decode_single_example(filenames, label_type='label_normal', normali
 
     # extract the data
     label = features[label_type]
-    image = tf.decode_raw(features['image'], tf.float32)
+    image = tf.decode_raw(features['image'], tf.uint8)
 
     # reshape and scale the image
     image = tf.reshape(image, [299, 299, 1])
 
-    #if normalize:
-    #    image = tf.image.per_image_standardization(image)
+    if normalize:
+        image = tf.image.per_image_standardization(image)
 
-    #tf.cast(image, dtype=tf.float32)
+    tf.cast(image, dtype=tf.float32)
 
     # return the image and the label
     return image, label
