@@ -49,11 +49,12 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s0.0.0.8"
+model_name = "model_s0.0.0.9"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
 # 0.0.0.8 - increase conv1 to 7x7 stride 2
+# 0.0.0.9 - disable per image normalization
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -69,7 +70,7 @@ with graph.as_default():
                                                staircase=staircase)
 
     with tf.name_scope('inputs') as scope:
-        image, label = read_and_decode_single_example(train_files, label_type="label_normal")
+        image, label = read_and_decode_single_example(train_files, label_type="label_normal", normalize=False)
 
         X_def, y_def = tf.train.shuffle_batch([image, label], batch_size=batch_size, capacity=2000,
                                               min_after_dequeue=1000)
@@ -489,7 +490,9 @@ with tf.Session(graph=graph, config=config) as sess:
             # write the summary
             if log_to_tensorboard:
                 train_writer.add_summary(summary, step)
-                train_writer.add_run_metadata(run_metadata, 'step %d' % step)
+                # only log the meta data once per epoch
+                if i == (steps_per_epoch - 1):
+                    train_writer.add_run_metadata(run_metadata, 'step %d' % step)
                 
         # save checkpoint every nth epoch
         if(epoch % checkpoint_every == 0):
