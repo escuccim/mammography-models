@@ -6,15 +6,15 @@ import tensorflow as tf
 
 ## download a file to a location in the data folder
 def download_file(url, name):
-    print("Downloading " + name + "...")
+    print("\nDownloading " + name + "...")
 
     # check that the data directory exists
     try:
         os.stat("data")
     except:
         os.mkdir("data")
-    fname = wget.download(url, os.path.join('data', name))
 
+    fname = wget.download(url, os.path.join('data', name))
 
 ## Batch generator
 def get_batches(X, y, batch_size, distort=True):

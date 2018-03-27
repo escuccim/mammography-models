@@ -50,7 +50,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s0.0.1.01"
+model_name = "model_s0.0.1.02"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -61,6 +61,7 @@ model_name = "model_s0.0.1.01"
 # 0.0.0.12 - added batch norm after pooling layers, increase pool dropout, decrease conv dropout, added extra conv layer to reduce data dimensionality
 # 0.0.0.13 - added precision and f1 summaries
 # 0.0.1.01 - adding extra conv layer to bring data dimensions down
+# 0.0.1.02 - fixed typo
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -476,7 +477,7 @@ with graph.as_default():
             # )
 
             # apply relu
-        conv6_bn_relu = tf.nn.relu(conv5, name='relu6')
+        conv6_bn_relu = tf.nn.relu(conv6, name='relu6')
 
         if dropout:
             conv6_bn_relu = tf.layers.dropout(conv6_bn_relu, rate=convdropout_rate, seed=9, training=training)
@@ -661,7 +662,12 @@ with graph.as_default():
 # ## Train
 
 ## CONFIGURE OPTIONS
-init = True                   # whether to initialize the model or use a saved version
+# if a checkpoint exists for the model restore it, otherwise initialize a new one
+if os.path.exists(os.path.join("model", model_name + '.ckpt.index')):
+    init = False
+else:
+    init = True
+
 crop = False                  # do random cropping of images?
 
 meta_data_every = 1
