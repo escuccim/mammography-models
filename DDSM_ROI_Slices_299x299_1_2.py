@@ -50,7 +50,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s0.0.1.05"
+model_name = "model_s0.0.1.06"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -65,6 +65,7 @@ model_name = "model_s0.0.1.05"
 # 0.0.1.03 - downsizing model to speed up training
 # 0.0.1.04 - disabled half of batch norms in conv layers
 # 0.0.1.05 - brought fc1 back down to 1024 units
+# 0.0.1.06 - brought fc1 back up to 2048 units, removed weighted cross entropy
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -488,7 +489,7 @@ with graph.as_default():
     with tf.name_scope('fc1') as scope:
         fc1 = tf.layers.dense(
             flat_output,
-            1024,
+            2048,
             activation=None,
             kernel_initializer=tf.variance_scaling_initializer(scale=2, seed=4),
             bias_initializer=tf.zeros_initializer(),
@@ -567,7 +568,7 @@ with graph.as_default():
 
     ## Loss function options
     # Regular mean cross entropy
-    # mean_ce = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits))
+    mean_ce = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits))
 
     # weighted mean cross entropy
     # onehot_labels = tf.one_hot(y, depth=num_classes)
@@ -575,8 +576,8 @@ with graph.as_default():
 
     # Different weighting method
     # This will weight the positive examples higher so as to improve recall
-    weights = tf.multiply(3, tf.cast(tf.equal(y, 1), tf.int32)) + 1
-    mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=logits, weights=weights))
+    #weights = tf.multiply(3, tf.cast(tf.equal(y, 1), tf.int32)) + 1
+    #mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=logits, weights=weights))
 
     # Add in l2 loss
     loss = mean_ce + tf.losses.get_regularization_loss()
