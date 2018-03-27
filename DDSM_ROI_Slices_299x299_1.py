@@ -28,12 +28,13 @@ print("Steps per epoch:", steps_per_epoch)
 
 # lambdas
 lamC = 0.00000
-lamF = 0.00010
+lamF = 0.00100
 
 # use dropout
-dropout = False
+dropout = True
 fcdropout_rate = 0.5
 convdropout_rate = 0.1
+pooldropout_rate = 0.1
 
 num_classes = 2
 
@@ -49,13 +50,14 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s0.0.0.10"
+model_name = "model_s0.0.0.11"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
 # 0.0.0.8 - increase conv1 to 7x7 stride 2
 # 0.0.0.9 - disable per image normalization
-# 0.0.0.10 - commented out batch norm in conv layers, added conv4 and changed stride of convs to 1
+# 0.0.0.10 - commented out batch norm in conv layers, added conv4 and changed stride of convs to 1, increased FC lambda
+# 0.0.0.11 - turn dropout for conv layers on
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -163,7 +165,7 @@ with graph.as_default():
 
         if dropout:
             # dropout at 10%
-            pool1 = tf.layers.dropout(pool1, rate=convdropout_rate, seed=1, training=training)
+            pool1 = tf.layers.dropout(pool1, rate=pooldropout_rate, seed=1, training=training)
 
     # Convolutional layer 2
     with tf.name_scope('conv2') as scope:
@@ -212,7 +214,7 @@ with graph.as_default():
 
         if dropout:
             # dropout at 10%
-            pool2 = tf.layers.dropout(pool2, rate=convdropout_rate, seed=1, training=training)
+            pool2 = tf.layers.dropout(pool2, rate=pooldropout_rate, seed=1, training=training)
 
     # Convolutional layer 3
     with tf.name_scope('conv3') as scope:
@@ -261,7 +263,7 @@ with graph.as_default():
 
         if dropout:
             # dropout at 10%
-            pool3 = tf.layers.dropout(pool3, rate=convdropout_rate, seed=1, training=training)
+            pool3 = tf.layers.dropout(pool3, rate=pooldropout_rate, seed=1, training=training)
 
     # Convolutional layer 4
     with tf.name_scope('conv4') as scope:
@@ -310,7 +312,7 @@ with graph.as_default():
 
             if dropout:
                 # dropout at 10%
-                pool4 = tf.layers.dropout(pool4, rate=convdropout_rate, seed=1, training=training)
+                pool4 = tf.layers.dropout(pool4, rate=pooldropout_rate, seed=1, training=training)
 
     # Flatten output
     with tf.name_scope('flatten') as scope:
