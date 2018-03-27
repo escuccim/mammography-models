@@ -61,7 +61,7 @@ model_name = "model_s0.0.0.15"
 # 0.0.0.12 - added batch norm after pooling layers, increase pool dropout, decrease conv dropout, added extra conv layer to reduce data dimensionality
 # 0.0.0.13 - added precision and f1 summaries
 # 0.0.0.14 - fixing batch normalization, I don't think it's going to work after each pool
-# 0.0.0.15 - replaced weighted xentropy with normal xentropy
+# 0.0.0.15 - reduced xentropy weighting term
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -456,7 +456,7 @@ with graph.as_default():
 
     ## Loss function options
     # Regular mean cross entropy
-    mean_ce = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits))
+    #mean_ce = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits))
 
     # weighted mean cross entropy
     # onehot_labels = tf.one_hot(y, depth=num_classes)
@@ -464,8 +464,8 @@ with graph.as_default():
 
     # Different weighting method
     # This will weight the positive examples higher so as to improve recall
-    #weights = tf.multiply(3, tf.cast(tf.equal(y, 1), tf.int32)) + 1
-    #mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=logits, weights=weights))
+    weights = tf.multiply(2, tf.cast(tf.equal(y, 1), tf.int32)) + 1
+    mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=logits, weights=weights))
 
     # Add in l2 loss
     loss = mean_ce + tf.losses.get_regularization_loss()
