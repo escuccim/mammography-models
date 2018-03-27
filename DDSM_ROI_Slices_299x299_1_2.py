@@ -67,7 +67,7 @@ model_name = "model_s0.0.1.08"
 # 0.0.1.05 - brought fc1 back down to 1024 units
 # 0.0.1.06 - brought fc1 back up to 2048 units, removed weighted cross entropy
 # 0.0.1.07 - put batch norm back after conv layers, removed from pools
-# 0.0.1.08 - put weighted xentropy back, but with reduced weight term
+# 0.0.1.08 - put weighted xentropy back, but with reduced weight term, removed some batch norms
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -227,20 +227,20 @@ with graph.as_default():
             name='conv3'
         )
 
-        conv3 = tf.layers.batch_normalization(
-            conv3,
-            axis=-1,
-            momentum=0.99,
-            epsilon=epsilon,
-            center=True,
-            scale=True,
-            beta_initializer=tf.zeros_initializer(),
-            gamma_initializer=tf.ones_initializer(),
-            moving_mean_initializer=tf.zeros_initializer(),
-            moving_variance_initializer=tf.ones_initializer(),
-            training=training,
-            name='bn3'
-        )
+        #conv3 = tf.layers.batch_normalization(
+        #    conv3,
+        #    axis=-1,
+        #    momentum=0.99,
+        #    epsilon=epsilon,
+        #    center=True,
+        #    scale=True,
+        #    beta_initializer=tf.zeros_initializer(),
+        #    gamma_initializer=tf.ones_initializer(),
+        #    moving_mean_initializer=tf.zeros_initializer(),
+        #    moving_variance_initializer=tf.ones_initializer(),
+        #    training=training,
+        #    name='bn3'
+        #)
 
         # apply relu
         conv3_bn_relu = tf.nn.relu(conv3, name='relu3')
@@ -323,21 +323,6 @@ with graph.as_default():
             name='conv5'
         )
 
-        conv5 = tf.layers.batch_normalization(
-            conv5,
-            axis=-1,
-            momentum=0.99,
-            epsilon=epsilon,
-            center=True,
-            scale=True,
-            beta_initializer=tf.zeros_initializer(),
-            gamma_initializer=tf.ones_initializer(),
-            moving_mean_initializer=tf.zeros_initializer(),
-            moving_variance_initializer=tf.ones_initializer(),
-            training=training,
-            name='bn5'
-        )
-
         # apply relu
         conv5_bn_relu = tf.nn.relu(conv5, name='relu5')
 
@@ -371,7 +356,22 @@ with graph.as_default():
                 name='conv6'
             )
 
-            # apply relu
+        conv6 = tf.layers.batch_normalization(
+            conv6,
+            axis=-1,
+            momentum=0.99,
+            epsilon=epsilon,
+            center=True,
+            scale=True,
+            beta_initializer=tf.zeros_initializer(),
+            gamma_initializer=tf.ones_initializer(),
+            moving_mean_initializer=tf.zeros_initializer(),
+            moving_variance_initializer=tf.ones_initializer(),
+            training=training,
+            name='bn6'
+        )
+
+        # apply relu
         conv6_bn_relu = tf.nn.relu(conv6, name='relu6')
 
         if dropout:
@@ -385,21 +385,6 @@ with graph.as_default():
             strides=(2, 2),  # Stride: 2
             padding='SAME',
             name='pool6'
-        )
-
-        pool6 = tf.layers.batch_normalization(
-            pool6,
-            axis=-1,
-            momentum=0.99,
-            epsilon=epsilon,
-            center=True,
-            scale=True,
-            beta_initializer=tf.zeros_initializer(),
-            gamma_initializer=tf.ones_initializer(),
-            moving_mean_initializer=tf.zeros_initializer(),
-            moving_variance_initializer=tf.ones_initializer(),
-            training=training,
-            name='bn_p6'
         )
 
         if dropout:
