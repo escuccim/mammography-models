@@ -50,7 +50,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s0.0.0.14"
+model_name = "model_s0.0.0.15"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -61,6 +61,7 @@ model_name = "model_s0.0.0.14"
 # 0.0.0.12 - added batch norm after pooling layers, increase pool dropout, decrease conv dropout, added extra conv layer to reduce data dimensionality
 # 0.0.0.13 - added precision and f1 summaries
 # 0.0.0.14 - fixing batch normalization, I don't think it's going to work after each pool
+# 0.0.0.15 - replaced weighted xentropy with normal xentropy
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
