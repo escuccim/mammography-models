@@ -50,7 +50,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s0.0.1.03"
+model_name = "model_s0.0.1.04"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -63,6 +63,7 @@ model_name = "model_s0.0.1.03"
 # 0.0.1.01 - adding extra conv layer to bring data dimensions down
 # 0.0.1.02 - fixed typo
 # 0.0.1.03 - downsizing model to speed up training
+# 0.0.1.04 - disabled half of batch norms in conv layers
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -169,20 +170,20 @@ with graph.as_default():
             name='pool1'
         )
 
-        pool1 = tf.layers.batch_normalization(
-            pool1,
-            axis=-1,
-            momentum=0.99,
-            epsilon=epsilon,
-            center=True,
-            scale=True,
-            beta_initializer=tf.zeros_initializer(),
-            gamma_initializer=tf.ones_initializer(),
-            moving_mean_initializer=tf.zeros_initializer(),
-            moving_variance_initializer=tf.ones_initializer(),
-            training=training,
-            name='bn_p1'
-        )
+        #pool1 = tf.layers.batch_normalization(
+        #    pool1,
+        #    axis=-1,
+        #    momentum=0.99,
+        #    epsilon=epsilon,
+        #    center=True,
+        #    scale=True,
+        #    beta_initializer=tf.zeros_initializer(),
+        #    gamma_initializer=tf.ones_initializer(),
+        #    moving_mean_initializer=tf.zeros_initializer(),
+        #    moving_variance_initializer=tf.ones_initializer(),
+        #    training=training,
+        #    name='bn_p1'
+        #)
 
         # optional dropout
         if dropout:
@@ -283,20 +284,20 @@ with graph.as_default():
             name='pool3'
         )
 
-        pool3 = tf.layers.batch_normalization(
-            pool3,
-            axis=-1,
-            momentum=0.99,
-            epsilon=epsilon,
-            center=True,
-            scale=True,
-            beta_initializer=tf.zeros_initializer(),
-            gamma_initializer=tf.ones_initializer(),
-            moving_mean_initializer=tf.zeros_initializer(),
-            moving_variance_initializer=tf.ones_initializer(),
-            training=training,
-            name='bn_p3'
-        )
+        #pool3 = tf.layers.batch_normalization(
+        #    pool3,
+        #    axis=-1,
+        #    momentum=0.99,
+        #    epsilon=epsilon,
+        #    center=True,
+        #    scale=True,
+        #    beta_initializer=tf.zeros_initializer(),
+        #    gamma_initializer=tf.ones_initializer(),
+        #    moving_mean_initializer=tf.zeros_initializer(),
+        #    moving_variance_initializer=tf.ones_initializer(),
+        #    training=training,
+        #    name='bn_p3'
+        #)
 
         if dropout:
             pool3 = tf.layers.dropout(pool3, rate=pooldropout_rate, seed=1, training=training)
@@ -409,20 +410,20 @@ with graph.as_default():
             name='pool5'
         )
 
-        pool5 = tf.layers.batch_normalization(
-            pool5,
-            axis=-1,
-            momentum=0.99,
-            epsilon=epsilon,
-            center=True,
-            scale=True,
-            beta_initializer=tf.zeros_initializer(),
-            gamma_initializer=tf.ones_initializer(),
-            moving_mean_initializer=tf.zeros_initializer(),
-            moving_variance_initializer=tf.ones_initializer(),
-            training=training,
-            name='bn_p5'
-        )
+        #pool5 = tf.layers.batch_normalization(
+        #    pool5,
+        #    axis=-1,
+        #    momentum=0.99,
+        #    epsilon=epsilon,
+        #    center=True,
+        #    scale=True,
+        #    beta_initializer=tf.zeros_initializer(),
+        #    gamma_initializer=tf.ones_initializer(),
+        #    moving_mean_initializer=tf.zeros_initializer(),
+        #    moving_variance_initializer=tf.ones_initializer(),
+        #    training=training,
+        #    name='bn_p5'
+        #)
 
         if dropout:
             pool5 = tf.layers.dropout(pool5, rate=pooldropout_rate, seed=1, training=training)
@@ -486,7 +487,7 @@ with graph.as_default():
     with tf.name_scope('fc1') as scope:
         fc1 = tf.layers.dense(
             flat_output,
-            1024,
+            2048,
             activation=None,
             kernel_initializer=tf.variance_scaling_initializer(scale=2, seed=4),
             bias_initializer=tf.zeros_initializer(),
