@@ -455,7 +455,7 @@ with graph.as_default():
 
     ## Loss function options
     # Regular mean cross entropy
-    # mean_ce = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits))
+    mean_ce = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits))
 
     # weighted mean cross entropy
     # onehot_labels = tf.one_hot(y, depth=num_classes)
@@ -463,8 +463,8 @@ with graph.as_default():
 
     # Different weighting method
     # This will weight the positive examples higher so as to improve recall
-    weights = tf.multiply(3, tf.cast(tf.equal(y, 1), tf.int32)) + 1
-    mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=logits, weights=weights))
+    #weights = tf.multiply(3, tf.cast(tf.equal(y, 1), tf.int32)) + 1
+    #mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=logits, weights=weights))
 
     # Add in l2 loss
     loss = mean_ce + tf.losses.get_regularization_loss()
