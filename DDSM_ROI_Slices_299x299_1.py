@@ -33,7 +33,7 @@ lamF = 0.00100
 # use dropout
 dropout = True
 fcdropout_rate = 0.5
-convdropout_rate = 0.1
+convdropout_rate = 0.001
 pooldropout_rate = 0.1
 
 num_classes = 2
@@ -50,7 +50,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s0.0.0.11"
+model_name = "model_s0.0.0.12"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -58,6 +58,7 @@ model_name = "model_s0.0.0.11"
 # 0.0.0.9 - disable per image normalization
 # 0.0.0.10 - commented out batch norm in conv layers, added conv4 and changed stride of convs to 1, increased FC lambda
 # 0.0.0.11 - turn dropout for conv layers on
+# 0.0.0.12 - added batch norm after pooling layers, increase pool dropout, decrease conv dropout, added extra conv layer to reduce data dimensionality
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -150,6 +151,7 @@ with graph.as_default():
         # apply relu
         conv11_bn_relu = tf.nn.relu(conv11, name='relu1.1')
 
+        # optional dropout
         if dropout:
             conv11_bn_relu = tf.layers.dropout(conv11_bn_relu, rate=convdropout_rate, seed=9, training=training)
 
@@ -163,8 +165,23 @@ with graph.as_default():
             name='pool1'
         )
 
+        pool1 = tf.layers.batch_normalization(
+            pool1,
+            axis=-1,
+            momentum=0.99,
+            epsilon=epsilon,
+            center=True,
+            scale=True,
+            beta_initializer=tf.zeros_initializer(),
+            gamma_initializer=tf.ones_initializer(),
+            moving_mean_initializer=tf.zeros_initializer(),
+            moving_variance_initializer=tf.ones_initializer(),
+            training=training,
+            name='bn_p1'
+        )
+
+        # optional dropout
         if dropout:
-            # dropout at 10%
             pool1 = tf.layers.dropout(pool1, rate=pooldropout_rate, seed=1, training=training)
 
     # Convolutional layer 2
@@ -199,6 +216,7 @@ with graph.as_default():
         # apply relu
         conv2_bn_relu = tf.nn.relu(conv2, name='relu2')
 
+        # optional dropout
         if dropout:
             conv2_bn_relu = tf.layers.dropout(conv2_bn_relu, rate=convdropout_rate, seed=9, training=training)
 
@@ -212,8 +230,23 @@ with graph.as_default():
             name='pool1'
         )
 
+        pool2 = tf.layers.batch_normalization(
+            pool2,
+            axis=-1,
+            momentum=0.99,
+            epsilon=epsilon,
+            center=True,
+            scale=True,
+            beta_initializer=tf.zeros_initializer(),
+            gamma_initializer=tf.ones_initializer(),
+            moving_mean_initializer=tf.zeros_initializer(),
+            moving_variance_initializer=tf.ones_initializer(),
+            training=training,
+            name='bn_p2'
+        )
+
+        # optional dropout
         if dropout:
-            # dropout at 10%
             pool2 = tf.layers.dropout(pool2, rate=pooldropout_rate, seed=1, training=training)
 
     # Convolutional layer 3
@@ -261,8 +294,22 @@ with graph.as_default():
             name='pool3'
         )
 
+        pool3 = tf.layers.batch_normalization(
+            pool3,
+            axis=-1,
+            momentum=0.99,
+            epsilon=epsilon,
+            center=True,
+            scale=True,
+            beta_initializer=tf.zeros_initializer(),
+            gamma_initializer=tf.ones_initializer(),
+            moving_mean_initializer=tf.zeros_initializer(),
+            moving_variance_initializer=tf.ones_initializer(),
+            training=training,
+            name='bn_p3'
+        )
+
         if dropout:
-            # dropout at 10%
             pool3 = tf.layers.dropout(pool3, rate=pooldropout_rate, seed=1, training=training)
 
     # Convolutional layer 4
@@ -300,7 +347,7 @@ with graph.as_default():
             if dropout:
                 conv4_bn_relu = tf.layers.dropout(conv4_bn_relu, rate=convdropout_rate, seed=9, training=training)
 
-        # Max pooling layer 4
+    # Max pooling layer 4
     with tf.name_scope('pool4') as scope:
             pool4 = tf.layers.max_pooling2d(
                 conv4_bn_relu,  # Input
@@ -310,23 +357,100 @@ with graph.as_default():
                 name='pool4'
             )
 
+            pool4 = tf.layers.batch_normalization(
+                pool4,
+                axis=-1,
+                momentum=0.99,
+                epsilon=epsilon,
+                center=True,
+                scale=True,
+                beta_initializer=tf.zeros_initializer(),
+                gamma_initializer=tf.ones_initializer(),
+                moving_mean_initializer=tf.zeros_initializer(),
+                moving_variance_initializer=tf.ones_initializer(),
+                training=training,
+                name='bn_p4'
+            )
+
             if dropout:
-                # dropout at 10%
                 pool4 = tf.layers.dropout(pool4, rate=pooldropout_rate, seed=1, training=training)
+
+            # Convolutional layer 4
+    with tf.name_scope('conv5') as scope:
+        conv5 = tf.layers.conv2d(
+            pool4,  # Input data
+            filters=512,  # 48 filters
+            kernel_size=(3, 3),  # Kernel size: 5x5
+            strides=(1, 1),  # Stride: 1
+            padding='SAME',  # "same" padding
+            activation=None,  # None
+            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=10),
+            kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
+            name='conv5'
+        )
+
+        # conv4 = tf.layers.batch_normalization(
+        #    conv4,
+        #    axis=-1,
+        #    momentum=0.99,
+        #    epsilon=epsilon,
+        #    center=True,
+        #    scale=True,
+        #    beta_initializer=tf.zeros_initializer(),
+        #    gamma_initializer=tf.ones_initializer(),
+        #    moving_mean_initializer=tf.zeros_initializer(),
+        #    moving_variance_initializer=tf.ones_initializer(),
+        #    training=training,
+        #    name='bn4'
+        # )
+
+        # apply relu
+        conv5_bn_relu = tf.nn.relu(conv5, name='relu5')
+
+        if dropout:
+            conv5_bn_relu = tf.layers.dropout(conv5_bn_relu, rate=convdropout_rate, seed=9, training=training)
+
+    # Max pooling layer 4
+    with tf.name_scope('pool5') as scope:
+        pool5 = tf.layers.max_pooling2d(
+            conv5_bn_relu,
+            pool_size=(2, 2),  # Pool size: 2x2
+            strides=(2, 2),  # Stride: 2
+            padding='SAME',
+            name='pool5'
+        )
+
+        pool5 = tf.layers.batch_normalization(
+            pool5,
+            axis=-1,
+            momentum=0.99,
+            epsilon=epsilon,
+            center=True,
+            scale=True,
+            beta_initializer=tf.zeros_initializer(),
+            gamma_initializer=tf.ones_initializer(),
+            moving_mean_initializer=tf.zeros_initializer(),
+            moving_variance_initializer=tf.ones_initializer(),
+            training=training,
+            name='bn_p5'
+        )
+
+        if dropout:
+            pool5 = tf.layers.dropout(pool5, rate=pooldropout_rate, seed=1, training=training)
 
     # Flatten output
     with tf.name_scope('flatten') as scope:
-        flat_output = tf.contrib.layers.flatten(pool4)
+        flat_output = tf.contrib.layers.flatten(pool5)
 
-        # dropout at 10%
+        # dropout at fc rate
         flat_output = tf.layers.dropout(flat_output, rate=fcdropout_rate, seed=5, training=training)
 
     # Fully connected layer 1
     with tf.name_scope('fc1') as scope:
         fc1 = tf.layers.dense(
-            flat_output,  # input
-            1024,  # 2048 hidden units
-            activation=None,  # None
+            flat_output,
+            1024,
+            activation=None,
             kernel_initializer=tf.variance_scaling_initializer(scale=2, seed=4),
             bias_initializer=tf.zeros_initializer(),
             kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamF),
@@ -350,7 +474,7 @@ with graph.as_default():
 
         fc1_relu = tf.nn.relu(bn_fc1, name='fc1_relu')
 
-        # dropout at 25%
+        # dropout
         fc1_relu = tf.layers.dropout(fc1_relu, rate=fcdropout_rate, seed=10, training=training)
 
     # Fully connected layer 2
@@ -382,13 +506,13 @@ with graph.as_default():
 
         fc2_relu = tf.nn.relu(bn_fc2, name='fc2_relu')
 
-        # dropout at 10%
+        # dropout
         fc2_relu = tf.layers.dropout(fc2_relu, rate=fcdropout_rate, seed=11, training=training)
 
     # Output layer
     logits = tf.layers.dense(
-        fc2_relu,  # input
-        num_classes,  # One output unit per category
+        fc2_relu,
+        num_classes,      # One output unit per category
         activation=None,  # No activation function
         kernel_initializer=tf.variance_scaling_initializer(scale=1, seed=6),
         bias_initializer=tf.zeros_initializer(),
@@ -402,14 +526,20 @@ with graph.as_default():
     with tf.variable_scope('visualization'):
         tf.summary.image('conv1/filters', kernel_transposed, max_outputs=32)
 
-    # This will weight the positive examples higher so as to improve recall
-    weights = tf.multiply(3, tf.cast(tf.equal(y, 1), tf.int32)) + 1
+    ## Loss function options
+    # Regular mean cross entropy
+    # mean_ce = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits))
+
+    # weighted mean cross entropy
     # onehot_labels = tf.one_hot(y, depth=num_classes)
     # mean_ce = tf.reduce_mean(tf.nn.weighted_cross_entropy_with_logits(targets=tf.one_hot(y, depth=num_classes), logits=logits, pos_weight=classes_weights))
-    # mean_ce = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits))
+
+    # Different weighting method
+    # This will weight the positive examples higher so as to improve recall
+    weights = tf.multiply(3, tf.cast(tf.equal(y, 1), tf.int32)) + 1
     mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=logits, weights=weights))
 
-
+    # Add in l2 loss
     loss = mean_ce + tf.losses.get_regularization_loss()
 
     # Adam optimizer
@@ -423,6 +553,7 @@ with graph.as_default():
     is_correct = tf.equal(y, predictions)
     accuracy = tf.reduce_mean(tf.cast(is_correct, dtype=tf.float32))
 
+    # calculate recall
     if num_classes > 2:
         recall = [0] * num_classes
         rec_op = [[]] * num_classes
@@ -434,8 +565,8 @@ with graph.as_default():
             )
     else:
         recall, rec_op = tf.metrics.recall(labels=y, predictions=predictions, name="recall")
-        # precision, prec_op = tf.metrics.precision(labels=y, predictions=predictions, name="precision")
-        # f1_score = 2 * ( (precision * recall) / (precision + recall))
+        precision, prec_op = tf.metrics.precision(labels=y, predictions=predictions, name="precision")
+        f1_score = 2 * ( (precision * recall) / (precision + recall))
 
     # add this so that the batch norm gets run
     extra_update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
@@ -444,6 +575,11 @@ with graph.as_default():
     tf.summary.scalar('accuracy', accuracy)
     tf.summary.scalar('recall_1', recall)
     tf.summary.scalar('cross_entropy', mean_ce)
+
+    if num_classes == 2:
+        tf.summary.scalar('precision', precision)
+        tf.summary.scalar('f1_score', f1_score)
+
     tf.summary.scalar('loss', loss)
     tf.summary.scalar('learning_rate', learning_rate)
 
@@ -564,6 +700,7 @@ with tf.Session(graph=graph, config=config) as sess:
         
         ## evaluate on test data if it exists, otherwise ignore this step
         if evaluate:
+            print("Evaluating model...")
             # load the test data
             X_cv, y_cv = load_validation_data(percentage=1, how="normal")
             
@@ -593,7 +730,8 @@ with tf.Session(graph=graph, config=config) as sess:
             # delete the test data to save memory
             del(X_cv)
             del(y_cv)
-        
+
+            print("Done evaluating...")
         else:
             batch_cv_acc.append(0)
             batch_cv_cost.append(0)
