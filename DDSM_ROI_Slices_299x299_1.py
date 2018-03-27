@@ -299,7 +299,7 @@ with graph.as_default():
                 conv4_bn_relu = tf.layers.dropout(conv4_bn_relu, rate=convdropout_rate, seed=9, training=training)
 
         # Max pooling layer 4
-        with tf.name_scope('pool4') as scope:
+    with tf.name_scope('pool4') as scope:
             pool4 = tf.layers.max_pooling2d(
                 conv4_bn_relu,  # Input
                 pool_size=(2, 2),  # Pool size: 2x2
