@@ -200,21 +200,6 @@ with graph.as_default():
             name='conv2'
         )
 
-        #conv2 = tf.layers.batch_normalization(
-        #    conv2,
-        #    axis=-1,
-        #    momentum=0.99,
-        #    epsilon=epsilon,
-        #    center=True,
-        #    scale=True,
-        #    beta_initializer=tf.zeros_initializer(),
-        #    gamma_initializer=tf.ones_initializer(),
-        #    moving_mean_initializer=tf.zeros_initializer(),
-        #    moving_variance_initializer=tf.ones_initializer(),
-        #    training=training,
-        #    name='bn2'
-        #)
-
         # apply relu
         conv2_bn_relu = tf.nn.relu(conv2, name='relu2')
 
@@ -222,10 +207,31 @@ with graph.as_default():
         if dropout:
             conv2_bn_relu = tf.layers.dropout(conv2_bn_relu, rate=convdropout_rate, seed=9, training=training)
 
+        # Convolutional layer 2
+    with tf.name_scope('conv2.1') as scope:
+        conv21 = tf.layers.conv2d(
+            conv2_bn_relu,  # Input data
+            filters=64,  # 32 filters
+            kernel_size=(3, 3),  # Kernel size: 9x9
+            strides=(1, 1),  # Stride: 1
+            padding='SAME',  # "same" padding
+            activation=None,  # None
+            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=10),
+            kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
+            name='conv2.1'
+        )
+
+        # apply relu
+        conv21_bn_relu = tf.nn.relu(conv21, name='relu2.1')
+
+        # optional dropout
+        if dropout:
+            conv21_bn_relu = tf.layers.dropout(conv21_bn_relu, rate=convdropout_rate, seed=9, training=training)
+
     # Max pooling layer 2
     with tf.name_scope('pool2') as scope:
         pool2 = tf.layers.max_pooling2d(
-            conv2_bn_relu,  # Input
+            conv21_bn_relu,  # Input
             pool_size=(2, 2),  # Pool size: 3x3
             strides=(2, 2),  # Stride: 2
             padding='SAME',  # "same" padding
