@@ -50,7 +50,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s0.0.1.08"
+model_name = "model_s0.0.1.09"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -68,6 +68,7 @@ model_name = "model_s0.0.1.08"
 # 0.0.1.06 - brought fc1 back up to 2048 units, removed weighted cross entropy
 # 0.0.1.07 - put batch norm back after conv layers, removed from pools
 # 0.0.1.08 - put weighted xentropy back, but with reduced weight term, removed some batch norms
+# 0.0.1.09 - put batch norms back in
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -142,20 +143,20 @@ with graph.as_default():
             name='conv1.1'
         )
 
-        #conv11 = tf.layers.batch_normalization(
-        #    conv11,
-        #    axis=-1,
-        #    momentum=0.99,
-        #    epsilon=epsilon,
-        #    center=True,
-        #    scale=True,
-        #    beta_initializer=tf.zeros_initializer(),
-        #    gamma_initializer=tf.ones_initializer(),
-        #    moving_mean_initializer=tf.zeros_initializer(),
-        #    moving_variance_initializer=tf.ones_initializer(),
-        #    training=training,
-        #    name='bn1.1'
-        #)
+        conv11 = tf.layers.batch_normalization(
+            conv11,
+            axis=-1,
+            momentum=0.99,
+            epsilon=epsilon,
+            center=True,
+            scale=True,
+            beta_initializer=tf.zeros_initializer(),
+            gamma_initializer=tf.ones_initializer(),
+            moving_mean_initializer=tf.zeros_initializer(),
+            moving_variance_initializer=tf.ones_initializer(),
+            training=training,
+            name='bn1.1'
+        )
 
         # apply relu
         conv11_bn_relu = tf.nn.relu(conv11, name='relu1.1')
@@ -190,6 +191,21 @@ with graph.as_default():
             kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=10),
             kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
             name='conv2'
+        )
+
+        conv2 = tf.layers.batch_normalization(
+            conv2,
+            axis=-1,
+            momentum=0.99,
+            epsilon=epsilon,
+            center=True,
+            scale=True,
+            beta_initializer=tf.zeros_initializer(),
+            gamma_initializer=tf.ones_initializer(),
+            moving_mean_initializer=tf.zeros_initializer(),
+            moving_variance_initializer=tf.ones_initializer(),
+            training=training,
+            name='bn2'
         )
 
         # apply relu
@@ -227,20 +243,20 @@ with graph.as_default():
             name='conv3'
         )
 
-        #conv3 = tf.layers.batch_normalization(
-        #    conv3,
-        #    axis=-1,
-        #    momentum=0.99,
-        #    epsilon=epsilon,
-        #    center=True,
-        #    scale=True,
-        #    beta_initializer=tf.zeros_initializer(),
-        #    gamma_initializer=tf.ones_initializer(),
-        #    moving_mean_initializer=tf.zeros_initializer(),
-        #    moving_variance_initializer=tf.ones_initializer(),
-        #    training=training,
-        #    name='bn3'
-        #)
+        conv3 = tf.layers.batch_normalization(
+            conv3,
+            axis=-1,
+            momentum=0.99,
+            epsilon=epsilon,
+            center=True,
+            scale=True,
+            beta_initializer=tf.zeros_initializer(),
+            gamma_initializer=tf.ones_initializer(),
+            moving_mean_initializer=tf.zeros_initializer(),
+            moving_variance_initializer=tf.ones_initializer(),
+            training=training,
+            name='bn3'
+        )
 
         # apply relu
         conv3_bn_relu = tf.nn.relu(conv3, name='relu3')
@@ -275,20 +291,20 @@ with graph.as_default():
                 name='conv4'
             )
 
-            # conv4 = tf.layers.batch_normalization(
-            #    conv4,
-            #    axis=-1,
-            #    momentum=0.99,
-            #    epsilon=epsilon,
-            #    center=True,
-            #    scale=True,
-            #    beta_initializer=tf.zeros_initializer(),
-            #    gamma_initializer=tf.ones_initializer(),
-            #    moving_mean_initializer=tf.zeros_initializer(),
-            #    moving_variance_initializer=tf.ones_initializer(),
-            #    training=training,
-            #    name='bn4'
-            # )
+            conv4 = tf.layers.batch_normalization(
+                conv4,
+                axis=-1,
+                momentum=0.99,
+                epsilon=epsilon,
+                center=True,
+                scale=True,
+                beta_initializer=tf.zeros_initializer(),
+                gamma_initializer=tf.ones_initializer(),
+                moving_mean_initializer=tf.zeros_initializer(),
+                moving_variance_initializer=tf.ones_initializer(),
+                training=training,
+                name='bn4'
+            )
 
             # apply relu
             conv4_bn_relu = tf.nn.relu(conv4, name='relu4')
@@ -321,6 +337,21 @@ with graph.as_default():
             kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=10),
             kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
             name='conv5'
+        )
+
+        conv5 = tf.layers.batch_normalization(
+            conv5,
+            axis=-1,
+            momentum=0.99,
+            epsilon=epsilon,
+            center=True,
+            scale=True,
+            beta_initializer=tf.zeros_initializer(),
+            gamma_initializer=tf.ones_initializer(),
+            moving_mean_initializer=tf.zeros_initializer(),
+            moving_variance_initializer=tf.ones_initializer(),
+            training=training,
+            name='bn5'
         )
 
         # apply relu
