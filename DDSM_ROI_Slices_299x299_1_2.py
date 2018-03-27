@@ -50,7 +50,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s0.0.1.04"
+model_name = "model_s0.0.1.05"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -64,6 +64,7 @@ model_name = "model_s0.0.1.04"
 # 0.0.1.02 - fixed typo
 # 0.0.1.03 - downsizing model to speed up training
 # 0.0.1.04 - disabled half of batch norms in conv layers
+# 0.0.1.05 - brought fc1 back down to 1024 units
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -487,7 +488,7 @@ with graph.as_default():
     with tf.name_scope('fc1') as scope:
         fc1 = tf.layers.dense(
             flat_output,
-            2048,
+            1024,
             activation=None,
             kernel_initializer=tf.variance_scaling_initializer(scale=2, seed=4),
             bias_initializer=tf.zeros_initializer(),
