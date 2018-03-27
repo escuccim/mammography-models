@@ -50,7 +50,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s0.0.0.12"
+model_name = "model_s0.0.0.13"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -59,6 +59,7 @@ model_name = "model_s0.0.0.12"
 # 0.0.0.10 - commented out batch norm in conv layers, added conv4 and changed stride of convs to 1, increased FC lambda
 # 0.0.0.11 - turn dropout for conv layers on
 # 0.0.0.12 - added batch norm after pooling layers, increase pool dropout, decrease conv dropout, added extra conv layer to reduce data dimensionality
+# 0.0.0.13 - added precision and f1 summaries
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -577,7 +578,7 @@ with graph.as_default():
     tf.summary.scalar('cross_entropy', mean_ce)
 
     if num_classes == 2:
-        tf.summary.scalar('precision', precision)
+        tf.summary.scalar('precision_1', precision)
         tf.summary.scalar('f1_score', f1_score)
 
     tf.summary.scalar('loss', loss)
@@ -659,7 +660,7 @@ with tf.Session(graph=graph, config=config) as sess:
             run_metadata = tf.RunMetadata()
 
             # Run training and evaluate accuracy
-            _, _, summary, acc_value, cost_value, loss_value, recall_value, step, lr = sess.run([train_op, extra_update_ops, 
+            _, _, precision_value, summary, acc_value, cost_value, loss_value, recall_value, step, lr = sess.run([train_op, extra_update_ops, prec_op,
                      merged, accuracy, mean_ce, loss, rec_op, global_step,
                      learning_rate], feed_dict={
                         #X: X_batch,
