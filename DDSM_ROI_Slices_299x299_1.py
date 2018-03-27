@@ -50,7 +50,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s0.0.0.13"
+model_name = "model_s0.0.0.14"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -60,6 +60,7 @@ model_name = "model_s0.0.0.13"
 # 0.0.0.11 - turn dropout for conv layers on
 # 0.0.0.12 - added batch norm after pooling layers, increase pool dropout, decrease conv dropout, added extra conv layer to reduce data dimensionality
 # 0.0.0.13 - added precision and f1 summaries
+# 0.0.0.14 - fixing batch normalization, I don't think it's going to work after each pool
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -100,20 +101,20 @@ with graph.as_default():
             name='conv1'
         )
 
-        #conv1 = tf.layers.batch_normalization(
-        #    conv1,
-        #    axis=-1,
-        #    momentum=0.99,
-        #    epsilon=epsilon,
-        #    center=True,
-        #    scale=True,
-        #    beta_initializer=tf.zeros_initializer(),
-        #    gamma_initializer=tf.ones_initializer(),
-        #    moving_mean_initializer=tf.zeros_initializer(),
-        #    moving_variance_initializer=tf.ones_initializer(),
-        #    training=training,
-        #    name='bn1'
-        #)
+        conv1 = tf.layers.batch_normalization(
+            conv1,
+            axis=-1,
+            momentum=0.99,
+            epsilon=epsilon,
+            center=True,
+            scale=True,
+            beta_initializer=tf.zeros_initializer(),
+            gamma_initializer=tf.ones_initializer(),
+            moving_mean_initializer=tf.zeros_initializer(),
+            moving_variance_initializer=tf.ones_initializer(),
+            training=training,
+            name='bn1'
+        )
 
         # apply relu
         conv1_bn_relu = tf.nn.relu(conv1, name='relu1')
@@ -166,21 +167,6 @@ with graph.as_default():
             name='pool1'
         )
 
-        pool1 = tf.layers.batch_normalization(
-            pool1,
-            axis=-1,
-            momentum=0.99,
-            epsilon=epsilon,
-            center=True,
-            scale=True,
-            beta_initializer=tf.zeros_initializer(),
-            gamma_initializer=tf.ones_initializer(),
-            moving_mean_initializer=tf.zeros_initializer(),
-            moving_variance_initializer=tf.ones_initializer(),
-            training=training,
-            name='bn_p1'
-        )
-
         # optional dropout
         if dropout:
             pool1 = tf.layers.dropout(pool1, rate=pooldropout_rate, seed=1, training=training)
@@ -199,20 +185,20 @@ with graph.as_default():
             name='conv2'
         )
 
-        #conv2 = tf.layers.batch_normalization(
-        #    conv2,
-        #    axis=-1,
-        #    momentum=0.99,
-        #    epsilon=epsilon,
-        #    center=True,
-        #    scale=True,
-        #    beta_initializer=tf.zeros_initializer(),
-        #    gamma_initializer=tf.ones_initializer(),
-        #    moving_mean_initializer=tf.zeros_initializer(),
-        #    moving_variance_initializer=tf.ones_initializer(),
-        #    training=training,
-        #    name='bn2'
-        #)
+        conv2 = tf.layers.batch_normalization(
+            conv2,
+            axis=-1,
+            momentum=0.99,
+            epsilon=epsilon,
+            center=True,
+            scale=True,
+            beta_initializer=tf.zeros_initializer(),
+            gamma_initializer=tf.ones_initializer(),
+            moving_mean_initializer=tf.zeros_initializer(),
+            moving_variance_initializer=tf.ones_initializer(),
+            training=training,
+            name='bn2'
+        )
 
         # apply relu
         conv2_bn_relu = tf.nn.relu(conv2, name='relu2')
@@ -229,21 +215,6 @@ with graph.as_default():
             strides=(2, 2),  # Stride: 2
             padding='SAME',  # "same" padding
             name='pool1'
-        )
-
-        pool2 = tf.layers.batch_normalization(
-            pool2,
-            axis=-1,
-            momentum=0.99,
-            epsilon=epsilon,
-            center=True,
-            scale=True,
-            beta_initializer=tf.zeros_initializer(),
-            gamma_initializer=tf.ones_initializer(),
-            moving_mean_initializer=tf.zeros_initializer(),
-            moving_variance_initializer=tf.ones_initializer(),
-            training=training,
-            name='bn_p2'
         )
 
         # optional dropout
@@ -295,21 +266,6 @@ with graph.as_default():
             name='pool3'
         )
 
-        pool3 = tf.layers.batch_normalization(
-            pool3,
-            axis=-1,
-            momentum=0.99,
-            epsilon=epsilon,
-            center=True,
-            scale=True,
-            beta_initializer=tf.zeros_initializer(),
-            gamma_initializer=tf.ones_initializer(),
-            moving_mean_initializer=tf.zeros_initializer(),
-            moving_variance_initializer=tf.ones_initializer(),
-            training=training,
-            name='bn_p3'
-        )
-
         if dropout:
             pool3 = tf.layers.dropout(pool3, rate=pooldropout_rate, seed=1, training=training)
 
@@ -358,21 +314,6 @@ with graph.as_default():
                 name='pool4'
             )
 
-            pool4 = tf.layers.batch_normalization(
-                pool4,
-                axis=-1,
-                momentum=0.99,
-                epsilon=epsilon,
-                center=True,
-                scale=True,
-                beta_initializer=tf.zeros_initializer(),
-                gamma_initializer=tf.ones_initializer(),
-                moving_mean_initializer=tf.zeros_initializer(),
-                moving_variance_initializer=tf.ones_initializer(),
-                training=training,
-                name='bn_p4'
-            )
-
             if dropout:
                 pool4 = tf.layers.dropout(pool4, rate=pooldropout_rate, seed=1, training=training)
 
@@ -390,20 +331,20 @@ with graph.as_default():
             name='conv5'
         )
 
-        # conv4 = tf.layers.batch_normalization(
-        #    conv4,
-        #    axis=-1,
-        #    momentum=0.99,
-        #    epsilon=epsilon,
-        #    center=True,
-        #    scale=True,
-        #    beta_initializer=tf.zeros_initializer(),
-        #    gamma_initializer=tf.ones_initializer(),
-        #    moving_mean_initializer=tf.zeros_initializer(),
-        #    moving_variance_initializer=tf.ones_initializer(),
-        #    training=training,
-        #    name='bn4'
-        # )
+        conv5 = tf.layers.batch_normalization(
+            conv5,
+            axis=-1,
+            momentum=0.99,
+            epsilon=epsilon,
+            center=True,
+            scale=True,
+            beta_initializer=tf.zeros_initializer(),
+            gamma_initializer=tf.ones_initializer(),
+            moving_mean_initializer=tf.zeros_initializer(),
+            moving_variance_initializer=tf.ones_initializer(),
+            training=training,
+            name='bn5'
+        )
 
         # apply relu
         conv5_bn_relu = tf.nn.relu(conv5, name='relu5')
@@ -419,21 +360,6 @@ with graph.as_default():
             strides=(2, 2),  # Stride: 2
             padding='SAME',
             name='pool5'
-        )
-
-        pool5 = tf.layers.batch_normalization(
-            pool5,
-            axis=-1,
-            momentum=0.99,
-            epsilon=epsilon,
-            center=True,
-            scale=True,
-            beta_initializer=tf.zeros_initializer(),
-            gamma_initializer=tf.ones_initializer(),
-            moving_mean_initializer=tf.zeros_initializer(),
-            moving_variance_initializer=tf.ones_initializer(),
-            training=training,
-            name='bn_p5'
         )
 
         if dropout:
@@ -698,7 +624,8 @@ with tf.Session(graph=graph, config=config) as sess:
         batch_cv_cost = []
         batch_cv_loss = []
         batch_cv_recall = []
-        
+        batch_cv_precision = []
+
         ## evaluate on test data if it exists, otherwise ignore this step
         if evaluate:
             print("Evaluating model...")
@@ -707,7 +634,7 @@ with tf.Session(graph=graph, config=config) as sess:
             
             # evaluate the test data
             for X_batch, y_batch in get_batches(X_cv, y_cv, batch_size // 2, distort=False):
-                summary, valid_acc, valid_recall, valid_cost, valid_loss = sess.run([merged, accuracy, rec_op, mean_ce, loss], 
+                summary, valid_acc, valid_recall, valid_precision, valid_cost, valid_loss = sess.run([merged, accuracy, rec_op, prec_op, mean_ce, loss],
                     feed_dict={
                         X: X_batch,
                         y: y_batch,
@@ -719,12 +646,14 @@ with tf.Session(graph=graph, config=config) as sess:
                 batch_cv_cost.append(valid_cost)
                 batch_cv_loss.append(valid_loss)
                 batch_cv_recall.append(np.mean(valid_recall))
+                batch_cv_precision.append(np.mean(valid_precision))
     
             # Write average of validation data to summary logs
             if log_to_tensorboard:
                 summary = tf.Summary(value=[tf.Summary.Value(tag="accuracy", simple_value=np.mean(batch_cv_acc)),
                                             tf.Summary.Value(tag="cross_entropy", simple_value=np.mean(batch_cv_cost)),
-                                            tf.Summary.Value(tag="recall_1", simple_value=np.mean(batch_cv_recall)), ])
+                                            tf.Summary.Value(tag="recall_1", simple_value=np.mean(batch_cv_recall)),
+                                            tf.Summary.Value(tag="precision_1", simple_value=np.mean(batch_cv_precision)),])
                 test_writer.add_summary(summary, step)
                 step += 1
             
