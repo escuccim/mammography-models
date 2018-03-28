@@ -709,7 +709,7 @@ with graph.as_default():
 
     with tf.name_scope('reduce_a_1') as scope:
         ## normal max pool
-        poola_1_1 = tf.layers.max_pooling2d(
+        pool_a_1_1 = tf.layers.max_pooling2d(
             concat4,  # Input
             pool_size=(3, 3),  # Pool size: 3x3
             strides=(2, 2),  # Stride: 2
