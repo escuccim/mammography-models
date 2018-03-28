@@ -1664,31 +1664,16 @@ with graph.as_default():
         ## Average Pooling
         pool2 = tf.layers.average_pooling2d(
             concat8,  # Input
-            pool_size=(3, 3),  # Pool size: 3x3
+            pool_size=(2, 2),  # Pool size: 3x3
             strides=(2, 2),  # Stride: 2
             padding='SAME',  # "same" padding
             name='pool1'
         )
 
-        # ## Global Average Pooling
-        # pool2 = tf.layers.conv2d(
-        #     concat8,  # Input data
-        #     filters=512,  # 32 filters
-        #     kernel_size=(1, 1),  # Kernel size: 9x9
-        #     strides=(1, 1),  # Stride: 1
-        #     padding='SAME',  # "same" padding
-        #     activation=None,  # None
-        #     kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=940),
-        #     kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
-        #     name='pool2_conv'
-        # )
-        #
-        # pool2 = tf.nn.avg_pool(pool2, ksize=[1, 2, 2, 512], strides=[1, 1, 1, 1], padding='VALID')
-
     # Flatten output
     with tf.name_scope('flatten') as scope:
         #flat_output = tf.contrib.layers.flatten(pool2)
-        flat_output = tf.reduce_mean(pool2, axis=[3])
+        flat_output = tf.reduce_mean(pool2, axis=[1, 2])
 
         # dropout at fc rate
         flat_output = tf.layers.dropout(flat_output, rate=0.2, seed=2300, training=training)
