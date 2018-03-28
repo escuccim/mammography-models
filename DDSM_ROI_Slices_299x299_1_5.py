@@ -1682,8 +1682,8 @@ with graph.as_default():
             kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
             name='pool2_conv'
         )
-
-        pool2 = tf.nn.avg_pool(pool2, ksize=[1, 2, 2, 512], strides=[1, 1, 1, 512], padding='VALID')
+        
+        pool2 = tf.nn.avg_pool(pool2, ksize=[1, 4, 4, 512], strides=[1, 1, 1, 1], padding='VALID')
 
     # Flatten output
     with tf.name_scope('flatten') as scope:
