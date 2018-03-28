@@ -12,6 +12,14 @@ download_data()
 epochs = 100                  
 batch_size = 64
 
+train_path_0 = os.path.join("data", "training_0.tfrecords")
+train_path_1 = os.path.join("data", "training_1.tfrecords")
+train_path_2 = os.path.join("data", "training_2.tfrecords")
+train_path_3 = os.path.join("data", "training_3.tfrecords")
+test_path = os.path.join("data", "test.tfrecords")
+train_files = [train_path_0, train_path_1]#, train_path_2, train_path_3]
+total_records = 26772 // 2
+
 ## Hyperparameters
 # Small epsilon value for the BN transform
 epsilon = 1e-8
@@ -23,7 +31,7 @@ decay_factor = 0.85
 staircase = True
 
 # learning rate decay variables
-steps_per_epoch = int(26772 / batch_size)
+steps_per_epoch = int(total_records / batch_size)
 print("Steps per epoch:", steps_per_epoch)
 
 # lambdas
@@ -37,13 +45,6 @@ convdropout_rate = 0.001
 pooldropout_rate = 0.1
 
 num_classes = 2
-
-train_path_0 = os.path.join("data", "training_0.tfrecords")
-train_path_1 = os.path.join("data", "training_1.tfrecords")
-train_path_2 = os.path.join("data", "training_2.tfrecords")
-train_path_3 = os.path.join("data", "training_3.tfrecords")
-test_path = os.path.join("data", "test.tfrecords")
-train_files = [train_path_0, train_path_1, train_path_2, train_path_3]
 
 ## Build the graph
 graph = tf.Graph()

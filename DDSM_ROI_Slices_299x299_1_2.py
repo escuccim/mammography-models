@@ -685,16 +685,18 @@ with tf.Session(graph=graph, config=config) as sess:
         batch_cv_cost = []
         batch_cv_loss = []
         batch_cv_recall = []
+        batch_cv_precision = []
         
         ## evaluate on test data if it exists, otherwise ignore this step
         if evaluate:
             print("Evaluating model...")
             # load the test data
             X_cv, y_cv = load_validation_data(percentage=1, how="normal")
-            
+
             # evaluate the test data
             for X_batch, y_batch in get_batches(X_cv, y_cv, batch_size // 2, distort=False):
-                summary, valid_acc, valid_recall, valid_cost, valid_loss = sess.run([merged, accuracy, rec_op, mean_ce, loss], 
+                summary, valid_acc, valid_recall, valid_precision, valid_cost, valid_loss = sess.run(
+                    [merged, accuracy, rec_op, prec_op, mean_ce, loss],
                     feed_dict={
                         X: X_batch,
                         y: y_batch,
@@ -706,18 +708,21 @@ with tf.Session(graph=graph, config=config) as sess:
                 batch_cv_cost.append(valid_cost)
                 batch_cv_loss.append(valid_loss)
                 batch_cv_recall.append(np.mean(valid_recall))
-    
+                batch_cv_precision.append(np.mean(valid_precision))
+
             # Write average of validation data to summary logs
             if log_to_tensorboard:
                 summary = tf.Summary(value=[tf.Summary.Value(tag="accuracy", simple_value=np.mean(batch_cv_acc)),
                                             tf.Summary.Value(tag="cross_entropy", simple_value=np.mean(batch_cv_cost)),
-                                            tf.Summary.Value(tag="recall_1", simple_value=np.mean(batch_cv_recall)), ])
+                                            tf.Summary.Value(tag="recall_1", simple_value=np.mean(batch_cv_recall)),
+                                            tf.Summary.Value(tag="precision_1",
+                                                             simple_value=np.mean(batch_cv_precision)), ])
                 test_writer.add_summary(summary, step)
                 step += 1
-            
+
             # delete the test data to save memory
-            del(X_cv)
-            del(y_cv)
+            del (X_cv)
+            del (y_cv)
 
             print("Done evaluating...")
         else:
