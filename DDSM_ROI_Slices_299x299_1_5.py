@@ -50,7 +50,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s0.0.4.03"
+model_name = "model_s0.0.4.04"
 # 0.0.3.01 - using inception input stem
 # 0.0.3.02 - removed conv layers after 4 as data was being downsized too much
 # 0.0.3.03 - added Inception Block A
@@ -60,6 +60,7 @@ model_name = "model_s0.0.4.03"
 # 0.0.4.01 - adding block c from inception
 # 0.0.4.02 - organizing namespaces so as to better view graph
 # 0.0.4.03 - changed conv1 to stride 1 followed by max pool
+# 0.0.4.04 - replaced last average pool with reduce_mean
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -1660,22 +1661,37 @@ with graph.as_default():
         )
     # Max pooling layer 2
     with tf.name_scope('pool2') as scope:
-        pool2 = tf.layers.average_pooling2d(
-            concat8,  # Input
-            pool_size=(2, 2),  # Pool size: 3x3
-            strides=(2, 2),  # Stride: 2
+        ## Average Pooling
+        # pool2 = tf.layers.average_pooling2d(
+        #     concat8,  # Input
+        #     pool_size=(3, 3),  # Pool size: 3x3
+        #     strides=(3, 3),  # Stride: 2
+        #     padding='SAME',  # "same" padding
+        #     name='pool1'
+        # )
+
+        ## Global Average Pooling
+        pool2 = tf.layers.conv2d(
+            concat8,  # Input data
+            filters=512,  # 32 filters
+            kernel_size=(1, 1),  # Kernel size: 9x9
+            strides=(1, 1),  # Stride: 1
             padding='SAME',  # "same" padding
-            name='pool1'
+            activation=None,  # None
+            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=940),
+            kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
+            name='pool2_conv'
         )
 
-    pool2 = tf.layers.dropout(pool2, rate=0.8, seed=1000, training=training)
+        pool2 = tf.nn.avg_pool(pool2, ksize=[1, 2, 2, 512], strides=[1, 2, 2, 2], padding='VALID')
 
     # Flatten output
     with tf.name_scope('flatten') as scope:
-        flat_output = tf.contrib.layers.flatten(pool2)
+        #flat_output = tf.contrib.layers.flatten(pool2)
+        flat_output = tf.reduce_mean(pool2, axis=[1, 2])
 
         # dropout at fc rate
-        flat_output = tf.layers.dropout(flat_output, rate=fcdropout_rate, seed=2300, training=training)
+        flat_output = tf.layers.dropout(flat_output, rate=0.2, seed=2300, training=training)
 
     # Fully connected layer 1
     with tf.name_scope('fc1') as scope:
