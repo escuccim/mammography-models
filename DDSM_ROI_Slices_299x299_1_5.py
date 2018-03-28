@@ -60,7 +60,7 @@ model_name = "model_s0.0.4.04"
 # 0.0.4.01 - adding block c from inception
 # 0.0.4.02 - organizing namespaces so as to better view graph
 # 0.0.4.03 - changed conv1 to stride 1 followed by max pool
-# 0.0.4.04 - replaced last average pool with reduce_mean
+# 0.0.4.04 - tried to figure out global average pooling, ended up replacing flatten with reduce_mean over axes 1 and 2
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
