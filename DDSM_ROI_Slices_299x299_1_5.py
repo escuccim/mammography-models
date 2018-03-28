@@ -50,7 +50,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s0.0.4.02"
+model_name = "model_s0.0.4.03"
 # 0.0.3.01 - using inception input stem
 # 0.0.3.02 - removed conv layers after 4 as data was being downsized too much
 # 0.0.3.03 - added Inception Block A
@@ -59,6 +59,7 @@ model_name = "model_s0.0.4.02"
 # 0.0.3.07 - changed last max pool to average pool
 # 0.0.4.01 - adding block c from inception
 # 0.0.4.02 - organizing namespaces so as to better view graph
+# 0.0.4.03 - changed conv1 to stride 1 followed by max pool
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -117,8 +118,13 @@ with graph.as_default():
         # apply relu
         conv1 = tf.nn.relu(conv1, name='relu1.0')
 
-        if dropout:
-            conv1 = tf.layers.dropout(conv1, rate=convdropout_rate, seed=200, training=training)
+        conv1 = tf.layers.max_pooling2d(
+            conv1,  # Input
+            pool_size=(3, 3),  # Pool size: 3x3
+            strides=(2, 2),  # Stride: 2
+            padding='SAME',  # "same" padding
+            name='pool1.0'
+        )
 
     with tf.name_scope('conv1.1') as scope:
         conv11 = tf.layers.conv2d(
