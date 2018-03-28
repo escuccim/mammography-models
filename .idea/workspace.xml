@@ -48,8 +48,8 @@
       <file leaf-file-name="DDSM_ROI_Slices_299x299_1_4.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1_4.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1008">
-              <caret line="1012" column="61" lean-forward="false" selection-start-line="1012" selection-start-column="61" selection-end-line="1012" selection-end-column="61" />
+            <state relative-caret-position="1074">
+              <caret line="1169" column="61" lean-forward="false" selection-start-line="1169" selection-start-column="61" selection-end-line="1169" selection-end-column="61" />
               <folding />
             </state>
           </provider>
@@ -91,6 +91,7 @@
       <find>pool2.2</find>
       <find>7</find>
       <find>conv_b_3_2</find>
+      <find>conv_b_4_2</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -349,8 +350,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1_4.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1008">
-          <caret line="1012" column="61" lean-forward="false" selection-start-line="1012" selection-start-column="61" selection-end-line="1012" selection-end-column="61" />
+        <state relative-caret-position="1074">
+          <caret line="1169" column="61" lean-forward="false" selection-start-line="1169" selection-start-column="61" selection-end-line="1169" selection-end-column="61" />
           <folding />
         </state>
       </provider>
