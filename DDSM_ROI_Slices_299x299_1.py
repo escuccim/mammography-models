@@ -25,8 +25,8 @@ total_records = 26772 // 2
 epsilon = 1e-8
 
 # learning rate
-epochs_per_decay = 25
-starting_rate = 0.002
+epochs_per_decay = 5
+starting_rate = 0.001
 decay_factor = 0.85
 staircase = True
 
@@ -51,7 +51,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s0.0.0.19"
+model_name = "model_s0.0.0.20"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -66,6 +66,7 @@ model_name = "model_s0.0.0.19"
 # 0.0.0.17 - replaced initial 5x5 conv layers with 3 3x3 layers
 # 0.0.0.18 - changed stride of first conv to 2 from 1
 # 0.0.0.19 - doubled units in two fc layers
+# 0.0.0.20 - lowered learning rate
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -658,7 +659,7 @@ with tf.Session(graph=graph, config=config) as sess:
             if log_to_tensorboard:
                 train_writer.add_summary(summary, step)
                 # only log the meta data once per epoch
-                if i == (steps_per_epoch - 1):
+                if i == 1:
                     train_writer.add_run_metadata(run_metadata, 'step %d' % step)
                 
         # save checkpoint every nth epoch

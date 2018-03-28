@@ -17,8 +17,8 @@ batch_size = 64
 epsilon = 1e-8
 
 # learning rate
-epochs_per_decay = 25
-starting_rate = 0.002
+epochs_per_decay = 5
+starting_rate = 0.001
 decay_factor = 0.85
 staircase = True
 
@@ -50,7 +50,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s0.0.4.04"
+model_name = "model_s0.0.4.05"
 # 0.0.3.01 - using inception input stem
 # 0.0.3.02 - removed conv layers after 4 as data was being downsized too much
 # 0.0.3.03 - added Inception Block A
@@ -61,6 +61,7 @@ model_name = "model_s0.0.4.04"
 # 0.0.4.02 - organizing namespaces so as to better view graph
 # 0.0.4.03 - changed conv1 to stride 1 followed by max pool
 # 0.0.4.04 - tried to figure out global average pooling, ended up replacing flatten with reduce_mean over axes 1 and 2
+# 0.0.4.05 - lowered learning rate to see if it will help learn faster
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -207,6 +208,8 @@ with graph.as_default():
             name='pool1.1'
         )
 
+    # Max pooling layer 1.2
+    with tf.name_scope('pool1.2') as scope:
         pool12 = tf.layers.conv2d(
             conv12,  # Input data
             filters=96,  # 32 filters
@@ -441,7 +444,7 @@ with graph.as_default():
             name='concat2'
         )
 
-    # Max pooling layer 2
+    # Max pooling layer 2.1
     with tf.name_scope('pool2.1') as scope:
         pool21 = tf.layers.max_pooling2d(
             concat2,  # Input
@@ -451,6 +454,8 @@ with graph.as_default():
             name='pool2.1'
         )
 
+    # Max pooling layer 2.2
+    with tf.name_scope('pool2.2') as scope:
         pool22 = tf.layers.conv2d(
             concat2,  # Input data
             filters=192,  # 32 filters
@@ -560,7 +565,7 @@ with graph.as_default():
         # apply relu
         conv_a_2 = tf.nn.relu(conv_a_2, name='relu_a_2_1')
 
-    with tf.name_scope('block_a_branch_3') as scope:
+    with tf.name_scope('block_a_branch_3.1') as scope:
         conv_a_3_1 = tf.layers.conv2d(
             concat3,  # Input data
             filters=64,  # 32 filters
@@ -591,6 +596,7 @@ with graph.as_default():
         # apply relu
         conv_a_3_1 = tf.nn.relu(conv_a_3_1, name='relu_a_3_1')
 
+    with tf.name_scope('block_a_branch_3.2') as scope:
         conv_a_3_2 = tf.layers.conv2d(
             conv_a_3_1,  # Input data
             filters=96,  # 32 filters
@@ -621,7 +627,7 @@ with graph.as_default():
         # apply relu
         conv_a_3_2 = tf.nn.relu(conv_a_3_2, name='relu_a_3_2')
 
-    with tf.name_scope('block_a_branch_4') as scope:
+    with tf.name_scope('block_a_branch_4.1') as scope:
         conv_a_4_1 = tf.layers.conv2d(
             concat3,  # Input data
             filters=64,  # 32 filters
@@ -652,6 +658,7 @@ with graph.as_default():
         # apply relu
         conv_a_4_1 = tf.nn.relu(conv_a_4_1, name='relu_a_4_1')
 
+    with tf.name_scope('block_a_branch_4.2') as scope:
         conv_a_4_2 = tf.layers.conv2d(
             conv_a_4_1,  # Input data
             filters=96,  # 32 filters
@@ -682,6 +689,7 @@ with graph.as_default():
         # apply relu
         conv_a_4_2 = tf.nn.relu(conv_a_4_2, name='relu_a_4_2')
 
+    with tf.name_scope('block_a_branch_4.3') as scope:
         conv_a_4_3 = tf.layers.conv2d(
             conv_a_4_2,  # Input data
             filters=96,  # 32 filters
@@ -761,7 +769,7 @@ with graph.as_default():
         # apply relu
         pool_a_1_2 = tf.nn.relu(pool_a_1_2, name='relu_pool_a_1_2')
 
-    with tf.name_scope('reduce_a_3') as scope:
+    with tf.name_scope('reduce_a_3.1') as scope:
         ## multiple convs
         pool_a_1_3 = tf.layers.conv2d(
             concat4,  # Input data
@@ -793,6 +801,7 @@ with graph.as_default():
         # apply relu
         pool_a_1_3 = tf.nn.relu(pool_a_1_3, name='relu_pool_a_1_3')
 
+    with tf.name_scope('reduce_a_3.2') as scope:
         pool_a_1_3 = tf.layers.conv2d(
             pool_a_1_3,  # Input data
             filters=128,  # 32 filters
@@ -823,6 +832,7 @@ with graph.as_default():
         # apply relu
         pool_a_1_3 = tf.nn.relu(pool_a_1_3, name='relu_pool_a_1_3_2')
 
+    with tf.name_scope('reduce_a_3.3') as scope:
         pool_a_1_3 = tf.layers.conv2d(
             pool_a_1_3,  # Input data
             filters=192,  # 32 filters
@@ -933,7 +943,7 @@ with graph.as_default():
         conv_b_2 = tf.nn.relu(conv_b_2, name='relu_conv_b_2')
 
     # Block B branch 3
-    with tf.name_scope('block_b_branch_3') as scope:
+    with tf.name_scope('block_b_branch_3.1') as scope:
         ## Downsize layers
         conv_b_3 = tf.layers.conv2d(
             concat5,  # Input data
@@ -965,6 +975,7 @@ with graph.as_default():
         # apply relu
         conv_b_3 = tf.nn.relu(conv_b_3, name='relu_conv_b_3_1')
 
+    with tf.name_scope('block_b_branch_3.2') as scope:
         ## 1x7 conv
         conv_b_3 = tf.layers.conv2d(
             conv_b_3,  # Input data
@@ -996,6 +1007,7 @@ with graph.as_default():
         # apply relu
         conv_b_3 = tf.nn.relu(conv_b_3, name='relu_conv_b_3_2')
 
+    with tf.name_scope('block_b_branch_3.3') as scope:
         ## 7x1 conv
         conv_b_3 = tf.layers.conv2d(
             conv_b_3,  # Input data
@@ -1028,7 +1040,7 @@ with graph.as_default():
         conv_b_3 = tf.nn.relu(conv_b_3, name='relu_conv_b_3_3')
 
     # Block B branch 4
-    with tf.name_scope('block_b_branch_4') as scope:
+    with tf.name_scope('block_b_branch_4.1') as scope:
         ## Downsize layers
         conv_b_4 = tf.layers.conv2d(
             concat5,  # Input data
@@ -1060,6 +1072,7 @@ with graph.as_default():
         # apply relu
         conv_b_4 = tf.nn.relu(conv_b_4, name='relu_conv_b_4_1')
 
+    with tf.name_scope('block_b_branch_4.2') as scope:
         ## 1x7 conv
         conv_b_4 = tf.layers.conv2d(
             conv_b_4,  # Input data
@@ -1091,6 +1104,7 @@ with graph.as_default():
         # apply relu
         conv_b_4 = tf.nn.relu(conv_b_4, name='relu_conv_b_4_2')
 
+    with tf.name_scope('block_b_branch_4.3') as scope:
         ## 7x1 conv
         conv_b_4 = tf.layers.conv2d(
             conv_b_4,  # Input data
@@ -1122,6 +1136,7 @@ with graph.as_default():
         # apply relu
         conv_b_4 = tf.nn.relu(conv_b_4, name='relu_conv_b_4_3')
 
+    with tf.name_scope('block_b_branch_4.4') as scope:
         ## 1x7 conv 2
         conv_b_4 = tf.layers.conv2d(
             conv_b_4,  # Input data
@@ -1153,6 +1168,7 @@ with graph.as_default():
         # apply relu
         conv_b_4 = tf.nn.relu(conv_b_4, name='relu_conv_b_4_4')
 
+    with tf.name_scope('block_b_branch_4.5') as scope:
         ## 7x1 conv 2
         conv_b_4 = tf.layers.conv2d(
             conv_b_4,  # Input data
@@ -1202,7 +1218,7 @@ with graph.as_default():
             name='poolb_1_1'
         )
 
-    with tf.name_scope('reduce_b_2') as scope:
+    with tf.name_scope('reduce_b_2.1') as scope:
         ## conv with stride 2
         pool_b_1_2 = tf.layers.conv2d(
             concat6,  # Input data
@@ -1234,7 +1250,7 @@ with graph.as_default():
         # apply relu
         pool_b_1_2 = tf.nn.relu(pool_b_1_2, name='relu_pool_b_1_2')
 
-    with tf.name_scope('reduce_b_3') as scope:
+    with tf.name_scope('reduce_b_3.1') as scope:
         ## multiple convs
         pool_b_1_3 = tf.layers.conv2d(
             concat6,  # Input data
@@ -1266,6 +1282,7 @@ with graph.as_default():
         # apply relu
         pool_b_1_3 = tf.nn.relu(pool_a_1_3, name='relu_pool_b_1_3')
 
+    with tf.name_scope('reduce_b_3.2') as scope:
         pool_b_1_3 = tf.layers.conv2d(
             pool_b_1_3,  # Input data
             filters=128,  # 32 filters
@@ -1296,6 +1313,7 @@ with graph.as_default():
         # apply relu
         pool_b_1_3 = tf.nn.relu(pool_b_1_3, name='relu_pool_b_1_3_2')
 
+    with tf.name_scope('reduce_b_3.3') as scope:
         pool_b_1_3 = tf.layers.conv2d(
             pool_b_1_3,  # Input data
             filters=192,  # 32 filters
@@ -1334,7 +1352,7 @@ with graph.as_default():
         )
 
     # Block C Branch 1
-    with tf.name_scope('block_c_1') as scope:
+    with tf.name_scope('block_c_1.1') as scope:
         conv_c_1 = tf.layers.average_pooling2d(
             concat7,  # Input
             pool_size=(2, 2),  # Pool size: 3x3
@@ -1343,6 +1361,7 @@ with graph.as_default():
             name='conv_c_1_1'
         )
 
+    with tf.name_scope('block_c_1.2') as scope:
         conv_c_1 = tf.layers.conv2d(
             conv_c_1,  # Input data
             filters=256,  # 32 filters
@@ -1406,7 +1425,7 @@ with graph.as_default():
         conv_c_2 = tf.nn.relu(conv_c_2, name='relu_conv_c_2')
 
     # Block C Branch 3
-    with tf.name_scope('block_c_3') as scope:
+    with tf.name_scope('block_c_3.1') as scope:
         conv_c_3 = tf.layers.conv2d(
             concat7,  # Input data
             filters=384,  # 32 filters
@@ -1437,6 +1456,7 @@ with graph.as_default():
         # apply relu
         conv_c_3 = tf.nn.relu(conv_c_3, name='relu_conv_c_3_1')
 
+    with tf.name_scope('block_c_3.2') as scope:
         ## 1x3 filters
         conv_c_3_1 = tf.layers.conv2d(
             conv_c_3,  # Input data
@@ -1468,6 +1488,7 @@ with graph.as_default():
         # apply relu
         conv_c_3_1 = tf.nn.relu(conv_c_3_1, name='relu_conv_c_3_2')
 
+    with tf.name_scope('block_c_3.3') as scope:
         ## 3x1 filters
         conv_c_3_2 = tf.layers.conv2d(
             conv_c_3,  # Input data
@@ -1500,7 +1521,7 @@ with graph.as_default():
         conv_c_3_2 = tf.nn.relu(conv_c_3_2, name='relu_conv_c_3_3')
 
     # Block C Branch 4
-    with tf.name_scope('block_c_4') as scope:
+    with tf.name_scope('block_c_4.1') as scope:
         conv_c_4 = tf.layers.conv2d(
             concat7,  # Input data
             filters=384,  # 32 filters
@@ -1531,6 +1552,7 @@ with graph.as_default():
         # apply relu
         conv_c_4 = tf.nn.relu(conv_c_4, name='relu_conv_c_4_1')
 
+    with tf.name_scope('block_c_4.2') as scope:
         conv_c_4 = tf.layers.conv2d(
             conv_c_4,  # Input data
             filters=448,  # 32 filters
@@ -1561,6 +1583,7 @@ with graph.as_default():
         # apply relu
         conv_c_4 = tf.nn.relu(conv_c_4, name='relu_conv_c_4_2')
 
+    with tf.name_scope('block_c_4.3') as scope:
         conv_c_4 = tf.layers.conv2d(
             conv_c_4,  # Input data
             filters=512,  # 32 filters
@@ -1591,6 +1614,7 @@ with graph.as_default():
         # apply relu
         conv_c_4 = tf.nn.relu(conv_c_4, name='relu_conv_c_4_3')
 
+    with tf.name_scope('block_c_4.4') as scope:
         ## 1x3 filters
         conv_c_4_1 = tf.layers.conv2d(
             conv_c_4,  # Input data
@@ -1622,6 +1646,7 @@ with graph.as_default():
         # apply relu
         conv_c_4_1 = tf.nn.relu(conv_c_4_1, name='relu_conv_c_4_4_1')
 
+    with tf.name_scope('block_c_4.2.1') as scope:
         ## 3x1 filters
         conv_c_4_2 = tf.layers.conv2d(
             conv_c_4,  # Input data
@@ -1919,7 +1944,7 @@ with tf.Session(graph=graph, config=config) as sess:
             if log_to_tensorboard:
                 train_writer.add_summary(summary, step)
                 # only log the meta data once per epoch
-                if i == (steps_per_epoch - 1):
+                if i == 1:
                     train_writer.add_run_metadata(run_metadata, 'step %d' % step)
                 
         # save checkpoint every nth epoch

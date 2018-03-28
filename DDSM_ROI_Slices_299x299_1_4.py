@@ -17,8 +17,8 @@ batch_size = 64
 epsilon = 1e-8
 
 # learning rate
-epochs_per_decay = 25
-starting_rate = 0.002
+epochs_per_decay = 5
+starting_rate = 0.001
 decay_factor = 0.85
 staircase = True
 
@@ -50,13 +50,14 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s0.0.3.07"
+model_name = "model_s0.0.3.08"
 # 0.0.3.01 - using inception input stem
 # 0.0.3.02 - removed conv layers after 4 as data was being downsized too much
 # 0.0.3.03 - added Inception Block A
 # 0.0.3.05 - added reduce section from Inception
 # 0.0.3.06 - added block b and another reduce
 # 0.0.3.07 - changed last max pool to average pool
+# 0.0.3.08 - lowered learning rate
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")

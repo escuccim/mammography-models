@@ -17,8 +17,8 @@ batch_size = 64
 epsilon = 1e-8
 
 # learning rate
-epochs_per_decay = 25
-starting_rate = 0.002
+epochs_per_decay = 5
+starting_rate = 0.001
 decay_factor = 0.85
 staircase = True
 
@@ -50,7 +50,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s0.0.1.09"
+model_name = "model_s0.0.1.10"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -69,6 +69,7 @@ model_name = "model_s0.0.1.09"
 # 0.0.1.07 - put batch norm back after conv layers, removed from pools
 # 0.0.1.08 - put weighted xentropy back, but with reduced weight term, removed some batch norms
 # 0.0.1.09 - put batch norms back in
+# 0.0.1.10 - lowered learning rate
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
