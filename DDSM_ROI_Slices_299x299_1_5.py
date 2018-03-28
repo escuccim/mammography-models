@@ -1688,7 +1688,7 @@ with graph.as_default():
     # Flatten output
     with tf.name_scope('flatten') as scope:
         #flat_output = tf.contrib.layers.flatten(pool2)
-        flat_output = tf.reduce_mean(pool2, axis=[1, 2])
+        flat_output = tf.reduce_mean(pool2, axis=[3])
 
         # dropout at fc rate
         flat_output = tf.layers.dropout(flat_output, rate=0.2, seed=2300, training=training)
