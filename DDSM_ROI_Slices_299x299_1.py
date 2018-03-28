@@ -63,6 +63,7 @@ model_name = "model_s0.0.0.16"
 # 0.0.0.13 - added precision and f1 summaries
 # 0.0.0.14 - fixing batch normalization, I don't think it's going to work after each pool
 # 0.0.0.15 - reduced xentropy weighting term
+# 0.0.0.17 - replaced initial 5x5 conv layers with 3 3x3 layers
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -94,7 +95,7 @@ with graph.as_default():
         conv1 = tf.layers.conv2d(
             X,  # Input data
             filters=32,  # 32 filters
-            kernel_size=(5, 5),  # Kernel size: 5x5
+            kernel_size=(3, 3),  # Kernel size: 5x5
             strides=(1, 1),  # Stride: 2
             padding='SAME',  # "same" padding
             activation=None,  # None
@@ -128,7 +129,7 @@ with graph.as_default():
         conv11 = tf.layers.conv2d(
             conv1_bn_relu,  # Input data
             filters=32,  # 32 filters
-            kernel_size=(5, 5),  # Kernel size: 5x5
+            kernel_size=(3, 3),  # Kernel size: 5x5
             strides=(1, 1),  # Stride: 2
             padding='SAME',  # "same" padding
             activation=None,  # None
@@ -159,10 +160,45 @@ with graph.as_default():
         if dropout:
             conv11_bn_relu = tf.layers.dropout(conv11_bn_relu, rate=convdropout_rate, seed=102, training=training)
 
+    with tf.name_scope('conv1.2') as scope:
+        conv12 = tf.layers.conv2d(
+            conv11_bn_relu,  # Input data
+            filters=32,  # 32 filters
+            kernel_size=(3, 3),  # Kernel size: 5x5
+            strides=(1, 1),  # Stride: 2
+            padding='SAME',  # "same" padding
+            activation=None,  # None
+            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=1101),
+            kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
+            name='conv1.2'
+        )
+
+        conv12 = tf.layers.batch_normalization(
+            conv12,
+            axis=-1,
+            momentum=0.99,
+            epsilon=epsilon,
+            center=True,
+            scale=True,
+            beta_initializer=tf.zeros_initializer(),
+            gamma_initializer=tf.ones_initializer(),
+            moving_mean_initializer=tf.zeros_initializer(),
+            moving_variance_initializer=tf.ones_initializer(),
+            training=training,
+            name='bn1.2'
+        )
+
+        # apply relu
+        conv12 = tf.nn.relu(conv12, name='relu1.1')
+
+        # optional dropout
+        if dropout:
+            conv12 = tf.layers.dropout(conv12, rate=convdropout_rate, seed=1102, training=training)
+
     # Max pooling layer 1
     with tf.name_scope('pool1') as scope:
         pool1 = tf.layers.max_pooling2d(
-            conv11_bn_relu,  # Input
+            conv12,  # Input
             pool_size=(3, 3),  # Pool size: 3x3
             strides=(2, 2),  # Stride: 2
             padding='SAME',  # "same" padding

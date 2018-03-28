@@ -587,7 +587,7 @@ with graph.as_default():
             strides=(1, 1),  # Stride: 1
             padding='SAME',  # "same" padding
             activation=None,  # None
-            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=810),
+            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=820),
             kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
             name='conv_a_3_2'
         )
@@ -618,7 +618,7 @@ with graph.as_default():
             strides=(1, 1),  # Stride: 1
             padding='SAME',  # "same" padding
             activation=None,  # None
-            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=809),
+            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=821),
             kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
             name='conv_a_4_1'
         )
@@ -648,7 +648,7 @@ with graph.as_default():
             strides=(1, 1),  # Stride: 1
             padding='SAME',  # "same" padding
             activation=None,  # None
-            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=810),
+            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=822),
             kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
             name='conv_a_4_2'
         )
@@ -678,7 +678,7 @@ with graph.as_default():
             strides=(1, 1),  # Stride: 1
             padding='SAME',  # "same" padding
             activation=None,  # None
-            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=810),
+            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=823),
             kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
             name='conv_a_4_3'
         )
@@ -725,7 +725,7 @@ with graph.as_default():
             strides=(2, 2),  # Stride: 1
             padding='SAME',  # "same" padding
             activation=None,  # None
-            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=810),
+            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=824),
             kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
             name='pool_a_1_2'
         )
@@ -756,7 +756,7 @@ with graph.as_default():
             strides=(1, 1),  # Stride: 1
             padding='SAME',  # "same" padding
             activation=None,  # None
-            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=810),
+            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=825),
             kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
             name='pool_a_1_3'
         )
@@ -786,7 +786,7 @@ with graph.as_default():
             strides=(1, 1),  # Stride: 1
             padding='SAME',  # "same" padding
             activation=None,  # None
-            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=810),
+            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=826),
             kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
             name='pool_a_1_3_2'
         )
@@ -816,7 +816,7 @@ with graph.as_default():
             strides=(2, 2),  # Stride: 1
             padding='SAME',  # "same" padding
             activation=None,  # None
-            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=810),
+            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=827),
             kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
             name='pool_a_1_3_3'
         )
@@ -854,7 +854,7 @@ with graph.as_default():
             strides=(1, 1),  # Stride: 1
             padding='SAME',  # "same" padding
             activation=None,  # None
-            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=808),
+            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=828),
             kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
             name='conv2'
         )
