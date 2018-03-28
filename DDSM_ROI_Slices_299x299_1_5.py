@@ -50,7 +50,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s0.0.4.01"
+model_name = "model_s0.0.4.02"
 # 0.0.3.01 - using inception input stem
 # 0.0.3.02 - removed conv layers after 4 as data was being downsized too much
 # 0.0.3.03 - added Inception Block A
@@ -58,6 +58,7 @@ model_name = "model_s0.0.4.01"
 # 0.0.3.06 - added block b and another reduce
 # 0.0.3.07 - changed last max pool to average pool
 # 0.0.4.01 - adding block c from inception
+# 0.0.4.02 - organizing namespaces so as to better view graph
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -704,10 +705,11 @@ with graph.as_default():
         # apply relu
         conv_a_4_3 = tf.nn.relu(conv_a_4_3, name='relu_a_4_3')
 
+    with tf.name_scope('concat_a') as scope:
         concat4 = tf.concat(
             [conv_a_1, conv_a_2, conv_a_3_2, conv_a_4_3],
             axis=3,
-            name='concata_1'
+            name='concat_a_1'
         )
 
     with tf.name_scope('reduce_a_1') as scope:
@@ -720,6 +722,7 @@ with graph.as_default():
             name='poola_1_1'
         )
 
+    with tf.name_scope('reduce_a_2') as scope:
         ## conv with stride 2
         pool_a_1_2 = tf.layers.conv2d(
             concat4,  # Input data
@@ -751,6 +754,7 @@ with graph.as_default():
         # apply relu
         pool_a_1_2 = tf.nn.relu(pool_a_1_2, name='relu_pool_a_1_2')
 
+    with tf.name_scope('reduce_a_3') as scope:
         ## multiple convs
         pool_a_1_3 = tf.layers.conv2d(
             concat4,  # Input data
@@ -842,6 +846,7 @@ with graph.as_default():
         # apply relu
         pool_a_1_3 = tf.nn.relu(pool_a_1_3, name='relu_pool_a_1_3_3')
 
+    with tf.name_scope('reduce_a_concat') as scope:
         concat5 = tf.concat(
             [pool_a_1_1, pool_a_1_2, pool_a_1_3],
             axis=3,
@@ -1190,6 +1195,7 @@ with graph.as_default():
             name='poolb_1_1'
         )
 
+    with tf.name_scope('reduce_b_2') as scope:
         ## conv with stride 2
         pool_b_1_2 = tf.layers.conv2d(
             concat6,  # Input data
@@ -1221,6 +1227,7 @@ with graph.as_default():
         # apply relu
         pool_b_1_2 = tf.nn.relu(pool_b_1_2, name='relu_pool_b_1_2')
 
+    with tf.name_scope('reduce_b_3') as scope:
         ## multiple convs
         pool_b_1_3 = tf.layers.conv2d(
             concat6,  # Input data
@@ -1312,6 +1319,7 @@ with graph.as_default():
         # apply relu
         pool_b_1_3 = tf.nn.relu(pool_b_1_3, name='relu_pool_b_1_3_3')
 
+    with tf.name_scope('reduce_b_concat') as scope:
         concat7 = tf.concat(
             [pool_b_1_1, pool_b_1_2, pool_b_1_3],
             axis=3,
