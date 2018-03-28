@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="98c4e5b0-4f90-4540-b87f-9bd6d2ddc583" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1.py" afterPath="$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1.py" />
-      <change beforePath="$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1_2.py" afterPath="$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1_2.py" />
+      <change beforePath="$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1_3.py" afterPath="$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1_3.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -39,8 +38,8 @@
       <file leaf-file-name="DDSM_ROI_Slices_299x299_1_3.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1_3.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="14471">
-              <caret line="482" column="30" lean-forward="true" selection-start-line="482" selection-start-column="30" selection-end-line="482" selection-end-column="30" />
+            <state relative-caret-position="677">
+              <caret line="208" column="18" lean-forward="false" selection-start-line="208" selection-start-column="18" selection-end-line="208" selection-end-column="18" />
               <folding />
             </state>
           </provider>
@@ -324,8 +323,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1_3.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="14471">
-          <caret line="482" column="30" lean-forward="true" selection-start-line="482" selection-start-column="30" selection-end-line="482" selection-end-column="30" />
+        <state relative-caret-position="677">
+          <caret line="208" column="18" lean-forward="false" selection-start-line="208" selection-start-column="18" selection-end-line="208" selection-end-column="18" />
           <folding />
         </state>
       </provider>

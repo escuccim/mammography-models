@@ -185,17 +185,13 @@ with graph.as_default():
 
     # Max pooling layer 1.1
     with tf.name_scope('pool1.1') as scope:
-        pool1 = tf.layers.max_pooling2d(
+        pool11 = tf.layers.max_pooling2d(
             conv12,  # Input
             pool_size=(3, 3),  # Pool size: 3x3
             strides=(2, 2),  # Stride: 2
             padding='SAME',  # "same" padding
             name='pool1.1'
         )
-
-        # optional dropout
-        if dropout:
-            pool1 = tf.layers.dropout(pool1, rate=pooldropout_rate, seed=700, training=training)
 
         pool12 = tf.layers.conv2d(
             conv12,  # Input data
@@ -210,7 +206,7 @@ with graph.as_default():
         )
 
         pool12 = tf.layers.batch_normalization(
-            conv12,
+            pool12,
             axis=-1,
             momentum=0.99,
             epsilon=epsilon,
@@ -230,7 +226,7 @@ with graph.as_default():
     # concatenate 1
     with tf.name_scope("concat1") as scope:
         concat1 = tf.concat(
-            [pool1, pool12],
+            [pool11, pool12],
             axis=3,
             name='concat1'
         )
