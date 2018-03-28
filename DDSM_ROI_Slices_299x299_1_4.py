@@ -50,12 +50,13 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s0.0.3.06"
+model_name = "model_s0.0.3.07"
 # 0.0.3.01 - using inception input stem
 # 0.0.3.02 - removed conv layers after 4 as data was being downsized too much
 # 0.0.3.03 - added Inception Block A
 # 0.0.3.05 - added reduce section from Inception
 # 0.0.3.06 - added block b and another reduce
+# 0.0.3.07 - changed last max pool to average pool
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -1320,7 +1321,7 @@ with graph.as_default():
     with tf.name_scope('conv2') as scope:
         conv2 = tf.layers.conv2d(
             concat7,  # Input data
-            filters=64,  # 32 filters
+            filters=512,  # 32 filters
             kernel_size=(3, 3),  # Kernel size: 9x9
             strides=(1, 1),  # Stride: 1
             padding='SAME',  # "same" padding
@@ -1354,7 +1355,7 @@ with graph.as_default():
 
     # Max pooling layer 2
     with tf.name_scope('pool2') as scope:
-        pool2 = tf.layers.max_pooling2d(
+        pool2 = tf.layers.average_pooling2d(
             conv2_bn_relu,  # Input
             pool_size=(2, 2),  # Pool size: 3x3
             strides=(2, 2),  # Stride: 2
