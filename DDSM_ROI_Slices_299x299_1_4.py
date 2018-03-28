@@ -1117,37 +1117,6 @@ with graph.as_default():
             activation=None,  # None
             kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=935),
             kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
-            name='conv_b_4_3'
-        )
-
-        conv_b_4 = tf.layers.batch_normalization(
-            conv_b_4,
-            axis=-1,
-            momentum=0.99,
-            epsilon=epsilon,
-            center=True,
-            scale=True,
-            beta_initializer=tf.zeros_initializer(),
-            gamma_initializer=tf.ones_initializer(),
-            moving_mean_initializer=tf.zeros_initializer(),
-            moving_variance_initializer=tf.ones_initializer(),
-            training=training,
-            name='bn_conv_b_4_3'
-        )
-
-        # apply relu
-        conv_b_4 = tf.nn.relu(conv_b_4, name='relu_conv_b_4_3')
-
-        ## 7x1 conv 2
-        conv_b_4 = tf.layers.conv2d(
-            conv_b_4,  # Input data
-            filters=256,  # 32 filters
-            kernel_size=(7, 1),  # Kernel size: 9x9
-            strides=(1, 1),  # Stride: 1
-            padding='SAME',  # "same" padding
-            activation=None,  # None
-            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=936),
-            kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
             name='conv_b_4_4'
         )
 
@@ -1168,6 +1137,37 @@ with graph.as_default():
 
         # apply relu
         conv_b_4 = tf.nn.relu(conv_b_4, name='relu_conv_b_4_4')
+
+        ## 7x1 conv 2
+        conv_b_4 = tf.layers.conv2d(
+            conv_b_4,  # Input data
+            filters=256,  # 32 filters
+            kernel_size=(7, 1),  # Kernel size: 9x9
+            strides=(1, 1),  # Stride: 1
+            padding='SAME',  # "same" padding
+            activation=None,  # None
+            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=936),
+            kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
+            name='conv_b_4_5'
+        )
+
+        conv_b_4 = tf.layers.batch_normalization(
+            conv_b_4,
+            axis=-1,
+            momentum=0.99,
+            epsilon=epsilon,
+            center=True,
+            scale=True,
+            beta_initializer=tf.zeros_initializer(),
+            gamma_initializer=tf.ones_initializer(),
+            moving_mean_initializer=tf.zeros_initializer(),
+            moving_variance_initializer=tf.ones_initializer(),
+            training=training,
+            name='bn_conv_b_4_5'
+        )
+
+        # apply relu
+        conv_b_4 = tf.nn.relu(conv_b_4, name='relu_conv_b_4_5')
 
     # concatenate 6
     with tf.name_scope("concat6") as scope:
