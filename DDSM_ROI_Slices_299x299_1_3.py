@@ -485,7 +485,7 @@ with graph.as_default():
             pool_a_1 = tf.layers.average_pooling2d(
                 concat3,  # Input
                 pool_size=(2, 2),  # Pool size: 3x3
-                strides=(2, 2),  # Stride: 2
+                strides=(1, 1),  # Stride: 2
                 padding='SAME',  # "same" padding
                 name='pool_a_1_1'
             )
