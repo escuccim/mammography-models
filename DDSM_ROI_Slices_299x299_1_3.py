@@ -439,10 +439,6 @@ with graph.as_default():
             name='pool2.1'
         )
 
-        # optional dropout
-        if dropout:
-            pool21 = tf.layers.dropout(pool21, rate=pooldropout_rate, seed=700, training=training)
-
         pool22 = tf.layers.conv2d(
             concat2,  # Input data
             filters=192,  # 32 filters
@@ -450,7 +446,7 @@ with graph.as_default():
             strides=(2, 2),  # Stride: 2
             padding='SAME',  # "same" padding
             activation=None,  # None
-            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=800),
+            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=807),
             kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
             name='pool2.2'
         )
@@ -476,7 +472,7 @@ with graph.as_default():
     # concatenate 3
     with tf.name_scope("concat3") as scope:
         concat3 = tf.concat(
-            [conv212, pool22],
+            [pool21, pool22],
             axis=3,
             name='concat3'
         )
@@ -490,7 +486,7 @@ with graph.as_default():
             strides=(1, 1),  # Stride: 1
             padding='SAME',  # "same" padding
             activation=None,  # None
-            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=800),
+            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=808),
             kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
             name='conv2'
         )
