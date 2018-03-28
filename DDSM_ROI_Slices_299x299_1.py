@@ -51,7 +51,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s0.0.0.17"
+model_name = "model_s0.0.0.18"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -64,6 +64,7 @@ model_name = "model_s0.0.0.17"
 # 0.0.0.14 - fixing batch normalization, I don't think it's going to work after each pool
 # 0.0.0.15 - reduced xentropy weighting term
 # 0.0.0.17 - replaced initial 5x5 conv layers with 3 3x3 layers
+# 0.0.0.18 - changed stride of first conv to 2 from 1
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -96,7 +97,7 @@ with graph.as_default():
             X,  # Input data
             filters=32,  # 32 filters
             kernel_size=(3, 3),  # Kernel size: 5x5
-            strides=(1, 1),  # Stride: 2
+            strides=(2, 2),  # Stride: 2
             padding='SAME',  # "same" padding
             activation=None,  # None
             kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=100),
