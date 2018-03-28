@@ -50,11 +50,12 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s0.0.3.05"
+model_name = "model_s0.0.3.06"
 # 0.0.3.01 - using inception input stem
 # 0.0.3.02 - removed conv layers after 4 as data was being downsized too much
 # 0.0.3.03 - added Inception Block A
 # 0.0.3.05 - added reduce section from Inception
+# 0.0.3.06 - added block b and another reduce
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
