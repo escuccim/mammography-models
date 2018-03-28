@@ -94,7 +94,7 @@ with graph.as_default():
             X,  # Input data
             filters=32,  # 32 filters
             kernel_size=(3, 3),  # Kernel size: 5x5
-            strides=(2, 2),  # Stride: 2
+            strides=(1, 1),  # Stride: 2
             padding='SAME',  # "same" padding
             activation=None,  # None
             kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=100),
@@ -122,7 +122,7 @@ with graph.as_default():
 
         conv1 = tf.layers.max_pooling2d(
             conv1,  # Input
-            pool_size=(3, 3),  # Pool size: 3x3
+            pool_size=(2, 2),  # Pool size: 3x3
             strides=(2, 2),  # Stride: 2
             padding='SAME',  # "same" padding
             name='pool1.0'
@@ -1865,16 +1865,16 @@ print_metrics = True          # whether to print or plot metrics, if False a plo
 evaluate = True               # whether to periodically evaluate on test data
 
 # Placeholders for metrics
-if init:
-    valid_acc_values = []
-    valid_recall_values = []
-    valid_cost_values = []
-    train_acc_values = []
-    train_recall_values = []
-    train_cost_values = []
-    train_lr_values = []
-    train_loss_values = []
-    
+#if init:
+valid_acc_values = []
+valid_recall_values = []
+valid_cost_values = []
+train_acc_values = []
+train_recall_values = []
+train_cost_values = []
+train_lr_values = []
+train_loss_values = []
+
 config = tf.ConfigProto()
 #if use_gpu:
 #    config = tf.ConfigProto()

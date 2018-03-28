@@ -66,7 +66,7 @@ model_name = "model_s0.0.0.20"
 # 0.0.0.17 - replaced initial 5x5 conv layers with 3 3x3 layers
 # 0.0.0.18 - changed stride of first conv to 2 from 1
 # 0.0.0.19 - doubled units in two fc layers
-# 0.0.0.20 - lowered learning rate
+# 0.0.0.20 - lowered learning rate, but a batch norm back in
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -141,20 +141,20 @@ with graph.as_default():
             name='conv1.1'
         )
 
-        #conv11 = tf.layers.batch_normalization(
-        #    conv11,
-        #    axis=-1,
-        #    momentum=0.99,
-        #    epsilon=epsilon,
-        #    center=True,
-        #    scale=True,
-        #    beta_initializer=tf.zeros_initializer(),
-        #    gamma_initializer=tf.ones_initializer(),
-        #    moving_mean_initializer=tf.zeros_initializer(),
-        #    moving_variance_initializer=tf.ones_initializer(),
-        #    training=training,
-        #    name='bn1.1'
-        #)
+        conv11 = tf.layers.batch_normalization(
+            conv11,
+            axis=-1,
+            momentum=0.99,
+            epsilon=epsilon,
+            center=True,
+            scale=True,
+            beta_initializer=tf.zeros_initializer(),
+            gamma_initializer=tf.ones_initializer(),
+            moving_mean_initializer=tf.zeros_initializer(),
+            moving_variance_initializer=tf.ones_initializer(),
+            training=training,
+            name='bn1.1'
+        )
 
         # apply relu
         conv11_bn_relu = tf.nn.relu(conv11, name='relu1.1')
@@ -580,15 +580,15 @@ print_metrics = True          # whether to print or plot metrics, if False a plo
 evaluate = True               # whether to periodically evaluate on test data
 
 # Placeholders for metrics
-if init:
-    valid_acc_values = []
-    valid_recall_values = []
-    valid_cost_values = []
-    train_acc_values = []
-    train_recall_values = []
-    train_cost_values = []
-    train_lr_values = []
-    train_loss_values = []
+#if init:
+valid_acc_values = []
+valid_recall_values = []
+valid_cost_values = []
+train_acc_values = []
+train_recall_values = []
+train_cost_values = []
+train_lr_values = []
+train_loss_values = []
     
 config = tf.ConfigProto()
 #if use_gpu:
