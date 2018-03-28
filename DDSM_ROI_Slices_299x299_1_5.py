@@ -1683,7 +1683,7 @@ with graph.as_default():
             name='pool2_conv'
         )
 
-        pool2 = tf.nn.avg_pool(pool2, ksize=[1, 2, 2, 512], strides=[1, 2, 2, 2], padding='VALID')
+        pool2 = tf.nn.avg_pool(pool2, ksize=[1, 2, 2, 512], strides=[1, 1, 1, 512], padding='VALID')
 
     # Flatten output
     with tf.name_scope('flatten') as scope:
