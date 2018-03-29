@@ -50,7 +50,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s0.0.4.05"
+model_name = "model_s0.0.4.06"
 # 0.0.3.01 - using inception input stem
 # 0.0.3.02 - removed conv layers after 4 as data was being downsized too much
 # 0.0.3.03 - added Inception Block A
@@ -62,6 +62,7 @@ model_name = "model_s0.0.4.05"
 # 0.0.4.03 - changed conv1 to stride 1 followed by max pool
 # 0.0.4.04 - tried to figure out global average pooling, ended up replacing flatten with reduce_mean over axes 1 and 2
 # 0.0.4.05 - lowered learning rate to see if it will help learn faster
+# 0.0.4.06 - went back to flatten instead of reduce_mean
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -1697,8 +1698,8 @@ with graph.as_default():
 
     # Flatten output
     with tf.name_scope('flatten') as scope:
-        #flat_output = tf.contrib.layers.flatten(pool2)
-        flat_output = tf.reduce_mean(pool2, axis=[1, 2])
+        flat_output = tf.contrib.layers.flatten(pool2)
+        #flat_output = tf.reduce_mean(pool2, axis=[1, 2])
 
         # dropout at fc rate
         flat_output = tf.layers.dropout(flat_output, rate=0.2, seed=2300, training=training)
