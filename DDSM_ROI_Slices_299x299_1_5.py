@@ -105,20 +105,20 @@ with graph.as_default():
             name='conv1.0'
         )
 
-        conv1 = tf.layers.batch_normalization(
-            conv1,
-            axis=-1,
-            momentum=0.99,
-            epsilon=epsilon,
-            center=True,
-            scale=True,
-            beta_initializer=tf.zeros_initializer(),
-            gamma_initializer=tf.ones_initializer(),
-            moving_mean_initializer=tf.zeros_initializer(),
-            moving_variance_initializer=tf.ones_initializer(),
-            training=training,
-            name='bn1.0'
-        )
+        #conv1 = tf.layers.batch_normalization(
+        #    conv1,
+        #    axis=-1,
+        #    momentum=0.99,
+        #    epsilon=epsilon,
+        #    center=True,
+        #    scale=True,
+        #    beta_initializer=tf.zeros_initializer(),
+        #    gamma_initializer=tf.ones_initializer(),
+        #    moving_mean_initializer=tf.zeros_initializer(),
+        #    moving_variance_initializer=tf.ones_initializer(),
+        #    training=training,
+        #    name='bn1.0'
+        #)
 
         # apply relu
         conv1 = tf.nn.relu(conv1, name='relu1.0')
@@ -144,20 +144,20 @@ with graph.as_default():
             name='conv1.1'
         )
 
-        #conv11 = tf.layers.batch_normalization(
-        #    conv11,
-        #    axis=-1,
-        #    momentum=0.99,
-        #    epsilon=epsilon,
-        #    center=True,
-        #    scale=True,
-        #    beta_initializer=tf.zeros_initializer(),
-        #    gamma_initializer=tf.ones_initializer(),
-        #    moving_mean_initializer=tf.zeros_initializer(),
-        #    moving_variance_initializer=tf.ones_initializer(),
-        #    training=training,
-        #    name='bn1.1'
-        #)
+        conv11 = tf.layers.batch_normalization(
+            conv11,
+            axis=-1,
+            momentum=0.99,
+            epsilon=epsilon,
+            center=True,
+            scale=True,
+            beta_initializer=tf.zeros_initializer(),
+            gamma_initializer=tf.ones_initializer(),
+            moving_mean_initializer=tf.zeros_initializer(),
+            moving_variance_initializer=tf.ones_initializer(),
+            training=training,
+            name='bn1.1'
+        )
 
         # apply relu
         conv11 = tf.nn.relu(conv11, name='relu1.1')
