@@ -50,7 +50,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s0.0.4.07"
+model_name = "model_s0.0.4.08"
 # 0.0.3.01 - using inception input stem
 # 0.0.3.02 - removed conv layers after 4 as data was being downsized too much
 # 0.0.3.03 - added Inception Block A
@@ -64,6 +64,7 @@ model_name = "model_s0.0.4.07"
 # 0.0.4.05 - lowered learning rate to see if it will help learn faster
 # 0.0.4.06 - went back to flatten instead of reduce_mean
 # 0.0.4.07 - put conv1 back to stride 2 and removed pool
+# 0.0.4.08 - changed last pool to max from average, added extra reduce after block c to reduce layers
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -96,7 +97,7 @@ with graph.as_default():
             X,  # Input data
             filters=32,  # 32 filters
             kernel_size=(3, 3),  # Kernel size: 5x5
-            strides=(2, 2),  # Stride: 2
+            strides=(1, 1),  # Stride: 2
             padding='SAME',  # "same" padding
             activation=None,  # None
             kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=100),
@@ -122,13 +123,13 @@ with graph.as_default():
         # apply relu
         conv1 = tf.nn.relu(conv1, name='relu1.0')
 
-        #conv1 = tf.layers.max_pooling2d(
-        #    conv1,  # Input
-        #    pool_size=(2, 2),  # Pool size: 3x3
-        #    strides=(2, 2),  # Stride: 2
-        #    padding='SAME',  # "same" padding
-        #    name='pool1.0'
-        #)
+        conv1 = tf.layers.max_pooling2d(
+            conv1,  # Input
+            pool_size=(2, 2),  # Pool size: 3x3
+            strides=(2, 2),  # Stride: 2
+            padding='SAME',  # "same" padding
+            name='pool1.0'
+        )
 
     with tf.name_scope('conv1.1') as scope:
         conv11 = tf.layers.conv2d(
@@ -1686,10 +1687,42 @@ with graph.as_default():
             axis=3,
             name='concat_8'
         )
+
+    with tf.name_scope('reduce_d') as scope:
+        convd = tf.layers.conv2d(
+            concat8,  # Input data
+            filters=512,  # 32 filters
+            kernel_size=(1, 1),  # Kernel size: 9x9
+            strides=(1, 1),  # Stride: 1
+            padding='SAME',  # "same" padding
+            activation=None,  # None
+            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=940),
+            kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
+            name='conv_d'
+        )
+
+        convd = tf.layers.batch_normalization(
+            convd,
+            axis=-1,
+            momentum=0.99,
+            epsilon=epsilon,
+            center=True,
+            scale=True,
+            beta_initializer=tf.zeros_initializer(),
+            gamma_initializer=tf.ones_initializer(),
+            moving_mean_initializer=tf.zeros_initializer(),
+            moving_variance_initializer=tf.ones_initializer(),
+            training=training,
+            name='bn_conv_d'
+        )
+
+        # apply relu
+        convd = tf.nn.relu(convd, name='relu_conv_d')
+
     # Max pooling layer 2
     with tf.name_scope('pool2') as scope:
-        ## Average Pooling
-        pool2 = tf.layers.average_pooling2d(
+        ## Max Pooling
+        pool2 = tf.layers.max_pooling2d(
             concat8,  # Input
             pool_size=(2, 2),  # Pool size: 3x3
             strides=(2, 2),  # Stride: 2
