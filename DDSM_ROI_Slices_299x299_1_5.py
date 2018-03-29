@@ -1723,7 +1723,7 @@ with graph.as_default():
     with tf.name_scope('pool2') as scope:
         ## Max Pooling
         pool2 = tf.layers.max_pooling2d(
-            concat8,  # Input
+            convd,  # Input
             pool_size=(2, 2),  # Pool size: 3x3
             strides=(2, 2),  # Stride: 2
             padding='SAME',  # "same" padding
