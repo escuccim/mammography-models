@@ -127,7 +127,7 @@ with graph.as_default():
         conv1 = tf.nn.relu(conv1, name='relu1.0')
 
     with tf.name_scope('pool1.0') as scope:
-        conv1 = tf.layers.max_pooling2d(
+        pool10 = tf.layers.max_pooling2d(
             conv1,  # Input
             pool_size=(2, 2),  # Pool size: 3x3
             strides=(2, 2),  # Stride: 2
@@ -137,7 +137,7 @@ with graph.as_default():
 
     with tf.name_scope('conv1.1') as scope:
         conv11 = tf.layers.conv2d(
-            conv1,  # Input data
+            pool10,  # Input data
             filters=32,  # 32 filters
             kernel_size=(3, 3),  # Kernel size: 5x5
             strides=(1, 1),  # Stride: 2
