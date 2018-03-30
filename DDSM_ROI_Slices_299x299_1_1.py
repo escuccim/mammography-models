@@ -462,8 +462,8 @@ with graph.as_default():
     with tf.name_scope('pool5') as scope:
         pool5 = tf.layers.average_pooling2d(
             conv5_bn_relu,
-            [10,10],
-            strides=None,
+            (10,10),
+            strides=(10,10),
             padding='valid',
             name='pool5'
         )
