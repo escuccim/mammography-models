@@ -36,7 +36,7 @@ print("Steps per epoch:", steps_per_epoch)
 
 # lambdas
 lamC = 0.00010
-lamF = 0.00100
+lamF = 0.00150
 
 # use dropout
 dropout = True
