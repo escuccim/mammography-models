@@ -31,7 +31,7 @@ lamC = 0.00010
 lamF = 0.00150
 
 # use dropout
-dropout = True
+dropout = False
 fcdropout_rate = 0.5
 convdropout_rate = 0.01
 pooldropout_rate = 0.2
@@ -50,7 +50,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s0.0.4.12"
+model_name = "model_s0.0.4.13"
 # 0.0.3.01 - using inception input stem
 # 0.0.3.02 - removed conv layers after 4 as data was being downsized too much
 # 0.0.3.03 - added Inception Block A
@@ -108,20 +108,20 @@ with graph.as_default():
             name='conv1.0'
         )
 
-        #conv1 = tf.layers.batch_normalization(
-        #    conv1,
-        #    axis=-1,
-        #    momentum=0.99,
-        #    epsilon=epsilon,
-        #    center=True,
-        #    scale=True,
-        #    beta_initializer=tf.zeros_initializer(),
-        #    gamma_initializer=tf.ones_initializer(),
-        #    moving_mean_initializer=tf.zeros_initializer(),
-        #    moving_variance_initializer=tf.ones_initializer(),
-        #    training=training,
-        #    name='bn1.0'
-        #)
+        conv1 = tf.layers.batch_normalization(
+            conv1,
+            axis=-1,
+            momentum=0.99,
+            epsilon=epsilon,
+            center=True,
+            scale=True,
+            beta_initializer=tf.zeros_initializer(),
+            gamma_initializer=tf.ones_initializer(),
+            moving_mean_initializer=tf.zeros_initializer(),
+            moving_variance_initializer=tf.ones_initializer(),
+            training=training,
+            name='bn1.0'
+        )
 
         # apply relu
         conv1 = tf.nn.relu(conv1, name='relu1.0')
