@@ -23,17 +23,17 @@ decay_factor = 0.85
 staircase = True
 
 # learning rate decay variables
-steps_per_epoch = int(26772 / batch_size)
+steps_per_epoch = int(27296 / batch_size)
 print("Steps per epoch:", steps_per_epoch)
 
 # lambdas
-lamC = 0.00000
+lamC = 0.00001
 lamF = 0.00100
 
 # use dropout
 dropout = True
 fcdropout_rate = 0.5
-convdropout_rate = 0.0
+convdropout_rate = 0.1
 pooldropout_rate = 0.2
 
 num_classes = 2
@@ -50,7 +50,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s0.0.4.08"
+model_name = "model_s0.0.4.09"
 # 0.0.3.01 - using inception input stem
 # 0.0.3.02 - removed conv layers after 4 as data was being downsized too much
 # 0.0.3.03 - added Inception Block A
@@ -65,6 +65,7 @@ model_name = "model_s0.0.4.08"
 # 0.0.4.06 - went back to flatten instead of reduce_mean
 # 0.0.4.07 - put conv1 back to stride 2 and removed pool
 # 0.0.4.08 - changed last pool to max from average, added extra reduce after block c to reduce layers
+# 0.0.4.09 - increased dropout and regularization to try to make model generalize better
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")

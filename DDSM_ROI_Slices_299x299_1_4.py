@@ -23,11 +23,11 @@ decay_factor = 0.85
 staircase = True
 
 # learning rate decay variables
-steps_per_epoch = int(26772 / batch_size)
+steps_per_epoch = int(27296 / batch_size)
 print("Steps per epoch:", steps_per_epoch)
 
 # lambdas
-lamC = 0.00000
+lamC = 0.00001
 lamF = 0.00100
 
 # use dropout

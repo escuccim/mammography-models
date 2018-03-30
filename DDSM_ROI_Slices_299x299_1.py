@@ -18,7 +18,7 @@ train_path_2 = os.path.join("data", "training_2.tfrecords")
 train_path_3 = os.path.join("data", "training_3.tfrecords")
 test_path = os.path.join("data", "test.tfrecords")
 train_files = [train_path_0, train_path_1, train_path_2, train_path_3]
-total_records = 26772 // 2
+total_records = 27296
 
 ## Hyperparameters
 # Small epsilon value for the BN transform

@@ -2,6 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="98c4e5b0-4f90-4540-b87f-9bd6d2ddc583" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1.py" afterPath="$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1.py" />
+      <change beforePath="$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1_2.py" afterPath="$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1_2.py" />
+      <change beforePath="$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1_3.py" afterPath="$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1_3.py" />
+      <change beforePath="$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1_4.py" afterPath="$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1_4.py" />
       <change beforePath="$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1_5.py" afterPath="$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1_5.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -16,8 +20,8 @@
       <file leaf-file-name="DDSM_ROI_Slices_299x299_1.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="507">
-              <caret line="583" column="0" lean-forward="false" selection-start-line="583" selection-start-column="0" selection-end-line="583" selection-end-column="0" />
+            <state relative-caret-position="227">
+              <caret line="20" column="21" lean-forward="false" selection-start-line="20" selection-start-column="21" selection-end-line="20" selection-end-column="21" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -28,8 +32,8 @@
       <file leaf-file-name="DDSM_ROI_Slices_299x299_1_2.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1_2.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-19948">
-              <caret line="71" column="34" lean-forward="false" selection-start-line="71" selection-start-column="34" selection-end-line="71" selection-end-column="34" />
+            <state relative-caret-position="215">
+              <caret line="25" column="27" lean-forward="false" selection-start-line="25" selection-start-column="27" selection-end-line="25" selection-end-column="27" />
               <folding />
             </state>
           </provider>
@@ -38,8 +42,8 @@
       <file leaf-file-name="DDSM_ROI_Slices_299x299_1_3.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1_3.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1040">
-              <caret line="58" column="34" lean-forward="false" selection-start-line="58" selection-start-column="34" selection-end-line="58" selection-end-column="34" />
+            <state relative-caret-position="479">
+              <caret line="26" column="27" lean-forward="false" selection-start-line="26" selection-start-column="27" selection-end-line="26" selection-end-column="27" />
               <folding />
             </state>
           </provider>
@@ -48,8 +52,8 @@
       <file leaf-file-name="DDSM_ROI_Slices_299x299_1_4.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1_4.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="804">
-              <caret line="59" column="34" lean-forward="false" selection-start-line="59" selection-start-column="34" selection-end-line="59" selection-end-column="34" />
+            <state relative-caret-position="33">
+              <caret line="29" column="14" lean-forward="false" selection-start-line="29" selection-start-column="14" selection-end-line="29" selection-end-column="14" />
               <folding />
             </state>
           </provider>
@@ -58,8 +62,8 @@
       <file leaf-file-name="DDSM_ROI_Slices_299x299_1_5.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1_5.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="908">
-              <caret line="1725" column="17" lean-forward="false" selection-start-line="1725" selection-start-column="17" selection-end-line="1725" selection-end-column="17" />
+            <state relative-caret-position="641">
+              <caret line="67" column="88" lean-forward="false" selection-start-line="67" selection-start-column="88" selection-end-line="67" selection-end-column="88" />
               <folding />
             </state>
           </provider>
@@ -95,10 +99,10 @@
         <option value="$PROJECT_DIR$/DDSM_ROI_Slices_299x299_4.py" />
         <option value="$PROJECT_DIR$/DDSM_ROI_Slices_299x299_2.py" />
         <option value="$PROJECT_DIR$/training_utils.py" />
-        <option value="$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1_2.py" />
         <option value="$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1_3.py" />
-        <option value="$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1_4.py" />
+        <option value="$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1_2.py" />
         <option value="$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1.py" />
+        <option value="$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1_4.py" />
         <option value="$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1_5.py" />
       </list>
     </option>
@@ -314,10 +318,26 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1_3.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="479">
+          <caret line="26" column="27" lean-forward="false" selection-start-line="26" selection-start-column="27" selection-end-line="26" selection-end-column="27" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1_2.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="215">
+          <caret line="25" column="27" lean-forward="false" selection-start-line="25" selection-start-column="27" selection-end-line="25" selection-end-column="27" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="507">
-          <caret line="583" column="0" lean-forward="false" selection-start-line="583" selection-start-column="0" selection-end-line="583" selection-end-column="0" />
+        <state relative-caret-position="227">
+          <caret line="20" column="21" lean-forward="false" selection-start-line="20" selection-start-column="21" selection-end-line="20" selection-end-column="21" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
@@ -326,32 +346,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1_4.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="804">
-          <caret line="59" column="34" lean-forward="false" selection-start-line="59" selection-start-column="34" selection-end-line="59" selection-end-column="34" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1_2.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-19948">
-          <caret line="71" column="34" lean-forward="false" selection-start-line="71" selection-start-column="34" selection-end-line="71" selection-end-column="34" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1_3.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1040">
-          <caret line="58" column="34" lean-forward="false" selection-start-line="58" selection-start-column="34" selection-end-line="58" selection-end-column="34" />
+        <state relative-caret-position="33">
+          <caret line="29" column="14" lean-forward="false" selection-start-line="29" selection-start-column="14" selection-end-line="29" selection-end-column="14" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1_5.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="908">
-          <caret line="1725" column="17" lean-forward="false" selection-start-line="1725" selection-start-column="17" selection-end-line="1725" selection-end-column="17" />
+        <state relative-caret-position="641">
+          <caret line="67" column="88" lean-forward="false" selection-start-line="67" selection-start-column="88" selection-end-line="67" selection-end-column="88" />
           <folding />
         </state>
       </provider>
