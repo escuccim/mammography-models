@@ -50,7 +50,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s0.0.4.11"
+model_name = "model_s0.0.4.12"
 # 0.0.3.01 - using inception input stem
 # 0.0.3.02 - removed conv layers after 4 as data was being downsized too much
 # 0.0.3.03 - added Inception Block A
@@ -126,6 +126,7 @@ with graph.as_default():
         # apply relu
         conv1 = tf.nn.relu(conv1, name='relu1.0')
 
+    with tf.name_scope('pool1.0') as scope:
         conv1 = tf.layers.max_pooling2d(
             conv1,  # Input
             pool_size=(2, 2),  # Pool size: 3x3
