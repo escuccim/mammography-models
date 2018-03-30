@@ -28,12 +28,12 @@ print("Steps per epoch:", steps_per_epoch)
 
 # lambdas
 lamC = 0.00001
-lamF = 0.00100
+lamF = 0.00150
 
 # use dropout
 dropout = True
 fcdropout_rate = 0.5
-convdropout_rate = 0.1
+convdropout_rate = 0.0
 pooldropout_rate = 0.2
 
 num_classes = 2
@@ -50,7 +50,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s0.0.4.09"
+model_name = "model_s0.0.4.10"
 # 0.0.3.01 - using inception input stem
 # 0.0.3.02 - removed conv layers after 4 as data was being downsized too much
 # 0.0.3.03 - added Inception Block A
@@ -66,6 +66,7 @@ model_name = "model_s0.0.4.09"
 # 0.0.4.07 - put conv1 back to stride 2 and removed pool
 # 0.0.4.08 - changed last pool to max from average, added extra reduce after block c to reduce layers
 # 0.0.4.09 - increased dropout and regularization to try to make model generalize better
+# 0.0.4.10 - decreased conv dropout to 0, increased lambdaF from 0.001 to 0.0015
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -164,8 +165,8 @@ with graph.as_default():
         conv11 = tf.nn.relu(conv11, name='relu1.1')
 
         # optional dropout
-        if dropout:
-            conv11 = tf.layers.dropout(conv11, rate=convdropout_rate, seed=400, training=training)
+        #if dropout:
+        #    conv11 = tf.layers.dropout(conv11, rate=convdropout_rate, seed=400, training=training)
 
     with tf.name_scope('conv1.2') as scope:
         conv12 = tf.layers.conv2d(

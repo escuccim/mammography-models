@@ -42,7 +42,7 @@ lamF = 0.00150
 dropout = True
 fcdropout_rate = 0.5
 convdropout_rate = 0.001
-pooldropout_rate = 0.1
+pooldropout_rate = 0.2
 
 num_classes = 2
 
@@ -68,7 +68,7 @@ model_name = "model_s0.0.0.22"
 # 0.0.0.19 - doubled units in two fc layers
 # 0.0.0.20 - lowered learning rate, put a batch norm back in
 # 0.0.0.21 - put all batch norms back in
-# 0.0.0.22 - increased lambdaC
+# 0.0.0.22 - increased lambdaC, removed dropout from conv layers
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -127,9 +127,6 @@ with graph.as_default():
         # apply relu
         conv1_bn_relu = tf.nn.relu(conv1, name='relu1')
 
-        if dropout:
-            conv1_bn_relu = tf.layers.dropout(conv1_bn_relu, rate=convdropout_rate, seed=9, training=training)
-
     with tf.name_scope('conv1.1') as scope:
         conv11 = tf.layers.conv2d(
             conv1_bn_relu,  # Input data
@@ -159,15 +156,12 @@ with graph.as_default():
         )
 
         # apply relu
-        conv11_bn_relu = tf.nn.relu(conv11, name='relu1.1')
+        conv11 = tf.nn.relu(conv11, name='relu1.1')
 
-        # optional dropout
-        if dropout:
-            conv11_bn_relu = tf.layers.dropout(conv11_bn_relu, rate=convdropout_rate, seed=102, training=training)
 
     with tf.name_scope('conv1.2') as scope:
         conv12 = tf.layers.conv2d(
-            conv11_bn_relu,  # Input data
+            conv11,  # Input data
             filters=32,  # 32 filters
             kernel_size=(3, 3),  # Kernel size: 5x5
             strides=(1, 1),  # Stride: 2
@@ -195,10 +189,6 @@ with graph.as_default():
 
         # apply relu
         conv12 = tf.nn.relu(conv12, name='relu1.1')
-
-        # optional dropout
-        if dropout:
-            conv12 = tf.layers.dropout(conv12, rate=convdropout_rate, seed=1102, training=training)
 
     # Max pooling layer 1
     with tf.name_scope('pool1') as scope:
@@ -244,16 +234,12 @@ with graph.as_default():
         )
 
         # apply relu
-        conv2_bn_relu = tf.nn.relu(conv2, name='relu2')
-
-        # optional dropout
-        if dropout:
-            conv2_bn_relu = tf.layers.dropout(conv2_bn_relu, rate=convdropout_rate, seed=105, training=training)
+        conv2 = tf.nn.relu(conv2, name='relu2')
 
     # Max pooling layer 2
     with tf.name_scope('pool2') as scope:
         pool2 = tf.layers.max_pooling2d(
-            conv2_bn_relu,  # Input
+            conv2,  # Input
             pool_size=(2, 2),  # Pool size: 3x3
             strides=(2, 2),  # Stride: 2
             padding='SAME',  # "same" padding
@@ -294,15 +280,12 @@ with graph.as_default():
         )
 
         # apply relu
-        conv3_bn_relu = tf.nn.relu(conv3, name='relu3')
-
-        if dropout:
-            conv3_bn_relu = tf.layers.dropout(conv3_bn_relu, rate=convdropout_rate, seed=108, training=training)
+        conv3 = tf.nn.relu(conv3, name='relu3')
 
     # Max pooling layer 3
     with tf.name_scope('pool3') as scope:
         pool3 = tf.layers.max_pooling2d(
-            conv3_bn_relu,  # Input
+            conv3,  # Input
             pool_size=(2, 2),  # Pool size: 2x2
             strides=(2, 2),  # Stride: 2
             padding='SAME',  # "same" padding
@@ -344,8 +327,8 @@ with graph.as_default():
             # apply relu
             conv4_bn_relu = tf.nn.relu(conv4, name='relu4')
 
-            if dropout:
-                conv4_bn_relu = tf.layers.dropout(conv4_bn_relu, rate=convdropout_rate, seed=111, training=training)
+            #if dropout:
+            #    conv4_bn_relu = tf.layers.dropout(conv4_bn_relu, rate=convdropout_rate, seed=111, training=training)
 
     # Max pooling layer 4
     with tf.name_scope('pool4') as scope:
@@ -392,8 +375,8 @@ with graph.as_default():
         # apply relu
         conv5_bn_relu = tf.nn.relu(conv5, name='relu5')
 
-        if dropout:
-            conv5_bn_relu = tf.layers.dropout(conv5_bn_relu, rate=convdropout_rate, seed=114, training=training)
+        #if dropout:
+        #    conv5_bn_relu = tf.layers.dropout(conv5_bn_relu, rate=convdropout_rate, seed=114, training=training)
 
     # Max pooling layer 4
     with tf.name_scope('pool5') as scope:

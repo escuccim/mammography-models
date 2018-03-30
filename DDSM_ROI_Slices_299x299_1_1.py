@@ -51,7 +51,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s0.0.1.01"
+model_name = "model_s0.0.1.02"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -70,6 +70,7 @@ model_name = "model_s0.0.1.01"
 # 0.0.0.21 - put all batch norms back in
 # 0.0.0.22 - increased lambdaC
 # 0.0.1.01 - trying to create a branch to identify very small abnormalities
+# 0.0.1.02 - fixed misrouted layer
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -335,7 +336,7 @@ with graph.as_default():
     # Convolutional layer 3.2
     with tf.name_scope('conv3.2') as scope:
         conv3 = tf.layers.conv2d(
-            pool2,  # Input data
+            conv3,  # Input data
             filters=128,  # 48 filters
             kernel_size=(3, 3),  # Kernel size: 5x5
             strides=(1, 1),  # Stride: 1

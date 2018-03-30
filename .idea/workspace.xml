@@ -3,6 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="98c4e5b0-4f90-4540-b87f-9bd6d2ddc583" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1.py" afterPath="$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1.py" />
+      <change beforePath="$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1_1.py" afterPath="$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1_1.py" />
+      <change beforePath="$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1_5.py" afterPath="$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1_5.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -16,8 +18,8 @@
       <file leaf-file-name="DDSM_ROI_Slices_299x299_1.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1617">
-              <caret line="38" column="13" lean-forward="false" selection-start-line="38" selection-start-column="13" selection-end-line="38" selection-end-column="13" />
+            <state relative-caret-position="0">
+              <caret line="33" column="44" lean-forward="true" selection-start-line="33" selection-start-column="44" selection-end-line="33" selection-end-column="44" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -28,8 +30,8 @@
       <file leaf-file-name="DDSM_ROI_Slices_299x299_1_1.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1_1.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3680">
-              <caret line="567" column="33" lean-forward="false" selection-start-line="567" selection-start-column="33" selection-end-line="567" selection-end-column="33" />
+            <state relative-caret-position="1007">
+              <caret line="72" column="34" lean-forward="false" selection-start-line="72" selection-start-column="34" selection-end-line="72" selection-end-column="34" />
               <folding />
             </state>
           </provider>
@@ -48,8 +50,8 @@
       <file leaf-file-name="DDSM_ROI_Slices_299x299_1_5.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1_5.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="52385">
-              <caret line="2030" column="80" lean-forward="false" selection-start-line="2030" selection-start-column="80" selection-end-line="2030" selection-end-column="80" />
+            <state relative-caret-position="1004">
+              <caret line="68" column="80" lean-forward="false" selection-start-line="68" selection-start-column="80" selection-end-line="68" selection-end-column="80" />
               <folding />
             </state>
           </provider>
@@ -99,9 +101,9 @@
         <option value="$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1_2.py" />
         <option value="$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1_5.2.py" />
         <option value="$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1_4.py" />
+        <option value="$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1.py" />
         <option value="$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1_5.py" />
         <option value="$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1_1.py" />
-        <option value="$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1.py" />
       </list>
     </option>
   </component>
@@ -332,14 +334,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1_5.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="52385">
-          <caret line="2030" column="80" lean-forward="false" selection-start-line="2030" selection-start-column="80" selection-end-line="2030" selection-end-column="80" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1_3.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-2491">
@@ -356,10 +350,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1_5.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1004">
+          <caret line="68" column="80" lean-forward="false" selection-start-line="68" selection-start-column="80" selection-end-line="68" selection-end-column="80" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1617">
-          <caret line="38" column="13" lean-forward="false" selection-start-line="38" selection-start-column="13" selection-end-line="38" selection-end-column="13" />
+        <state relative-caret-position="0">
+          <caret line="33" column="44" lean-forward="true" selection-start-line="33" selection-start-column="44" selection-end-line="33" selection-end-column="44" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
@@ -368,8 +370,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1_1.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3680">
-          <caret line="567" column="33" lean-forward="false" selection-start-line="567" selection-start-column="33" selection-end-line="567" selection-end-column="33" />
+        <state relative-caret-position="1007">
+          <caret line="72" column="34" lean-forward="false" selection-start-line="72" selection-start-column="34" selection-end-line="72" selection-end-column="34" />
           <folding />
         </state>
       </provider>
