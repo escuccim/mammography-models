@@ -66,7 +66,7 @@ model_name = "model_s0.0.0.20"
 # 0.0.0.17 - replaced initial 5x5 conv layers with 3 3x3 layers
 # 0.0.0.18 - changed stride of first conv to 2 from 1
 # 0.0.0.19 - doubled units in two fc layers
-# 0.0.0.20 - lowered learning rate, but a batch norm back in
+# 0.0.0.20 - lowered learning rate, put a batch norm back in
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -496,7 +496,7 @@ with graph.as_default():
 
     ## Loss function options
     # Regular mean cross entropy
-    #mean_ce = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits))
+    mean_ce = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits))
 
     # weighted mean cross entropy
     # onehot_labels = tf.one_hot(y, depth=num_classes)
@@ -504,8 +504,8 @@ with graph.as_default():
 
     # Different weighting method
     # This will weight the positive examples higher so as to improve recall
-    weights = tf.multiply(2, tf.cast(tf.equal(y, 1), tf.int32)) + 1
-    mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=logits, weights=weights))
+    #weights = tf.multiply(2, tf.cast(tf.equal(y, 1), tf.int32)) + 1
+    #mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=logits, weights=weights))
 
     # Add in l2 loss
     loss = mean_ce + tf.losses.get_regularization_loss()
@@ -709,6 +709,7 @@ with tf.Session(graph=graph, config=config) as sess:
                                             tf.Summary.Value(tag="precision_1", simple_value=np.mean(batch_cv_precision)),
                                             tf.Summary.Value(tag="f1_score", simple_value=np.mean(batch_cv_fscore)),
                                             ])
+
                 test_writer.add_summary(summary, step)
                 step += 1
             
