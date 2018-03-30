@@ -27,13 +27,13 @@ steps_per_epoch = int(27296 / batch_size)
 print("Steps per epoch:", steps_per_epoch)
 
 # lambdas
-lamC = 0.00001
+lamC = 0.00010
 lamF = 0.00150
 
 # use dropout
 dropout = True
 fcdropout_rate = 0.5
-convdropout_rate = 0.0
+convdropout_rate = 0.01
 pooldropout_rate = 0.2
 
 num_classes = 2
@@ -50,7 +50,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s0.0.4.10"
+model_name = "model_s0.0.4.11"
 # 0.0.3.01 - using inception input stem
 # 0.0.3.02 - removed conv layers after 4 as data was being downsized too much
 # 0.0.3.03 - added Inception Block A
@@ -67,6 +67,7 @@ model_name = "model_s0.0.4.10"
 # 0.0.4.08 - changed last pool to max from average, added extra reduce after block c to reduce layers
 # 0.0.4.09 - increased dropout and regularization to try to make model generalize better
 # 0.0.4.10 - decreased conv dropout to 0, increased lambdaF from 0.001 to 0.0015
+# 0.0.4.11 - replaced reduce_d with average pooling over layers, increased dropout and lambda for conv layers
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -1690,46 +1691,46 @@ with graph.as_default():
             name='concat_8'
         )
 
-    with tf.name_scope('reduce_d') as scope:
-        convd = tf.layers.conv2d(
-            concat8,  # Input data
-            filters=512,  # 32 filters
-            kernel_size=(1, 1),  # Kernel size: 9x9
-            strides=(1, 1),  # Stride: 1
-            padding='SAME',  # "same" padding
-            activation=None,  # None
-            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=940),
-            kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
-            name='conv_d'
-        )
+    #with tf.name_scope('reduce_d') as scope:
+        #convd = tf.layers.conv2d(
+        #    concat8,  # Input data
+        #    filters=512,  # 32 filters
+        #    kernel_size=(1, 1),  # Kernel size: 9x9
+        #    strides=(1, 1),  # Stride: 1
+        #    padding='SAME',  # "same" padding
+        #    activation=None,  # None
+        #    kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=940),
+        #    kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
+        #    name='conv_d'
+        #)
 
-        convd = tf.layers.batch_normalization(
-            convd,
-            axis=-1,
-            momentum=0.99,
-            epsilon=epsilon,
-            center=True,
-            scale=True,
-            beta_initializer=tf.zeros_initializer(),
-            gamma_initializer=tf.ones_initializer(),
-            moving_mean_initializer=tf.zeros_initializer(),
-            moving_variance_initializer=tf.ones_initializer(),
-            training=training,
-            name='bn_conv_d'
-        )
+        #convd = tf.layers.batch_normalization(
+        #    convd,
+        #    axis=-1,
+        #    momentum=0.99,
+        #    epsilon=epsilon,
+        #    center=True,
+        #    scale=True,
+        #    beta_initializer=tf.zeros_initializer(),
+        #    gamma_initializer=tf.ones_initializer(),
+        #    moving_mean_initializer=tf.zeros_initializer(),
+        #    moving_variance_initializer=tf.ones_initializer(),
+        #    training=training,
+        #    name='bn_conv_d'
+        #)
 
         # apply relu
-        convd = tf.nn.relu(convd, name='relu_conv_d')
+        #convd = tf.nn.relu(convd, name='relu_conv_d')
 
     # Max pooling layer 2
     with tf.name_scope('pool2') as scope:
         ## Max Pooling
-        pool2 = tf.layers.max_pooling2d(
-            convd,  # Input
-            pool_size=(2, 2),  # Pool size: 3x3
-            strides=(2, 2),  # Stride: 2
-            padding='SAME',  # "same" padding
-            name='pool1'
+        pool2 = tf.layers.average_pooling2d(
+            concat8,  # Input
+            pool_size=(10, 10),  # Pool size: 3x3
+            strides=(1, 1),  # Stride: 2
+            padding='valid',  # "same" padding
+            name='pool2'
         )
 
     # Flatten output
