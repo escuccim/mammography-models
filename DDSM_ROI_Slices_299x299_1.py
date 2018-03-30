@@ -51,7 +51,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s0.0.0.20"
+model_name = "model_s0.0.0.21"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -67,6 +67,7 @@ model_name = "model_s0.0.0.20"
 # 0.0.0.18 - changed stride of first conv to 2 from 1
 # 0.0.0.19 - doubled units in two fc layers
 # 0.0.0.20 - lowered learning rate, put a batch norm back in
+# 0.0.0.21 - put all batch norms back in
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -276,20 +277,20 @@ with graph.as_default():
             name='conv3'
         )
 
-        #conv3 = tf.layers.batch_normalization(
-        #    conv3,
-        #    axis=-1,
-        #    momentum=0.99,
-        #    epsilon=epsilon,
-        #    center=True,
-        #    scale=True,
-        #    beta_initializer=tf.zeros_initializer(),
-        #    gamma_initializer=tf.ones_initializer(),
-        #    moving_mean_initializer=tf.zeros_initializer(),
-        #    moving_variance_initializer=tf.ones_initializer(),
-        #    training=training,
-        #    name='bn3'
-        #)
+        conv3 = tf.layers.batch_normalization(
+            conv3,
+            axis=-1,
+            momentum=0.99,
+            epsilon=epsilon,
+            center=True,
+            scale=True,
+            beta_initializer=tf.zeros_initializer(),
+            gamma_initializer=tf.ones_initializer(),
+            moving_mean_initializer=tf.zeros_initializer(),
+            moving_variance_initializer=tf.ones_initializer(),
+            training=training,
+            name='bn3'
+        )
 
         # apply relu
         conv3_bn_relu = tf.nn.relu(conv3, name='relu3')
@@ -324,20 +325,20 @@ with graph.as_default():
                 name='conv4'
             )
 
-            # conv4 = tf.layers.batch_normalization(
-            #    conv4,
-            #    axis=-1,
-            #    momentum=0.99,
-            #    epsilon=epsilon,
-            #    center=True,
-            #    scale=True,
-            #    beta_initializer=tf.zeros_initializer(),
-            #    gamma_initializer=tf.ones_initializer(),
-            #    moving_mean_initializer=tf.zeros_initializer(),
-            #    moving_variance_initializer=tf.ones_initializer(),
-            #    training=training,
-            #    name='bn4'
-            # )
+            conv4 = tf.layers.batch_normalization(
+                conv4,
+                axis=-1,
+                momentum=0.99,
+                epsilon=epsilon,
+                center=True,
+                scale=True,
+                beta_initializer=tf.zeros_initializer(),
+                gamma_initializer=tf.ones_initializer(),
+                moving_mean_initializer=tf.zeros_initializer(),
+                moving_variance_initializer=tf.ones_initializer(),
+                training=training,
+                name='bn4'
+            )
 
             # apply relu
             conv4_bn_relu = tf.nn.relu(conv4, name='relu4')
@@ -505,7 +506,7 @@ with graph.as_default():
     # Different weighting method
     # This will weight the positive examples higher so as to improve recall
     #weights = tf.multiply(2, tf.cast(tf.equal(y, 1), tf.int32)) + 1
-    #mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=logits, weights=weights))
+    #   mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=logits, weights=weights))
 
     # Add in l2 loss
     loss = mean_ce + tf.losses.get_regularization_loss()
