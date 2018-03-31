@@ -36,12 +36,12 @@ print("Steps per epoch:", steps_per_epoch)
 
 # lambdas
 lamC = 0.00010
-lamF = 0.00150
+lamF = 0.00250
 
 # use dropout
 dropout = True
 fcdropout_rate = 0.5
-convdropout_rate = 0.001
+convdropout_rate = 0.01
 pooldropout_rate = 0.2
 
 num_classes = 2
@@ -51,7 +51,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.0.0.27"
+model_name = "model_s1.0.0.28"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -71,6 +71,7 @@ model_name = "model_s1.0.0.27"
 # 0.0.0.22 - increased lambdaC, removed dropout from conv layers
 # 1.0.0.23 - added extra conv layers
 # 1.0.0.27 - slowed down learning rate decay
+# 1.0.0.28 - increased dropout and regularization to prevent overfitting
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
