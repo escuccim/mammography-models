@@ -9,7 +9,7 @@ download_data()
 # ## Create Model
 
 # config
-epochs = 100                  
+epochs = 50
 batch_size = 64
 
 train_path_0 = os.path.join("data", "training_0.tfrecords")
@@ -41,8 +41,8 @@ lamF = 0.00200
 # use dropout
 dropout = True
 fcdropout_rate = 0.5
-convdropout_rate = 0.001
-pooldropout_rate = 0.3
+convdropout_rate = 0.01
+pooldropout_rate = 0.2
 
 num_classes = 2
 

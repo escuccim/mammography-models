@@ -9,7 +9,7 @@ download_data()
 # ## Create Model
 
 # config
-epochs = 100                  
+epochs = 50
 batch_size = 64
 
 train_path_0 = os.path.join("data", "training_0.tfrecords")
