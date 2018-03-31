@@ -36,7 +36,7 @@ print("Steps per epoch:", steps_per_epoch)
 
 # lambdas
 lamC = 0.00010
-lamF = 0.00250
+lamF = 0.00200
 
 # use dropout
 dropout = True
@@ -51,7 +51,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.0.0.28"
+model_name = "model_s1.0.1.27"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -70,8 +70,8 @@ model_name = "model_s1.0.0.28"
 # 0.0.0.21 - put all batch norms back in
 # 0.0.0.22 - increased lambdaC, removed dropout from conv layers
 # 1.0.0.23 - added extra conv layers
-# 1.0.0.27 - slowed down learning rate decay
-# 1.0.0.28 - increased dropout and regularization to prevent overfitting
+# 1.0.0.26 - replaced conv1 stride 2 with stride 1 followed by max pool
+# 1.0.1.27 - slowed down learning rate decay
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -104,7 +104,7 @@ with graph.as_default():
             X,  # Input data
             filters=32,  # 32 filters
             kernel_size=(3, 3),  # Kernel size: 5x5
-            strides=(2, 2),  # Stride: 2
+            strides=(1, 1),  # Stride: 2
             padding='SAME',  # "same" padding
             activation=None,  # None
             kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=100),
@@ -128,11 +128,29 @@ with graph.as_default():
         )
 
         # apply relu
-        conv1_bn_relu = tf.nn.relu(conv1, name='relu1')
+        conv1 = tf.nn.relu(conv1, name='relu1')
+
+        # dropout here because this seems to really be overfitting
+        if dropout:
+            conv1 = tf.layers.dropout(conv1, rate=convdropout_rate, seed=103, training=training)
+
+    # Max pooling layer 0
+    with tf.name_scope('pool0') as scope:
+        pool0 = tf.layers.max_pooling2d(
+            conv1,  # Input
+            pool_size=(3, 3),  # Pool size: 3x3
+            strides=(2, 2),  # Stride: 2
+            padding='SAME',  # "same" padding
+            name='pool0'
+        )
+
+        # optional dropout
+        if dropout:
+            pool0 = tf.layers.dropout(pool0, rate=pooldropout_rate, seed=103, training=training)
 
     with tf.name_scope('conv1.1') as scope:
         conv11 = tf.layers.conv2d(
-            conv1_bn_relu,  # Input data
+            pool0,  # Input data
             filters=32,  # 32 filters
             kernel_size=(3, 3),  # Kernel size: 5x5
             strides=(1, 1),  # Stride: 2
