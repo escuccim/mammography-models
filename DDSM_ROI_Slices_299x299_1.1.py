@@ -25,9 +25,9 @@ total_records = 27296
 epsilon = 1e-8
 
 # learning rate
-epochs_per_decay = 5
+epochs_per_decay = 10
 starting_rate = 0.001
-decay_factor = 0.85
+decay_factor = 0.90
 staircase = True
 
 # learning rate decay variables
@@ -36,13 +36,13 @@ print("Steps per epoch:", steps_per_epoch)
 
 # lambdas
 lamC = 0.00010
-lamF = 0.00150
+lamF = 0.00200
 
 # use dropout
 dropout = True
 fcdropout_rate = 0.5
 convdropout_rate = 0.001
-pooldropout_rate = 0.2
+pooldropout_rate = 0.3
 
 num_classes = 2
 
@@ -51,7 +51,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.0.0.26"
+model_name = "model_s1.0.1.27"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -71,6 +71,7 @@ model_name = "model_s1.0.0.26"
 # 0.0.0.22 - increased lambdaC, removed dropout from conv layers
 # 1.0.0.23 - added extra conv layers
 # 1.0.0.26 - replaced conv1 stride 2 with stride 1 followed by max pool
+# 1.0.1.27 - slowed down learning rate decay
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -127,12 +128,16 @@ with graph.as_default():
         )
 
         # apply relu
-        conv1_bn_relu = tf.nn.relu(conv1, name='relu1')
+        conv1 = tf.nn.relu(conv1, name='relu1')
+
+        # dropout here because this seems to really be overfitting
+        if dropout:
+            conv1 = tf.layers.dropout(conv1, rate=convdropout_rate, seed=103, training=training)
 
     # Max pooling layer 0
     with tf.name_scope('pool0') as scope:
         pool0 = tf.layers.max_pooling2d(
-            conv1_bn_relu,  # Input
+            conv1,  # Input
             pool_size=(3, 3),  # Pool size: 3x3
             strides=(2, 2),  # Stride: 2
             padding='SAME',  # "same" padding

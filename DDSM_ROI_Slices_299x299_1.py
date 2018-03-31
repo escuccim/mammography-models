@@ -25,9 +25,9 @@ total_records = 27296
 epsilon = 1e-8
 
 # learning rate
-epochs_per_decay = 5
+epochs_per_decay = 10
 starting_rate = 0.001
-decay_factor = 0.85
+decay_factor = 0.90
 staircase = True
 
 # learning rate decay variables
@@ -51,7 +51,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.0.0.24"
+model_name = "model_s1.0.0.27"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -70,6 +70,7 @@ model_name = "model_s1.0.0.24"
 # 0.0.0.21 - put all batch norms back in
 # 0.0.0.22 - increased lambdaC, removed dropout from conv layers
 # 1.0.0.23 - added extra conv layers
+# 1.0.0.27 - slowed down learning rate decay
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
