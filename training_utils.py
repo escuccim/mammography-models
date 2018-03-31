@@ -65,7 +65,8 @@ def read_and_decode_single_example(filenames, label_type='label_normal', normali
 
     # random flipping of image
     image = tf.image.random_flip_left_right(image)
-
+    image = tf.image.random_flip_up_down(image)
+    
     #tf.cast(image, dtype=tf.float32)
 
     # return the image and the label
