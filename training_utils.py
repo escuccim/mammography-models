@@ -37,7 +37,7 @@ def get_batches(X, y, batch_size, distort=True):
 
 
 ## read data from tfrecords file
-def read_and_decode_single_example(filenames, label_type='label_normal', normalize=False, num_epochs=None):
+def read_and_decode_single_example(filenames, label_type='label_normal', normalize=False, distort=False, num_epochs=None):
     filename_queue = tf.train.string_input_producer(filenames, num_epochs=num_epochs)
 
     reader = tf.TFRecordReader()
@@ -64,8 +64,9 @@ def read_and_decode_single_example(filenames, label_type='label_normal', normali
         image = tf.image.per_image_standardization(image)
 
     # random flipping of image
-    image = tf.image.random_flip_left_right(image)
-    #image = tf.image.random_flip_up_down(image)
+    if distort:
+        image = tf.image.random_flip_left_right(image)
+        image = tf.image.random_flip_up_down(image)
 
     #tf.cast(image, dtype=tf.float32)
 
@@ -158,8 +159,8 @@ def download_data():
     if not os.path.exists(os.path.join("data", "test_data.npy")):
         _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/test_data.npy', 'test_data.npy')
 
-    #if not os.path.exists(os.path.join("data", "mias_test_images.npy")):
-    #    _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/mias_test_images.npy', 'mias_test_images.npy')
+    if not os.path.exists(os.path.join("data", "mias_test_images.npy")):
+        _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/mias_test_images.npy', 'mias_test_images.npy')
 
-    #if not os.path.exists(os.path.join("data", "mias_test_labels_enc.npy")):
-    #    _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/mias_test_labels_enc.npy', 'mias_test_labels_enc.npy')
+    if not os.path.exists(os.path.join("data", "mias_test_labels_enc.npy")):
+        _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/mias_test_labels_enc.npy', 'mias_test_labels_enc.npy')
