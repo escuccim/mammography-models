@@ -36,7 +36,7 @@ print("Steps per epoch:", steps_per_epoch)
 
 # lambdas
 lamC = 0.00010
-lamF = 0.00250
+lamF = 0.00200
 
 # use dropout
 dropout = True
@@ -51,7 +51,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.0.0.29"
+model_name = "model_s1.0.0.31"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -72,7 +72,7 @@ model_name = "model_s1.0.0.29"
 # 1.0.0.23 - added extra conv layers
 # 1.0.0.27 - slowed down learning rate decay
 # 1.0.0.28 - increased dropout and regularization to prevent overfitting
-# 1.0.0.29 - put learning rate back
+# 1.0.0.30 - put learning rate back, copied graph back as training was much slower
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -618,6 +618,7 @@ with graph.as_default():
     merged = tf.summary.merge_all()
 
     print("Graph created...")
+
 # ## Train
 
 ## CONFIGURE OPTIONS
