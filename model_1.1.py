@@ -36,12 +36,12 @@ print("Steps per epoch:", steps_per_epoch)
 
 # lambdas
 lamC = 0.00010
-lamF = 0.00150
+lamF = 0.00200
 
 # use dropout
 dropout = True
 fcdropout_rate = 0.5
-convdropout_rate = 0.001
+convdropout_rate = 0.01
 pooldropout_rate = 0.2
 
 num_classes = 2

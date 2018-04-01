@@ -73,6 +73,7 @@ model_name = "model_s1.0.0.33"
 # 1.0.0.27 - slowed down learning rate decay
 # 1.0.0.28 - increased dropout and regularization to prevent overfitting
 # 1.0.0.30 - put learning rate back, copied graph back as training was much slower
+# 1.0.0.33 - increased dropout and regularization
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")

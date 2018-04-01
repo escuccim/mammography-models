@@ -75,9 +75,13 @@ def read_and_decode_single_example(filenames, label_type='label_normal', normali
 
 
 ## load the test data from files
-def load_validation_data(how="class", percentage=0.5):
-    X_cv = np.load(os.path.join("data", "test_data.npy"))
-    labels = np.load(os.path.join("data", "test_labels.npy"))
+def load_validation_data(data="validation", how="class", percentage=0.5):
+    if data == "validation":
+        X_cv = np.load(os.path.join("data", "test_data.npy"))
+        labels = np.load(os.path.join("data", "test_labels.npy"))
+    elif data == "test":
+        X_cv = np.load(os.path.join("data", "mias_test_images.npy"))
+        labels = np.load(os.path.join("data", "mias_test_labels_enc.npy"))
 
     # encode the labels appropriately
     if how == "class":
@@ -105,8 +109,8 @@ def load_validation_data(how="class", percentage=0.5):
 
 
 ## evaluate the model to see the predictions
-def evaluate_model(graph, config):
-    X_cv, y_cv = load_validation_data(how="normal")
+def evaluate_model(graph, config, how="normal", batch_size=32):
+    X_te, y_te = load_validation_data(how=how, data="test")
 
     with tf.Session(graph=graph, config=config) as sess:
         # create the saver
@@ -114,29 +118,31 @@ def evaluate_model(graph, config):
         sess.run(tf.local_variables_initializer())
         saver.restore(sess, './model/' + model_name + '.ckpt')
 
-        yhat, test_acc, test_recall = sess.run([predictions, accuracy, rec_op], feed_dict=
-        {
-            X: X_cv[0:128],
-            y: y_cv[0:128],
-            training: False
-        })
+        test_accuracy = []
+        test_recall = []
+        test_predictions = []
+        ground_truth = []
 
-    # initialize the counter
-    i = 0
+        # evaluate the test data
+        for X_batch, y_batch in get_batches(X_te, y_te, batch_size // 2, distort=False):
+            yhat, test_acc_value, test_recall_value = sess.run([predictions, accuracy, rec_op], feed_dict=
+            {
+                X: X_batch,
+                y: y_batch,
+                training: False
+            })
+
+            test_accuracy.append(test_acc_value)
+            test_recall.append(test_recall_value)
+            test_predictions.append(yhat)
+            ground_truth.append(y_batch)
+
 
     # print the results
-    print("Recall:", test_recall)
-    print("Accuracy:", test_acc)
+    print("Mean Recall:", np.mean(test_recall))
+    print("Mean Accuracy:", np.mean(test_accuracy))
 
-    # print specifics
-    for item in yhat:
-        if item == y_cv[i]:
-            found = "*"
-        else:
-            found = ""
-
-        print("Prediction:", item, " Actual:", y_cv[i], found)
-        i += 1
+    return test_accuracy, test_recall, test_predictions, ground_truth
 
 
 ## Download the data if it doesn't already exist
