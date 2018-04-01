@@ -66,7 +66,7 @@ def read_and_decode_single_example(filenames, label_type='label_normal', normali
     # random flipping of image
     image = tf.image.random_flip_left_right(image)
     image = tf.image.random_flip_up_down(image)
-    
+
     #tf.cast(image, dtype=tf.float32)
 
     # return the image and the label
@@ -141,23 +141,25 @@ def evaluate_model(graph, config):
 ## Download the data if it doesn't already exist
 def download_data():
     if not os.path.exists(os.path.join("data", "training_0.tfrecords")):
-        _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training_0.tfrecords',
-                          'training_0.tfrecords')
+        _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training_0.tfrecords', 'training_0.tfrecords')
 
     if not os.path.exists(os.path.join("data", "training_1.tfrecords")):
-        _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training_1.tfrecords',
-                          'training_1.tfrecords')
+        _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training_1.tfrecords', 'training_1.tfrecords')
 
     if not os.path.exists(os.path.join("data", "training_2.tfrecords")):
-        _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training_2.tfrecords',
-                          'training_2.tfrecords')
+        _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training_2.tfrecords', 'training_2.tfrecords')
 
     if not os.path.exists(os.path.join("data", "training_3.tfrecords")):
-        _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training_3.tfrecords',
-                          'training_3.tfrecords')
+        _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training_3.tfrecords', 'training_3.tfrecords')
 
     if not os.path.exists(os.path.join("data", "test_labels.npy")):
         _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/test_labels.npy', 'test_labels.npy')
 
     if not os.path.exists(os.path.join("data", "test_data.npy")):
         _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/test_data.npy', 'test_data.npy')
+
+    if not os.path.exists(os.path.join("data", "mias_test_images.npy")):
+        _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/mias_test_images.npy', 'mias_test_images.npy')
+
+    if not os.path.exists(os.path.join("data", "mias_test_labels_enc.npy")):
+        _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/mias_test_labels_enc.npy', 'mias_test_labels_enc.npy')
