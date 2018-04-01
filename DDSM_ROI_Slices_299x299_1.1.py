@@ -1,9 +1,10 @@
 import numpy as np
 import os
 import wget
-from sklearn.cross_validation  import train_test_split
+from sklearn.cross_validation import train_test_split
 import tensorflow as tf
-from training_utils import download_file, get_batches, read_and_decode_single_example, load_validation_data, download_data
+from training_utils import download_file, get_batches, read_and_decode_single_example, load_validation_data, \
+    download_data
 
 download_data()
 # ## Create Model
@@ -25,9 +26,9 @@ total_records = 27296
 epsilon = 1e-8
 
 # learning rate
-epochs_per_decay = 10
+epochs_per_decay = 5
 starting_rate = 0.001
-decay_factor = 0.90
+decay_factor = 0.85
 staircase = True
 
 # learning rate decay variables
@@ -36,7 +37,7 @@ print("Steps per epoch:", steps_per_epoch)
 
 # lambdas
 lamC = 0.00010
-lamF = 0.00200
+lamF = 0.00250
 
 # use dropout
 dropout = True
@@ -51,7 +52,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.0.1.27"
+model_name = "model_s1.0.0.30"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -70,8 +71,10 @@ model_name = "model_s1.0.1.27"
 # 0.0.0.21 - put all batch norms back in
 # 0.0.0.22 - increased lambdaC, removed dropout from conv layers
 # 1.0.0.23 - added extra conv layers
-# 1.0.0.26 - replaced conv1 stride 2 with stride 1 followed by max pool
-# 1.0.1.27 - slowed down learning rate decay
+# 1.0.0.27 - slowed down learning rate decay
+# 1.0.0.28 - increased dropout and regularization to prevent overfitting
+# 1.0.0.29 - put learning rate back
+# 1.0.0.30 - added a branch to conv1 section
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -104,7 +107,7 @@ with graph.as_default():
             X,  # Input data
             filters=32,  # 32 filters
             kernel_size=(3, 3),  # Kernel size: 5x5
-            strides=(1, 1),  # Stride: 2
+            strides=(2, 2),  # Stride: 2
             padding='SAME',  # "same" padding
             activation=None,  # None
             kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=100),
@@ -128,29 +131,11 @@ with graph.as_default():
         )
 
         # apply relu
-        conv1 = tf.nn.relu(conv1, name='relu1')
-
-        # dropout here because this seems to really be overfitting
-        if dropout:
-            conv1 = tf.layers.dropout(conv1, rate=convdropout_rate, seed=103, training=training)
-
-    # Max pooling layer 0
-    with tf.name_scope('pool0') as scope:
-        pool0 = tf.layers.max_pooling2d(
-            conv1,  # Input
-            pool_size=(3, 3),  # Pool size: 3x3
-            strides=(2, 2),  # Stride: 2
-            padding='SAME',  # "same" padding
-            name='pool0'
-        )
-
-        # optional dropout
-        if dropout:
-            pool0 = tf.layers.dropout(pool0, rate=pooldropout_rate, seed=103, training=training)
+        conv1_bn_relu = tf.nn.relu(conv1, name='relu1')
 
     with tf.name_scope('conv1.1') as scope:
         conv11 = tf.layers.conv2d(
-            pool0,  # Input data
+            conv1_bn_relu,  # Input data
             filters=32,  # 32 filters
             kernel_size=(3, 3),  # Kernel size: 5x5
             strides=(1, 1),  # Stride: 2
@@ -178,7 +163,6 @@ with graph.as_default():
 
         # apply relu
         conv11 = tf.nn.relu(conv11, name='relu1.1')
-
 
     with tf.name_scope('conv1.2') as scope:
         conv12 = tf.layers.conv2d(
@@ -211,10 +195,48 @@ with graph.as_default():
         # apply relu
         conv12 = tf.nn.relu(conv12, name='relu1.1')
 
+    with tf.name_scope('conv1.3') as scope:
+        conv113 = tf.layers.conv2d(
+            conv1_bn_relu,  # Input data
+            filters=32,  # 32 filters
+            kernel_size=(3, 3),  # Kernel size: 5x5
+            strides=(1, 1),  # Stride: 2
+            padding='SAME',  # "same" padding
+            activation=None,  # None
+            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=11019),
+            kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
+            name='conv1.3'
+        )
+
+        conv113 = tf.layers.batch_normalization(
+            conv113,
+            axis=-1,
+            momentum=0.99,
+            epsilon=epsilon,
+            center=True,
+            scale=True,
+            beta_initializer=tf.zeros_initializer(),
+            gamma_initializer=tf.ones_initializer(),
+            moving_mean_initializer=tf.zeros_initializer(),
+            moving_variance_initializer=tf.ones_initializer(),
+            training=training,
+            name='bn1.3'
+        )
+
+        # apply relu
+        conv113 = tf.nn.relu(conv113, name='relu1.3')
+
+    with tf.name_scope("concat1") as scope:
+        concat1 = tf.concat(
+            [conv12, conv113],
+            axis=3,
+            name='concat1'
+        )
+
     # Max pooling layer 1
     with tf.name_scope('pool1') as scope:
         pool1 = tf.layers.max_pooling2d(
-            conv12,  # Input
+            concat1,  # Input
             pool_size=(3, 3),  # Pool size: 3x3
             strides=(2, 2),  # Stride: 2
             padding='SAME',  # "same" padding
@@ -382,53 +404,53 @@ with graph.as_default():
 
     # Convolutional layer 4
     with tf.name_scope('conv4') as scope:
-            conv4 = tf.layers.conv2d(
-                pool3,  # Input data
-                filters=256,  # 48 filters
-                kernel_size=(3, 3),  # Kernel size: 5x5
-                strides=(1, 1),  # Stride: 1
-                padding='SAME',  # "same" padding
-                activation=None,  # None
-                kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=110),
-                kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
-                name='conv4'
-            )
+        conv4 = tf.layers.conv2d(
+            pool3,  # Input data
+            filters=256,  # 48 filters
+            kernel_size=(3, 3),  # Kernel size: 5x5
+            strides=(1, 1),  # Stride: 1
+            padding='SAME',  # "same" padding
+            activation=None,  # None
+            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=110),
+            kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
+            name='conv4'
+        )
 
-            conv4 = tf.layers.batch_normalization(
-                conv4,
-                axis=-1,
-                momentum=0.99,
-                epsilon=epsilon,
-                center=True,
-                scale=True,
-                beta_initializer=tf.zeros_initializer(),
-                gamma_initializer=tf.ones_initializer(),
-                moving_mean_initializer=tf.zeros_initializer(),
-                moving_variance_initializer=tf.ones_initializer(),
-                training=training,
-                name='bn4'
-            )
+        conv4 = tf.layers.batch_normalization(
+            conv4,
+            axis=-1,
+            momentum=0.99,
+            epsilon=epsilon,
+            center=True,
+            scale=True,
+            beta_initializer=tf.zeros_initializer(),
+            gamma_initializer=tf.ones_initializer(),
+            moving_mean_initializer=tf.zeros_initializer(),
+            moving_variance_initializer=tf.ones_initializer(),
+            training=training,
+            name='bn4'
+        )
 
-            # apply relu
-            conv4_bn_relu = tf.nn.relu(conv4, name='relu4')
+        # apply relu
+        conv4_bn_relu = tf.nn.relu(conv4, name='relu4')
 
-            #if dropout:
-            #    conv4_bn_relu = tf.layers.dropout(conv4_bn_relu, rate=convdropout_rate, seed=111, training=training)
+        # if dropout:
+        #    conv4_bn_relu = tf.layers.dropout(conv4_bn_relu, rate=convdropout_rate, seed=111, training=training)
 
     # Max pooling layer 4
     with tf.name_scope('pool4') as scope:
-            pool4 = tf.layers.max_pooling2d(
-                conv4_bn_relu,  # Input
-                pool_size=(2, 2),  # Pool size: 2x2
-                strides=(2, 2),  # Stride: 2
-                padding='SAME',  # "same" padding
-                name='pool4'
-            )
+        pool4 = tf.layers.max_pooling2d(
+            conv4_bn_relu,  # Input
+            pool_size=(2, 2),  # Pool size: 2x2
+            strides=(2, 2),  # Stride: 2
+            padding='SAME',  # "same" padding
+            name='pool4'
+        )
 
-            if dropout:
-                pool4 = tf.layers.dropout(pool4, rate=pooldropout_rate, seed=112, training=training)
+        if dropout:
+            pool4 = tf.layers.dropout(pool4, rate=pooldropout_rate, seed=112, training=training)
 
-            # Convolutional layer 4
+        # Convolutional layer 4
     with tf.name_scope('conv5') as scope:
         conv5 = tf.layers.conv2d(
             pool4,  # Input data
@@ -460,7 +482,7 @@ with graph.as_default():
         # apply relu
         conv5_bn_relu = tf.nn.relu(conv5, name='relu5')
 
-        #if dropout:
+        # if dropout:
         #    conv5_bn_relu = tf.layers.dropout(conv5_bn_relu, rate=convdropout_rate, seed=114, training=training)
 
     # Max pooling layer 4
@@ -550,7 +572,7 @@ with graph.as_default():
     # Output layer
     logits = tf.layers.dense(
         fc2_relu,
-        num_classes,      # One output unit per category
+        num_classes,  # One output unit per category
         activation=None,  # No activation function
         kernel_initializer=tf.variance_scaling_initializer(scale=1, seed=121),
         bias_initializer=tf.zeros_initializer(),
@@ -574,7 +596,7 @@ with graph.as_default():
 
     # Different weighting method
     # This will weight the positive examples higher so as to improve recall
-    #weights = tf.multiply(2, tf.cast(tf.equal(y, 1), tf.int32)) + 1
+    # weights = tf.multiply(2, tf.cast(tf.equal(y, 1), tf.int32)) + 1
     #   mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=logits, weights=weights))
 
     # Add in l2 loss
@@ -614,7 +636,7 @@ with graph.as_default():
     else:
         recall, rec_op = tf.metrics.recall(labels=y, predictions=predictions, name="recall")
         precision, prec_op = tf.metrics.precision(labels=y, predictions=predictions, name="precision")
-        f1_score = 2 * ( (precision * recall) / (precision + recall))
+        f1_score = 2 * ((precision * recall) / (precision + recall))
 
     # add this so that the batch norm gets run
     extra_update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
@@ -638,19 +660,19 @@ with graph.as_default():
 # ## Train
 
 ## CONFIGURE OPTIONS
-init = True                   # whether to initialize the model or use a saved version
-crop = False                  # do random cropping of images?
+init = True  # whether to initialize the model or use a saved version
+crop = False  # do random cropping of images?
 
 meta_data_every = 1
 log_to_tensorboard = True
-print_every = 5                # how often to print metrics
-checkpoint_every = 1           # how often to save model in epochs
-use_gpu = False                # whether or not to use the GPU
-print_metrics = True           # whether to print or plot metrics, if False a plot will be created and updated every epoch
-evaluate = True                # whether to periodically evaluate on test data
+print_every = 5  # how often to print metrics
+checkpoint_every = 1  # how often to save model in epochs
+use_gpu = False  # whether or not to use the GPU
+print_metrics = True  # whether to print or plot metrics, if False a plot will be created and updated every epoch
+evaluate = True  # whether to periodically evaluate on test data
 
 # Placeholders for metrics
-#if init:
+# if init:
 valid_acc_values = []
 valid_recall_values = []
 valid_cost_values = []
@@ -659,13 +681,13 @@ train_recall_values = []
 train_cost_values = []
 train_lr_values = []
 train_loss_values = []
-    
+
 config = tf.ConfigProto()
-#if use_gpu:
+# if use_gpu:
 #    config = tf.ConfigProto()
 #    config.gpu_options.allocator_type = 'BFC'
 #    config.gpu_options.per_process_gpu_memory_fraction = 0.7
-#else:
+# else:
 #    config = tf.ConfigProto(device_count = {'GPU': 0})
 
 ## train the model
@@ -673,26 +695,26 @@ with tf.Session(graph=graph, config=config) as sess:
     if log_to_tensorboard:
         train_writer = tf.summary.FileWriter('./logs/tr_' + model_name, sess.graph)
         test_writer = tf.summary.FileWriter('./logs/te_' + model_name)
-    
+
     if not print_metrics:
         # create a plot to be updated as model is trained
-        f, ax = plt.subplots(1,4,figsize=(24,5))
-    
+        f, ax = plt.subplots(1, 4, figsize=(24, 5))
+
     # create the saver
     saver = tf.train.Saver()
-    
+
     # If the model is new initialize variables, else restore the session
     if init:
         sess.run(tf.global_variables_initializer())
     else:
-        saver.restore(sess, './model/'+model_name+'.ckpt')
+        saver.restore(sess, './model/' + model_name + '.ckpt')
 
     sess.run(tf.local_variables_initializer())
-    
+
     coord = tf.train.Coordinator()
     threads = tf.train.start_queue_runners(coord=coord)
-    print("Training model", model_name,"...")
-    
+    print("Training model", model_name, "...")
+
     for epoch in range(epochs):
         for i in range(steps_per_epoch):
             # Accuracy values (train) after each batch
@@ -707,16 +729,17 @@ with tf.Session(graph=graph, config=config) as sess:
             run_metadata = tf.RunMetadata()
 
             # Run training and evaluate accuracy
-            _, _, precision_value, summary, acc_value, cost_value, loss_value, recall_value, step, lr = sess.run([train_op, extra_update_ops, prec_op,
-                     merged, accuracy, mean_ce, loss, rec_op, global_step,
-                     learning_rate], feed_dict={
-                        #X: X_batch,
-                        #y: y_batch,
-                        training: True,
-                        is_testing: False,
-                    },
-            options=run_options,
-            run_metadata=run_metadata)
+            _, _, precision_value, summary, acc_value, cost_value, loss_value, recall_value, step, lr = sess.run(
+                [train_op, extra_update_ops, prec_op,
+                 merged, accuracy, mean_ce, loss, rec_op, global_step,
+                 learning_rate], feed_dict={
+                    # X: X_batch,
+                    # y: y_batch,
+                    training: True,
+                    is_testing: False,
+                },
+                options=run_options,
+                run_metadata=run_metadata)
 
             # Save accuracy (current batch)
             batch_acc.append(acc_value)
@@ -724,22 +747,22 @@ with tf.Session(graph=graph, config=config) as sess:
             batch_lr.append(lr)
             batch_loss.append(loss_value)
             batch_recall.append(np.mean(recall_value))
-            
+
             # write the summary
             if log_to_tensorboard:
                 train_writer.add_summary(summary, step)
                 # only log the meta data once per epoch
                 if i == 1:
                     train_writer.add_run_metadata(run_metadata, 'step %d' % step)
-                
+
         # save checkpoint every nth epoch
-        if(epoch % checkpoint_every == 0):
+        if (epoch % checkpoint_every == 0):
             print("Saving checkpoint")
-            save_path = saver.save(sess, './model/'+model_name+'.ckpt')
-    
+            save_path = saver.save(sess, './model/' + model_name + '.ckpt')
+
             # Now that model is saved set init to false so we reload it next time
             init = False
-        
+
         # init batch arrays
         batch_cv_acc = []
         batch_cv_cost = []
@@ -753,10 +776,11 @@ with tf.Session(graph=graph, config=config) as sess:
             print("Evaluating model...")
             # load the test data
             X_cv, y_cv = load_validation_data(percentage=1, how="normal")
-            
+
             # evaluate the test data
             for X_batch, y_batch in get_batches(X_cv, y_cv, batch_size // 2, distort=False):
-                summary, valid_acc, valid_recall, valid_precision, valid_fscore, valid_cost, valid_loss = sess.run([merged, accuracy, rec_op, prec_op, f1_score, mean_ce, loss],
+                summary, valid_acc, valid_recall, valid_precision, valid_fscore, valid_cost, valid_loss = sess.run(
+                    [merged, accuracy, rec_op, prec_op, f1_score, mean_ce, loss],
                     feed_dict={
                         X: X_batch,
                         y: y_batch,
@@ -770,22 +794,23 @@ with tf.Session(graph=graph, config=config) as sess:
                 batch_cv_recall.append(np.mean(valid_recall))
                 batch_cv_precision.append(np.mean(valid_precision))
                 batch_cv_fscore.append(np.mean(valid_fscore))
-    
+
             # Write average of validation data to summary logs
             if log_to_tensorboard:
                 summary = tf.Summary(value=[tf.Summary.Value(tag="accuracy", simple_value=np.mean(batch_cv_acc)),
                                             tf.Summary.Value(tag="cross_entropy", simple_value=np.mean(batch_cv_cost)),
                                             tf.Summary.Value(tag="recall_1", simple_value=np.mean(batch_cv_recall)),
-                                            tf.Summary.Value(tag="precision_1", simple_value=np.mean(batch_cv_precision)),
+                                            tf.Summary.Value(tag="precision_1",
+                                                             simple_value=np.mean(batch_cv_precision)),
                                             tf.Summary.Value(tag="f1_score", simple_value=np.mean(batch_cv_fscore)),
                                             ])
 
                 test_writer.add_summary(summary, step)
                 step += 1
-            
+
             # delete the test data to save memory
-            del(X_cv)
-            del(y_cv)
+            del (X_cv)
+            del (y_cv)
 
             print("Done evaluating...")
         else:
@@ -793,7 +818,7 @@ with tf.Session(graph=graph, config=config) as sess:
             batch_cv_cost.append(0)
             batch_cv_loss.append(0)
             batch_cv_recall.append(0)
-          
+
         # take the mean of the values to add to the metrics
         valid_acc_values.append(np.mean(batch_cv_acc))
         valid_cost_values.append(np.mean(batch_cv_cost))
@@ -805,21 +830,23 @@ with tf.Session(graph=graph, config=config) as sess:
         valid_recall_values.append(np.mean(batch_cv_recall))
 
         # Print progress every nth epoch to keep output to reasonable amount
-        if(epoch % print_every == 0):
-            print('Epoch {:02d} - step {} - cv acc: {:.3f} - train acc: {:.3f} (mean) - cv cost: {:.3f} - lr: {:.5f}'.format(
+        if (epoch % print_every == 0):
+            print(
+            'Epoch {:02d} - step {} - cv acc: {:.3f} - train acc: {:.3f} (mean) - cv cost: {:.3f} - lr: {:.5f}'.format(
                 epoch, step, np.mean(batch_cv_acc), np.mean(batch_acc), np.mean(batch_cv_cost), lr
             ))
 
         # Print data every 50th epoch so I can write it down to compare models
         if (not print_metrics) and (epoch % 50 == 0) and (epoch > 1):
-            if(epoch % print_every == 0):
-                print('Epoch {:02d} - step {} - cv acc: {:.4f} - train acc: {:.3f} (mean) - cv cost: {:.3f} - lr: {:.5f}'.format(
+            if (epoch % print_every == 0):
+                print(
+                'Epoch {:02d} - step {} - cv acc: {:.4f} - train acc: {:.3f} (mean) - cv cost: {:.3f} - lr: {:.5f}'.format(
                     epoch, step, np.mean(batch_cv_acc), np.mean(batch_acc), np.mean(batch_cv_cost), lr
-                ))  
-      
-    # stop the coordinator
+                ))
+
+                # stop the coordinator
     coord.request_stop()
-    
+
     # Wait for threads to stop
     coord.join(threads)
 
