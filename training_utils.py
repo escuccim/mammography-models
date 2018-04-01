@@ -158,8 +158,8 @@ def download_data():
     if not os.path.exists(os.path.join("data", "test_data.npy")):
         _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/test_data.npy', 'test_data.npy')
 
-    if not os.path.exists(os.path.join("data", "mias_test_images.npy")):
-        _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/mias_test_images.npy', 'mias_test_images.npy')
+    #if not os.path.exists(os.path.join("data", "mias_test_images.npy")):
+    #    _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/mias_test_images.npy', 'mias_test_images.npy')
 
-    if not os.path.exists(os.path.join("data", "mias_test_labels_enc.npy")):
-        _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/mias_test_labels_enc.npy', 'mias_test_labels_enc.npy')
+    #if not os.path.exists(os.path.join("data", "mias_test_labels_enc.npy")):
+    #    _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/mias_test_labels_enc.npy', 'mias_test_labels_enc.npy')
