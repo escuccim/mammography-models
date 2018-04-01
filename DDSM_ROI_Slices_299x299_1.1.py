@@ -660,7 +660,10 @@ with graph.as_default():
 # ## Train
 
 ## CONFIGURE OPTIONS
-init = True  # whether to initialize the model or use a saved version
+if os.path.exists(os.path.join("model", model_name + '.ckpt.index')):
+    init = False
+else:
+    init = True
 crop = False  # do random cropping of images?
 
 meta_data_every = 1
