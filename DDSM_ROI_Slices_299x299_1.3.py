@@ -251,20 +251,6 @@ with graph.as_default():
         if dropout:
             pool1 = tf.layers.dropout(pool1, rate=pooldropout_rate, seed=103, training=training)
 
-    # Max pooling layer 1
-    with tf.name_scope('pool1.2') as scope:
-        pool12 = tf.layers.max_pooling2d(
-            pool1,  # Input
-            pool_size=(3, 3),  # Pool size: 3x3
-            strides=(2, 2),  # Stride: 2
-            padding='SAME',  # "same" padding
-            name='pool1.2'
-        )
-
-        # optional dropout
-        if dropout:
-            pool12 = tf.layers.dropout(pool12, rate=pooldropout_rate, seed=103, training=training)
-
     # Convolutional layer 2
     with tf.name_scope('conv2.1') as scope:
         conv2 = tf.layers.conv2d(
@@ -332,7 +318,7 @@ with graph.as_default():
     # Convolutional layer 2
     with tf.name_scope('conv2.3') as scope:
         conv23 = tf.layers.conv2d(
-            pool12,  # Input data
+            pool1,  # Input data
             filters=64,  # 32 filters
             kernel_size=(3, 3),  # Kernel size: 9x9
             strides=(1, 1),  # Stride: 1
