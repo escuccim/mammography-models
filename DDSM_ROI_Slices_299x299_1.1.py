@@ -796,7 +796,10 @@ with tf.Session(graph=graph, config=config) as sess:
                 batch_cv_loss.append(valid_loss)
                 batch_cv_recall.append(np.mean(valid_recall))
                 batch_cv_precision.append(np.mean(valid_precision))
-                batch_cv_fscore.append(np.mean(valid_fscore))
+
+                # the first fscore will be nan so don't add that one
+                if not np.isnan(valid_fscore):
+                    batch_cv_fscore.append(np.mean(valid_fscore))
 
             # Write average of validation data to summary logs
             if log_to_tensorboard:

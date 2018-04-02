@@ -52,7 +52,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.0.3.01"
+model_name = "model_s1.0.3.02"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -78,6 +78,7 @@ model_name = "model_s1.0.3.01"
 # 1.0.2.01 - added another branch, a concat and a 1x1 conv to downsize layers before conv3
 # 1.0.2.02 - removed useless 1x1 conv layer and increased size of subsequent conv layers
 # 1.0.3.01 - rerouting branch
+# 1.0.3.02 - split extra branch so it also goes back into main branch
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -229,17 +230,17 @@ with graph.as_default():
         # apply relu
         conv113 = tf.nn.relu(conv113, name='relu1.3')
 
-    #with tf.name_scope("concat1") as scope:
-    #    concat1 = tf.concat(
-    #        [conv12, conv113],
-    #        axis=3,
-    #        name='concat1'
-    #    )
+    with tf.name_scope("concat1") as scope:
+        concat1 = tf.concat(
+            [conv12, conv113],
+            axis=3,
+            name='concat1'
+        )
 
     # Max pooling layer 1
     with tf.name_scope('pool1.1') as scope:
         pool1 = tf.layers.max_pooling2d(
-            conv12,  # Input
+            concat1,  # Input
             pool_size=(3, 3),  # Pool size: 3x3
             strides=(2, 2),  # Stride: 2
             padding='SAME',  # "same" padding
@@ -253,7 +254,7 @@ with graph.as_default():
     # Max pooling layer 1
     with tf.name_scope('pool1.2') as scope:
         pool12 = tf.layers.max_pooling2d(
-            conv113,  # Input
+            pool1,  # Input
             pool_size=(3, 3),  # Pool size: 3x3
             strides=(2, 2),  # Stride: 2
             padding='SAME',  # "same" padding
@@ -886,15 +887,17 @@ with tf.Session(graph=graph, config=config) as sess:
                 batch_cv_loss.append(valid_loss)
                 batch_cv_recall.append(np.mean(valid_recall))
                 batch_cv_precision.append(np.mean(valid_precision))
-                batch_cv_fscore.append(np.mean(valid_fscore))
+
+                # the first fscore will be nan so don't add that one
+                if not np.isnan(valid_fscore):
+                    batch_cv_fscore.append(np.mean(valid_fscore))
 
             # Write average of validation data to summary logs
             if log_to_tensorboard:
                 summary = tf.Summary(value=[tf.Summary.Value(tag="accuracy", simple_value=np.mean(batch_cv_acc)),
                                             tf.Summary.Value(tag="cross_entropy", simple_value=np.mean(batch_cv_cost)),
                                             tf.Summary.Value(tag="recall_1", simple_value=np.mean(batch_cv_recall)),
-                                            tf.Summary.Value(tag="precision_1",
-                                                             simple_value=np.mean(batch_cv_precision)),
+                                            tf.Summary.Value(tag="precision_1", simple_value=np.mean(batch_cv_precision)),
                                             tf.Summary.Value(tag="f1_score", simple_value=np.mean(batch_cv_fscore)),
                                             ])
 
