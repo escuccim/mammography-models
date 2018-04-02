@@ -109,7 +109,7 @@ def load_validation_data(data="validation", how="class", percentage=0.5):
 
 
 ## evaluate the model to see the predictions
-def evaluate_model(graph, config, how="normal", batch_size=32):
+def evaluate_model(graph, config, model_name, how="normal", batch_size=32):
     X_te, y_te = load_validation_data(how=how, data="test")
 
     with tf.Session(graph=graph, config=config) as sess:

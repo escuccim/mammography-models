@@ -52,7 +52,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.0.2.02"
+model_name = "model_s1.0.3.01"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -77,6 +77,7 @@ model_name = "model_s1.0.2.02"
 # 1.0.0.30 - added a branch to conv1 section
 # 1.0.2.01 - added another branch, a concat and a 1x1 conv to downsize layers before conv3
 # 1.0.2.02 - removed useless 1x1 conv layer and increased size of subsequent conv layers
+# 1.0.3.01 - rerouting branch
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -228,26 +229,40 @@ with graph.as_default():
         # apply relu
         conv113 = tf.nn.relu(conv113, name='relu1.3')
 
-    with tf.name_scope("concat1") as scope:
-        concat1 = tf.concat(
-            [conv12, conv113],
-            axis=3,
-            name='concat1'
-        )
+    #with tf.name_scope("concat1") as scope:
+    #    concat1 = tf.concat(
+    #        [conv12, conv113],
+    #        axis=3,
+    #        name='concat1'
+    #    )
 
     # Max pooling layer 1
-    with tf.name_scope('pool1') as scope:
+    with tf.name_scope('pool1.1') as scope:
         pool1 = tf.layers.max_pooling2d(
-            concat1,  # Input
+            conv12,  # Input
             pool_size=(3, 3),  # Pool size: 3x3
             strides=(2, 2),  # Stride: 2
             padding='SAME',  # "same" padding
-            name='pool1'
+            name='pool1.1'
         )
 
         # optional dropout
         if dropout:
             pool1 = tf.layers.dropout(pool1, rate=pooldropout_rate, seed=103, training=training)
+
+    # Max pooling layer 1
+    with tf.name_scope('pool1.2') as scope:
+        pool12 = tf.layers.max_pooling2d(
+            conv113,  # Input
+            pool_size=(3, 3),  # Pool size: 3x3
+            strides=(2, 2),  # Stride: 2
+            padding='SAME',  # "same" padding
+            name='pool1.2'
+        )
+
+        # optional dropout
+        if dropout:
+            pool12 = tf.layers.dropout(pool12, rate=pooldropout_rate, seed=103, training=training)
 
     # Convolutional layer 2
     with tf.name_scope('conv2.1') as scope:
@@ -316,7 +331,7 @@ with graph.as_default():
     # Convolutional layer 2
     with tf.name_scope('conv2.3') as scope:
         conv23 = tf.layers.conv2d(
-            pool1,  # Input data
+            pool12,  # Input data
             filters=64,  # 32 filters
             kernel_size=(3, 3),  # Kernel size: 9x9
             strides=(1, 1),  # Stride: 1
