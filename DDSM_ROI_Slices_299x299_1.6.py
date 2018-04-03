@@ -563,7 +563,7 @@ with graph.as_default():
         conv33 = tf.nn.relu(conv33, name='relu3.4')
 
     # Convolutional layer 3.4
-    with tf.name_scope('conv3.4') as scope:
+    with tf.name_scope('conv3.5') as scope:
         conv34 = tf.layers.conv2d(
             pool2,  # Input data
             filters=96,  # 96 filters
@@ -573,7 +573,7 @@ with graph.as_default():
             activation=None,  # None
             kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=107),
             kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
-            name='conv3.4'
+            name='conv3.5'
         )
 
         conv34 = tf.layers.batch_normalization(
@@ -588,11 +588,11 @@ with graph.as_default():
             moving_mean_initializer=tf.zeros_initializer(),
             moving_variance_initializer=tf.ones_initializer(),
             training=training,
-            name='bn3.4'
+            name='bn3.5'
         )
 
         # apply relu
-        conv34 = tf.nn.relu(conv34, name='relu3.4')
+        conv34 = tf.nn.relu(conv34, name='relu3.5')
 
     with tf.name_scope("concat3") as scope:
         concat3 = tf.concat(
