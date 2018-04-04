@@ -28,8 +28,8 @@
       <file leaf-file-name="DDSM_ROI_Slices_299x299_1.3.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1.3.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1007">
-              <caret line="843" column="84" lean-forward="false" selection-start-line="843" selection-start-column="84" selection-end-line="843" selection-end-column="84" />
+            <state relative-caret-position="677">
+              <caret line="833" column="42" lean-forward="true" selection-start-line="823" selection-start-column="12" selection-end-line="833" selection-end-column="42" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -40,8 +40,8 @@
       <file leaf-file-name="DDSM_ROI_Slices_299x299_1.2.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1.2.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="913">
-              <caret line="821" column="84" lean-forward="false" selection-start-line="821" selection-start-column="84" selection-end-line="821" selection-end-column="84" />
+            <state relative-caret-position="220">
+              <caret line="801" column="81" lean-forward="false" selection-start-line="801" selection-start-column="81" selection-end-line="801" selection-end-column="81" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -481,8 +481,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1.3.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1007">
-          <caret line="843" column="84" lean-forward="false" selection-start-line="843" selection-start-column="84" selection-end-line="843" selection-end-column="84" />
+        <state relative-caret-position="677">
+          <caret line="833" column="42" lean-forward="true" selection-start-line="823" selection-start-column="12" selection-end-line="833" selection-end-column="42" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
@@ -491,8 +491,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/DDSM_ROI_Slices_299x299_1.2.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="913">
-          <caret line="821" column="84" lean-forward="false" selection-start-line="821" selection-start-column="84" selection-end-line="821" selection-end-column="84" />
+        <state relative-caret-position="220">
+          <caret line="801" column="81" lean-forward="false" selection-start-line="801" selection-start-column="81" selection-end-line="801" selection-end-column="81" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
