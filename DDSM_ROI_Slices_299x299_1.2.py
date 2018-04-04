@@ -791,10 +791,12 @@ with tf.Session(graph=graph, config=config) as sess:
             run_metadata = tf.RunMetadata()
 
             # Run training and evaluate accuracy
-            _, _, precision_value, summary, acc_value, cost_value, loss_value, recall_value, step = sess.run(
+            _, _, precision_value, summary, acc_value, cost_value, recall_value, step = sess.run(
                 [train_op, extra_update_ops, prec_op,
-                 merged, accuracy, mean_ce, loss, rec_op, global_step],
+                 merged, accuracy, mean_ce, rec_op, global_step],
                 feed_dict={
+                    # X: X_batch,
+                    # y: y_batch,
                     training: True,
                     is_testing: False,
                 },
@@ -804,8 +806,8 @@ with tf.Session(graph=graph, config=config) as sess:
             # Save accuracy (current batch)
             batch_acc.append(acc_value)
             batch_cost.append(cost_value)
-            batch_lr.append(lr)
-            batch_loss.append(loss_value)
+            #batch_lr.append(lr)
+            #batch_loss.append(loss_value)
             batch_recall.append(np.mean(recall_value))
 
             # log the summaries to tensorboard every 20 steps
