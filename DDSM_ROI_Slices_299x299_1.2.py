@@ -29,8 +29,16 @@ train_path_0 = os.path.join("data", "training_0.tfrecords")
 train_path_1 = os.path.join("data", "training_1.tfrecords")
 train_path_2 = os.path.join("data", "training_2.tfrecords")
 train_path_3 = os.path.join("data", "training_3.tfrecords")
+
+train_path_10 = os.path.join("data", "training2_0.tfrecords")
+train_path_11 = os.path.join("data", "training2_1.tfrecords")
+train_path_12 = os.path.join("data", "training2_2.tfrecords")
+train_path_13 = os.path.join("data", "training2_3.tfrecords")
+train_path_14 = os.path.join("data", "training2_4.tfrecords")
+
 test_path = os.path.join("data", "test.tfrecords")
-train_files = [train_path_0, train_path_1, train_path_2, train_path_3]
+#train_files = [train_path_0, train_path_1, train_path_2, train_path_3]
+train_files = [train_path_10, train_path_11, train_path_12, train_path_13, train_path_14]
 total_records = 27296
 
 ## Hyperparameters
@@ -791,9 +799,8 @@ with tf.Session(graph=graph, config=config) as sess:
             run_metadata = tf.RunMetadata()
 
             # Run training and evaluate accuracy
-            _, _, _, precision_value, summary, acc_value, cost_value, recall_value, step = sess.run(
-                [train_op, extra_update_ops, update_op, prec_op,
-                 merged, accuracy, mean_ce, rec_op, global_step],
+            _, _, _, precision_value, acc_value, cost_value, recall_value, step = sess.run(
+                [train_op, extra_update_ops, update_op, prec_op, accuracy, mean_ce, rec_op, global_step],
                 feed_dict={
                     # X: X_batch,
                     # y: y_batch,
@@ -812,6 +819,16 @@ with tf.Session(graph=graph, config=config) as sess:
 
             # log the summaries to tensorboard every 50 steps
             if log_to_tensorboard and ((i % 50 == 0) or (i == steps_per_epoch - 1)):
+                # get the summary
+                summary = sess.run(
+                    [merged],
+                    feed_dict={
+                        training: True,
+                        is_testing: False,
+                    },
+                    options=run_options,
+                    run_metadata=run_metadata)
+
                 # write the summary
                 train_writer.add_summary(summary, step)
                 # only log the meta data once per epoch
