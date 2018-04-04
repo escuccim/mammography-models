@@ -820,16 +820,6 @@ with tf.Session(graph=graph, config=config) as sess:
 
             # log the summaries to tensorboard every 50 steps
             if log_to_tensorboard and ((i % 50 == 0) or (i == steps_per_epoch - 1)):
-                # get the summary
-                summary = sess.run(
-                    [merged],
-                    feed_dict={
-                        training: True,
-                        is_testing: False,
-                    },
-                    options=run_options,
-                    run_metadata=run_metadata)
-
                 # write the summary
                 train_writer.add_summary(summary, step)
                 # only log the meta data once per epoch
