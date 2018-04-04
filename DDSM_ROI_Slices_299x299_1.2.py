@@ -703,7 +703,7 @@ with graph.as_default():
     _, update_op = summary_lib.pr_curve_streaming_op(name='pr_re_curve',
                                                      predictions=predictions,
                                                      labels=y,
-                                                     num_thresholds=11)
+                                                     num_thresholds=5)
     if num_classes == 2:
         tf.summary.scalar('precision_1', precision)
         tf.summary.scalar('f1_score', f1_score)
@@ -790,9 +790,9 @@ with tf.Session(graph=graph, config=config) as sess:
             run_metadata = tf.RunMetadata()
 
             # Run training and evaluate accuracy
-            _, _, _, precision_value, summary, acc_value, cost_value, loss_value, recall_value, step, lr = sess.run(
+            _, _, _, precision_value, acc_value, cost_value, loss_value, recall_value, step, lr = sess.run(
                 [train_op, extra_update_ops, update_op, prec_op,
-                 merged, accuracy, mean_ce, loss, rec_op, global_step,
+                 accuracy, mean_ce, loss, rec_op, global_step,
                  learning_rate], feed_dict={
                     # X: X_batch,
                     # y: y_batch,
@@ -809,12 +809,16 @@ with tf.Session(graph=graph, config=config) as sess:
             batch_loss.append(loss_value)
             batch_recall.append(np.mean(recall_value))
 
-            # write the summary
+            # log the summaries to tensorboard every 20 steps
             if log_to_tensorboard:
-                train_writer.add_summary(summary, step)
-                # only log the meta data once per epoch
-                if i == 1:
-                    train_writer.add_run_metadata(run_metadata, 'step %d' % step)
+                if i % 20 == 0:
+                    summary = sess.run(merged)
+
+                    # write the summary
+                    train_writer.add_summary(summary, step)
+                    # only log the meta data once per epoch
+                    if i == 1:
+                        train_writer.add_run_metadata(run_metadata, 'step %d' % step)
 
         # save checkpoint every nth epoch
         if (epoch % checkpoint_every == 0):
