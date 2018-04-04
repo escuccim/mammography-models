@@ -768,7 +768,7 @@ with tf.Session(graph=graph, config=config) as sess:
                 #    training: False,
                 #    is_testing: False
                 #})
-                #train_writer.add_summary(pr_summary, step)
+                #train_writer.add_summary(pr_summary, global_step=step)
 
                 # only log the meta data once per epoch
                 if i == 1:
