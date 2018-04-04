@@ -716,14 +716,14 @@ with graph.as_default():
                                                      predictions=predictions,
                                                      labels=y,
                                                      num_thresholds=10,
-                                                     metrics_collections = 'pr')
+                                                     metrics_collections = 'summaries')
     if num_classes == 2:
         tf.summary.scalar('precision_1', precision, collections=["summaries"])
         tf.summary.scalar('f1_score', f1_score, collections=["summaries"])
 
     # Merge all the summaries and write them out to /tmp/mnist_logs (by default)
     merged = tf.summary.merge_all("summaries")
-    pr_curve = tf.summary.merge_all("pr")
+    #pr_curve = tf.summary.merge_all("pr")
 
     print("Graph created...")
 # ## Train
