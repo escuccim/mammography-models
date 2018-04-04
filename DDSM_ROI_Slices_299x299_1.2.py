@@ -7,6 +7,7 @@ from training_utils import download_file, get_batches, read_and_decode_single_ex
     download_data, evaluate_model
 import sys
 import argparse
+from tensorboard import summary as summary_lib
 
 # download the data
 download_data()
@@ -698,7 +699,10 @@ with graph.as_default():
     tf.summary.scalar('accuracy', accuracy)
     tf.summary.scalar('recall_1', recall)
     tf.summary.scalar('cross_entropy', mean_ce)
-
+    _, update_op = summary_lib.pr_curve_streaming_op(name='pr_re_curve',
+                                                     predictions=predictions,
+                                                     labels=y,
+                                                     num_thresholds=11)
     if num_classes == 2:
         tf.summary.scalar('precision_1', precision)
         tf.summary.scalar('f1_score', f1_score)
@@ -785,8 +789,8 @@ with tf.Session(graph=graph, config=config) as sess:
             run_metadata = tf.RunMetadata()
 
             # Run training and evaluate accuracy
-            _, _, precision_value, summary, acc_value, cost_value, loss_value, recall_value, step, lr = sess.run(
-                [train_op, extra_update_ops, prec_op,
+            _, _, _, precision_value, summary, acc_value, cost_value, loss_value, recall_value, step, lr = sess.run(
+                [train_op, extra_update_ops, update_op, prec_op,
                  merged, accuracy, mean_ce, loss, rec_op, global_step,
                  learning_rate], feed_dict={
                     # X: X_batch,
