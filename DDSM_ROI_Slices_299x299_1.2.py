@@ -812,7 +812,10 @@ with tf.Session(graph=graph, config=config) as sess:
             # log the summaries to tensorboard every 20 steps
             if log_to_tensorboard:
                 if i % 20 == 0:
-                    summary = sess.run(merged)
+                    summary = sess.run(merged, feed_dict = {
+                        training:False,
+                        is_testing: False,
+                    })
 
                     # write the summary
                     train_writer.add_summary(summary, step)
