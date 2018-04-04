@@ -202,8 +202,8 @@ def download_data():
     if not os.path.exists(os.path.join("data", "training2_1.tfrecords")):
         _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training2_1.tfrecords', 'training2_1.tfrecords')
 
-    if not os.path.exists(os.path.join("data", "training_2.tfrecords")):
-        _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training_2.tfrecords', 'training_2.tfrecords')
+    if not os.path.exists(os.path.join("data", "training2_2.tfrecords")):
+        _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training2_2.tfrecords', 'training2_2.tfrecords')
 
     if not os.path.exists(os.path.join("data", "training_3.tfrecords")):
         _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training_3.tfrecords', 'training_3.tfrecords')
