@@ -52,7 +52,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.0.3.02"
+model_name = "model_s1.0.3.03"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -79,6 +79,7 @@ model_name = "model_s1.0.3.02"
 # 1.0.2.02 - removed useless 1x1 conv layer and increased size of subsequent conv layers
 # 1.0.3.01 - rerouting branch
 # 1.0.3.02 - split extra branch so it also goes back into main branch
+# 1.0.3.03 - added skip connection from pool 1.1, increased numbers of filters for layers 2 on
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -255,7 +256,7 @@ with graph.as_default():
     with tf.name_scope('conv2.1') as scope:
         conv2 = tf.layers.conv2d(
             pool1,  # Input data
-            filters=64,  # 32 filters
+            filters=96,  # 32 filters
             kernel_size=(3, 3),  # Kernel size: 9x9
             strides=(1, 1),  # Stride: 1
             padding='SAME',  # "same" padding
@@ -287,7 +288,7 @@ with graph.as_default():
     with tf.name_scope('conv2.2') as scope:
         conv22 = tf.layers.conv2d(
             conv2,  # Input data
-            filters=64,  # 32 filters
+            filters=96,  # 32 filters
             kernel_size=(3, 3),  # Kernel size: 9x9
             strides=(1, 1),  # Stride: 1
             padding='SAME',  # "same" padding
@@ -315,11 +316,11 @@ with graph.as_default():
         # apply relu
         conv22 = tf.nn.relu(conv22, name='relu2.2')
 
-    # Convolutional layer 2
+    # Convolutional layer 2.3
     with tf.name_scope('conv2.3') as scope:
         conv23 = tf.layers.conv2d(
             pool1,  # Input data
-            filters=64,  # 32 filters
+            filters=96,  # 32 filters
             kernel_size=(3, 3),  # Kernel size: 9x9
             strides=(1, 1),  # Stride: 1
             padding='SAME',  # "same" padding
@@ -347,9 +348,41 @@ with graph.as_default():
         # apply relu
         conv23 = tf.nn.relu(conv23, name='relu2.3')
 
+    # Convolutional layer 2.4
+    with tf.name_scope('conv2.4') as scope:
+        conv24 = tf.layers.conv2d(
+            pool1,  # Input data
+            filters=32,  # 32 filters
+            kernel_size=(1, 1),  # Kernel size: 9x9
+            strides=(1, 1),  # Stride: 1
+            padding='SAME',  # "same" padding
+            activation=None,  # None
+            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=104),
+            kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
+            name='conv2.4'
+        )
+
+        conv24 = tf.layers.batch_normalization(
+            conv24,
+            axis=-1,
+            momentum=0.99,
+            epsilon=epsilon,
+            center=True,
+            scale=True,
+            beta_initializer=tf.zeros_initializer(),
+            gamma_initializer=tf.ones_initializer(),
+            moving_mean_initializer=tf.zeros_initializer(),
+            moving_variance_initializer=tf.ones_initializer(),
+            training=training,
+            name='bn2.4'
+        )
+
+        # apply relu
+        conv24 = tf.nn.relu(conv24, name='relu2.4')
+
     with tf.name_scope("concat2") as scope:
         concat2 = tf.concat(
-            [conv22, conv23],
+            [conv22, conv23, conv24],
             axis=3,
             name='concat2'
         )
@@ -403,7 +436,7 @@ with graph.as_default():
     with tf.name_scope('conv3.1') as scope:
         conv3 = tf.layers.conv2d(
             pool2,  # Input data
-            filters=192,  # 48 filters
+            filters=256,  # 48 filters
             kernel_size=(3, 3),  # Kernel size: 5x5
             strides=(1, 1),  # Stride: 1
             padding='SAME',  # "same" padding
@@ -435,7 +468,7 @@ with graph.as_default():
     with tf.name_scope('conv3.2') as scope:
         conv32 = tf.layers.conv2d(
             conv3,  # Input data
-            filters=192,  # 48 filters
+            filters=256,  # 48 filters
             kernel_size=(3, 3),  # Kernel size: 5x5
             strides=(1, 1),  # Stride: 1
             padding='SAME',  # "same" padding
@@ -480,7 +513,7 @@ with graph.as_default():
     with tf.name_scope('conv4') as scope:
         conv4 = tf.layers.conv2d(
             pool3,  # Input data
-            filters=256,  # 48 filters
+            filters=384,  # 48 filters
             kernel_size=(3, 3),  # Kernel size: 5x5
             strides=(1, 1),  # Stride: 1
             padding='SAME',  # "same" padding
@@ -932,8 +965,32 @@ with tf.Session(graph=graph, config=config) as sess:
     # Wait for threads to stop
     coord.join(threads)
 
-test_accuracy, test_recall, test_predictions, ground_truth = evaluate_model(graph, config, model_name)
+    ## Evaluate on test data
+    X_te, y_te = load_validation_data(how="normal", data="test")
 
-# save the predictions and truth for review
-np.save(os.path.join("data", "predictions_" + model_name + ".npy"), test_predictions)
-np.save(os.path.join("data", "truth_" + model_name + ".npy"), ground_truth)
+    test_accuracy = []
+    test_recall = []
+    test_predictions = []
+    ground_truth = []
+
+    # evaluate the test data
+    for X_batch, y_batch in get_batches(X_te, y_te, batch_size // 2, distort=False):
+        yhat, test_acc_value, test_recall_value = sess.run([predictions, accuracy, rec_op], feed_dict=
+        {
+            X: X_batch,
+            y: y_batch,
+            training: False
+        })
+
+        test_accuracy.append(test_acc_value)
+        test_recall.append(test_recall_value)
+        test_predictions.append(yhat)
+        ground_truth.append(y_batch)
+
+    # print the results
+    print("Mean Accuracy:", np.mean(test_accuracy))
+    print("Mean Recall:", np.mean(test_recall))
+
+    # save the predictions and truth for review
+    np.save(os.path.join("data", "predictions_" + model_name + ".npy"), test_predictions)
+    np.save(os.path.join("data", "truth_" + model_name + ".npy"), ground_truth)
