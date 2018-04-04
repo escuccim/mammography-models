@@ -77,8 +77,23 @@ def read_and_decode_single_example(filenames, label_type='label_normal', normali
 ## load the test data from files
 def load_validation_data(data="validation", how="class", percentage=0.5):
     if data == "validation":
-        X_cv = np.load(os.path.join("data", "test_data.npy"))
-        labels = np.load(os.path.join("data", "test_labels.npy"))
+        # load the two data files
+        X_cv_0 = np.load(os.path.join("data", "test2_data_0.npy"))
+        labels_0 = np.load(os.path.join("data", "test2_labels_0.npy"))
+
+        X_cv_1 = np.load(os.path.join("data", "test2_data_1.npy"))
+        labels_1 = np.load(os.path.join("data", "test2_labels_1.npy"))
+
+        # concatenate them
+        X_cv = np.concatenate([X_cv_0, X_cv_1], axis=0)
+        labels = np.concatenate([labels_0, labels_1], axis=0)
+
+        # delete the old files to save memory
+        del (X_cv_0)
+        del (X_cv_1)
+        del (labels_0)
+        del (labels_1)
+
     elif data == "test":
         X_cv = np.load(os.path.join("data", "mias_test_images.npy"))
         labels = np.load(os.path.join("data", "mias_test_labels_enc.npy"))
@@ -147,6 +162,7 @@ def evaluate_model(graph, config, model_name, how="normal", batch_size=32):
 
 ## Download the data if it doesn't already exist
 def download_data():
+    # download main training tfrecords files
     if not os.path.exists(os.path.join("data", "training_0.tfrecords")):
         _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training_0.tfrecords', 'training_0.tfrecords')
 
@@ -159,17 +175,39 @@ def download_data():
     if not os.path.exists(os.path.join("data", "training_3.tfrecords")):
         _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training_3.tfrecords', 'training_3.tfrecords')
 
-    if not os.path.exists(os.path.join("data", "test_labels.npy")):
-        _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/test_labels.npy', 'test_labels.npy')
+    # download validation data
+    if not os.path.exists(os.path.join("data", "test2_labels_0.npy")):
+        _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/test2_labels_0.npy', 'test2_labels_0.npy')
 
-    if not os.path.exists(os.path.join("data", "test_data.npy")):
-        _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/test_data.npy', 'test_data.npy')
+    if not os.path.exists(os.path.join("data", "test2_labels_1.npy")):
+        _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/test2_labels_1.npy', 'test2_labels_1.npy')
 
+    if not os.path.exists(os.path.join("data", "test2_data_0.npy")):
+        _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/test2_data_0.npy', 'test2_data_0.npy')
+
+    if not os.path.exists(os.path.join("data", "test2_data_1.npy")):
+        _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/test2_data_1.npy', 'test2_data_1.npy')
+
+    # download MIAS test data
     if not os.path.exists(os.path.join("data", "mias_test_images.npy")):
         _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/mias_test_images.npy', 'mias_test_images.npy')
 
     if not os.path.exists(os.path.join("data", "mias_test_labels_enc.npy")):
         _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/mias_test_labels_enc.npy', 'mias_test_labels_enc.npy')
+
+    # download secondary training tfrecords files
+    if not os.path.exists(os.path.join("data", "training2_0.tfrecords")):
+        _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training2_0.tfrecords', 'training2_0.tfrecords')
+
+    if not os.path.exists(os.path.join("data", "training2_1.tfrecords")):
+        _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training2_1.tfrecords', 'training2_1.tfrecords')
+
+    if not os.path.exists(os.path.join("data", "training_2.tfrecords")):
+        _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training_2.tfrecords', 'training_2.tfrecords')
+
+    if not os.path.exists(os.path.join("data", "training_3.tfrecords")):
+        _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training_3.tfrecords', 'training_3.tfrecords')
+
 
 def train(config, graph, log_to_tensorboard=True, print_metrics=True, epochs=50, checkpoint_every=1):
 

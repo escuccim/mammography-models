@@ -5,21 +5,34 @@ from sklearn.cross_validation import train_test_split
 import tensorflow as tf
 from training_utils import download_file, get_batches, read_and_decode_single_example, load_validation_data, \
     download_data, evaluate_model
+import sys
+import argparse
 
+# download the data
 download_data()
-# ## Create Model
 
-# config
-epochs = 50
+## config
+# If number of epochs has been passed in use that, otherwise default to 50
+parser = argparse.ArgumentParser()
+parser.add_argument("-e", "--epochs", help="number of epochs to train", type=int)
+args = parser.parse_args()
+
+if args.epochs:
+    epochs = args.epochs
+else:
+    epochs = 50
+
+# set the batch size
 batch_size = 64
 
+# set the training data
 train_path_0 = os.path.join("data", "training_0.tfrecords")
 train_path_1 = os.path.join("data", "training_1.tfrecords")
 train_path_2 = os.path.join("data", "training_2.tfrecords")
 train_path_3 = os.path.join("data", "training_3.tfrecords")
 test_path = os.path.join("data", "test.tfrecords")
 train_files = [train_path_0, train_path_1, train_path_2, train_path_3]
-total_records = 27296
+total_records = 27393
 
 ## Hyperparameters
 # Small epsilon value for the BN transform
@@ -400,37 +413,6 @@ with graph.as_default():
         # optional dropout
         if dropout:
             pool2 = tf.layers.dropout(pool2, rate=pooldropout_rate, seed=106, training=training)
-
-    #with tf.name_scope('pool2.2') as scope:
-    #    pool21 = tf.layers.conv2d(
-    #        pool2,  # Input data
-    #        filters=192,  # 48 filters
-    #        kernel_size=(1, 1),  # Kernel size: 5x5
-    #        strides=(1, 1),  # Stride: 1
-    #        padding='SAME',  # "same" padding
-    #        activation=None,  # None
-    #        kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=107),
-    #        kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
-    #        name='pool2.1'
-    #    )
-
-    #    pool21 = tf.layers.batch_normalization(
-    #        pool21,
-    #        axis=-1,
-    #        momentum=0.99,
-    #        epsilon=epsilon,
-    #        center=True,
-    #        scale=True,
-    #        beta_initializer=tf.zeros_initializer(),
-    #        gamma_initializer=tf.ones_initializer(),
-    #        moving_mean_initializer=tf.zeros_initializer(),
-    #        moving_variance_initializer=tf.ones_initializer(),
-    #        training=training,
-    #        name='bn_pool2.1'
-    #    )
-
-        # apply relu
-    #    pool21 = tf.nn.relu(pool21, name='relu_pool2.1')
 
     # Convolutional layer 3
     with tf.name_scope('conv3.1') as scope:

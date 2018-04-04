@@ -5,12 +5,23 @@ from sklearn.cross_validation import train_test_split
 import tensorflow as tf
 from training_utils import download_file, get_batches, read_and_decode_single_example, load_validation_data, \
     download_data, evaluate_model
+import sys
+import argparse
 
+# download the data
 download_data()
-# ## Create Model
 
-# config
-epochs = 50
+## config
+# If number of epochs has been passed in use that, otherwise default to 50
+parser = argparse.ArgumentParser()
+parser.add_argument("-e", "--epochs", help="number of epochs to train", type=int)
+args = parser.parse_args()
+
+if args.epochs:
+    epochs = args.epochs
+else:
+    epochs = 50
+
 batch_size = 64
 
 train_path_0 = os.path.join("data", "training_0.tfrecords")
@@ -52,7 +63,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.0.2.02"
+model_name = "model_s1.0.2.03"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -77,6 +88,7 @@ model_name = "model_s1.0.2.02"
 # 1.0.0.30 - added a branch to conv1 section
 # 1.0.2.01 - added another branch, a concat and a 1x1 conv to downsize layers before conv3
 # 1.0.2.02 - removed useless 1x1 conv layer and increased size of subsequent conv layers
+# 1.0.2.03 - weighting cross entropy to improve recall
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -366,37 +378,6 @@ with graph.as_default():
         if dropout:
             pool2 = tf.layers.dropout(pool2, rate=pooldropout_rate, seed=106, training=training)
 
-    #with tf.name_scope('pool2.2') as scope:
-    #    pool21 = tf.layers.conv2d(
-    #        pool2,  # Input data
-    #        filters=192,  # 48 filters
-    #        kernel_size=(1, 1),  # Kernel size: 5x5
-    #        strides=(1, 1),  # Stride: 1
-    #        padding='SAME',  # "same" padding
-    #        activation=None,  # None
-    #        kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=107),
-    #        kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
-    #        name='pool2.1'
-    #    )
-
-    #    pool21 = tf.layers.batch_normalization(
-    #        pool21,
-    #        axis=-1,
-    #        momentum=0.99,
-    #        epsilon=epsilon,
-    #        center=True,
-    #        scale=True,
-    #        beta_initializer=tf.zeros_initializer(),
-    #        gamma_initializer=tf.ones_initializer(),
-    #        moving_mean_initializer=tf.zeros_initializer(),
-    #        moving_variance_initializer=tf.ones_initializer(),
-    #        training=training,
-    #        name='bn_pool2.1'
-    #    )
-
-        # apply relu
-    #    pool21 = tf.nn.relu(pool21, name='relu_pool2.1')
-
     # Convolutional layer 3
     with tf.name_scope('conv3.1') as scope:
         conv3 = tf.layers.conv2d(
@@ -660,7 +641,7 @@ with graph.as_default():
 
     ## Loss function options
     # Regular mean cross entropy
-    mean_ce = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits))
+    #mean_ce = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits))
 
     # weighted mean cross entropy
     # onehot_labels = tf.one_hot(y, depth=num_classes)
@@ -668,8 +649,8 @@ with graph.as_default():
 
     # Different weighting method
     # This will weight the positive examples higher so as to improve recall
-    # weights = tf.multiply(2, tf.cast(tf.equal(y, 1), tf.int32)) + 1
-    #   mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=logits, weights=weights))
+    weights = tf.multiply(2, tf.cast(tf.equal(y, 1), tf.int32)) + 1
+    mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=logits, weights=weights))
 
     # Add in l2 loss
     loss = mean_ce + tf.losses.get_regularization_loss()
@@ -931,8 +912,32 @@ with tf.Session(graph=graph, config=config) as sess:
     # Wait for threads to stop
     coord.join(threads)
 
-test_accuracy, test_recall, test_predictions, ground_truth = evaluate_model(graph, config, model_name)
+    ## Evaluate on test data
+    X_te, y_te = load_validation_data(how="normal", data="test")
 
-# save the predictions and truth for review
-np.save(os.path.join("data", "predictions_" + model_name + ".npy"), test_predictions)
-np.save(os.path.join("data", "truth_" + model_name + ".npy"), ground_truth)
+    test_accuracy = []
+    test_recall = []
+    test_predictions = []
+    ground_truth = []
+
+    # evaluate the test data
+    for X_batch, y_batch in get_batches(X_te, y_te, batch_size // 2, distort=False):
+        yhat, test_acc_value, test_recall_value = sess.run([predictions, accuracy, rec_op], feed_dict=
+        {
+            X: X_batch,
+            y: y_batch,
+            training: False
+        })
+
+        test_accuracy.append(test_acc_value)
+        test_recall.append(test_recall_value)
+        test_predictions.append(yhat)
+        ground_truth.append(y_batch)
+
+    # print the results
+    print("Mean Accuracy:", np.mean(test_accuracy))
+    print("Mean Recall:", np.mean(test_recall))
+
+    # save the predictions and truth for review
+    np.save(os.path.join("data", "predictions_" + model_name + ".npy"), test_predictions)
+    np.save(os.path.join("data", "truth_" + model_name + ".npy"), ground_truth)
