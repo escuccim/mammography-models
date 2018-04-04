@@ -825,11 +825,11 @@ with tf.Session(graph=graph, config=config) as sess:
                 train_writer.add_summary(summary, step)
 
                 # get the pr curve summary
-                pr_summary = sess.run(pr_curve, feed_dict = {
-                    training: False,
-                    is_testing: False
-                })
-                train_writer.add_summary(pr_summary, step)
+                #pr_summary = sess.run(pr_curve, feed_dict = {
+                #    training: False,
+                #    is_testing: False
+                #})
+                #train_writer.add_summary(pr_summary, step)
 
                 # only log the meta data once per epoch
                 if i == 1:
