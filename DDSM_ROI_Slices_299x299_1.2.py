@@ -37,8 +37,8 @@ train_path_13 = os.path.join("data", "training2_3.tfrecords")
 train_path_14 = os.path.join("data", "training2_4.tfrecords")
 
 test_path = os.path.join("data", "test.tfrecords")
-#train_files = [train_path_0, train_path_1, train_path_2, train_path_3]
-train_files = [train_path_10, train_path_11, train_path_12, train_path_13, train_path_14]
+train_files = [train_path_0, train_path_1, train_path_2, train_path_3]
+#train_files = [train_path_10, train_path_11, train_path_12, train_path_13, train_path_14]
 total_records = 27296
 
 ## Hyperparameters
