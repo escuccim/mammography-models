@@ -37,8 +37,8 @@ train_path_13 = os.path.join("data", "training2_3.tfrecords")
 train_path_14 = os.path.join("data", "training2_4.tfrecords")
 
 test_path = os.path.join("data", "test.tfrecords")
-train_files = [train_path_0, train_path_1, train_path_2, train_path_3]
-#train_files = [train_path_10, train_path_11, train_path_12, train_path_13, train_path_14]
+#train_files = [train_path_0, train_path_1, train_path_2, train_path_3]
+train_files = [train_path_10, train_path_11, train_path_12, train_path_13, train_path_14]
 total_records = 27296
 
 ## Hyperparameters
@@ -72,7 +72,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.0.2.06"
+model_name = "model_s1.0.2.07"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
