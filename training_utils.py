@@ -196,17 +196,17 @@ def download_data():
         _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/mias_test_labels_enc.npy', 'mias_test_labels_enc.npy')
 
     # download secondary training tfrecords files
-    if not os.path.exists(os.path.join("data", "training2_0.tfrecords")):
-        _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training2_0.tfrecords', 'training2_0.tfrecords')
+    #if not os.path.exists(os.path.join("data", "training2_0.tfrecords")):
+    #    _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training2_0.tfrecords', 'training2_0.tfrecords')
 
-    if not os.path.exists(os.path.join("data", "training2_1.tfrecords")):
-        _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training2_1.tfrecords', 'training2_1.tfrecords')
+    #if not os.path.exists(os.path.join("data", "training2_1.tfrecords")):
+    #    _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training2_1.tfrecords', 'training2_1.tfrecords')
 
-    if not os.path.exists(os.path.join("data", "training2_2.tfrecords")):
-        _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training2_2.tfrecords', 'training2_2.tfrecords')
+    #if not os.path.exists(os.path.join("data", "training2_2.tfrecords")):
+    #    _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training2_2.tfrecords', 'training2_2.tfrecords')
 
-    if not os.path.exists(os.path.join("data", "training2_3.tfrecords")):
-        _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training2_3.tfrecords', 'training2_3.tfrecords')
+    #if not os.path.exists(os.path.join("data", "training2_3.tfrecords")):
+    #    _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training2_3.tfrecords', 'training2_3.tfrecords')
 
     #if not os.path.exists(os.path.join("data", "training2_4.tfrecords")):
     #    _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training2_4.tfrecords', 'training2_4.tfrecords')

@@ -5,6 +5,7 @@ from sklearn.cross_validation import train_test_split
 import tensorflow as tf
 from training_utils import download_file, get_batches, read_and_decode_single_example, load_validation_data, \
     download_data
+from tensorboard import summary as summary_lib
 
 download_data()
 # ## Create Model
@@ -642,19 +643,24 @@ with graph.as_default():
     extra_update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
 
     # Create summary hooks
-    tf.summary.scalar('accuracy', accuracy)
-    tf.summary.scalar('recall_1', recall)
-    tf.summary.scalar('cross_entropy', mean_ce)
+    tf.summary.scalar('accuracy', accuracy, collections=["summaries"])
+    tf.summary.scalar('recall_1', recall, collections=["summaries"])
+    tf.summary.scalar('cross_entropy', mean_ce, collections=["summaries"])
+    tf.summary.scalar('loss', loss, collections=["summaries"])
+    tf.summary.scalar('learning_rate', learning_rate, collections=["summaries"])
 
+    _, update_op = summary_lib.pr_curve_streaming_op(name='pr_curve',
+                                                     predictions=predictions,
+                                                     labels=y,
+                                                     num_thresholds=10,
+                                                     metrics_collections='pr')
     if num_classes == 2:
-        tf.summary.scalar('precision_1', precision)
-        tf.summary.scalar('f1_score', f1_score)
-
-    tf.summary.scalar('loss', loss)
-    tf.summary.scalar('learning_rate', learning_rate)
+        tf.summary.scalar('precision_1', precision, collections=["summaries"])
+        tf.summary.scalar('f1_score', f1_score, collections=["summaries"])
 
     # Merge all the summaries and write them out to /tmp/mnist_logs (by default)
-    merged = tf.summary.merge_all()
+    merged = tf.summary.merge_all("summaries")
+    pr_curve = tf.summary.merge_all("pr")
 
     print("Graph created...")
 # ## Train
@@ -719,6 +725,8 @@ with tf.Session(graph=graph, config=config) as sess:
     print("Training model", model_name, "...")
 
     for epoch in range(epochs):
+        sess.run(tf.local_variables_initializer())
+
         for i in range(steps_per_epoch):
             # Accuracy values (train) after each batch
             batch_acc = []
@@ -732,10 +740,9 @@ with tf.Session(graph=graph, config=config) as sess:
             run_metadata = tf.RunMetadata()
 
             # Run training and evaluate accuracy
-            _, _, precision_value, summary, acc_value, cost_value, loss_value, recall_value, step, lr = sess.run(
-                [train_op, extra_update_ops, prec_op,
-                 merged, accuracy, mean_ce, loss, rec_op, global_step,
-                 learning_rate], feed_dict={
+            _, _, _, precision_value, summary, acc_value, cost_value, recall_value, step = sess.run(
+                [train_op, extra_update_ops, update_op, prec_op, merged, accuracy, mean_ce, rec_op, global_step],
+                feed_dict={
                     # X: X_batch,
                     # y: y_batch,
                     training: True,
@@ -747,13 +754,22 @@ with tf.Session(graph=graph, config=config) as sess:
             # Save accuracy (current batch)
             batch_acc.append(acc_value)
             batch_cost.append(cost_value)
-            batch_lr.append(lr)
-            batch_loss.append(loss_value)
+            #batch_lr.append(lr)
+            #batch_loss.append(loss_value)
             batch_recall.append(np.mean(recall_value))
 
-            # write the summary
-            if log_to_tensorboard:
+            # log the summaries to tensorboard every 50 steps
+            if log_to_tensorboard and ((i % 50 == 0) or (i == steps_per_epoch - 1)):
+                # write the summary
                 train_writer.add_summary(summary, step)
+
+                # get the pr curve summary
+                pr_summary = sess.run(pr_curve, feed_dict = {
+                    training: False,
+                    is_testing: False
+                })
+                train_writer.add_summary(pr_summary, step)
+
                 # only log the meta data once per epoch
                 if i == 1:
                     train_writer.add_run_metadata(run_metadata, 'step %d' % step)
@@ -776,6 +792,9 @@ with tf.Session(graph=graph, config=config) as sess:
 
         ## evaluate on test data if it exists, otherwise ignore this step
         if evaluate:
+
+            sess.run(tf.local_variables_initializer())
+
             print("Evaluating model...")
             # load the test data
             X_cv, y_cv = load_validation_data(percentage=1, how="normal")
@@ -838,16 +857,16 @@ with tf.Session(graph=graph, config=config) as sess:
         # Print progress every nth epoch to keep output to reasonable amount
         if (epoch % print_every == 0):
             print(
-            'Epoch {:02d} - step {} - cv acc: {:.3f} - train acc: {:.3f} (mean) - cv cost: {:.3f} - lr: {:.5f}'.format(
-                epoch, step, np.mean(batch_cv_acc), np.mean(batch_acc), np.mean(batch_cv_cost), lr
+            'Epoch {:02d} - step {} - cv acc: {:.3f} - train acc: {:.3f} (mean) - cv cost: {:.3f}'.format(
+                epoch, step, np.mean(batch_cv_acc), np.mean(batch_acc), np.mean(batch_cv_cost)
             ))
 
         # Print data every 50th epoch so I can write it down to compare models
         if (not print_metrics) and (epoch % 50 == 0) and (epoch > 1):
             if (epoch % print_every == 0):
                 print(
-                'Epoch {:02d} - step {} - cv acc: {:.4f} - train acc: {:.3f} (mean) - cv cost: {:.3f} - lr: {:.5f}'.format(
-                    epoch, step, np.mean(batch_cv_acc), np.mean(batch_acc), np.mean(batch_cv_cost), lr
+                'Epoch {:02d} - step {} - cv acc: {:.4f} - train acc: {:.3f} (mean) - cv cost: {:.3f}'.format(
+                    epoch, step, np.mean(batch_cv_acc), np.mean(batch_acc), np.mean(batch_cv_cost)
                 ))
 
                 # stop the coordinator

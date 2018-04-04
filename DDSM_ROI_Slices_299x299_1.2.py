@@ -706,22 +706,24 @@ with graph.as_default():
     extra_update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
 
     # Create summary hooks
-    tf.summary.scalar('accuracy', accuracy)
-    tf.summary.scalar('recall_1', recall)
-    tf.summary.scalar('cross_entropy', mean_ce)
-    _, update_op = summary_lib.pr_curve_streaming_op(name='pr_re_curve',
+    tf.summary.scalar('accuracy', accuracy, collections=["summaries"])
+    tf.summary.scalar('recall_1', recall, collections=["summaries"])
+    tf.summary.scalar('cross_entropy', mean_ce, collections=["summaries"])
+    tf.summary.scalar('loss', loss, collections=["summaries"])
+    tf.summary.scalar('learning_rate', learning_rate, collections=["summaries"])
+
+    _, update_op = summary_lib.pr_curve_streaming_op(name='pr_curve',
                                                      predictions=predictions,
                                                      labels=y,
-                                                     num_thresholds=10)
+                                                     num_thresholds=10,
+                                                     metrics_collections = 'pr')
     if num_classes == 2:
-        tf.summary.scalar('precision_1', precision)
-        tf.summary.scalar('f1_score', f1_score)
-
-    tf.summary.scalar('loss', loss)
-    tf.summary.scalar('learning_rate', learning_rate)
+        tf.summary.scalar('precision_1', precision, collections=["summaries"])
+        tf.summary.scalar('f1_score', f1_score, collections=["summaries"])
 
     # Merge all the summaries and write them out to /tmp/mnist_logs (by default)
-    merged = tf.summary.merge_all()
+    merged = tf.summary.merge_all("summaries")
+    pr_curve = tf.summary.merge_all("pr")
 
     print("Graph created...")
 # ## Train
@@ -799,8 +801,8 @@ with tf.Session(graph=graph, config=config) as sess:
             run_metadata = tf.RunMetadata()
 
             # Run training and evaluate accuracy
-            _, _, precision_value, summary, acc_value, cost_value, recall_value, step = sess.run(
-                [train_op, extra_update_ops, prec_op, merged, accuracy, mean_ce, rec_op, global_step],
+            _, _, _, precision_value, summary, acc_value, cost_value, recall_value, step = sess.run(
+                [train_op, extra_update_ops, update_op, prec_op, merged, accuracy, mean_ce, rec_op, global_step],
                 feed_dict={
                     # X: X_batch,
                     # y: y_batch,
@@ -821,6 +823,14 @@ with tf.Session(graph=graph, config=config) as sess:
             if log_to_tensorboard and ((i % 50 == 0) or (i == steps_per_epoch - 1)):
                 # write the summary
                 train_writer.add_summary(summary, step)
+
+                # get the pr curve summary
+                pr_summary = sess.run(pr_curve, feed_dict = {
+                    training: False,
+                    is_testing: False
+                })
+                train_writer.add_summary(pr_summary, step)
+
                 # only log the meta data once per epoch
                 if i == 1:
                     train_writer.add_run_metadata(run_metadata, 'step %d' % step)
