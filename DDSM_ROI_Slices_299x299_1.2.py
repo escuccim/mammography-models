@@ -64,7 +64,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.0.2.04"
+model_name = "model_s1.0.2.05"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -91,6 +91,7 @@ model_name = "model_s1.0.2.04"
 # 1.0.2.02 - removed useless 1x1 conv layer and increased size of subsequent conv layers
 # 1.0.2.03 - weighting cross entropy to improve recall
 # 1.0.2.04 - added pr curve to tensorboard summaries
+# 1.0.2.05 - tried to play with pr curve but put it back
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -790,12 +791,10 @@ with tf.Session(graph=graph, config=config) as sess:
             run_metadata = tf.RunMetadata()
 
             # Run training and evaluate accuracy
-            _, _, _, precision_value, acc_value, cost_value, loss_value, recall_value, step, lr = sess.run(
-                [train_op, extra_update_ops, update_op, prec_op,
-                 accuracy, mean_ce, loss, rec_op, global_step,
-                 learning_rate], feed_dict={
-                    # X: X_batch,
-                    # y: y_batch,
+            _, _, precision_value, summary, acc_value, cost_value, loss_value, recall_value, step = sess.run(
+                [train_op, extra_update_ops, prec_op,
+                 merged, accuracy, mean_ce, loss, rec_op, global_step],
+                feed_dict={
                     training: True,
                     is_testing: False,
                 },
@@ -811,17 +810,11 @@ with tf.Session(graph=graph, config=config) as sess:
 
             # log the summaries to tensorboard every 20 steps
             if log_to_tensorboard:
-                if i % 20 == 0:
-                    summary = sess.run(merged, feed_dict = {
-                        training:False,
-                        is_testing: False,
-                    })
-
-                    # write the summary
-                    train_writer.add_summary(summary, step)
-                    # only log the meta data once per epoch
-                    if i == 1:
-                        train_writer.add_run_metadata(run_metadata, 'step %d' % step)
+                # write the summary
+                train_writer.add_summary(summary, step)
+                # only log the meta data once per epoch
+                if i == 1:
+                    train_writer.add_run_metadata(run_metadata, 'step %d' % step)
 
         # save checkpoint every nth epoch
         if (epoch % checkpoint_every == 0):
