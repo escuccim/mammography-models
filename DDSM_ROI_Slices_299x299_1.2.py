@@ -810,8 +810,8 @@ with tf.Session(graph=graph, config=config) as sess:
             #batch_loss.append(loss_value)
             batch_recall.append(np.mean(recall_value))
 
-            # log the summaries to tensorboard every 20 steps
-            if log_to_tensorboard:
+            # log the summaries to tensorboard every 50 steps
+            if log_to_tensorboard and (i % 50 == 0):
                 # write the summary
                 train_writer.add_summary(summary, step)
                 # only log the meta data once per epoch
