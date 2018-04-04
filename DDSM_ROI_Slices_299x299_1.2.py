@@ -799,8 +799,9 @@ with tf.Session(graph=graph, config=config) as sess:
             run_metadata = tf.RunMetadata()
 
             # Run training and evaluate accuracy
-            _, _, _, precision_value, acc_value, cost_value, recall_value, step = sess.run(
-                [train_op, extra_update_ops, update_op, prec_op, accuracy, mean_ce, rec_op, global_step],
+            _, _, _, precision_value, summary, acc_value, cost_value, recall_value, step = sess.run(
+                [train_op, extra_update_ops, update_op, prec_op,
+                 merged, accuracy, mean_ce, rec_op, global_step],
                 feed_dict={
                     # X: X_batch,
                     # y: y_batch,
