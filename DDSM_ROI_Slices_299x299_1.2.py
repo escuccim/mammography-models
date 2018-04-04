@@ -909,7 +909,7 @@ with tf.Session(graph=graph, config=config) as sess:
         train_acc_values.append(np.mean(batch_acc))
         train_cost_values.append(np.mean(batch_cost))
         train_lr_values.append(np.mean(batch_lr))
-        train_loss_values.append(np.mean(batch_loss))
+        #train_loss_values.append(np.mean(batch_loss))
         train_recall_values.append(np.mean(batch_recall))
         valid_recall_values.append(np.mean(batch_cv_recall))
 
