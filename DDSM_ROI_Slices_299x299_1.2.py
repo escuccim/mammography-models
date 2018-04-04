@@ -64,7 +64,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.0.2.03"
+model_name = "model_s1.0.2.04"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -90,6 +90,7 @@ model_name = "model_s1.0.2.03"
 # 1.0.2.01 - added another branch, a concat and a 1x1 conv to downsize layers before conv3
 # 1.0.2.02 - removed useless 1x1 conv layer and increased size of subsequent conv layers
 # 1.0.2.03 - weighting cross entropy to improve recall
+# 1.0.2.04 - added pr curve to tensorboard summaries
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
