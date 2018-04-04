@@ -704,7 +704,7 @@ with graph.as_default():
     _, update_op = summary_lib.pr_curve_streaming_op(name='pr_re_curve',
                                                      predictions=predictions,
                                                      labels=y,
-                                                     num_thresholds=5)
+                                                     num_thresholds=10)
     if num_classes == 2:
         tf.summary.scalar('precision_1', precision)
         tf.summary.scalar('f1_score', f1_score)
@@ -811,7 +811,7 @@ with tf.Session(graph=graph, config=config) as sess:
             batch_recall.append(np.mean(recall_value))
 
             # log the summaries to tensorboard every 50 steps
-            if log_to_tensorboard and (i % 50 == 0):
+            if log_to_tensorboard and ((i % 50 == 0) or (i == steps_per_epoch - 1)):
                 # write the summary
                 train_writer.add_summary(summary, step)
                 # only log the meta data once per epoch
@@ -901,16 +901,16 @@ with tf.Session(graph=graph, config=config) as sess:
         # Print progress every nth epoch to keep output to reasonable amount
         if (epoch % print_every == 0):
             print(
-            'Epoch {:02d} - step {} - cv acc: {:.3f} - train acc: {:.3f} (mean) - cv cost: {:.3f} - lr: {:.5f}'.format(
-                epoch, step, np.mean(batch_cv_acc), np.mean(batch_acc), np.mean(batch_cv_cost), lr
+            'Epoch {:02d} - step {} - cv acc: {:.3f} - train acc: {:.3f} (mean) - cv cost: {:.3f}'.format(
+                epoch, step, np.mean(batch_cv_acc), np.mean(batch_acc), np.mean(batch_cv_cost)
             ))
 
         # Print data every 50th epoch so I can write it down to compare models
         if (not print_metrics) and (epoch % 50 == 0) and (epoch > 1):
             if (epoch % print_every == 0):
                 print(
-                'Epoch {:02d} - step {} - cv acc: {:.4f} - train acc: {:.3f} (mean) - cv cost: {:.3f} - lr: {:.5f}'.format(
-                    epoch, step, np.mean(batch_cv_acc), np.mean(batch_acc), np.mean(batch_cv_cost), lr
+                'Epoch {:02d} - step {} - cv acc: {:.4f} - train acc: {:.3f} (mean) - cv cost: {:.3f}'.format(
+                    epoch, step, np.mean(batch_cv_acc), np.mean(batch_acc), np.mean(batch_cv_cost)
                 ))
 
                 # stop the coordinator
