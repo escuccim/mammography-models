@@ -715,14 +715,13 @@ with graph.as_default():
     _, update_op = summary_lib.pr_curve_streaming_op(name='pr_curve',
                                                      predictions=predictions,
                                                      labels=y,
-                                                     num_thresholds=10,
-                                                     metrics_collections = 'summaries')
+                                                     num_thresholds=10)
     if num_classes == 2:
         tf.summary.scalar('precision_1', precision, collections=["summaries"])
         tf.summary.scalar('f1_score', f1_score, collections=["summaries"])
 
     # Merge all the summaries and write them out to /tmp/mnist_logs (by default)
-    merged = tf.summary.merge_all("summaries")
+    merged = tf.summary.merge_all()
     #pr_curve = tf.summary.merge_all("pr")
 
     print("Graph created...")
@@ -862,8 +861,8 @@ with tf.Session(graph=graph, config=config) as sess:
 
             # evaluate the test data
             for X_batch, y_batch in get_batches(X_cv, y_cv, batch_size // 2, distort=False):
-                summary, valid_acc, valid_recall, valid_precision, valid_fscore, valid_cost, valid_loss = sess.run(
-                    [merged, accuracy, rec_op, prec_op, f1_score, mean_ce, loss],
+                _, summary, valid_acc, valid_recall, valid_precision, valid_fscore, valid_cost, valid_loss = sess.run(
+                    [update_op, merged, accuracy, rec_op, prec_op, f1_score, mean_ce, loss],
                     feed_dict={
                         X: X_batch,
                         y: y_batch,
@@ -886,8 +885,7 @@ with tf.Session(graph=graph, config=config) as sess:
                 summary = tf.Summary(value=[tf.Summary.Value(tag="accuracy", simple_value=np.mean(batch_cv_acc)),
                                             tf.Summary.Value(tag="cross_entropy", simple_value=np.mean(batch_cv_cost)),
                                             tf.Summary.Value(tag="recall_1", simple_value=np.mean(batch_cv_recall)),
-                                            tf.Summary.Value(tag="precision_1",
-                                                             simple_value=np.mean(batch_cv_precision)),
+                                            tf.Summary.Value(tag="precision_1", simple_value=np.mean(batch_cv_precision)),
                                             tf.Summary.Value(tag="f1_score", simple_value=np.mean(batch_cv_fscore)),
                                             ])
 
