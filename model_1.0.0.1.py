@@ -545,7 +545,7 @@ with graph.as_default():
     _, update_op = summary_lib.pr_curve_streaming_op(name='pr_curve',
                                                      predictions=predictions,
                                                      labels=y,
-                                                     num_thresholds=10,
+                                                     num_thresholds=20,
                                                      metrics_collections='pr')
     if num_classes == 2:
         tf.summary.scalar('precision_1', precision, collections=["summaries"])
@@ -613,9 +613,10 @@ with tf.Session(graph=graph, config=config) as sess:
     coord = tf.train.Coordinator()
     threads = tf.train.start_queue_runners(coord=coord)
     print("Training model", model_name,"...")
-    
+
+    sess.run(tf.local_variables_initializer())
+
     for epoch in range(epochs):
-        sess.run(tf.local_variables_initializer())
 
         for i in range(steps_per_epoch):
             # Accuracy values (train) after each batch
