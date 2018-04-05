@@ -11,6 +11,7 @@ from tensorboard import summary as summary_lib
 
 # download the data
 download_data()
+# ## Create Model
 
 ## config
 # If number of epochs has been passed in use that, otherwise default to 50
@@ -58,7 +59,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.0.2.07"
+model_name = "model_s1.0.2.06"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -83,9 +84,7 @@ model_name = "model_s1.0.2.07"
 # 1.0.0.30 - added a branch to conv1 section
 # 1.0.2.01 - added another branch, a concat and a 1x1 conv to downsize layers before conv3
 # 1.0.2.02 - removed useless 1x1 conv layer and increased size of subsequent conv layers
-# 1.0.2.03 - weighting cross entropy to improve recall
-# 1.0.2.04 - added pr curve to tensorboard summaries
-# 1.0.2.05 - tried to play with pr curve but put it back
+# 1.0.2.06 - updated other code, using weighted xentropy
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -142,11 +141,11 @@ with graph.as_default():
         )
 
         # apply relu
-        conv1_bn_relu = tf.nn.relu(conv1, name='relu1')
+        conv1 = tf.nn.relu(conv1, name='relu1')
 
     with tf.name_scope('conv1.1') as scope:
         conv11 = tf.layers.conv2d(
-            conv1_bn_relu,  # Input data
+            conv1,  # Input data
             filters=32,  # 32 filters
             kernel_size=(3, 3),  # Kernel size: 5x5
             strides=(1, 1),  # Stride: 2
@@ -183,7 +182,7 @@ with graph.as_default():
             strides=(1, 1),  # Stride: 2
             padding='SAME',  # "same" padding
             activation=None,  # None
-            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=1101),
+            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=102),
             kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
             name='conv1.2'
         )
@@ -208,13 +207,13 @@ with graph.as_default():
 
     with tf.name_scope('conv1.3') as scope:
         conv113 = tf.layers.conv2d(
-            conv1_bn_relu,  # Input data
+            conv11,  # Input data
             filters=32,  # 32 filters
             kernel_size=(3, 3),  # Kernel size: 5x5
             strides=(1, 1),  # Stride: 2
             padding='SAME',  # "same" padding
             activation=None,  # None
-            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=11019),
+            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=103),
             kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
             name='conv1.3'
         )
@@ -256,7 +255,7 @@ with graph.as_default():
 
         # optional dropout
         if dropout:
-            pool1 = tf.layers.dropout(pool1, rate=pooldropout_rate, seed=103, training=training)
+            pool1 = tf.layers.dropout(pool1, rate=pooldropout_rate, seed=104, training=training)
 
     # Convolutional layer 2
     with tf.name_scope('conv2.1') as scope:
@@ -267,7 +266,7 @@ with graph.as_default():
             strides=(1, 1),  # Stride: 1
             padding='SAME',  # "same" padding
             activation=None,  # None
-            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=1047),
+            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=105),
             kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
             name='conv2.1'
         )
@@ -299,7 +298,7 @@ with graph.as_default():
             strides=(1, 1),  # Stride: 1
             padding='SAME',  # "same" padding
             activation=None,  # None
-            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=1104),
+            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=106),
             kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
             name='conv2.2'
         )
@@ -331,7 +330,7 @@ with graph.as_default():
             strides=(1, 1),  # Stride: 1
             padding='SAME',  # "same" padding
             activation=None,  # None
-            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=9876),
+            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=107),
             kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
             name='conv2.3'
         )
@@ -373,7 +372,7 @@ with graph.as_default():
 
         # optional dropout
         if dropout:
-            pool2 = tf.layers.dropout(pool2, rate=pooldropout_rate, seed=106, training=training)
+            pool2 = tf.layers.dropout(pool2, rate=pooldropout_rate, seed=108, training=training)
 
     # Convolutional layer 3
     with tf.name_scope('conv3.1') as scope:
@@ -384,7 +383,7 @@ with graph.as_default():
             strides=(1, 1),  # Stride: 1
             padding='SAME',  # "same" padding
             activation=None,  # None
-            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=107),
+            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=109),
             kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
             name='conv3.1'
         )
@@ -416,7 +415,7 @@ with graph.as_default():
             strides=(1, 1),  # Stride: 1
             padding='SAME',  # "same" padding
             activation=None,  # None
-            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=1107),
+            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=110),
             kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
             name='conv3.2'
         )
@@ -450,7 +449,7 @@ with graph.as_default():
         )
 
         if dropout:
-            pool3 = tf.layers.dropout(pool3, rate=pooldropout_rate, seed=109, training=training)
+            pool3 = tf.layers.dropout(pool3, rate=pooldropout_rate, seed=111, training=training)
 
     # Convolutional layer 4
     with tf.name_scope('conv4') as scope:
@@ -461,7 +460,7 @@ with graph.as_default():
             strides=(1, 1),  # Stride: 1
             padding='SAME',  # "same" padding
             activation=None,  # None
-            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=110),
+            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=112),
             kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
             name='conv4'
         )
@@ -484,6 +483,7 @@ with graph.as_default():
         # apply relu
         conv4 = tf.nn.relu(conv4, name='relu4')
 
+
     # Max pooling layer 4
     with tf.name_scope('pool4') as scope:
         pool4 = tf.layers.max_pooling2d(
@@ -495,7 +495,7 @@ with graph.as_default():
         )
 
         if dropout:
-            pool4 = tf.layers.dropout(pool4, rate=pooldropout_rate, seed=112, training=training)
+            pool4 = tf.layers.dropout(pool4, rate=pooldropout_rate, seed=113, training=training)
 
         # Convolutional layer 4
     with tf.name_scope('conv5') as scope:
@@ -506,7 +506,7 @@ with graph.as_default():
             strides=(1, 1),  # Stride: 1
             padding='SAME',  # "same" padding
             activation=None,  # None
-            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=113),
+            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=114),
             kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
             name='conv5'
         )
@@ -540,14 +540,14 @@ with graph.as_default():
         )
 
         if dropout:
-            pool5 = tf.layers.dropout(pool5, rate=pooldropout_rate, seed=115, training=training)
+            pool5 = tf.layers.dropout(pool5, rate=pooldropout_rate, seed=116, training=training)
 
     # Flatten output
     with tf.name_scope('flatten') as scope:
         flat_output = tf.contrib.layers.flatten(pool5)
 
         # dropout at fc rate
-        flat_output = tf.layers.dropout(flat_output, rate=fcdropout_rate, seed=116, training=training)
+        flat_output = tf.layers.dropout(flat_output, rate=fcdropout_rate, seed=117, training=training)
 
     # Fully connected layer 1
     with tf.name_scope('fc1') as scope:
@@ -555,13 +555,13 @@ with graph.as_default():
             flat_output,
             2048,
             activation=None,
-            kernel_initializer=tf.variance_scaling_initializer(scale=2, seed=117),
+            kernel_initializer=tf.variance_scaling_initializer(scale=2, seed=118),
             bias_initializer=tf.zeros_initializer(),
             kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamF),
             name="fc1"
         )
 
-        bn_fc1 = tf.layers.batch_normalization(
+        fc1 = tf.layers.batch_normalization(
             fc1,
             axis=-1,
             momentum=0.9,
@@ -576,24 +576,24 @@ with graph.as_default():
             name='bn_fc1'
         )
 
-        fc1_relu = tf.nn.relu(bn_fc1, name='fc1_relu')
+        fc1 = tf.nn.relu(fc1, name='fc1_relu')
 
         # dropout
-        fc1_relu = tf.layers.dropout(fc1_relu, rate=fcdropout_rate, seed=118, training=training)
+        fc1 = tf.layers.dropout(fc1, rate=fcdropout_rate, seed=119, training=training)
 
     # Fully connected layer 2
     with tf.name_scope('fc2') as scope:
         fc2 = tf.layers.dense(
-            fc1_relu,  # input
+            fc1,  # input
             2048,  # 1024 hidden units
             activation=None,  # None
-            kernel_initializer=tf.variance_scaling_initializer(scale=2, seed=119),
+            kernel_initializer=tf.variance_scaling_initializer(scale=2, seed=120),
             bias_initializer=tf.zeros_initializer(),
             kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamF),
             name="fc2"
         )
 
-        bn_fc2 = tf.layers.batch_normalization(
+        fc2 = tf.layers.batch_normalization(
             fc2,
             axis=-1,
             momentum=0.9,
@@ -608,14 +608,14 @@ with graph.as_default():
             name='bn_fc2'
         )
 
-        fc2_relu = tf.nn.relu(bn_fc2, name='fc2_relu')
+        fc2 = tf.nn.relu(fc2, name='fc2_relu')
 
         # dropout
-        fc2_relu = tf.layers.dropout(fc2_relu, rate=fcdropout_rate, seed=120, training=training)
+        fc2 = tf.layers.dropout(fc2, rate=fcdropout_rate, seed=120, training=training)
 
     # Output layer
     logits = tf.layers.dense(
-        fc2_relu,
+        fc2,
         num_classes,  # One output unit per category
         activation=None,  # No activation function
         kernel_initializer=tf.variance_scaling_initializer(scale=1, seed=121),
@@ -705,8 +705,8 @@ with graph.as_default():
     #pr_curve = tf.summary.merge_all("pr")
 
     print("Graph created...")
-# ## Train
 
+### Train
 ## CONFIGURE OPTIONS
 if os.path.exists(os.path.join("model", model_name + '.ckpt.index')):
     init = False
@@ -730,16 +730,8 @@ valid_cost_values = []
 train_acc_values = []
 train_recall_values = []
 train_cost_values = []
-train_lr_values = []
-train_loss_values = []
 
 config = tf.ConfigProto()
-# if use_gpu:
-#    config = tf.ConfigProto()
-#    config.gpu_options.allocator_type = 'BFC'
-#    config.gpu_options.per_process_gpu_memory_fraction = 0.7
-# else:
-#    config = tf.ConfigProto(device_count = {'GPU': 0})
 
 ## train the model
 with tf.Session(graph=graph, config=config) as sess:
@@ -764,16 +756,14 @@ with tf.Session(graph=graph, config=config) as sess:
     threads = tf.train.start_queue_runners(coord=coord)
     print("Training model", model_name, "...")
 
-    # initialize local variables
-    sess.run(tf.local_variables_initializer())
-
     for epoch in range(epochs):
+        sess.run(tf.local_variables_initializer())
+
         for i in range(steps_per_epoch):
             # Accuracy values (train) after each batch
             batch_acc = []
             batch_cost = []
             batch_loss = []
-            batch_lr = []
             batch_recall = []
 
             # create the metadata
@@ -795,15 +785,12 @@ with tf.Session(graph=graph, config=config) as sess:
             # Save accuracy (current batch)
             batch_acc.append(acc_value)
             batch_cost.append(cost_value)
-            #batch_lr.append(lr)
-            #batch_loss.append(loss_value)
             batch_recall.append(np.mean(recall_value))
 
             # log the summaries to tensorboard every 50 steps
             if log_to_tensorboard and (( (i % 50 == 0) and (i > 1)) or (i == steps_per_epoch - 1)):
                 # write the summary
                 train_writer.add_summary(summary, step)
-
                 # only log the meta data once per epoch
                 if i == 1:
                     train_writer.add_run_metadata(run_metadata, 'step %d' % step)
@@ -882,8 +869,6 @@ with tf.Session(graph=graph, config=config) as sess:
         valid_cost_values.append(np.mean(batch_cv_cost))
         train_acc_values.append(np.mean(batch_acc))
         train_cost_values.append(np.mean(batch_cost))
-        train_lr_values.append(np.mean(batch_lr))
-        #train_loss_values.append(np.mean(batch_loss))
         train_recall_values.append(np.mean(batch_recall))
         valid_recall_values.append(np.mean(batch_cv_recall))
 
