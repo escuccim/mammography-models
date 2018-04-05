@@ -47,7 +47,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.0.3.08"
+model_name = "model_s1.0.3.09"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -142,7 +142,7 @@ with graph.as_default():
             strides=(1, 1),  # Stride: 2
             padding='valid',  # "same" padding
             activation=None,  # None
-            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=100),
+            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=98),
             kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
             name='conv0.1'
         )
@@ -173,7 +173,7 @@ with graph.as_default():
             strides=(1, 1),  # Stride: 2
             padding='same',  # "same" padding
             activation=None,  # None
-            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=100),
+            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=95),
             kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
             name='conv0.2'
         )
@@ -208,7 +208,7 @@ with graph.as_default():
 
         # optional dropout
         if dropout:
-            pool0 = tf.layers.dropout(pool0, rate=pooldropout_rate, seed=103, training=training)
+            pool0 = tf.layers.dropout(pool0, rate=pooldropout_rate, seed=493, training=training)
 
     with tf.name_scope('conv1.1') as scope:
         conv11 = tf.layers.conv2d(
@@ -593,7 +593,7 @@ with graph.as_default():
             strides=(1, 1),  # Stride: 1
             padding='SAME',  # "same" padding
             activation=None,  # None
-            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=110),
+            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=7246),
             kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
             name='conv4.1'
         )
