@@ -867,6 +867,8 @@ with tf.Session(graph=graph, config=config) as sess:
     print("Training model", model_name, "...")
 
     for epoch in range(epochs):
+        sess.run(tf.local_variables_initializer())
+        
         for i in range(steps_per_epoch):
             # Accuracy values (train) after each batch
             batch_acc = []
