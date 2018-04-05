@@ -210,3 +210,24 @@ def download_data():
 
     if not os.path.exists(os.path.join("data", "training2_4.tfrecords")):
         _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training2_4.tfrecords', 'training2_4.tfrecords')
+
+def get_training_data(type="new"):
+    if type == "new":
+        train_path_10 = os.path.join("data", "training2_0.tfrecords")
+        train_path_11 = os.path.join("data", "training2_1.tfrecords")
+        train_path_12 = os.path.join("data", "training2_2.tfrecords")
+        train_path_13 = os.path.join("data", "training2_3.tfrecords")
+        train_path_14 = os.path.join("data", "training2_4.tfrecords")
+
+        train_files = [train_path_10, train_path_11, train_path_12, train_path_13, train_path_14]
+        total_records = 27296
+    else:
+        train_path_0 = os.path.join("data", "training_0.tfrecords")
+        train_path_1 = os.path.join("data", "training_1.tfrecords")
+        train_path_2 = os.path.join("data", "training_2.tfrecords")
+        train_path_3 = os.path.join("data", "training_3.tfrecords")
+
+        train_files = [train_path_0, train_path_1, train_path_2, train_path_3]
+        total_records = 27393
+
+    return train_files, total_records

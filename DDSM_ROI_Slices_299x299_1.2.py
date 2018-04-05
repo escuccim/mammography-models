@@ -4,7 +4,7 @@ import wget
 from sklearn.cross_validation import train_test_split
 import tensorflow as tf
 from training_utils import download_file, get_batches, read_and_decode_single_example, load_validation_data, \
-    download_data, evaluate_model
+    download_data, evaluate_model, get_training_data
 import sys
 import argparse
 from tensorboard import summary as summary_lib
@@ -25,21 +25,7 @@ else:
 
 batch_size = 64
 
-train_path_0 = os.path.join("data", "training_0.tfrecords")
-train_path_1 = os.path.join("data", "training_1.tfrecords")
-train_path_2 = os.path.join("data", "training_2.tfrecords")
-train_path_3 = os.path.join("data", "training_3.tfrecords")
-
-train_path_10 = os.path.join("data", "training2_0.tfrecords")
-train_path_11 = os.path.join("data", "training2_1.tfrecords")
-train_path_12 = os.path.join("data", "training2_2.tfrecords")
-train_path_13 = os.path.join("data", "training2_3.tfrecords")
-train_path_14 = os.path.join("data", "training2_4.tfrecords")
-
-test_path = os.path.join("data", "test.tfrecords")
-#train_files = [train_path_0, train_path_1, train_path_2, train_path_3]
-train_files = [train_path_10, train_path_11, train_path_12, train_path_13, train_path_14]
-total_records = 27296
+train_files, total_records = get_training_data(type="new")
 
 ## Hyperparameters
 # Small epsilon value for the BN transform
@@ -819,7 +805,7 @@ with tf.Session(graph=graph, config=config) as sess:
             batch_recall.append(np.mean(recall_value))
 
             # log the summaries to tensorboard every 50 steps
-            if log_to_tensorboard and ((i % 50 == 0) or (i == steps_per_epoch - 1)):
+            if log_to_tensorboard and ((i % 50 == 0 and i > 1) or (i == steps_per_epoch - 1)):
                 # write the summary
                 train_writer.add_summary(summary, step)
 
