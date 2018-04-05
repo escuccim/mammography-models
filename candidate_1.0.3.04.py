@@ -47,7 +47,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.0.3.04"
+model_name = "model_s1.0.3.05"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -201,7 +201,7 @@ with graph.as_default():
             conv02,  # Input
             pool_size=(3, 3),  # Pool size: 3x3
             strides=(2, 2),  # Stride: 2
-            padding='valid',  # "same" padding
+            padding='SAME',  # "same" padding
             name='pool0'
         )
 
@@ -868,7 +868,7 @@ with tf.Session(graph=graph, config=config) as sess:
 
     for epoch in range(epochs):
         sess.run(tf.local_variables_initializer())
-        
+
         for i in range(steps_per_epoch):
             # Accuracy values (train) after each batch
             batch_acc = []
