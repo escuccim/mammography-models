@@ -4,7 +4,7 @@ import wget
 from sklearn.cross_validation import train_test_split
 import tensorflow as tf
 from training_utils import download_file, get_batches, read_and_decode_single_example, load_validation_data, \
-    download_data, evaluate_model
+    download_data, evaluate_model, get_training_data
 from tensorboard import summary as summary_lib
 
 download_data()
@@ -14,13 +14,7 @@ download_data()
 epochs = 50
 batch_size = 64
 
-train_path_0 = os.path.join("data", "training_0.tfrecords")
-train_path_1 = os.path.join("data", "training_1.tfrecords")
-train_path_2 = os.path.join("data", "training_2.tfrecords")
-train_path_3 = os.path.join("data", "training_3.tfrecords")
-test_path = os.path.join("data", "test.tfrecords")
-train_files = [train_path_0, train_path_1, train_path_2, train_path_3]
-total_records = 27296
+train_files, total_records = get_training_data(type="new")
 
 ## Hyperparameters
 # Small epsilon value for the BN transform
