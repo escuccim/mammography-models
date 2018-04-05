@@ -50,9 +50,11 @@
       <file leaf-file-name="candidate_1.0.3.04.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/candidate_1.0.3.04.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="198">
-              <caret line="6" column="52" lean-forward="false" selection-start-line="6" selection-start-column="52" selection-end-line="6" selection-end-column="52" />
-              <folding />
+            <state relative-caret-position="315">
+              <caret line="732" column="31" lean-forward="false" selection-start-line="732" selection-start-column="31" selection-end-line="732" selection-end-column="31" />
+              <folding>
+                <element signature="e#0#18#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -112,6 +114,7 @@
       <find>pool1.0</find>
       <find>1_1</find>
       <find>pr_summary</find>
+      <find>conv1</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -527,9 +530,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/candidate_1.0.3.04.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="198">
-          <caret line="6" column="52" lean-forward="false" selection-start-line="6" selection-start-column="52" selection-end-line="6" selection-end-column="52" />
-          <folding />
+        <state relative-caret-position="315">
+          <caret line="732" column="31" lean-forward="false" selection-start-line="732" selection-start-column="31" selection-end-line="732" selection-end-column="31" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
