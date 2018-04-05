@@ -267,7 +267,7 @@ with graph.as_default():
             strides=(1, 1),  # Stride: 1
             padding='SAME',  # "same" padding
             activation=None,  # None
-            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=104),
+            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=1047),
             kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
             name='conv2.1'
         )
@@ -331,7 +331,7 @@ with graph.as_default():
             strides=(1, 1),  # Stride: 1
             padding='SAME',  # "same" padding
             activation=None,  # None
-            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=104),
+            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=9876),
             kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
             name='conv2.3'
         )
@@ -482,15 +482,12 @@ with graph.as_default():
         )
 
         # apply relu
-        conv4_bn_relu = tf.nn.relu(conv4, name='relu4')
-
-        # if dropout:
-        #    conv4_bn_relu = tf.layers.dropout(conv4_bn_relu, rate=convdropout_rate, seed=111, training=training)
+        conv4 = tf.nn.relu(conv4, name='relu4')
 
     # Max pooling layer 4
     with tf.name_scope('pool4') as scope:
         pool4 = tf.layers.max_pooling2d(
-            conv4_bn_relu,  # Input
+            conv4,  # Input
             pool_size=(2, 2),  # Pool size: 2x2
             strides=(2, 2),  # Stride: 2
             padding='SAME',  # "same" padding
@@ -530,15 +527,12 @@ with graph.as_default():
         )
 
         # apply relu
-        conv5_bn_relu = tf.nn.relu(conv5, name='relu5')
-
-        # if dropout:
-        #    conv5_bn_relu = tf.layers.dropout(conv5_bn_relu, rate=convdropout_rate, seed=114, training=training)
+        conv5 = tf.nn.relu(conv5, name='relu5')
 
     # Max pooling layer 4
     with tf.name_scope('pool5') as scope:
         pool5 = tf.layers.max_pooling2d(
-            conv5_bn_relu,
+            conv5,
             pool_size=(2, 2),  # Pool size: 2x2
             strides=(2, 2),  # Stride: 2
             padding='SAME',
@@ -770,9 +764,10 @@ with tf.Session(graph=graph, config=config) as sess:
     threads = tf.train.start_queue_runners(coord=coord)
     print("Training model", model_name, "...")
 
-    for epoch in range(epochs):
-        sess.run(tf.local_variables_initializer())
+    # initialize local variables
+    sess.run(tf.local_variables_initializer())
 
+    for epoch in range(epochs):
         for i in range(steps_per_epoch):
             # Accuracy values (train) after each batch
             batch_acc = []
@@ -805,16 +800,9 @@ with tf.Session(graph=graph, config=config) as sess:
             batch_recall.append(np.mean(recall_value))
 
             # log the summaries to tensorboard every 50 steps
-            if log_to_tensorboard and ((i % 50 == 0 and i > 1) or (i == steps_per_epoch - 1)):
+            if log_to_tensorboard and (( (i % 50 == 0) and (i > 1)) or (i == steps_per_epoch - 1)):
                 # write the summary
                 train_writer.add_summary(summary, step)
-
-                # get the pr curve summary
-                #pr_summary = sess.run(pr_curve, feed_dict = {
-                #    training: False,
-                #    is_testing: False
-                #})
-                #train_writer.add_summary(pr_summary, step)
 
                 # only log the meta data once per epoch
                 if i == 1:
