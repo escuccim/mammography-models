@@ -22,11 +22,15 @@ def download_file(url, name):
     except:
         os.mkdir("data")
 
-    fname = wget.download(url, os.path.join('data', name))
+    try:
+        fname = wget.download(url, os.path.join('data', name))
 
-    # if the file is a zip file unzip it
-    if "zip" in name:
-        unzip(os.path.join("data", name), "data")
+        # if the file is a zip file unzip it
+        if "zip" in name:
+            unzip(os.path.join("data", name), "data")
+    except:
+        print("Error downloading", url)
+        
 
 
 ## Batch generator
