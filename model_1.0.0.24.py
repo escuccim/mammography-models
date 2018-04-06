@@ -26,7 +26,7 @@ else:
 
 batch_size = 64
 
-train_files, total_records = get_training_data(type="new")
+train_files, total_records = get_training_data(type="old")
 
 ## Hyperparameters
 # Small epsilon value for the BN transform
@@ -59,7 +59,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.0.0.25"
+model_name = "model_s1.0.0.26"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -563,7 +563,7 @@ with graph.as_default():
     # Different weighting method
     # This will weight the positive examples higher so as to improve recall
     #weights = tf.multiply(2, tf.cast(tf.equal(y, 1), tf.int32)) + 1
-    #   mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=logits, weights=weights))
+    #mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=logits, weights=weights))
 
     # Add in l2 loss
     loss = mean_ce + tf.losses.get_regularization_loss()
