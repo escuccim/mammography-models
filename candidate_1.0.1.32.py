@@ -629,34 +629,35 @@ with graph.as_default():
             )
 
             f1_score = 2 * ((precision * recall) / (precision + recall))
+
     else:
         recall, rec_op = tf.metrics.recall(labels=y, predictions=predictions, name="recall")
         precision, prec_op = tf.metrics.precision(labels=y, predictions=predictions, name="precision")
         f1_score = 2 * ((precision * recall) / (precision + recall))
 
-        # add this so that the batch norm gets run
-        extra_update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
-
-        # Create summary hooks
-        tf.summary.scalar('accuracy', accuracy, collections=["summaries"])
-        tf.summary.scalar('recall_1', recall, collections=["summaries"])
-        tf.summary.scalar('cross_entropy', mean_ce, collections=["summaries"])
-        tf.summary.scalar('loss', loss, collections=["summaries"])
-        tf.summary.scalar('learning_rate', learning_rate, collections=["summaries"])
+        tf.summary.scalar('precision_1', precision, collections=["summaries"])
+        tf.summary.scalar('f1_score', f1_score, collections=["summaries"])
 
         _, update_op = summary_lib.pr_curve_streaming_op(name='pr_curve',
                                                          predictions=predictions,
                                                          labels=y,
                                                          num_thresholds=10)
-        if num_classes == 2:
-            tf.summary.scalar('precision_1', precision, collections=["summaries"])
-            tf.summary.scalar('f1_score', f1_score, collections=["summaries"])
 
-        # Merge all the summaries and write them out to /tmp/mnist_logs (by default)
-        merged = tf.summary.merge_all()
-        # pr_curve = tf.summary.merge_all("pr")
+    # add this so that the batch norm gets run
+    extra_update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
 
-        print("Graph created...")
+    # Create summary hooks
+    tf.summary.scalar('accuracy', accuracy, collections=["summaries"])
+    tf.summary.scalar('recall_1', recall, collections=["summaries"])
+    tf.summary.scalar('cross_entropy', mean_ce, collections=["summaries"])
+    tf.summary.scalar('loss', loss, collections=["summaries"])
+    tf.summary.scalar('learning_rate', learning_rate, collections=["summaries"])
+
+    # Merge all the summaries and write them out to /tmp/mnist_logs (by default)
+    merged = tf.summary.merge_all()
+    # pr_curve = tf.summary.merge_all("pr")
+
+    print("Graph created...")
 
 # ## Train
 
