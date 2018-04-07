@@ -244,9 +244,9 @@ def download_data(what="new"):
             _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/cv_data_0.zip',
                               'cv_data_0.zip')
 
-        if not os.path.exists(os.path.join("data", "cv_data_0.zip")):
-            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/cv_data_0.zip',
-                              'cv_data_0.zip')
+        if not os.path.exists(os.path.join("data", "cv_data_1.zip")):
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/cv_data_1.zip',
+                              'cv_data_1.zip')
 
         # download validation labels
         if not os.path.exists(os.path.join("data", "cv_labels_0.npy")):
