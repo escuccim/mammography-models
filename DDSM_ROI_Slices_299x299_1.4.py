@@ -966,7 +966,7 @@ with tf.Session(graph=graph, config=config) as sess:
             X_cv, y_cv = load_validation_data(percentage=1, how="normal")
 
             # evaluate the test data
-            for X_batch, y_batch in get_batches(X_cv, y_cv, batch_size // 2, distort=False):
+            for X_batch, y_batch in get_batches(X_cv, y_cv, batch_size, distort=False):
                 summary, valid_acc, valid_recall, valid_precision, valid_fscore, valid_cost, valid_loss = sess.run(
                     [merged, accuracy, rec_op, prec_op, f1_score, mean_ce, loss],
                     feed_dict={
@@ -1048,7 +1048,7 @@ with tf.Session(graph=graph, config=config) as sess:
     test_predictions = []
     ground_truth = []
 
-    for X_batch, y_batch in get_batches(X_te, y_te, batch_size // 2, distort=False):
+    for X_batch, y_batch in get_batches(X_te, y_te, batch_size, distort=False):
         yhat, test_acc_value, test_recall_value = sess.run([predictions, accuracy, rec_op], feed_dict=
         {
             X: X_batch,

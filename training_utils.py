@@ -30,7 +30,7 @@ def download_file(url, name):
             unzip(os.path.join("data", name), "data")
     except:
         print("Error downloading", url)
-        
+
 
 
 ## Batch generator
@@ -169,7 +169,7 @@ def evaluate_model(graph, config, model_name, how="normal", batch_size=32):
         ground_truth = []
 
         # evaluate the test data
-        for X_batch, y_batch in get_batches(X_te, y_te, batch_size // 2, distort=False):
+        for X_batch, y_batch in get_batches(X_te, y_te, batch_size, distort=False):
             yhat, test_acc_value, test_recall_value = sess.run([predictions, accuracy, rec_op], feed_dict=
             {
                 X: X_batch,
@@ -192,7 +192,6 @@ def evaluate_model(graph, config, model_name, how="normal", batch_size=32):
 ## Download the data if it doesn't already exist
 def download_data(what="new"):
     if what == "new":
-
         # download and unzip tfrecords training data
         if not os.path.exists(os.path.join("data", "training2_0.zip")):
             _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training2_0.zip',
@@ -223,6 +222,14 @@ def download_data(what="new"):
             _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/test2_data_1.zip',
                               'test2_data_1.zip')
 
+        if not os.path.exists(os.path.join("data", "test2_filenames_0.npy")):
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/test2_filenames_0.npy',
+                              'test2_filenames_0.npy')
+
+        if not os.path.exists(os.path.join("data", "test2_filenames_1.npy")):
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/test2_filenames_1.npy',
+                              'test2_filenames_1.npy')
+
         # download test labels
         if not os.path.exists(os.path.join("data", "test2_labels_0.npy")):
             _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/test2_labels_0.npy',
@@ -233,13 +240,13 @@ def download_data(what="new"):
                               'test2_labels_1.npy')
 
         # download and unzip validation data
-        if not os.path.exists(os.path.join("data", "cv_data_0.npy")):
-            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/cv_data_0.npy',
-                              'cv_data_0.npy')
+        if not os.path.exists(os.path.join("data", "cv_data_0.zip")):
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/cv_data_0.zip',
+                              'cv_data_0.zip')
 
-        if not os.path.exists(os.path.join("data", "cv_data_0.npy")):
-            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/cv_data_0.npy',
-                              'cv_data_0.npy')
+        if not os.path.exists(os.path.join("data", "cv_data_0.zip")):
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/cv_data_0.zip',
+                              'cv_data_0.zip')
 
         # download validation labels
         if not os.path.exists(os.path.join("data", "cv_labels_0.npy")):
@@ -249,6 +256,14 @@ def download_data(what="new"):
         if not os.path.exists(os.path.join("data", "cv_labels_1.npy")):
             _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/cv_labels_1.npy',
                               'cv_labels_1.npy')
+
+        if not os.path.exists(os.path.join("data", "cv_filenames_0.npy")):
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/cv_filenames_0.npy',
+                              'cv_filenames_0.npy')
+
+        if not os.path.exists(os.path.join("data", "cv_filenames_1.npy")):
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/cv_filenames_1.npy',
+                              'cv_filenames_1.npy')
 
     elif what == "old":
         # download main training tfrecords files
@@ -324,7 +339,8 @@ def get_training_data(type="new"):
         train_path_14 = os.path.join("data", "training2_4.tfrecords")
 
         train_files = [train_path_10, train_path_11, train_path_12, train_path_13, train_path_14]
-        total_records = 31027
+        total_records = 32176
+
     elif type == "medium":
         train_path_10 = os.path.join("data", "training3_0.tfrecords")
         train_path_11 = os.path.join("data", "training3_1.tfrecords")

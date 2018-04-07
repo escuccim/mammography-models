@@ -702,7 +702,6 @@ with graph.as_default():
 
     # Merge all the summaries and write them out to /tmp/mnist_logs (by default)
     merged = tf.summary.merge_all()
-    #pr_curve = tf.summary.merge_all("pr")
 
     print("Graph created...")
 
@@ -791,9 +790,10 @@ with tf.Session(graph=graph, config=config) as sess:
             if log_to_tensorboard and (( (i % 50 == 0) and (i > 1)) or (i == steps_per_epoch - 1)):
                 # write the summary
                 train_writer.add_summary(summary, step)
-                # only log the meta data once per epoch
-                if i == 1:
-                    train_writer.add_run_metadata(run_metadata, 'step %d' % step)
+
+            # only log the meta data once per epoch
+            if i == 1:
+                train_writer.add_run_metadata(run_metadata, 'step %d' % step)
 
         # save checkpoint every nth epoch
         if (epoch % checkpoint_every == 0):
@@ -821,7 +821,7 @@ with tf.Session(graph=graph, config=config) as sess:
             X_cv, y_cv = load_validation_data(percentage=1, how="normal")
 
             # evaluate the test data
-            for X_batch, y_batch in get_batches(X_cv, y_cv, batch_size // 2, distort=False):
+            for X_batch, y_batch in get_batches(X_cv, y_cv, batch_size, distort=False):
                 _, summary, valid_acc, valid_recall, valid_precision, valid_fscore, valid_cost, valid_loss = sess.run(
                     [update_op, merged, accuracy, rec_op, prec_op, f1_score, mean_ce, loss],
                     feed_dict={
@@ -902,7 +902,7 @@ with tf.Session(graph=graph, config=config) as sess:
     ground_truth = []
 
     # evaluate the test data
-    for X_batch, y_batch in get_batches(X_te, y_te, batch_size // 2, distort=False):
+    for X_batch, y_batch in get_batches(X_te, y_te, batch_size, distort=False):
         yhat, test_acc_value, test_recall_value = sess.run([predictions, accuracy, rec_op], feed_dict=
         {
             X: X_batch,
