@@ -95,38 +95,38 @@ def read_and_decode_single_example(filenames, label_type='label_normal', normali
 def load_validation_data(data="validation", how="class", percentage=0.5):
     if data == "validation":
         # load the two data files
-        X_cv_0 = np.load(os.path.join("data", "cv_data_0.npy"))
-        labels_0 = np.load(os.path.join("data", "cv_labels_0.npy"))
+        X_cv = np.load(os.path.join("data", "cv4_data.npy"))
+        labels = np.load(os.path.join("data", "cv4_labels.npy"))
 
-        X_cv_1 = np.load(os.path.join("data", "cv_data_1.npy"))
-        labels_1 = np.load(os.path.join("data", "cv_labels_1.npy"))
+        # X_cv_1 = np.load(os.path.join("data", "cv_data_1.npy"))
+        # labels_1 = np.load(os.path.join("data", "cv_labels_1.npy"))
 
         # concatenate them
-        X_cv = np.concatenate([X_cv_0, X_cv_1], axis=0)
-        labels = np.concatenate([labels_0, labels_1], axis=0)
+        # X_cv = np.concatenate([X_cv_0, X_cv_1], axis=0)
+        # labels = np.concatenate([labels_0, labels_1], axis=0)
 
         # delete the old files to save memory
-        del (X_cv_0)
-        del (X_cv_1)
-        del (labels_0)
-        del (labels_1)
+        # del (X_cv_0)
+        # del (X_cv_1)
+        # del (labels_0)
+        # del (labels_1)
 
     elif data == "test":
-        X_te_0 = np.load(os.path.join("data", "test2_data_0.npy"))
-        te_labels_0 = np.load(os.path.join("data", "test2_labels_0.npy"))
+        X_cv = np.load(os.path.join("data", "test4_data.npy"))
+        labels = np.load(os.path.join("data", "test4_labels.npy"))
 
-        X_te_1 = np.load(os.path.join("data", "test2_data_1.npy"))
-        te_labels_1 = np.load(os.path.join("data", "test2_labels_1.npy"))
+        # X_te_1 = np.load(os.path.join("data", "test2_data_1.npy"))
+        # te_labels_1 = np.load(os.path.join("data", "test2_labels_1.npy"))
 
         # concatenate them
-        X_cv = np.concatenate([X_te_0, X_te_1], axis=0)
-        labels = np.concatenate([te_labels_0, te_labels_1], axis=0)
+        # X_cv = np.concatenate([X_te_0, X_te_1], axis=0)
+        # labels = np.concatenate([te_labels_0, te_labels_1], axis=0)
 
         # delete the old files to save memory
-        del (X_te_0)
-        del (X_te_1)
-        del (te_labels_0)
-        del (te_labels_1)
+        # del (X_te_0)
+        # del (X_te_1)
+        # del (te_labels_0)
+        # del (te_labels_1)
 
     # encode the labels appropriately
     if how == "class":
@@ -193,28 +193,28 @@ def evaluate_model(graph, config, model_name, how="normal", batch_size=32):
 def download_data(what="new"):
     if what == "new":
         # download and unzip tfrecords training data
-        if not os.path.exists(os.path.join("data", "training4_0.zip")):
+        if not os.path.exists(os.path.join("data", "training4_0.tfrecords")):
             _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training4_0.zip',
                               'training4_0.zip')
 
-        if not os.path.exists(os.path.join("data", "training4_1.zip")):
+        if not os.path.exists(os.path.join("data", "training4_1.tfrecords")):
             _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training4_1.zip',
                               'training4_1.zip')
 
-        if not os.path.exists(os.path.join("data", "training4_2.zip")):
+        if not os.path.exists(os.path.join("data", "training4_2.tfrecords")):
             _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training4_2.zip',
                               'training42_2.zip')
 
-        if not os.path.exists(os.path.join("data", "training4_3.zip")):
+        if not os.path.exists(os.path.join("data", "training4_3.tfrecords")):
             _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training4_3.zip',
                               'training4_3.zip')
 
-        if not os.path.exists(os.path.join("data", "training4_4.zip")):
+        if not os.path.exists(os.path.join("data", "training4_4.tfrecords")):
             _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training4_4.zip',
                               'training4_4.zip')
 
         # download and unzip test data
-        if not os.path.exists(os.path.join("data", "test4_data.zip")):
+        if not os.path.exists(os.path.join("data", "test4_data.npy")):
             _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/test4_data.zip',
                               'test4_data.zip')
 
@@ -228,7 +228,7 @@ def download_data(what="new"):
                               'test4_labels.npy')
 
         # download and unzip validation data
-        if not os.path.exists(os.path.join("data", "cv4_data.zip")):
+        if not os.path.exists(os.path.join("data", "cv4_data.npy")):
             _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/cv4_data.zip',
                               'cv4_data.zip')
 
