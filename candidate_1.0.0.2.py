@@ -452,8 +452,8 @@ with graph.as_default():
     accuracy, acc_op = tf.metrics.accuracy(
         labels=y,
         predictions=predictions,
-        #updates_collections="update_ops",
-        #metrics_collections="summaries",
+        updates_collections=tf.GraphKeys.UPDATE_OPS,
+        metrics_collections="summaries",
         name="accuracy",
     )
 
@@ -481,8 +481,8 @@ with graph.as_default():
 
             f1_score = 2 * ((precision * recall) / (precision + recall))
     else:
-        recall, rec_op = tf.metrics.recall(labels=y, predictions=predictions, name="recall")
-        precision, prec_op = tf.metrics.precision(labels=y, predictions=predictions, name="precision")
+        recall, rec_op = tf.metrics.recall(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="recall")
+        precision, prec_op = tf.metrics.precision(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="precision")
         f1_score = 2 * ( (precision * recall) / (precision + recall))
 
         #auc, auc_op = tf.metrics.auc(labels=y, predictions=probabilities, num_thresholds=50, name="auc_1")
@@ -499,6 +499,7 @@ with graph.as_default():
     _, update_op = summary_lib.pr_curve_streaming_op(name='pr_curve',
                                                      predictions=predictions,
                                                      labels=y,
+                                                     updates_collections=tf.GraphKeys.UPDATE_OPS,
                                                      num_thresholds=10)
     if num_classes == 2:
         tf.summary.scalar('precision_1', precision, collections=["summaries"])
@@ -586,6 +587,7 @@ with tf.Session(graph=graph, config=config) as sess:
                         },
                         options=run_options,
                         run_metadata=run_metadata)
+
             # every 50th step get the metrics
             else:
                 _, _, _, precision_value, summary, acc_value, cost_value, recall_value, step = sess.run(
