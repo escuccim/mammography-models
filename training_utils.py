@@ -203,7 +203,7 @@ def download_data(what="new"):
 
         if not os.path.exists(os.path.join("data", "training4_2.tfrecords")):
             _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training4_2.zip',
-                              'training42_2.zip')
+                              'training4_2.zip')
 
         if not os.path.exists(os.path.join("data", "training4_3.tfrecords")):
             _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training4_3.zip',
@@ -315,7 +315,7 @@ def get_training_data(type="new"):
         train_path_14 = os.path.join("data", "training4_4.tfrecords")
 
         train_files = [train_path_10, train_path_11, train_path_12, train_path_13, train_path_14]
-        total_records = 32176
+        total_records = 41527
 
     elif type == "medium":
         train_path_10 = os.path.join("data", "training3_0.tfrecords")
