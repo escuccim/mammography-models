@@ -453,7 +453,7 @@ with graph.as_default():
         labels=y,
         predictions=predictions,
         updates_collections=tf.GraphKeys.UPDATE_OPS,
-        metrics_collections="summaries",
+        #metrics_collections="summaries",
         name="accuracy",
     )
 
