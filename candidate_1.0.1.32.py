@@ -57,7 +57,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.0.1.32b"
+model_name = "model_s1.0.1.33b"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -619,6 +619,8 @@ with graph.as_default():
     predictions = tf.argmax(logits, axis=1, output_type=tf.int64)
     is_correct = tf.equal(y, predictions)
     accuracy = tf.reduce_mean(tf.cast(is_correct, dtype=tf.float32))
+
+    probabilities = tf.softmax(logits)
 
     # calculate recall
     if num_classes > 2:
