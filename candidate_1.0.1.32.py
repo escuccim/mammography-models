@@ -651,9 +651,9 @@ with graph.as_default():
         precision, prec_op = tf.metrics.precision(labels=y, predictions=predictions, name="precision")
         f1_score = 2 * ((precision * recall) / (precision + recall))
 
-        auc = tf.metrics.auc(labels=y, predictions=probabilities[1], num_thresholds=50, name="auc_curve")
+        #auc = tf.metrics.auc(labels=y, predictions=probabilities[1], num_thresholds=50, name="auc_curve")
 
-        tf.summary.scalar('auc_1', auc, collections=["summaries"])
+        #tf.summary.scalar('auc_1', auc, collections=["summaries"])
         tf.summary.scalar('precision_1', precision, collections=["summaries"])
         tf.summary.scalar('f1_score', f1_score, collections=["summaries"])
 
