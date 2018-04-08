@@ -10,7 +10,7 @@ import argparse
 from tensorboard import summary as summary_lib
 
 # download the data
-download_data(what="old")
+download_data()
 # ## Create Model
 
 ## config
@@ -26,7 +26,7 @@ else:
 
 batch_size = 64
 
-train_files, total_records = get_training_data(type="oldest")
+train_files, total_records = get_training_data(type="new")
 
 ## Hyperparameters
 # Small epsilon value for the BN transform
