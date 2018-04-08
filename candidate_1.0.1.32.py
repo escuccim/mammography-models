@@ -616,12 +616,7 @@ with graph.as_default():
     train_op = optimizer.minimize(loss, global_step=global_step)
 
     # Compute predictions and accuracy
-    predictions = tf.argmax(logits[1], axis=1, output_type=tf.int64)
-
-    # calculate the probabilities for our metrics
-    #probabilities = tf.nn.softmax(logits)
-
-    # get the accuracy from the predictions
+    predictions = tf.argmax(logits, axis=1, output_type=tf.int64)
     is_correct = tf.equal(y, predictions)
     accuracy = tf.reduce_mean(tf.cast(is_correct, dtype=tf.float32))
 
@@ -645,22 +640,10 @@ with graph.as_default():
             )
 
             f1_score = 2 * ((precision * recall) / (precision + recall))
-
     else:
         recall, rec_op = tf.metrics.recall(labels=y, predictions=predictions, name="recall")
         precision, prec_op = tf.metrics.precision(labels=y, predictions=predictions, name="precision")
         f1_score = 2 * ((precision * recall) / (precision + recall))
-
-        #auc = tf.metrics.auc(labels=y, predictions=probabilities[1], num_thresholds=50, name="auc_curve")
-
-        #tf.summary.scalar('auc_1', auc, collections=["summaries"])
-        tf.summary.scalar('precision_1', precision, collections=["summaries"])
-        tf.summary.scalar('f1_score', f1_score, collections=["summaries"])
-
-        _, update_op = summary_lib.pr_curve_streaming_op(name='pr_curve',
-                                                         predictions=predictions,
-                                                         labels=y,
-                                                         num_thresholds=50)
 
     # add this so that the batch norm gets run
     extra_update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
@@ -672,9 +655,16 @@ with graph.as_default():
     tf.summary.scalar('loss', loss, collections=["summaries"])
     tf.summary.scalar('learning_rate', learning_rate, collections=["summaries"])
 
+    _, update_op = summary_lib.pr_curve_streaming_op(name='pr_curve',
+                                                     predictions=predictions,
+                                                     labels=y,
+                                                     num_thresholds=10)
+    if num_classes == 2:
+        tf.summary.scalar('precision_1', precision, collections=["summaries"])
+        tf.summary.scalar('f1_score', f1_score, collections=["summaries"])
+
     # Merge all the summaries and write them out to /tmp/mnist_logs (by default)
     merged = tf.summary.merge_all()
-    # pr_curve = tf.summary.merge_all("pr")
 
     print("Graph created...")
 
