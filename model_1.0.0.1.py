@@ -10,7 +10,7 @@ import argparse
 from tensorboard import summary as summary_lib
 
 # download the data
-download_data()
+download_data(what="old")
 # ## Create Model
 
 ## config
@@ -26,7 +26,7 @@ else:
 
 batch_size = 64
 
-train_files, total_records = get_training_data(type="new")
+train_files, total_records = get_training_data(type="oldest")
 
 ## Hyperparameters
 # Small epsilon value for the BN transform
@@ -59,7 +59,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.0.0.01"
+model_name = "model_s1.0.0.01a"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
