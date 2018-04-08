@@ -16,8 +16,8 @@
       <file leaf-file-name="candidate_1.0.1.32.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/candidate_1.0.1.32.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="759">
-              <caret line="649" column="72" lean-forward="false" selection-start-line="649" selection-start-column="72" selection-end-line="649" selection-end-column="72" />
+            <state relative-caret-position="363">
+              <caret line="751" column="21" lean-forward="false" selection-start-line="751" selection-start-column="21" selection-end-line="751" selection-end-column="21" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -522,8 +522,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/candidate_1.0.1.32.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="759">
-          <caret line="649" column="72" lean-forward="false" selection-start-line="649" selection-start-column="72" selection-end-line="649" selection-end-column="72" />
+        <state relative-caret-position="363">
+          <caret line="751" column="21" lean-forward="false" selection-start-line="751" selection-start-column="21" selection-end-line="751" selection-end-column="21" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
