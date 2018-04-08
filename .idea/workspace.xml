@@ -17,7 +17,7 @@
         <entry file="file://$PROJECT_DIR$/candidate_1.0.1.32.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="660">
-              <caret line="649" column="96" lean-forward="false" selection-start-line="649" selection-start-column="96" selection-end-line="649" selection-end-column="96" />
+              <caret line="649" column="76" lean-forward="false" selection-start-line="649" selection-start-column="76" selection-end-line="649" selection-end-column="76" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -523,7 +523,7 @@
     <entry file="file://$PROJECT_DIR$/candidate_1.0.1.32.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="660">
-          <caret line="649" column="96" lean-forward="false" selection-start-line="649" selection-start-column="96" selection-end-line="649" selection-end-column="96" />
+          <caret line="649" column="76" lean-forward="false" selection-start-line="649" selection-start-column="76" selection-end-line="649" selection-end-column="76" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
