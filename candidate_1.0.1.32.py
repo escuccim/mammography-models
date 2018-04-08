@@ -653,6 +653,7 @@ with graph.as_default():
 
         auc = tf.metrics.auc(labels=y, predictions=probabilities, num_thresholds=50, name="auc_curve")
 
+        tf.summary.scalar('auc_1', auc, collections=["summaries"])
         tf.summary.scalar('precision_1', precision, collections=["summaries"])
         tf.summary.scalar('f1_score', f1_score, collections=["summaries"])
 
