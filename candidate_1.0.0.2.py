@@ -57,7 +57,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.0.0.01a"
+model_name = "model_s1.0.0.02a"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -75,10 +75,10 @@ model_name = "model_s1.0.0.01a"
 # 0.0.0.20 - lowered learning rate, put a batch norm back in
 # 0.0.0.21 - put all batch norms back in
 # 0.0.0.22 - increased lambdaC, removed dropout from conv layers
+# 1.0.0.2a - scaling down model to test some things
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
-    is_testing = tf.placeholder(dtype=bool, shape=(), name="is_testing")
 
     # create global step for decaying learning rate
     global_step = tf.Variable(0, trainable=False)
@@ -133,73 +133,10 @@ with graph.as_default():
         # apply relu
         conv1_bn_relu = tf.nn.relu(conv1, name='relu1')
 
-    with tf.name_scope('conv1.1') as scope:
-        conv11 = tf.layers.conv2d(
-            conv1_bn_relu,  # Input data
-            filters=32,  # 32 filters
-            kernel_size=(3, 3),  # Kernel size: 5x5
-            strides=(1, 1),  # Stride: 2
-            padding='SAME',  # "same" padding
-            activation=None,  # None
-            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=101),
-            kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
-            name='conv1.1'
-        )
-
-        conv11 = tf.layers.batch_normalization(
-            conv11,
-            axis=-1,
-            momentum=0.99,
-            epsilon=epsilon,
-            center=True,
-            scale=True,
-            beta_initializer=tf.zeros_initializer(),
-            gamma_initializer=tf.ones_initializer(),
-            moving_mean_initializer=tf.zeros_initializer(),
-            moving_variance_initializer=tf.ones_initializer(),
-            training=training,
-            name='bn1.1'
-        )
-
-        # apply relu
-        conv11 = tf.nn.relu(conv11, name='relu1.1')
-
-
-    with tf.name_scope('conv1.2') as scope:
-        conv12 = tf.layers.conv2d(
-            conv11,  # Input data
-            filters=32,  # 32 filters
-            kernel_size=(3, 3),  # Kernel size: 5x5
-            strides=(1, 1),  # Stride: 2
-            padding='SAME',  # "same" padding
-            activation=None,  # None
-            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=1101),
-            kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
-            name='conv1.2'
-        )
-
-        conv12 = tf.layers.batch_normalization(
-            conv12,
-            axis=-1,
-            momentum=0.99,
-            epsilon=epsilon,
-            center=True,
-            scale=True,
-            beta_initializer=tf.zeros_initializer(),
-            gamma_initializer=tf.ones_initializer(),
-            moving_mean_initializer=tf.zeros_initializer(),
-            moving_variance_initializer=tf.ones_initializer(),
-            training=training,
-            name='bn1.2'
-        )
-
-        # apply relu
-        conv12 = tf.nn.relu(conv12, name='relu1.1')
-
     # Max pooling layer 1
     with tf.name_scope('pool1') as scope:
         pool1 = tf.layers.max_pooling2d(
-            conv12,  # Input
+            conv1_bn_relu,  # Input
             pool_size=(3, 3),  # Pool size: 3x3
             strides=(2, 2),  # Stride: 2
             padding='SAME',  # "same" padding
@@ -214,7 +151,7 @@ with graph.as_default():
     with tf.name_scope('conv2') as scope:
         conv2 = tf.layers.conv2d(
             pool1,  # Input data
-            filters=64,  # 32 filters
+            filters=48,  # 32 filters
             kernel_size=(3, 3),  # Kernel size: 9x9
             strides=(1, 1),  # Stride: 1
             padding='SAME',  # "same" padding
@@ -260,7 +197,7 @@ with graph.as_default():
     with tf.name_scope('conv3') as scope:
         conv3 = tf.layers.conv2d(
             pool2,  # Input data
-            filters=128,  # 48 filters
+            filters=64,  # 48 filters
             kernel_size=(3, 3),  # Kernel size: 5x5
             strides=(1, 1),  # Stride: 1
             padding='SAME',  # "same" padding
@@ -305,7 +242,7 @@ with graph.as_default():
     with tf.name_scope('conv4') as scope:
             conv4 = tf.layers.conv2d(
                 pool3,  # Input data
-                filters=256,  # 48 filters
+                filters=96,  # 48 filters
                 kernel_size=(3, 3),  # Kernel size: 5x5
                 strides=(1, 1),  # Stride: 1
                 padding='SAME',  # "same" padding
@@ -353,7 +290,7 @@ with graph.as_default():
     with tf.name_scope('conv5') as scope:
         conv5 = tf.layers.conv2d(
             pool4,  # Input data
-            filters=512,  # 48 filters
+            filters=128,  # 48 filters
             kernel_size=(3, 3),  # Kernel size: 5x5
             strides=(1, 1),  # Stride: 1
             padding='SAME',  # "same" padding
@@ -408,7 +345,7 @@ with graph.as_default():
     with tf.name_scope('fc1') as scope:
         fc1 = tf.layers.dense(
             flat_output,
-            2048,
+            1024,
             activation=None,
             kernel_initializer=tf.variance_scaling_initializer(scale=2, seed=117),
             bias_initializer=tf.zeros_initializer(),
@@ -440,7 +377,7 @@ with graph.as_default():
     with tf.name_scope('fc2') as scope:
         fc2 = tf.layers.dense(
             fc1_relu,  # input
-            2048,  # 1024 hidden units
+            512,  # 1024 hidden units
             activation=None,  # None
             kernel_initializer=tf.variance_scaling_initializer(scale=2, seed=119),
             bias_initializer=tf.zeros_initializer(),
@@ -640,31 +577,38 @@ with tf.Session(graph=graph, config=config) as sess:
             run_options = tf.RunOptions(trace_level=tf.RunOptions.FULL_TRACE)
             run_metadata = tf.RunMetadata()
 
-            # Run training and evaluate accuracy
-            _, _, _, precision_value, summary, acc_value, cost_value, recall_value, step = sess.run(
-                [train_op, extra_update_ops, update_op, prec_op, merged, accuracy, mean_ce, rec_op, global_step],
+            # Run training op and update ops
+            if i % 50 != 0:
+                _, _,  = sess.run(
+                    [train_op, extra_update_ops],
+                        feed_dict={
+                            training: True,
+                        },
+                        options=run_options,
+                        run_metadata=run_metadata)
+            # every 50th step get the metrics
+            else:
+                _, _, _, precision_value, summary, acc_value, cost_value, recall_value, step = sess.run(
+                    [train_op, extra_update_ops, update_op, prec_op, merged, accuracy, mean_ce, rec_op, global_step],
                     feed_dict={
-                        # X: X_batch,
-                        # y: y_batch,
                         training: True,
-                        is_testing: False,
                     },
                     options=run_options,
                     run_metadata=run_metadata)
 
-            # Save accuracy (current batch)
-            batch_acc.append(acc_value)
-            batch_cost.append(cost_value)
-            batch_recall.append(np.mean(recall_value))
+                # Save accuracy (current batch)
+                batch_acc.append(acc_value)
+                batch_cost.append(cost_value)
+                batch_recall.append(np.mean(recall_value))
 
-            # log the summaries to tensorboard every 50 steps
-            if log_to_tensorboard and (( (i % 50 == 0) and (i > 1)) or (i == steps_per_epoch - 1)):
-                # write the summary
-                train_writer.add_summary(summary, step)
+                # log the summaries to tensorboard every 50 steps
+                if log_to_tensorboard:
+                    # write the summary
+                    train_writer.add_summary(summary, step)
 
-            # only log the meta data once per epoch
-            if i == 1:
-                train_writer.add_run_metadata(run_metadata, 'step %d' % step)
+                    # log the meta data once per epoch
+                    if i == 0:
+                        train_writer.add_run_metadata(run_metadata, 'step %d' % step)
 
         # save checkpoint every nth epoch
         if (epoch % checkpoint_every == 0):
@@ -697,7 +641,6 @@ with tf.Session(graph=graph, config=config) as sess:
                     feed_dict={
                         X: X_batch,
                         y: y_batch,
-                        is_testing: True,
                         training: False
                     })
 
