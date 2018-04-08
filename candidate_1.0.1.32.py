@@ -619,7 +619,7 @@ with graph.as_default():
     predictions = tf.argmax(logits[1], axis=1, output_type=tf.int64)
 
     # calculate the probabilities for our metrics
-    probabilities = tf.nn.softmax(logits)#tf.exp(logits) / (tf.exp(logits) + 1)
+    probabilities = tf.nn.softmax(logits)
 
     # get the accuracy from the predictions
     is_correct = tf.equal(y, predictions)
@@ -651,7 +651,7 @@ with graph.as_default():
         precision, prec_op = tf.metrics.precision(labels=y, predictions=predictions, name="precision")
         f1_score = 2 * ((precision * recall) / (precision + recall))
 
-        auc = tf.metrics.auc(labels=y, predictions=probabilities, num_thresholds=50, name="auc_curve")
+        auc = tf.metrics.auc(labels=y, predictions=probabilities[1], num_thresholds=50, name="auc_curve")
 
         tf.summary.scalar('auc_1', auc, collections=["summaries"])
         tf.summary.scalar('precision_1', precision, collections=["summaries"])
