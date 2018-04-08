@@ -658,7 +658,7 @@ with graph.as_default():
         tf.summary.scalar('f1_score', f1_score, collections=["summaries"])
 
         _, update_op = summary_lib.pr_curve_streaming_op(name='pr_curve',
-                                                         predictions=probabilities,
+                                                         predictions=probabilities[1],
                                                          labels=y,
                                                          num_thresholds=50)
 
