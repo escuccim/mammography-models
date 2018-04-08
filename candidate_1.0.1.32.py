@@ -616,7 +616,7 @@ with graph.as_default():
     train_op = optimizer.minimize(loss, global_step=global_step)
 
     # Compute predictions and accuracy
-    predictions = tf.argmax(logits, axis=1, output_type=tf.int64)
+    predictions = tf.argmax(logits[1], axis=1, output_type=tf.int64)
 
     # calculate the probabilities for our metrics
     probabilities = tf.exp(logits) / (tf.exp(logits) + 1)
