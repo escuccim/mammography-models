@@ -619,7 +619,7 @@ with graph.as_default():
     predictions = tf.argmax(logits[1], axis=1, output_type=tf.int64)
 
     # calculate the probabilities for our metrics
-    probabilities = tf.nn.softmax(logits)
+    #probabilities = tf.nn.softmax(logits)
 
     # get the accuracy from the predictions
     is_correct = tf.equal(y, predictions)
