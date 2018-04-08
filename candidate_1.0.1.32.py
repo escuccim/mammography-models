@@ -5,13 +5,23 @@ from sklearn.cross_validation import train_test_split
 import tensorflow as tf
 from training_utils import download_file, get_batches, read_and_decode_single_example, load_validation_data, \
     download_data, evaluate_model, get_training_data
+import argparse
 from tensorboard import summary as summary_lib
 
 download_data()
 # ## Create Model
 
 # config
-epochs = 50
+# If number of epochs has been passed in use that, otherwise default to 50
+parser = argparse.ArgumentParser()
+parser.add_argument("-e", "--epochs", help="number of epochs to train", type=int)
+args = parser.parse_args()
+
+if args.epochs:
+    epochs = args.epochs
+else:
+    epochs = 50
+
 batch_size = 64
 
 train_files, total_records = get_training_data(type="new")
@@ -70,7 +80,8 @@ model_name = "model_s1.0.1.32b"
 # 1.0.0.28 - increased dropout and regularization to prevent overfitting
 # 1.0.0.29 - put learning rate back
 # 1.0.0.30 - added a branch to conv1 section
-# 1.0.0.32 - increased pool dropout rate, using weighted x-entropy, increased FC dropout rate
+# 1.0.1.32 - increased pool dropout rate, using weighted x-entropy, increased FC dropout rate
+# 1.0.1.33 - calculating probabilites from logits so we can do proper pr and auc curves
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -606,6 +617,11 @@ with graph.as_default():
 
     # Compute predictions and accuracy
     predictions = tf.argmax(logits, axis=1, output_type=tf.int64)
+
+    # calculate the probabilities for our metrics
+    probabilities = tf.exp(logits) / (tf.exp(logits) + 1)
+
+    # get the accuracy from the predictions
     is_correct = tf.equal(y, predictions)
     accuracy = tf.reduce_mean(tf.cast(is_correct, dtype=tf.float32))
 
@@ -635,13 +651,15 @@ with graph.as_default():
         precision, prec_op = tf.metrics.precision(labels=y, predictions=predictions, name="precision")
         f1_score = 2 * ((precision * recall) / (precision + recall))
 
+        auc = tf.metrics.auc(labels=y, predictions=probabilities, num_thresholds=50, name="auc_curve")
+
         tf.summary.scalar('precision_1', precision, collections=["summaries"])
         tf.summary.scalar('f1_score', f1_score, collections=["summaries"])
 
         _, update_op = summary_lib.pr_curve_streaming_op(name='pr_curve',
-                                                         predictions=predictions,
+                                                         predictions=probabilities,
                                                          labels=y,
-                                                         num_thresholds=10)
+                                                         num_thresholds=50)
 
     # add this so that the batch norm gets run
     extra_update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
