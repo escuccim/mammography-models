@@ -620,7 +620,7 @@ with graph.as_default():
     is_correct = tf.equal(y, predictions)
     accuracy = tf.reduce_mean(tf.cast(is_correct, dtype=tf.float32))
 
-    probabilities = tf.softmax(logits)
+    probabilities = tf.nn.softmax(logits)
 
     # calculate recall
     if num_classes > 2:
@@ -646,6 +646,8 @@ with graph.as_default():
         recall, rec_op = tf.metrics.recall(labels=y, predictions=predictions, name="recall")
         precision, prec_op = tf.metrics.precision(labels=y, predictions=predictions, name="precision")
         f1_score = 2 * ((precision * recall) / (precision + recall))
+
+        auc = tf.metrics.auc(labels=y, predictions=probabilities[1], name="auc_1")
 
     # add this so that the batch norm gets run
     extra_update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
