@@ -272,27 +272,6 @@ def download_data(what="new"):
             _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training_3.tfrecords',
                               'training_3.tfrecords')
 
-        # download secondary training tfrecords files
-        if not os.path.exists(os.path.join("data", "training3_0.tfrecords")):
-            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training3_0.tfrecords',
-                              'training3_0.tfrecords')
-
-        if not os.path.exists(os.path.join("data", "training3_1.tfrecords")):
-            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training3_1.tfrecords',
-                              'training3_1.tfrecords')
-
-        if not os.path.exists(os.path.join("data", "training3_2.tfrecords")):
-            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training3_2.tfrecords',
-                              'training3_2.tfrecords')
-
-        if not os.path.exists(os.path.join("data", "training3_3.tfrecords")):
-            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training3_3.tfrecords',
-                              'training3_3.tfrecords')
-
-        if not os.path.exists(os.path.join("data", "training3_4.tfrecords")):
-            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training3_4.tfrecords',
-                              'training3_4.tfrecords')
-
         # download MIAS test data
         if not os.path.exists(os.path.join("data", "mias_test_images.npy")):
             _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/mias_test_images.npy',
