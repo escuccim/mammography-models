@@ -57,7 +57,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.0.1.33b"
+model_name = "model_s1.0.1.34b"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -647,7 +647,9 @@ with graph.as_default():
         precision, prec_op = tf.metrics.precision(labels=y, predictions=predictions, name="precision")
         f1_score = 2 * ((precision * recall) / (precision + recall))
 
-        auc = tf.metrics.auc(labels=y, predictions=probabilities[1], name="auc_1")
+        auc, auc_op = tf.metrics.auc(labels=y, predictions=probabilities[1], name="auc_1")
+
+        tf.summary.scalar('auc_', auc, collections=["summaries"])
 
     # add this so that the batch norm gets run
     extra_update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
@@ -747,8 +749,8 @@ with tf.Session(graph=graph, config=config) as sess:
             run_metadata = tf.RunMetadata()
 
             # Run training and evaluate accuracy
-            _, _, _, precision_value, summary, acc_value, cost_value, recall_value, step = sess.run(
-                [train_op, extra_update_ops, update_op, prec_op, merged, accuracy, mean_ce, rec_op, global_step],
+            _, _, _, _, precision_value, summary, acc_value, cost_value, recall_value, step = sess.run(
+                [train_op, extra_update_ops, update_op, auc_op, prec_op, merged, accuracy, mean_ce, rec_op, global_step],
                 feed_dict={
                     # X: X_batch,
                     # y: y_batch,
