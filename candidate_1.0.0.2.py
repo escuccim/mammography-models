@@ -59,7 +59,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.0.0.15b"
+model_name = "model_s1.0.0.16b"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -648,8 +648,8 @@ with tf.Session(graph=graph, config=config) as sess:
 
         # evaluate the test data
         for X_batch, y_batch in get_batches(X_cv, y_cv, batch_size, distort=False):
-            _, valid_acc, valid_recall, valid_precision, valid_fscore, valid_cost = sess.run(
-                [extra_update_ops, accuracy, rec_op, prec_op, f1_score, mean_ce],
+            _, _, valid_acc, valid_recall, valid_precision, valid_fscore, valid_cost = sess.run(
+                [extra_update_ops, update_op, accuracy, rec_op, prec_op, f1_score, mean_ce],
                 feed_dict={
                     X: X_batch,
                     y: y_batch,
