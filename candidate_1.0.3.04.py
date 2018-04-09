@@ -819,7 +819,7 @@ with graph.as_default():
     # Merge all the summaries
     merged = tf.summary.merge_all()
 
-        print("Graph created...")
+    print("Graph created...")
 # ## Train
 
 ## CONFIGURE OPTIONS
