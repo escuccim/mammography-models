@@ -16,8 +16,8 @@
       <file leaf-file-name="candidate_1.0.1.32.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/candidate_1.0.1.32.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-3960">
-              <caret line="689" column="35" lean-forward="true" selection-start-line="689" selection-start-column="35" selection-end-line="689" selection-end-column="35" />
+            <state relative-caret-position="1023">
+              <caret line="840" column="18" lean-forward="true" selection-start-line="834" selection-start-column="12" selection-end-line="840" selection-end-column="18" />
               <folding />
             </state>
           </provider>
@@ -26,11 +26,11 @@
       <file leaf-file-name="candidate_1.0.0.2.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/candidate_1.0.0.2.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1023">
+            <state relative-caret-position="429">
               <caret line="61" column="29" lean-forward="false" selection-start-line="61" selection-start-column="29" selection-end-line="61" selection-end-column="29" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
-                <marker date="1523274873232" expanded="true" signature="26972:26998" ph="..." />
+                <marker date="1523275123881" expanded="true" signature="26876:26902" ph="..." />
               </folding>
             </state>
           </provider>
@@ -506,19 +506,19 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/candidate_1.0.1.32.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-3960">
-          <caret line="689" column="35" lean-forward="true" selection-start-line="689" selection-start-column="35" selection-end-line="689" selection-end-column="35" />
+        <state relative-caret-position="1023">
+          <caret line="840" column="18" lean-forward="true" selection-start-line="834" selection-start-column="12" selection-end-line="840" selection-end-column="18" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/candidate_1.0.0.2.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1023">
+        <state relative-caret-position="429">
           <caret line="61" column="29" lean-forward="false" selection-start-line="61" selection-start-column="29" selection-end-line="61" selection-end-column="29" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
-            <marker date="1523274873232" expanded="true" signature="26972:26998" ph="..." />
+            <marker date="1523275123881" expanded="true" signature="26876:26902" ph="..." />
           </folding>
         </state>
       </provider>
