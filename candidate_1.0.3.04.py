@@ -730,13 +730,8 @@ with graph.as_default():
     with tf.variable_scope('visualization'):
         tf.summary.image('conv0/filters', kernel_transposed, max_outputs=32)
 
-    ## Loss function options
     # Regular mean cross entropy
     #mean_ce = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits))
-
-    # weighted mean cross entropy
-    # onehot_labels = tf.one_hot(y, depth=num_classes)
-    # mean_ce = tf.reduce_mean(tf.nn.weighted_cross_entropy_with_logits(targets=tf.one_hot(y, depth=num_classes), logits=logits, pos_weight=classes_weights))
 
     # Different weighting method
     # This will weight the positive examples higher so as to improve recall
@@ -822,6 +817,7 @@ with graph.as_default():
     merged = tf.summary.merge_all()
 
     print("Graph created...")
+
 # ## Train
 
 ## CONFIGURE OPTIONS
@@ -829,7 +825,6 @@ if os.path.exists(os.path.join("model", model_name + '.ckpt.index')):
     init = False
 else:
     init = True
-crop = False  # do random cropping of images?
 
 meta_data_every = 1
 log_to_tensorboard = True
@@ -837,10 +832,8 @@ print_every = 5  # how often to print metrics
 checkpoint_every = 1  # how often to save model in epochs
 use_gpu = False  # whether or not to use the GPU
 print_metrics = True  # whether to print or plot metrics, if False a plot will be created and updated every epoch
-evaluate = True  # whether to periodically evaluate on test data
 
 # Placeholders for metrics
-# if init:
 valid_acc_values = []
 valid_recall_values = []
 valid_cost_values = []
@@ -914,7 +907,6 @@ with tf.Session(graph=graph, config=config) as sess:
 
                 # log the summaries to tensorboard every 50 steps
                 if log_to_tensorboard:
-                    # write the summary
                     train_writer.add_summary(summary, step)
 
             # only log the meta data once per epoch

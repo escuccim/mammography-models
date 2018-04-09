@@ -1,7 +1,7 @@
 import numpy as np
 import os
 import wget
-from sklearn.cross_validation import train_test_split
+from sklearn.model_selection import train_test_split
 import tensorflow as tf
 from training_utils import download_file, get_batches, read_and_decode_single_example, load_validation_data, \
     download_data, evaluate_model, get_training_data
@@ -629,13 +629,8 @@ with graph.as_default():
     with tf.variable_scope('visualization'):
         tf.summary.image('conv1/filters', kernel_transposed, max_outputs=32)
 
-    ## Loss function options
     # Regular mean cross entropy
     #mean_ce = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits))
-
-    # weighted mean cross entropy
-    # onehot_labels = tf.one_hot(y, depth=num_classes)
-    # mean_ce = tf.reduce_mean(tf.nn.weighted_cross_entropy_with_logits(targets=tf.one_hot(y, depth=num_classes), logits=logits, pos_weight=classes_weights))
 
     # Different weighting method
     # This will weight the positive examples higher so as to improve recall
@@ -728,7 +723,6 @@ if os.path.exists(os.path.join("model", model_name + '.ckpt.index')):
     init = False
 else:
     init = True
-crop = False  # do random cropping of images?
 
 meta_data_every = 1
 log_to_tensorboard = True
@@ -736,10 +730,8 @@ print_every = 5  # how often to print metrics
 checkpoint_every = 1  # how often to save model in epochs
 use_gpu = False  # whether or not to use the GPU
 print_metrics = True  # whether to print or plot metrics, if False a plot will be created and updated every epoch
-evaluate = True  # whether to periodically evaluate on test data
 
 # Placeholders for metrics
-# if init:
 valid_acc_values = []
 valid_recall_values = []
 valid_cost_values = []
@@ -788,9 +780,9 @@ with tf.Session(graph=graph, config=config) as sess:
             run_metadata = tf.RunMetadata()
 
             # Run training op and update ops
-            if i % 50 != 0:
-                _, _,  = sess.run(
-                    [train_op, extra_update_ops],
+            if (i % 50 != 0) or (i == 0):
+                _, _,  step = sess.run(
+                    [train_op, extra_update_ops, global_step],
                         feed_dict={
                             training: True,
                         },
@@ -817,9 +809,9 @@ with tf.Session(graph=graph, config=config) as sess:
                     # write the summary
                     train_writer.add_summary(summary, step)
 
-                    # log the meta data once per epoch
-                    if i == 0:
-                        train_writer.add_run_metadata(run_metadata, 'step %d' % step)
+            # only log the meta data once per epoch
+            if i == 1:
+                train_writer.add_run_metadata(run_metadata, 'step %d' % step)
 
         # save checkpoint every nth epoch
         if (epoch % checkpoint_every == 0):
@@ -845,8 +837,8 @@ with tf.Session(graph=graph, config=config) as sess:
 
         # evaluate the test data
         for X_batch, y_batch in get_batches(X_cv, y_cv, batch_size, distort=False):
-            _, valid_acc, valid_recall, valid_precision, valid_fscore, valid_cost = sess.run(
-                [update_op, accuracy, rec_op, prec_op, f1_score, mean_ce],
+            _, _, valid_acc, valid_recall, valid_precision, valid_fscore, valid_cost = sess.run(
+                [update_op, extra_update_ops, accuracy, rec_op, prec_op, f1_score, mean_ce],
                 feed_dict={
                     X: X_batch,
                     y: y_batch,
@@ -865,11 +857,11 @@ with tf.Session(graph=graph, config=config) as sess:
         # Write average of validation data to summary logs
         if log_to_tensorboard:
             # evaluate once more to get the summary, which will then be written to tensorboard
-            summary = sess.run(
-                [merged],
+            summary, cv_accuracy = sess.run(
+                [merged, accuracy],
                 feed_dict={
-                    X: X_batch,
-                    y: y_batch,
+                    X: X_cv[0:2],
+                    y: y_cv[0:2],
                     training: False
                 })
 

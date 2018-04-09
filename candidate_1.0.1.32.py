@@ -58,7 +58,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.0.1.35n"
+model_name = "model_s1.0.1.36n"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -84,6 +84,7 @@ model_name = "model_s1.0.1.35n"
 # 1.0.1.32 - increased pool dropout rate, using weighted x-entropy, increased FC dropout rate
 # 1.0.1.33 - calculating probabilites from logits so we can do proper pr and auc curves
 # 1.0.1.35 - updated training code
+# 1.0.1.36 - updated number of filters for layers 2 on
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -260,7 +261,7 @@ with graph.as_default():
     with tf.name_scope('conv2.1') as scope:
         conv2 = tf.layers.conv2d(
             pool1,  # Input data
-            filters=64,  # 32 filters
+            filters=128,  # 32 filters
             kernel_size=(3, 3),  # Kernel size: 9x9
             strides=(1, 1),  # Stride: 1
             padding='SAME',  # "same" padding
@@ -292,7 +293,7 @@ with graph.as_default():
     with tf.name_scope('conv2.2') as scope:
         conv22 = tf.layers.conv2d(
             conv2,  # Input data
-            filters=64,  # 32 filters
+            filters=128,  # 32 filters
             kernel_size=(3, 3),  # Kernel size: 9x9
             strides=(1, 1),  # Stride: 1
             padding='SAME',  # "same" padding
@@ -338,7 +339,7 @@ with graph.as_default():
     with tf.name_scope('conv3.1') as scope:
         conv3 = tf.layers.conv2d(
             pool2,  # Input data
-            filters=128,  # 48 filters
+            filters=192,  # 48 filters
             kernel_size=(3, 3),  # Kernel size: 5x5
             strides=(1, 1),  # Stride: 1
             padding='SAME',  # "same" padding
@@ -370,7 +371,7 @@ with graph.as_default():
     with tf.name_scope('conv3.2') as scope:
         conv32 = tf.layers.conv2d(
             conv3,  # Input data
-            filters=128,  # 48 filters
+            filters=192,  # 48 filters
             kernel_size=(3, 3),  # Kernel size: 5x5
             strides=(1, 1),  # Stride: 1
             padding='SAME',  # "same" padding
@@ -744,7 +745,6 @@ with tf.Session(graph=graph, config=config) as sess:
             batch_acc = []
             batch_cost = []
             batch_loss = []
-            batch_lr = []
             batch_recall = []
 
             # create the metadata
