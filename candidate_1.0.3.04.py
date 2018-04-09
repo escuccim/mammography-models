@@ -59,7 +59,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.0.3.11n"
+model_name = "model_s1.0.3.12n"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -89,7 +89,7 @@ model_name = "model_s1.0.3.11n"
 # 1.0.3.04 - revert from 3.03, using weighted cross entropy, using inception-like stem to downsize data, changed number of filters in conv layers
 # 1.0.3.08 - remove last conv layer, added extra conv 4
 # 1.0.3.10 - increased number of filters in layer 2
-# 1.0.3.11 - fixed misrouted pool 2.1
+# 1.0.3.12 - fixed misrouted pool 2.1, added update ops to evaluation code
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -945,8 +945,8 @@ with tf.Session(graph=graph, config=config) as sess:
 
         # evaluate the test data
         for X_batch, y_batch in get_batches(X_cv, y_cv, batch_size, distort=False):
-            _, valid_acc, valid_recall, valid_precision, valid_fscore, valid_cost = sess.run(
-                [update_op, accuracy, rec_op, prec_op, f1_score, mean_ce],
+            _, _, valid_acc, valid_recall, valid_precision, valid_fscore, valid_cost = sess.run(
+                [update_op, extra_update_ops, accuracy, rec_op, prec_op, f1_score, mean_ce],
                 feed_dict={
                     X: X_batch,
                     y: y_batch,

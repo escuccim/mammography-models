@@ -827,7 +827,6 @@ with tf.Session(graph=graph, config=config) as sess:
             if log_to_tensorboard and (( (i % 50 == 0) and (i > 1)) or (i == steps_per_epoch - 1)):
                 # write the summary
                 train_writer.add_summary(summary, step)
-
             # only log the meta data once per epoch
             if i == 1:
                 train_writer.add_run_metadata(run_metadata, 'step %d' % step)

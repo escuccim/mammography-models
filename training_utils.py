@@ -2,7 +2,7 @@ import numpy as np
 import os
 import wget
 import zipfile
-from sklearn.cross_validation  import train_test_split
+from sklearn.model_selections import train_test_split
 import tensorflow as tf
 
 ## open zip files
