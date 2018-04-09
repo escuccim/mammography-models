@@ -59,7 +59,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.0.3.10n"
+model_name = "model_s1.0.3.11n"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -89,6 +89,7 @@ model_name = "model_s1.0.3.10n"
 # 1.0.3.04 - revert from 3.03, using weighted cross entropy, using inception-like stem to downsize data, changed number of filters in conv layers
 # 1.0.3.08 - remove last conv layer, added extra conv 4
 # 1.0.3.10 - increased number of filters in layer 2
+# 1.0.3.11 - fixed misrouted pool 2.1
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -487,7 +488,7 @@ with graph.as_default():
     # Convolutional layer 3
     with tf.name_scope('conv3.1') as scope:
         conv3 = tf.layers.conv2d(
-            pool2,  # Input data
+            pool21,  # Input data
             filters=256,  # 48 filters
             kernel_size=(3, 3),  # Kernel size: 5x5
             strides=(1, 1),  # Stride: 1
