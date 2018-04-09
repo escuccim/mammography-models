@@ -59,7 +59,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.0.3.12n"
+model_name = "model_s1.0.3.13n"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -889,8 +889,8 @@ with tf.Session(graph=graph, config=config) as sess:
 
             # Run training op and update ops
             if (i % 50 != 0) or (i == 0):
-                _, _,  = sess.run(
-                    [train_op, extra_update_ops],
+                _, _,  step = sess.run(
+                    [train_op, extra_update_ops, global_step],
                         feed_dict={
                             training: True,
                         },
