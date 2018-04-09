@@ -88,7 +88,6 @@ model_name = "model_s1.0.2.06n"
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
-    is_testing = tf.placeholder(dtype=bool, shape=(), name="is_testing")
 
     # create global step for decaying learning rate
     global_step = tf.Variable(0, trainable=False)
@@ -655,7 +654,18 @@ with graph.as_default():
     # Compute predictions and accuracy
     predictions = tf.argmax(logits, axis=1, output_type=tf.int64)
     is_correct = tf.equal(y, predictions)
-    accuracy = tf.reduce_mean(tf.cast(is_correct, dtype=tf.float32))
+    #accuracy = tf.reduce_mean(tf.cast(is_correct, dtype=tf.float32))
+
+    accuracy, acc_op = tf.metrics.accuracy(
+        labels=y,
+        predictions=predictions,
+        updates_collections=tf.GraphKeys.UPDATE_OPS,
+        #metrics_collections="summaries",
+        name="accuracy",
+    )
+
+    # get the probabilites for the classes
+    probabilities = tf.nn.softmax(logits, name="probabilities")
 
     # calculate recall
     if num_classes > 2:
@@ -668,22 +678,25 @@ with graph.as_default():
         for k in range(num_classes):
             recall[k], rec_op[k] = tf.metrics.recall(
                 labels=tf.equal(y, k),
-                predictions=tf.equal(predictions, k)
+                predictions=tf.equal(predictions, k),
+                updates_collections=tf.GraphKeys.UPDATE_OPS
             )
 
             precision[k], prec_op[k] = tf.metrics.precision(
                 labels=tf.equal(y, k),
-                predictions=tf.equal(predictions, k)
+                predictions=tf.equal(predictions, k),
+                updates_collections=tf.GraphKeys.UPDATE_OPS
             )
 
             f1_score = 2 * ((precision * recall) / (precision + recall))
     else:
-        recall, rec_op = tf.metrics.recall(labels=y, predictions=predictions, name="recall")
-        precision, prec_op = tf.metrics.precision(labels=y, predictions=predictions, name="precision")
-        f1_score = 2 * ((precision * recall) / (precision + recall))
+        recall, rec_op = tf.metrics.recall(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="recall")
+        precision, prec_op = tf.metrics.precision(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="precision")
+        f1_score = 2 * ( (precision * recall) / (precision + recall))
 
-    # add this so that the batch norm gets run
-    extra_update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
+        #auc, auc_op = tf.metrics.auc(labels=y, predictions=probabilities, num_thresholds=50, name="auc_1")
+
+        #tf.summary.scalar('auc_', auc, collections=["summaries"])
 
     # Create summary hooks
     tf.summary.scalar('accuracy', accuracy, collections=["summaries"])
@@ -695,12 +708,16 @@ with graph.as_default():
     _, update_op = summary_lib.pr_curve_streaming_op(name='pr_curve',
                                                      predictions=predictions,
                                                      labels=y,
+                                                     updates_collections=tf.GraphKeys.UPDATE_OPS,
                                                      num_thresholds=10)
     if num_classes == 2:
         tf.summary.scalar('precision_1', precision, collections=["summaries"])
         tf.summary.scalar('f1_score', f1_score, collections=["summaries"])
 
-    # Merge all the summaries and write them out to /tmp/mnist_logs (by default)
+    # add this so that the batch norm gets run
+    extra_update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
+
+    # Merge all the summaries
     merged = tf.summary.merge_all()
 
     print("Graph created...")
@@ -756,6 +773,7 @@ with tf.Session(graph=graph, config=config) as sess:
     print("Training model", model_name, "...")
 
     for epoch in range(epochs):
+        # initialize the local variables so we have metrics per epoch
         sess.run(tf.local_variables_initializer())
 
         for i in range(steps_per_epoch):
@@ -769,31 +787,39 @@ with tf.Session(graph=graph, config=config) as sess:
             run_options = tf.RunOptions(trace_level=tf.RunOptions.FULL_TRACE)
             run_metadata = tf.RunMetadata()
 
-            # Run training and evaluate accuracy
-            _, _, _, precision_value, summary, acc_value, cost_value, recall_value, step = sess.run(
-                [train_op, extra_update_ops, update_op, prec_op, merged, accuracy, mean_ce, rec_op, global_step],
-                feed_dict={
-                    # X: X_batch,
-                    # y: y_batch,
-                    training: True,
-                    is_testing: False,
-                },
-                options=run_options,
-                run_metadata=run_metadata)
+            # Run training op and update ops
+            if i % 50 != 0:
+                _, _,  = sess.run(
+                    [train_op, extra_update_ops],
+                        feed_dict={
+                            training: True,
+                        },
+                        options=run_options,
+                        run_metadata=run_metadata)
 
-            # Save accuracy (current batch)
-            batch_acc.append(acc_value)
-            batch_cost.append(cost_value)
-            batch_recall.append(np.mean(recall_value))
+            # every 50th step get the metrics
+            else:
+                _, _, _, precision_value, summary, acc_value, cost_value, recall_value, step = sess.run(
+                    [train_op, extra_update_ops, update_op, prec_op, merged, accuracy, mean_ce, rec_op, global_step],
+                    feed_dict={
+                        training: True,
+                    },
+                    options=run_options,
+                    run_metadata=run_metadata)
 
-            # log the summaries to tensorboard every 50 steps
-            if log_to_tensorboard and (( (i % 50 == 0) and (i > 1)) or (i == steps_per_epoch - 1)):
-                # write the summary
-                train_writer.add_summary(summary, step)
+                # Save accuracy (current batch)
+                batch_acc.append(acc_value)
+                batch_cost.append(cost_value)
+                batch_recall.append(np.mean(recall_value))
 
-            # only log the meta data once per epoch
-            if i == 1:
-                train_writer.add_run_metadata(run_metadata, 'step %d' % step)
+                # log the summaries to tensorboard every 50 steps
+                if log_to_tensorboard:
+                    # write the summary
+                    train_writer.add_summary(summary, step)
+
+                    # log the meta data once per epoch
+                    if i == 0:
+                        train_writer.add_run_metadata(run_metadata, 'step %d' % step)
 
         # save checkpoint every nth epoch
         if (epoch % checkpoint_every == 0):
@@ -806,63 +832,62 @@ with tf.Session(graph=graph, config=config) as sess:
         # init batch arrays
         batch_cv_acc = []
         batch_cv_cost = []
-        batch_cv_loss = []
         batch_cv_recall = []
         batch_cv_precision = []
         batch_cv_fscore = []
 
-        ## evaluate on test data if it exists, otherwise ignore this step
-        if evaluate:
+        # initialize the local variables so we have metrics only on the evaluation
+        sess.run(tf.local_variables_initializer())
 
-            sess.run(tf.local_variables_initializer())
+        print("Evaluating model...")
+        # load the test data
+        X_cv, y_cv = load_validation_data(percentage=1, how="normal")
 
-            print("Evaluating model...")
-            # load the test data
-            X_cv, y_cv = load_validation_data(percentage=1, how="normal")
+        # evaluate the test data
+        for X_batch, y_batch in get_batches(X_cv, y_cv, batch_size, distort=False):
+            _, valid_acc, valid_recall, valid_precision, valid_fscore, valid_cost = sess.run(
+                [update_op, accuracy, rec_op, prec_op, f1_score, mean_ce],
+                feed_dict={
+                    X: X_batch,
+                    y: y_batch,
+                    training: False
+                })
 
-            # evaluate the test data
-            for X_batch, y_batch in get_batches(X_cv, y_cv, batch_size, distort=False):
-                _, summary, valid_acc, valid_recall, valid_precision, valid_fscore, valid_cost, valid_loss = sess.run(
-                    [update_op, merged, accuracy, rec_op, prec_op, f1_score, mean_ce, loss],
-                    feed_dict={
-                        X: X_batch,
-                        y: y_batch,
-                        is_testing: True,
-                        training: False
-                    })
+            batch_cv_acc.append(valid_acc)
+            batch_cv_cost.append(valid_cost)
+            batch_cv_recall.append(np.mean(valid_recall))
+            batch_cv_precision.append(np.mean(valid_precision))
 
-                batch_cv_acc.append(valid_acc)
-                batch_cv_cost.append(valid_cost)
-                batch_cv_loss.append(valid_loss)
-                batch_cv_recall.append(np.mean(valid_recall))
-                batch_cv_precision.append(np.mean(valid_precision))
+            # the first fscore will be nan so don't add that one
+            if not np.isnan(valid_fscore):
+                batch_cv_fscore.append(np.mean(valid_fscore))
 
-                # the first fscore will be nan so don't add that one
-                if not np.isnan(valid_fscore):
-                    batch_cv_fscore.append(np.mean(valid_fscore))
+        # Write average of validation data to summary logs
+        if log_to_tensorboard:
+            # evaluate once more to get the summary, which will then be written to tensorboard
+            summary = sess.run(
+                [merged],
+                feed_dict={
+                    X: X_batch,
+                    y: y_batch,
+                    training: False
+                })
 
-            # Write average of validation data to summary logs
-            if log_to_tensorboard:
-                summary = tf.Summary(value=[tf.Summary.Value(tag="accuracy", simple_value=np.mean(batch_cv_acc)),
-                                            tf.Summary.Value(tag="cross_entropy", simple_value=np.mean(batch_cv_cost)),
-                                            tf.Summary.Value(tag="recall_1", simple_value=np.mean(batch_cv_recall)),
-                                            tf.Summary.Value(tag="precision_1", simple_value=np.mean(batch_cv_precision)),
-                                            tf.Summary.Value(tag="f1_score", simple_value=np.mean(batch_cv_fscore)),
-                                            ])
+            # summary = tf.Summary(value=[tf.Summary.Value(tag="accuracy", simple_value=np.mean(batch_cv_acc)),
+            #                             tf.Summary.Value(tag="cross_entropy", simple_value=np.mean(batch_cv_cost)),
+            #                             tf.Summary.Value(tag="recall_1", simple_value=np.mean(batch_cv_recall)),
+            #                             tf.Summary.Value(tag="precision_1", simple_value=np.mean(batch_cv_precision)),
+            #                             tf.Summary.Value(tag="f1_score", simple_value=np.mean(batch_cv_fscore)),
+            #                             ])
 
-                test_writer.add_summary(summary, step)
-                step += 1
+            test_writer.add_summary(summary, step)
+        step += 1
 
-            # delete the test data to save memory
-            del (X_cv)
-            del (y_cv)
+        # delete the test data to save memory
+        del (X_cv)
+        del (y_cv)
 
-            print("Done evaluating...")
-        else:
-            batch_cv_acc.append(0)
-            batch_cv_cost.append(0)
-            batch_cv_loss.append(0)
-            batch_cv_recall.append(0)
+        print("Done evaluating...")
 
         # take the mean of the values to add to the metrics
         valid_acc_values.append(np.mean(batch_cv_acc))
@@ -887,7 +912,7 @@ with tf.Session(graph=graph, config=config) as sess:
                     epoch, step, np.mean(batch_cv_acc), np.mean(batch_acc), np.mean(batch_cv_cost)
                 ))
 
-                # stop the coordinator
+    # stop the coordinator
     coord.request_stop()
 
     # Wait for threads to stop

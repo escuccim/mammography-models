@@ -471,12 +471,14 @@ with graph.as_default():
         for k in range(num_classes):
             recall[k], rec_op[k] = tf.metrics.recall(
                 labels=tf.equal(y, k),
-                predictions=tf.equal(predictions, k)
+                predictions=tf.equal(predictions, k),
+                updates_collections=tf.GraphKeys.UPDATE_OPS
             )
 
             precision[k], prec_op[k] = tf.metrics.precision(
                 labels=tf.equal(y, k),
-                predictions=tf.equal(predictions, k)
+                predictions=tf.equal(predictions, k),
+                updates_collections=tf.GraphKeys.UPDATE_OPS
             )
 
             f1_score = 2 * ((precision * recall) / (precision + recall))
@@ -508,9 +510,8 @@ with graph.as_default():
     # add this so that the batch norm gets run
     extra_update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
 
-    # Merge all the summaries and write them out to /tmp/mnist_logs (by default)
+    # Merge all the summaries
     merged = tf.summary.merge_all()
-    #pr_curve = tf.summary.merge_all("pr")
 
     print("Graph created...")
 # ## Train
