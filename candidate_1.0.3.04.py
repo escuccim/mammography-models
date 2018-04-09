@@ -964,11 +964,11 @@ with tf.Session(graph=graph, config=config) as sess:
         # Write average of validation data to summary logs
         if log_to_tensorboard:
             # evaluate once more to get the summary, which will then be written to tensorboard
-            summary = sess.run(
-                [merged],
+            summary, cv_accuracy = sess.run(
+                [merged, accuracy],
                 feed_dict={
-                    X: X_batch,
-                    y: y_batch,
+                    X: X_cv[0],
+                    y: y_cv[0],
                     training: False
                 })
 
