@@ -888,7 +888,7 @@ with tf.Session(graph=graph, config=config) as sess:
             run_metadata = tf.RunMetadata()
 
             # Run training op and update ops
-            if i % 50 != 0:
+            if (i % 50 != 0) or (i == 0):
                 _, _,  = sess.run(
                     [train_op, extra_update_ops],
                         feed_dict={
