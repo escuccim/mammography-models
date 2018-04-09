@@ -968,8 +968,8 @@ with tf.Session(graph=graph, config=config) as sess:
             summary, cv_accuracy = sess.run(
                 [merged, accuracy],
                 feed_dict={
-                    X: X_cv[0],
-                    y: y_cv[0],
+                    X: X_cv[0:2],
+                    y: y_cv[0:2],
                     training: False
                 })
 
