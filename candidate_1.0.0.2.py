@@ -59,7 +59,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.0.0.14b"
+model_name = "model_s1.0.0.15b"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -668,8 +668,8 @@ with tf.Session(graph=graph, config=config) as sess:
         # Write average of validation data to summary logs
         if log_to_tensorboard:
             # evaluate once more to get the summary, which will then be written to tensorboard
-            summary = sess.run(
-                [test_merged],
+            _, summary, valid_acc, valid_recall, valid_precision, valid_fscore, valid_cost = sess.run(
+                [extra_update_ops, test_merged, accuracy, rec_op, prec_op, f1_score, mean_ce],
                 feed_dict={
                     X: X_cv[0:2],
                     y: y_cv[0:2],
