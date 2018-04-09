@@ -104,7 +104,7 @@ def read_and_decode_single_example(filenames, label_type='label_normal', normali
 
 
 ## load the test data from files
-def load_validation_data(data="validation", how="class", percentage=1):
+def load_validation_data(data="validation", how="normal", percentage=1):
     if data == "validation":
         # load the two data files
         X_cv = np.load(os.path.join("data", "cv4_data.npy"))
