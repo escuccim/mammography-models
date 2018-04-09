@@ -495,13 +495,12 @@ with graph.as_default():
     tf.summary.scalar('accuracy', accuracy, collections=["summaries"])
     tf.summary.scalar('recall_1', recall, collections=["summaries"])
     tf.summary.scalar('cross_entropy', mean_ce, collections=["summaries"])
-    tf.summary.scalar('loss', loss, collections=["summaries"])
+    #tf.summary.scalar('loss', loss, collections=["summaries"])
     tf.summary.scalar('learning_rate', learning_rate, collections=["summaries"])
 
     _, update_op = summary_lib.pr_curve_streaming_op(name='pr_curve',
                                                      predictions=probabilities[:,1],
                                                      labels=y,
-                                                     updates_collections=tf.GraphKeys.UPDATE_OPS,
                                                      metrics_collections=["summaries"],
                                                      num_thresholds=20)
 
