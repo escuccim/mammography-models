@@ -59,7 +59,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.0.0.19b"
+model_name = "model_s1.0.0.20b"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -502,7 +502,7 @@ with graph.as_default():
                                                      predictions=probabilities[:,1],
                                                      labels=y,
                                                      updates_collections=tf.GraphKeys.UPDATE_OPS,
-                                                     metrics_collections=["summaries", "training"],
+                                                     metrics_collections=["training"],
                                                      num_thresholds=20)
 
     if num_classes == 2:
@@ -514,8 +514,8 @@ with graph.as_default():
 
     # Merge all the summaries
     merged = tf.summary.merge_all("training")
+    test_merged = tf.sumamry.merge_all("summaries")
     filter_summary = tf.summary.merge_all("filters")
-    test_merged = tf.summary.merge_all("summaries")
 
     print("Graph created...")
 # ## Train
