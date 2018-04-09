@@ -58,7 +58,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.0.1.34b"
+model_name = "model_s1.0.1.35n"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -83,6 +83,7 @@ model_name = "model_s1.0.1.34b"
 # 1.0.0.30 - added a branch to conv1 section
 # 1.0.1.32 - increased pool dropout rate, using weighted x-entropy, increased FC dropout rate
 # 1.0.1.33 - calculating probabilites from logits so we can do proper pr and auc curves
+# 1.0.1.35 - updated training code
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
