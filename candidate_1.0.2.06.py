@@ -689,9 +689,9 @@ with graph.as_default():
         precision, prec_op = tf.metrics.precision(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="precision")
         f1_score = 2 * ( (precision * recall) / (precision + recall))
 
-        #auc, auc_op = tf.metrics.auc(labels=y, predictions=probabilities, num_thresholds=50, name="auc_1")
+        auc, auc_op = tf.metrics.auc(labels=y, predictions=probabilities[:,1], num_thresholds=20, name="auc_1")
 
-        #tf.summary.scalar('auc_', auc, collections=["summaries"])
+        tf.summary.scalar('auc_', auc, collections=["summaries"])
 
     # Create summary hooks
     tf.summary.scalar('accuracy', accuracy, collections=["summaries"])
@@ -701,10 +701,10 @@ with graph.as_default():
     tf.summary.scalar('learning_rate', learning_rate, collections=["summaries"])
 
     _, update_op = summary_lib.pr_curve_streaming_op(name='pr_curve',
-                                                     predictions=predictions,
+                                                     predictions=probabilities[:,1],
                                                      labels=y,
                                                      updates_collections=tf.GraphKeys.UPDATE_OPS,
-                                                     num_thresholds=10)
+                                                     num_thresholds=20)
     if num_classes == 2:
         tf.summary.scalar('precision_1', precision, collections=["summaries"])
         tf.summary.scalar('f1_score', f1_score, collections=["summaries"])

@@ -470,13 +470,15 @@ with graph.as_default():
             recall[k], rec_op[k] = tf.metrics.recall(
                 labels=tf.equal(y, k),
                 predictions=tf.equal(predictions, k),
-                updates_collections=tf.GraphKeys.UPDATE_OPS
+                updates_collections=tf.GraphKeys.UPDATE_OPS,
+                metrics_collections=["summaries"]
             )
 
             precision[k], prec_op[k] = tf.metrics.precision(
                 labels=tf.equal(y, k),
                 predictions=tf.equal(predictions, k),
-                updates_collections=tf.GraphKeys.UPDATE_OPS
+                updates_collections=tf.GraphKeys.UPDATE_OPS,
+                metrics_collections=["summaries"]
             )
 
             f1_score = 2 * ((precision * recall) / (precision + recall))
@@ -500,7 +502,7 @@ with graph.as_default():
                                                      predictions=probabilities[:,1],
                                                      labels=y,
                                                      updates_collections=tf.GraphKeys.UPDATE_OPS,
-                                                     num_thresholds=10)
+                                                     num_thresholds=20)
 
     if num_classes == 2:
         tf.summary.scalar('precision_1', precision, collections=["summaries"])
@@ -511,6 +513,7 @@ with graph.as_default():
 
     # Merge all the summaries
     merged = tf.summary.merge_all()
+    test_merged = tf.summary.merge(["summaries"])
 
     print("Graph created...")
 # ## Train
@@ -664,7 +667,7 @@ with tf.Session(graph=graph, config=config) as sess:
         if log_to_tensorboard:
             # evaluate once more to get the summary, which will then be written to tensorboard
             summary, cv_accuracy = sess.run(
-                [merged, accuracy],
+                [test_merged, accuracy],
                 feed_dict={
                     X: X_cv[0:2],
                     y: y_cv[0:2],

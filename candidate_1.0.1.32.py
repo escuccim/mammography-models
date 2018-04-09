@@ -594,7 +594,7 @@ with graph.as_default():
         kernel_transposed = tf.transpose(conv_kernels1, [3, 0, 1, 2])
 
     with tf.variable_scope('visualization'):
-        tf.summary.image('conv1/filters', kernel_transposed, max_outputs=32)
+        tf.summary.image('conv1/filters', kernel_transposed, max_outputs=32, collections=["training"])
 
     ## Loss function options
     # Regular mean cross entropy
@@ -646,13 +646,15 @@ with graph.as_default():
             recall[k], rec_op[k] = tf.metrics.recall(
                 labels=tf.equal(y, k),
                 predictions=tf.equal(predictions, k),
-                updates_collections=tf.GraphKeys.UPDATE_OPS
+                updates_collections=tf.GraphKeys.UPDATE_OPS,
+                metrics_collections=["summaries"]
             )
 
             precision[k], prec_op[k] = tf.metrics.precision(
                 labels=tf.equal(y, k),
                 predictions=tf.equal(predictions, k),
-                updates_collections=tf.GraphKeys.UPDATE_OPS
+                updates_collections=tf.GraphKeys.UPDATE_OPS,
+                metrics_collections=["summaries"]
             )
 
             f1_score = 2 * ((precision * recall) / (precision + recall))
@@ -661,9 +663,9 @@ with graph.as_default():
         precision, prec_op = tf.metrics.precision(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="precision")
         f1_score = 2 * ( (precision * recall) / (precision + recall))
 
-        #auc, auc_op = tf.metrics.auc(labels=y, predictions=probabilities, num_thresholds=50, name="auc_1")
+        auc, auc_op = tf.metrics.auc(labels=y, predictions=probabilities[:,1], num_thresholds=50, name="auc_1")
 
-        #tf.summary.scalar('auc_', auc, collections=["summaries"])
+        tf.summary.scalar('auc_', auc, collections=["summaries"])
 
     # Create summary hooks
     tf.summary.scalar('accuracy', accuracy, collections=["summaries"])
@@ -673,10 +675,10 @@ with graph.as_default():
     tf.summary.scalar('learning_rate', learning_rate, collections=["summaries"])
 
     _, update_op = summary_lib.pr_curve_streaming_op(name='pr_curve',
-                                                     predictions=predictions,
+                                                     predictions=probabilities[:,1],
                                                      labels=y,
                                                      updates_collections=tf.GraphKeys.UPDATE_OPS,
-                                                     num_thresholds=10)
+                                                     num_thresholds=20)
     if num_classes == 2:
         tf.summary.scalar('precision_1', precision, collections=["summaries"])
         tf.summary.scalar('f1_score', f1_score, collections=["summaries"])
@@ -686,6 +688,7 @@ with graph.as_default():
 
     # Merge all the summaries
     merged = tf.summary.merge_all()
+    test_merged = tf.summary.merge("summaries")
 
     print("Graph created...")
 
