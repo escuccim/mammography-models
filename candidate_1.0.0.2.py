@@ -59,11 +59,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-<<<<<<< HEAD
-model_name = "model_s1.0.0.05b"
-=======
-model_name = "model_s1.0.0.06b"
->>>>>>> 61f7aae9f29d3e64e7c06bc39608c385c4ed1d67
+model_name = "model_s1.0.0.07b"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
