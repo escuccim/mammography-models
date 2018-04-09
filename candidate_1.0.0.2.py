@@ -59,7 +59,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.0.0.07b"
+model_name = "model_s1.0.0.10b"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -422,7 +422,7 @@ with graph.as_default():
         kernel_transposed = tf.transpose(conv_kernels1, [3, 0, 1, 2])
 
     with tf.variable_scope('visualization'):
-        tf.summary.image('conv1/filters', kernel_transposed, max_outputs=32)
+        tf.summary.image('conv1/filters', kernel_transposed, max_outputs=32, collections=["training"])
 
     ## Loss function options
     # Regular mean cross entropy
@@ -502,7 +502,7 @@ with graph.as_default():
                                                      predictions=probabilities[:,1],
                                                      labels=y,
                                                      updates_collections=tf.GraphKeys.UPDATE_OPS,
-                                                     metrics_collections=["training"],
+                                                     metrics_collections=["summaries"],
                                                      num_thresholds=20)
 
     if num_classes == 2:
@@ -514,7 +514,7 @@ with graph.as_default():
 
     # Merge all the summaries
     merged = tf.summary.merge_all()
-    test_merged = tf.summary.merge(["summaries"])
+    test_merged = tf.summary.merge_all("summaries")
 
     print("Graph created...")
 # ## Train
