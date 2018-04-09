@@ -39,7 +39,7 @@ decay_factor = 0.85
 staircase = True
 
 # learning rate decay variables
-steps_per_epoch = int(total_records / batch_size)
+steps_per_epoch = 10#int(total_records / batch_size)
 print("Steps per epoch:", steps_per_epoch)
 
 # lambdas
@@ -59,7 +59,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.0.0.02b"
+model_name = "model_s1.0.0.04b"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -487,9 +487,9 @@ with graph.as_default():
         precision, prec_op = tf.metrics.precision(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="precision")
         f1_score = 2 * ( (precision * recall) / (precision + recall))
 
-        auc, auc_op = tf.metrics.auc(labels=y, predictions=probabilities[:,1], num_thresholds=50, name="auc_1")
+        #auc, auc_op = tf.metrics.auc(labels=y, predictions=probabilities[:,1], num_thresholds=50, name="auc_1", updates_collections=tf.GraphKeys.UPDATE_OPS)
 
-        tf.summary.scalar('auc_', auc, collections=["summaries"])
+        #tf.summary.scalar('auc_', auc, collections=["summaries"])
 
     # Create summary hooks
     tf.summary.scalar('accuracy', accuracy, collections=["summaries"])
@@ -502,6 +502,7 @@ with graph.as_default():
                                                      predictions=probabilities[:,1],
                                                      labels=y,
                                                      updates_collections=tf.GraphKeys.UPDATE_OPS,
+                                                     metrics_collections=["summaries"],
                                                      num_thresholds=20)
 
     if num_classes == 2:
