@@ -58,7 +58,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.0.1.38n"
+model_name = "model_s1.0.1.39n"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -481,7 +481,7 @@ with graph.as_default():
     # Convolutional layer 4.1
     with tf.name_scope('conv4.1') as scope:
         conv4 = tf.layers.conv2d(
-            pool3,  # Input data
+            conv4,  # Input data
             filters=256,  # 48 filters
             kernel_size=(3, 3),  # Kernel size: 5x5
             strides=(1, 1),  # Stride: 1
