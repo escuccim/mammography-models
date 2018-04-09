@@ -514,7 +514,7 @@ with graph.as_default():
 
     # Merge all the summaries
     merged = tf.summary.merge_all("training")
-    test_merged = tf.sumamry.merge_all("summaries")
+    test_merged = tf.summary.merge_all("summaries")
     filter_summary = tf.summary.merge_all("filters")
 
     print("Graph created...")
