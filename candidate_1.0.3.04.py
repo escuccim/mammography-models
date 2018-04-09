@@ -1,7 +1,7 @@
 import numpy as np
 import os
 import wget
-from sklearn.cross_validation import train_test_split
+from sklearn.model_selection import train_test_split
 import tensorflow as tf
 from training_utils import download_file, get_batches, read_and_decode_single_example, load_validation_data, \
     download_data, evaluate_model, get_training_data
@@ -59,7 +59,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.0.3.09n"
+model_name = "model_s1.0.3.10n"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -88,6 +88,7 @@ model_name = "model_s1.0.3.09n"
 # 1.0.3.02 - split extra branch so it also goes back into main branch
 # 1.0.3.04 - revert from 3.03, using weighted cross entropy, using inception-like stem to downsize data, changed number of filters in conv layers
 # 1.0.3.08 - remove last conv layer, added extra conv 4
+# 1.0.3.10 - increased number of filters in layer 2
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -339,7 +340,7 @@ with graph.as_default():
     with tf.name_scope('conv2.1') as scope:
         conv2 = tf.layers.conv2d(
             pool1,  # Input data
-            filters=96,  # 32 filters
+            filters=128,  # 32 filters
             kernel_size=(3, 3),  # Kernel size: 9x9
             strides=(1, 1),  # Stride: 1
             padding='SAME',  # "same" padding
@@ -371,7 +372,7 @@ with graph.as_default():
     with tf.name_scope('conv2.2') as scope:
         conv22 = tf.layers.conv2d(
             conv2,  # Input data
-            filters=96,  # 32 filters
+            filters=128,  # 32 filters
             kernel_size=(3, 3),  # Kernel size: 9x9
             strides=(1, 1),  # Stride: 1
             padding='SAME',  # "same" padding
@@ -403,7 +404,7 @@ with graph.as_default():
     with tf.name_scope('conv2.3') as scope:
         conv23 = tf.layers.conv2d(
             pool1,  # Input data
-            filters=96,  # 32 filters
+            filters=128,  # 32 filters
             kernel_size=(3, 3),  # Kernel size: 9x9
             strides=(1, 1),  # Stride: 1
             padding='SAME',  # "same" padding
@@ -452,42 +453,42 @@ with graph.as_default():
         if dropout:
             pool2 = tf.layers.dropout(pool2, rate=pooldropout_rate, seed=106, training=training)
 
-    #with tf.name_scope('pool2.2') as scope:
-    #    pool21 = tf.layers.conv2d(
-    #        pool2,  # Input data
-    #        filters=192,  # 48 filters
-    #        kernel_size=(1, 1),  # Kernel size: 5x5
-    #        strides=(1, 1),  # Stride: 1
-    #        padding='SAME',  # "same" padding
-    #        activation=None,  # None
-    #        kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=107),
-    #        kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
-    #        name='pool2.1'
-    #    )
+    with tf.name_scope('pool2.2') as scope:
+        pool21 = tf.layers.conv2d(
+            pool2,  # Input data
+            filters=192,  # 48 filters
+            kernel_size=(1, 1),  # Kernel size: 5x5
+            strides=(1, 1),  # Stride: 1
+            padding='SAME',  # "same" padding
+            activation=None,  # None
+            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=107),
+            kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
+            name='pool2.1'
+        )
 
-    #    pool21 = tf.layers.batch_normalization(
-    #        pool21,
-    #        axis=-1,
-    #        momentum=0.99,
-    #        epsilon=epsilon,
-    #        center=True,
-    #        scale=True,
-    #        beta_initializer=tf.zeros_initializer(),
-    #        gamma_initializer=tf.ones_initializer(),
-    #        moving_mean_initializer=tf.zeros_initializer(),
-    #        moving_variance_initializer=tf.ones_initializer(),
-    #        training=training,
-    #        name='bn_pool2.1'
-    #    )
+        pool21 = tf.layers.batch_normalization(
+            pool21,
+            axis=-1,
+            momentum=0.99,
+            epsilon=epsilon,
+            center=True,
+            scale=True,
+            beta_initializer=tf.zeros_initializer(),
+            gamma_initializer=tf.ones_initializer(),
+            moving_mean_initializer=tf.zeros_initializer(),
+            moving_variance_initializer=tf.ones_initializer(),
+            training=training,
+            name='bn_pool2.1'
+        )
 
         # apply relu
-    #    pool21 = tf.nn.relu(pool21, name='relu_pool2.1')
+        pool21 = tf.nn.relu(pool21, name='relu_pool2.1')
 
     # Convolutional layer 3
     with tf.name_scope('conv3.1') as scope:
         conv3 = tf.layers.conv2d(
             pool2,  # Input data
-            filters=128,  # 48 filters
+            filters=256,  # 48 filters
             kernel_size=(3, 3),  # Kernel size: 5x5
             strides=(1, 1),  # Stride: 1
             padding='SAME',  # "same" padding
@@ -519,7 +520,7 @@ with graph.as_default():
     with tf.name_scope('conv3.2') as scope:
         conv32 = tf.layers.conv2d(
             conv3,  # Input data
-            filters=128,  # 48 filters
+            filters=256,  # 48 filters
             kernel_size=(3, 3),  # Kernel size: 5x5
             strides=(1, 1),  # Stride: 1
             padding='SAME',  # "same" padding
@@ -564,7 +565,7 @@ with graph.as_default():
     with tf.name_scope('conv4') as scope:
         conv4 = tf.layers.conv2d(
             pool3,  # Input data
-            filters=256,  # 48 filters
+            filters=384,  # 48 filters
             kernel_size=(3, 3),  # Kernel size: 5x5
             strides=(1, 1),  # Stride: 1
             padding='SAME',  # "same" padding
@@ -599,7 +600,7 @@ with graph.as_default():
     with tf.name_scope('conv4.1') as scope:
         conv4 = tf.layers.conv2d(
             conv4,  # Input data
-            filters=256,  # 48 filters
+            filters=384,  # 48 filters
             kernel_size=(3, 3),  # Kernel size: 5x5
             strides=(1, 1),  # Stride: 1
             padding='SAME',  # "same" padding
