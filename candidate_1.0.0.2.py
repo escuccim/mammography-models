@@ -110,7 +110,7 @@ with graph.as_default():
             filters=32,  # 32 filters
             kernel_size=(3, 3),  # Kernel size: 5x5
             strides=(2, 2),  # Stride: 2
-            padding='SAME',  # "same" padding
+            padding='VALID',  # "same" padding
             activation=None,  # None
             kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=100),
             kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
@@ -155,7 +155,7 @@ with graph.as_default():
             pool1,  # Input data
             filters=48,  # 32 filters
             kernel_size=(3, 3),  # Kernel size: 9x9
-            strides=(1, 1),  # Stride: 1
+            strides=(2, 2),  # Stride: 1
             padding='SAME',  # "same" padding
             activation=None,  # None
             kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=104),
