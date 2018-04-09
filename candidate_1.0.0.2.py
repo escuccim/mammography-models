@@ -1,7 +1,7 @@
 import numpy as np
 import os
 import wget
-from sklearn.model_selection import train_test_split
+from sklearn.cross_validation import train_test_split
 import tensorflow as tf
 from training_utils import download_file, get_batches, read_and_decode_single_example, load_validation_data, \
     download_data, evaluate_model, get_training_data
