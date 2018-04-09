@@ -16,8 +16,8 @@
       <file leaf-file-name="candidate_1.0.1.32.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/candidate_1.0.1.32.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="7029">
-              <caret line="854" column="18" lean-forward="true" selection-start-line="808" selection-start-column="8" selection-end-line="854" selection-end-column="18" />
+            <state relative-caret-position="561">
+              <caret line="679" column="97" lean-forward="true" selection-start-line="679" selection-start-column="97" selection-end-line="679" selection-end-column="97" />
               <folding />
             </state>
           </provider>
@@ -26,11 +26,11 @@
       <file leaf-file-name="candidate_1.0.0.2.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/candidate_1.0.0.2.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1045">
+            <state relative-caret-position="231">
               <caret line="61" column="29" lean-forward="false" selection-start-line="61" selection-start-column="29" selection-end-line="61" selection-end-column="29" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
-                <marker date="1523276162237" expanded="true" signature="26864:26890" ph="..." />
+                <marker date="1523276434323" expanded="true" signature="26876:26902" ph="..." />
               </folding>
             </state>
           </provider>
@@ -113,8 +113,8 @@
         <option value="$PROJECT_DIR$/model_1.0.3.02.py" />
         <option value="$PROJECT_DIR$/candidate_1.0.2.06.py" />
         <option value="$PROJECT_DIR$/candidate_1.0.3.04.py" />
-        <option value="$PROJECT_DIR$/candidate_1.0.1.32.py" />
         <option value="$PROJECT_DIR$/training_utils.py" />
+        <option value="$PROJECT_DIR$/candidate_1.0.1.32.py" />
         <option value="$PROJECT_DIR$/candidate_1.0.0.2.py" />
       </list>
     </option>
@@ -507,19 +507,19 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/candidate_1.0.1.32.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="7029">
-          <caret line="854" column="18" lean-forward="true" selection-start-line="808" selection-start-column="8" selection-end-line="854" selection-end-column="18" />
+        <state relative-caret-position="561">
+          <caret line="679" column="97" lean-forward="true" selection-start-line="679" selection-start-column="97" selection-end-line="679" selection-end-column="97" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/candidate_1.0.0.2.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1045">
+        <state relative-caret-position="231">
           <caret line="61" column="29" lean-forward="false" selection-start-line="61" selection-start-column="29" selection-end-line="61" selection-end-column="29" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
-            <marker date="1523276162237" expanded="true" signature="26864:26890" ph="..." />
+            <marker date="1523276434323" expanded="true" signature="26876:26902" ph="..." />
           </folding>
         </state>
       </provider>
