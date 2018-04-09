@@ -577,13 +577,23 @@ with tf.Session(graph=graph, config=config) as sess:
 
             # Run training op and update ops
             if (i % 50 != 0) or (i == 0):
-                _, _,  step = sess.run(
-                    [train_op, extra_update_ops, global_step],
-                        feed_dict={
-                            training: True,
-                        },
-                        options=run_options,
-                        run_metadata=run_metadata)
+                _, _, _, precision_value, summary, acc_value, cost_value, recall_value, step = sess.run(
+                    [train_op, extra_update_ops, update_op, prec_op, merged, accuracy, mean_ce, rec_op, global_step],
+                    feed_dict={
+                        training: True,
+                    },
+                    options=run_options,
+                    run_metadata=run_metadata)
+
+                # Save accuracy (current batch)
+                batch_acc.append(acc_value)
+                batch_cost.append(cost_value)
+                batch_recall.append(np.mean(recall_value))
+
+                # log the summaries to tensorboard every 50 steps
+                if log_to_tensorboard:
+                    # write the summary
+                    train_writer.add_summary(summary, step)
 
             # every 50th step get the metrics
             else:
