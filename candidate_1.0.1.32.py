@@ -82,7 +82,7 @@ model_name = "model_s1.0.1.39n"
 # 1.0.0.29 - put learning rate back
 # 1.0.0.30 - added a branch to conv1 section
 # 1.0.1.32 - increased pool dropout rate, using weighted x-entropy, increased FC dropout rate
-# 1.0.1.33 - calculating probabilites from logits so we can do proper pr and auc curves
+# 1.0.1.33 - extracting probabilites from logits so we can do proper pr curves
 # 1.0.1.35 - updated training code
 # 1.0.1.36 - updated number of filters for layers 2 on
 # 1.0.1.37 - added extra conv in layer 4
@@ -715,7 +715,7 @@ with graph.as_default():
 
             precision[k], prec_op[k] = tf.metrics.precision(
                 labels=tf.equal(y, k),
-                predictions=tf.equal(predictions, k),
+	                predictions=tf.equal(predictions, k),
                 updates_collections=tf.GraphKeys.UPDATE_OPS,
                 metrics_collections=["summaries"]
             )
@@ -741,6 +741,7 @@ with graph.as_default():
                                                      predictions=probabilities[:,1],
                                                      labels=y,
                                                      updates_collections=tf.GraphKeys.UPDATE_OPS,
+													 #metrics_collections=["summaries"],
                                                      num_thresholds=20)
     if num_classes == 2:
         tf.summary.scalar('precision_1', precision, collections=["summaries"])
@@ -820,8 +821,8 @@ with tf.Session(graph=graph, config=config) as sess:
             if (i % 50 != 0) or (i == 0):
                 # log the kernel images once per epoch
                 if (i == (steps_per_epoch - 1)) and log_to_tensorboard:
-                    _, _, image_summary, step = sess.run(
-                        [train_op, extra_update_ops, kernel_summaries, global_step],
+                    _, _, _, image_summary, step = sess.run(
+                        [train_op, extra_update_ops, update_op, kernel_summaries, global_step],
                         feed_dict={
                             training: True,
                         },
@@ -831,8 +832,8 @@ with tf.Session(graph=graph, config=config) as sess:
                     # write the summary
                     train_writer.add_summary(image_summary, step)
                 else:
-                    _, _,  step = sess.run(
-                        [train_op, extra_update_ops, global_step],
+                    _, _, _, step = sess.run(
+                        [train_op, extra_update_ops, update_op, global_step],
                             feed_dict={
                                 training: True,
                             },
