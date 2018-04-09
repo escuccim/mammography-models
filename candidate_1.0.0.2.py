@@ -513,8 +513,8 @@ with graph.as_default():
     extra_update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
 
     # Merge all the summaries
-    merged = tf.summary.merge_all("training")
-    test_merged = tf.summary.merge_all("summaries")
+    merged = tf.summary.merge_all("summaries")
+    #test_merged = tf.summary.merge_all("summaries")
     filter_summary = tf.summary.merge_all("filters")
 
     print("Graph created...")

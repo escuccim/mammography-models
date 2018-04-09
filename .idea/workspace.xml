@@ -26,11 +26,11 @@
       <file leaf-file-name="candidate_1.0.0.2.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/candidate_1.0.0.2.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="231">
-              <caret line="61" column="29" lean-forward="false" selection-start-line="61" selection-start-column="29" selection-end-line="61" selection-end-column="29" />
+            <state relative-caret-position="-2178">
+              <caret line="516" column="5" lean-forward="false" selection-start-line="516" selection-start-column="5" selection-end-line="516" selection-end-column="5" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
-                <marker date="1523276434323" expanded="true" signature="26876:26902" ph="..." />
+                <marker date="1523276472254" expanded="true" signature="26878:26904" ph="..." />
               </folding>
             </state>
           </provider>
@@ -515,11 +515,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/candidate_1.0.0.2.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="231">
-          <caret line="61" column="29" lean-forward="false" selection-start-line="61" selection-start-column="29" selection-end-line="61" selection-end-column="29" />
+        <state relative-caret-position="-2178">
+          <caret line="516" column="5" lean-forward="false" selection-start-line="516" selection-start-column="5" selection-end-line="516" selection-end-column="5" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
-            <marker date="1523276434323" expanded="true" signature="26876:26902" ph="..." />
+            <marker date="1523276472254" expanded="true" signature="26878:26904" ph="..." />
           </folding>
         </state>
       </provider>
