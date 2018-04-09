@@ -59,7 +59,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.0.0.10b"
+model_name = "model_s1.0.0.11b"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -471,14 +471,14 @@ with graph.as_default():
                 labels=tf.equal(y, k),
                 predictions=tf.equal(predictions, k),
                 updates_collections=tf.GraphKeys.UPDATE_OPS,
-                metrics_collections=["summaries"]
+                metrics_collections=["summaries", "training"]
             )
 
             precision[k], prec_op[k] = tf.metrics.precision(
                 labels=tf.equal(y, k),
                 predictions=tf.equal(predictions, k),
                 updates_collections=tf.GraphKeys.UPDATE_OPS,
-                metrics_collections=["summaries"]
+                metrics_collections=["summaries", "training"]
             )
 
             f1_score = 2 * ((precision * recall) / (precision + recall))
@@ -492,28 +492,28 @@ with graph.as_default():
         #tf.summary.scalar('auc_', auc, collections=["summaries"])
 
     # Create summary hooks
-    tf.summary.scalar('accuracy', accuracy, collections=["summaries"])
-    tf.summary.scalar('recall_1', recall, collections=["summaries"])
-    tf.summary.scalar('cross_entropy', mean_ce, collections=["summaries"])
-    tf.summary.scalar('loss', loss, collections=["summaries"])
-    tf.summary.scalar('learning_rate', learning_rate, collections=["summaries"])
+    tf.summary.scalar('accuracy', accuracy, collections=["summaries", "training"])
+    tf.summary.scalar('recall_1', recall, collections=["summaries", "training"])
+    tf.summary.scalar('cross_entropy', mean_ce, collections=["summaries", "training"])
+    tf.summary.scalar('loss', loss, collections=["summaries", "training"])
+    tf.summary.scalar('learning_rate', learning_rate, collections=["summaries", "training"])
 
     _, update_op = summary_lib.pr_curve_streaming_op(name='pr_curve',
                                                      predictions=probabilities[:,1],
                                                      labels=y,
                                                      updates_collections=tf.GraphKeys.UPDATE_OPS,
-                                                     metrics_collections=["summaries"],
+                                                     metrics_collections=["summaries", "training"],
                                                      num_thresholds=20)
 
     if num_classes == 2:
-        tf.summary.scalar('precision_1', precision, collections=["summaries"])
-        tf.summary.scalar('f1_score', f1_score, collections=["summaries"])
+        tf.summary.scalar('precision_1', precision, collections=["summaries", "training"])
+        tf.summary.scalar('f1_score', f1_score, collections=["summaries", "training"])
 
     # add this so that the batch norm gets run
     extra_update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
 
     # Merge all the summaries
-    merged = tf.summary.merge_all()
+    merged = tf.summary.merge_all("training")
     test_merged = tf.summary.merge_all("summaries")
 
     print("Graph created...")
