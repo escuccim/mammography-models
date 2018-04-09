@@ -502,7 +502,7 @@ with graph.as_default():
                                                      predictions=probabilities[:,1],
                                                      labels=y,
                                                      updates_collections=tf.GraphKeys.UPDATE_OPS,
-                                                     metrics_collections=["summaries"],
+                                                     metrics_collections=["training"],
                                                      num_thresholds=20)
 
     if num_classes == 2:
