@@ -59,7 +59,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.0.0.22b"
+model_name = "model_s1.0.0.23b"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -501,7 +501,7 @@ with graph.as_default():
     _, update_op = summary_lib.pr_curve_streaming_op(name='pr_curve',
                                                      predictions=probabilities[:,1],
                                                      labels=y,
-                                                     updates_collections=tf.GraphKeys.UPDATE_OPS,
+                                                     #updates_collections=tf.GraphKeys.UPDATE_OPS,
                                                      metrics_collections=["training"],
                                                      num_thresholds=20)
 
