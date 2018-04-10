@@ -10,7 +10,7 @@ import argparse
 from tensorboard import summary as summary_lib
 
 # download the data
-download_data()
+download_data(what="newest")
 # ## Create Model
 
 ## config
