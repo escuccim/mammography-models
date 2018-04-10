@@ -766,17 +766,13 @@ else:
 meta_data_every = 1
 log_to_tensorboard = True
 print_every = 5  # how often to print metrics
-checkpoint_every = 1  # how often to save model in epochs
+checkpoint_every = 3  # how often to save model in epochs
 use_gpu = False  # whether or not to use the GPU
 print_metrics = True  # whether to print or plot metrics, if False a plot will be created and updated every epoch
 
 # Placeholders for metrics
 valid_acc_values = []
-valid_recall_values = []
-valid_cost_values = []
 train_acc_values = []
-train_recall_values = []
-train_cost_values = []
 
 config = tf.ConfigProto()
 
@@ -810,8 +806,6 @@ with tf.Session(graph=graph, config=config) as sess:
             # Accuracy values (train) after each batch
             batch_acc = []
             batch_cost = []
-            batch_loss = []
-            batch_recall = []
 
             # create the metadata
             run_options = tf.RunOptions(trace_level=tf.RunOptions.FULL_TRACE)
@@ -853,7 +847,6 @@ with tf.Session(graph=graph, config=config) as sess:
                 # Save accuracy (current batch)
                 batch_acc.append(acc_value)
                 batch_cost.append(cost_value)
-                batch_recall.append(np.mean(recall_value))
 
                 # log the summaries to tensorboard every 50 steps
                 if log_to_tensorboard:
@@ -874,10 +867,6 @@ with tf.Session(graph=graph, config=config) as sess:
 
         # init batch arrays
         batch_cv_acc = []
-        batch_cv_cost = []
-        batch_cv_recall = []
-        batch_cv_precision = []
-        batch_cv_fscore = []
 
         # initialize the local variables so we have metrics only on the evaluation
         sess.run(tf.local_variables_initializer())
@@ -897,13 +886,6 @@ with tf.Session(graph=graph, config=config) as sess:
                 })
 
             batch_cv_acc.append(valid_acc)
-            batch_cv_cost.append(valid_cost)
-            batch_cv_recall.append(np.mean(valid_recall))
-            batch_cv_precision.append(np.mean(valid_precision))
-
-            # the first fscore will be nan so don't add that one
-            if not np.isnan(valid_fscore):
-                batch_cv_fscore.append(np.mean(valid_fscore))
 
         # Write average of validation data to summary logs
         if log_to_tensorboard:
@@ -916,13 +898,6 @@ with tf.Session(graph=graph, config=config) as sess:
                     training: False
                 })
 
-            # summary = tf.Summary(value=[tf.Summary.Value(tag="accuracy", simple_value=np.mean(batch_cv_acc)),
-            #                             tf.Summary.Value(tag="cross_entropy", simple_value=np.mean(batch_cv_cost)),
-            #                             tf.Summary.Value(tag="recall_1", simple_value=np.mean(batch_cv_recall)),
-            #                             tf.Summary.Value(tag="precision_1", simple_value=np.mean(batch_cv_precision)),
-            #                             tf.Summary.Value(tag="f1_score", simple_value=np.mean(batch_cv_fscore)),
-            #                             ])
-
             test_writer.add_summary(summary, step)
         step += 1
 
@@ -934,25 +909,21 @@ with tf.Session(graph=graph, config=config) as sess:
 
         # take the mean of the values to add to the metrics
         valid_acc_values.append(np.mean(batch_cv_acc))
-        valid_cost_values.append(np.mean(batch_cv_cost))
         train_acc_values.append(np.mean(batch_acc))
-        train_cost_values.append(np.mean(batch_cost))
-        train_recall_values.append(np.mean(batch_recall))
-        valid_recall_values.append(np.mean(batch_cv_recall))
 
         # Print progress every nth epoch to keep output to reasonable amount
         if (epoch % print_every == 0):
             print(
-            'Epoch {:02d} - step {} - cv acc: {:.3f} - train acc: {:.3f} (mean) - cv cost: {:.3f}'.format(
-                epoch, step, np.mean(batch_cv_acc), np.mean(batch_acc), np.mean(batch_cv_cost)
+            'Epoch {:02d} - step {} - cv acc: {:.3f} - train acc: {:.3f} (mean)'.format(
+                epoch, step, np.mean(batch_cv_acc), np.mean(batch_acc)
             ))
 
         # Print data every 50th epoch so I can write it down to compare models
         if (not print_metrics) and (epoch % 50 == 0) and (epoch > 1):
             if (epoch % print_every == 0):
                 print(
-                'Epoch {:02d} - step {} - cv acc: {:.4f} - train acc: {:.3f} (mean) - cv cost: {:.3f}'.format(
-                    epoch, step, np.mean(batch_cv_acc), np.mean(batch_acc), np.mean(batch_cv_cost)
+                'Epoch {:02d} - step {} - cv acc: {:.4f} - train acc: {:.3f} (mean)'.format(
+                    epoch, step, np.mean(batch_cv_acc), np.mean(batch_acc)
                 ))
 
     # stop the coordinator

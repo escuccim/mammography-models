@@ -79,6 +79,7 @@ model_name = "model_s1.0.0.27"
 # 0.0.0.22 - increased lambdaC, removed dropout from conv layers
 # 1.0.0.23 - added extra conv layers
 # 1.0.0.27 - updates to training code and metrics
+# 1.0.0.28 - using weighted x-entropy to improve recall
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -555,16 +556,12 @@ with graph.as_default():
 
     ## Loss function options
     # Regular mean cross entropy
-    mean_ce = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits))
-
-    # weighted mean cross entropy
-    # onehot_labels = tf.one_hot(y, depth=num_classes)
-    # mean_ce = tf.reduce_mean(tf.nn.weighted_cross_entropy_with_logits(targets=tf.one_hot(y, depth=num_classes), logits=logits, pos_weight=classes_weights))
+    #mean_ce = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits))
 
     # Different weighting method
     # This will weight the positive examples higher so as to improve recall
-    #weights = tf.multiply(2, tf.cast(tf.equal(y, 1), tf.int32)) + 1
-    #mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=logits, weights=weights))
+    weights = tf.multiply(2, tf.cast(tf.equal(y, 1), tf.int32)) + 1
+    mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=logits, weights=weights))
 
     # Add in l2 loss
     loss = mean_ce + tf.losses.get_regularization_loss()
@@ -577,8 +574,6 @@ with graph.as_default():
 
     # Compute predictions and accuracy
     predictions = tf.argmax(logits, axis=1, output_type=tf.int64)
-    is_correct = tf.equal(y, predictions)
-    #accuracy = tf.reduce_mean(tf.cast(is_correct, dtype=tf.float32))
 
     accuracy, acc_op = tf.metrics.accuracy(
         labels=y,
@@ -609,7 +604,7 @@ with graph.as_default():
 
             precision[k], prec_op[k] = tf.metrics.precision(
                 labels=tf.equal(y, k),
-	                predictions=tf.equal(predictions, k),
+                predictions=tf.equal(predictions, k),
                 updates_collections=tf.GraphKeys.UPDATE_OPS,
                 metrics_collections=["summaries"]
             )
@@ -628,7 +623,6 @@ with graph.as_default():
     tf.summary.scalar('accuracy', accuracy, collections=["summaries"])
     tf.summary.scalar('recall_1', recall, collections=["summaries"])
     tf.summary.scalar('cross_entropy', mean_ce, collections=["summaries"])
-    #tf.summary.scalar('loss', loss, collections=["summaries"])
     tf.summary.scalar('learning_rate', learning_rate, collections=["summaries"])
 
     _, update_op = summary_lib.pr_curve_streaming_op(name='pr_curve',
@@ -649,7 +643,6 @@ with graph.as_default():
     kernel_summaries = tf.summary.merge_all("kernels")
 
     print("Graph created...")
-# ## Train
 
 ## CONFIGURE OPTIONS
 if os.path.exists(os.path.join("model", model_name + '.ckpt.index')):
