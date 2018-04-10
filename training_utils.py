@@ -146,43 +146,6 @@ def load_validation_data(data="validation", how="normal", which="newest", percen
 
     return X_cv, y_cv
 
-
-## evaluate the model to see the predictions
-def evaluate_model(graph, config, model_name, how="normal", batch_size=32):
-    X_te, y_te = load_validation_data(how=how, data="test")
-
-    with tf.Session(graph=graph, config=config) as sess:
-        # create the saver
-        saver = tf.train.Saver()
-        sess.run(tf.local_variables_initializer())
-        saver.restore(sess, './model/' + model_name + '.ckpt')
-
-        test_accuracy = []
-        test_recall = []
-        test_predictions = []
-        ground_truth = []
-
-        # evaluate the test data
-        for X_batch, y_batch in get_batches(X_te, y_te, batch_size, distort=False):
-            yhat, test_acc_value, test_recall_value = sess.run([predictions, accuracy, rec_op], feed_dict=
-            {
-                X: X_batch,
-                y: y_batch,
-                training: False
-            })
-
-            test_accuracy.append(test_acc_value)
-            test_recall.append(test_recall_value)
-            test_predictions.append(yhat)
-            ground_truth.append(y_batch)
-
-
-    # print the results
-    print("Mean Recall:", np.mean(test_recall))
-    print("Mean Accuracy:", np.mean(test_accuracy))
-
-    return test_accuracy, test_recall, test_predictions, ground_truth
-
 ## Download the data if it doesn't already exist, many datasets have been created, which one to download can be specified using
 ## the what argument
 def download_data(what="new"):
