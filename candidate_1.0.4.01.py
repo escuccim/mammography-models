@@ -59,8 +59,9 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.0.4.01b"
+model_name = "model_s1.0.4.02b"
 # 0.0.4.01 - starting from scratch
+# 0.0.4.02 - adding extra conv layers
 
 def _conv2d_batch_norm(input, filters, kernel_size=(3,3), stride=(1,1), padding="SAME", seed=None, lambd=0.0, name=None):
     conv = tf.layers.conv2d(
@@ -213,9 +214,27 @@ with graph.as_default():
             name='pool5'
         )
 
+    # conv layer 6
+    with tf.name_scope('conv6.1') as scope:
+        conv6 = _conv2d_batch_norm(pool5, filters=384, padding="SAME", name="6.1")
+
+    # conv layer 6.2
+    with tf.name_scope('conv6.2') as scope:
+        conv6 = _conv2d_batch_norm(conv6, filters=384, padding="SAME", name="6.2")
+
+    # average pool
+    with tf.name_scope('pool6') as scope:
+        pool6 = tf.layers.average_pooling2d(
+            conv6,  # Input
+            pool_size=(2, 2),  # Pool size: 2x2
+            strides=(2, 2),  # Stride: 2
+            padding='SAME',  # "same" padding
+            name='pool6'
+        )
+
     # Flatten output
     with tf.name_scope('flatten') as scope:
-        flat_output = tf.contrib.layers.flatten(pool5)
+        flat_output = tf.contrib.layers.flatten(pool6)
 
         # dropout at fc rate
         flat_output = tf.layers.dropout(flat_output, rate=fcdropout_rate, seed=116, training=training)
@@ -256,7 +275,7 @@ with graph.as_default():
     with tf.name_scope('fc2') as scope:
         fc2 = tf.layers.dense(
             fc1_relu,  # input
-            2048,  # 1024 hidden units
+            1024,  # 1024 hidden units
             activation=None,  # None
             kernel_initializer=tf.variance_scaling_initializer(scale=2, seed=119),
             bias_initializer=tf.zeros_initializer(),
