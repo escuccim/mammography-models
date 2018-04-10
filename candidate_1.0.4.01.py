@@ -286,7 +286,7 @@ with graph.as_default():
         name="logits"
     )
 
-    with tf.variable_scope('conv1', reuse=True):
+    with tf.variable_scope('conv_1.0', reuse=True):
         conv_kernels1 = tf.get_variable('kernel')
         kernel_transposed = tf.transpose(conv_kernels1, [3, 0, 1, 2])
 
