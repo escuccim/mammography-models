@@ -104,41 +104,23 @@ def read_and_decode_single_example(filenames, label_type='label_normal', normali
 
 
 ## load the test data from files
-def load_validation_data(data="validation", how="normal", percentage=1):
+def load_validation_data(data="validation", how="normal", which="newest", percentage=1):
     if data == "validation":
         # load the two data files
-        X_cv = np.load(os.path.join("data", "cv4_data.npy"))
-        labels = np.load(os.path.join("data", "cv4_labels.npy"))
-
-        # X_cv_1 = np.load(os.path.join("data", "cv_data_1.npy"))
-        # labels_1 = np.load(os.path.join("data", "cv_labels_1.npy"))
-
-        # concatenate them
-        # X_cv = np.concatenate([X_cv_0, X_cv_1], axis=0)
-        # labels = np.concatenate([labels_0, labels_1], axis=0)
-
-        # delete the old files to save memory
-        # del (X_cv_0)
-        # del (X_cv_1)
-        # del (labels_0)
-        # del (labels_1)
+        if which == "new":
+            X_cv = np.load(os.path.join("data", "cv4_data.npy"))
+            labels = np.load(os.path.join("data", "cv4_labels.npy"))
+        elif which == "newest":
+            X_cv = np.load(os.path.join("data", "cv5_data.npy"))
+            labels = np.load(os.path.join("data", "cv5_labels.npy"))
 
     elif data == "test":
-        X_cv = np.load(os.path.join("data", "test4_data.npy"))
-        labels = np.load(os.path.join("data", "test4_labels.npy"))
-
-        # X_te_1 = np.load(os.path.join("data", "test2_data_1.npy"))
-        # te_labels_1 = np.load(os.path.join("data", "test2_labels_1.npy"))
-
-        # concatenate them
-        # X_cv = np.concatenate([X_te_0, X_te_1], axis=0)
-        # labels = np.concatenate([te_labels_0, te_labels_1], axis=0)
-
-        # delete the old files to save memory
-        # del (X_te_0)
-        # del (X_te_1)
-        # del (te_labels_0)
-        # del (te_labels_1)
+        if which == "new":
+            X_cv = np.load(os.path.join("data", "test4_data.npy"))
+            labels = np.load(os.path.join("data", "test4_labels.npy"))
+        elif which == "newest":
+            X_cv = np.load(os.path.join("data", "test5_data.npy"))
+            labels = np.load(os.path.join("data", "test5_labels.npy"))
 
     # encode the labels appropriately
     if how == "class":

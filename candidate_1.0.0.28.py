@@ -26,7 +26,7 @@ else:
 
 batch_size = 64
 
-train_files, total_records = get_training_data(type="new")
+train_files, total_records = get_training_data(type="newest")
 
 ## Hyperparameters
 # Small epsilon value for the BN transform
@@ -572,19 +572,22 @@ with graph.as_default():
     # Minimize cross-entropy
     train_op = optimizer.minimize(loss, global_step=global_step)
 
-    # Compute predictions and accuracy
-    predictions = tf.argmax(logits, axis=1, output_type=tf.int64)
+    # get the probabilites for the classes
+    probabilities = tf.nn.softmax(logits, name="probabilities")
 
+    # Compute predictions from the probabilities
+    predictions = tf.argmax(probabilities, axis=1, output_type=tf.int64)
+
+    # get the accuracy
     accuracy, acc_op = tf.metrics.accuracy(
         labels=y,
         predictions=predictions,
         updates_collections=tf.GraphKeys.UPDATE_OPS,
-        #metrics_collections="summaries",
+        metrics_collections=["summaries"],
         name="accuracy",
     )
 
-    # get the probabilites for the classes
-    probabilities = tf.nn.softmax(logits, name="probabilities")
+
 
     # calculate recall
     if num_classes > 2:
@@ -760,7 +763,7 @@ with tf.Session(graph=graph, config=config) as sess:
 
         print("Evaluating model...")
         # load the test data
-        X_cv, y_cv = load_validation_data(percentage=1, how="normal")
+        X_cv, y_cv = load_validation_data(how="normal", which="newest")
 
         # evaluate the test data
         for X_batch, y_batch in get_batches(X_cv, y_cv, batch_size, distort=False):
