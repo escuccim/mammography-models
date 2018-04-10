@@ -334,3 +334,6 @@ def get_training_data(type="new"):
         total_records = 27393
 
     return train_files, total_records
+
+def evaluate_model():
+    pass
