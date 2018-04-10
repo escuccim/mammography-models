@@ -59,7 +59,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.0.4.01"
+model_name = "model_s1.0.4.01b"
 # 0.0.4.01 - starting from scratch
 
 def _conv2d_batch_norm(input, filters, kernel_size=(3,3), stride=(1,1), padding="SAME", seed=None, lambd=0, name=None):
