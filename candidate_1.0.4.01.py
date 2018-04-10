@@ -295,16 +295,12 @@ with graph.as_default():
 
     ## Loss function options
     # Regular mean cross entropy
-    mean_ce = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits))
-
-    # weighted mean cross entropy
-    # onehot_labels = tf.one_hot(y, depth=num_classes)
-    # mean_ce = tf.reduce_mean(tf.nn.weighted_cross_entropy_with_logits(targets=tf.one_hot(y, depth=num_classes), logits=logits, pos_weight=classes_weights))
+    #mean_ce = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits))
 
     # Different weighting method
     # This will weight the positive examples higher so as to improve recall
-    #weights = tf.multiply(2, tf.cast(tf.equal(y, 1), tf.int32)) + 1
-    #mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=logits, weights=weights))
+    weights = tf.multiply(3, tf.cast(tf.equal(y, 1), tf.int32)) + 1
+    mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=logits, weights=weights))
 
     # Add in l2 loss
     loss = mean_ce + tf.losses.get_regularization_loss()
@@ -315,10 +311,12 @@ with graph.as_default():
     # Minimize cross-entropy
     train_op = optimizer.minimize(loss, global_step=global_step)
 
-    # Compute predictions and accuracy
-    predictions = tf.argmax(logits, axis=1, output_type=tf.int64)
+    # get the probabilites from the logits
+    probabilities = tf.nn.softmax(logits, name="probabilities")
+
+    # Compute predictions and accuracy from the probabilities
+    predictions = tf.argmax(probabilities, axis=1, output_type=tf.int64)
     is_correct = tf.equal(y, predictions)
-    #accuracy = tf.reduce_mean(tf.cast(is_correct, dtype=tf.float32))
 
     accuracy, acc_op = tf.metrics.accuracy(
         labels=y,
@@ -327,9 +325,6 @@ with graph.as_default():
         #metrics_collections="summaries",
         name="accuracy",
     )
-
-    # get the probabilites for the classes
-    probabilities = tf.nn.softmax(logits, name="probabilities")
 
     # calculate recall
     if num_classes > 2:
