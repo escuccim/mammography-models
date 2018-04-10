@@ -366,12 +366,12 @@ with graph.as_default():
         name="logits"
     )
 
-    with tf.variable_scope('conv_1.0', reuse=True):
+    with tf.variable_scope('conv_1.1', reuse=True):
         conv_kernels1 = tf.get_variable('kernel')
         kernel_transposed = tf.transpose(conv_kernels1, [3, 0, 1, 2])
 
     with tf.variable_scope('visualization'):
-        tf.summary.image('conv1.0/filters', kernel_transposed, max_outputs=32, collections=["kernels"])
+        tf.summary.image('conv1.1/filters', kernel_transposed, max_outputs=32, collections=["kernels"])
 
     ## Loss function options
     # Regular mean cross entropy
