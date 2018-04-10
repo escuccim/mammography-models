@@ -134,20 +134,20 @@ with graph.as_default():
 
     # Convolutional layer 1 branch 1
     with tf.name_scope('conv1.1') as scope:
-        conv1 = _conv2d_batch_norm(pool0, filters=32, padding="VALID", name="1.1")
+        conv1 = _conv2d_batch_norm(pool0, filters=32, padding="SAME", name="1.1")
 
     with tf.name_scope('conv1.2') as scope:
-        conv1 = _conv2d_batch_norm(conv1, filters=32, padding="VALID", name="1.2")
+        conv1 = _conv2d_batch_norm(conv1, filters=32, padding="SAME", name="1.2")
 
     with tf.name_scope('conv1.3') as scope:
-        conv1 = _conv2d_batch_norm(conv1, filters=32, padding="VALID", name="1.3")
+        conv1 = _conv2d_batch_norm(conv1, filters=32, padding="SAME", name="1.3")
 
     # Convolutional layer 1 branch 2
     with tf.name_scope('conv1.4') as scope:
-        conv12 = _conv2d_batch_norm(pool0, filters=32, padding="VALID", name="1.4")
+        conv12 = _conv2d_batch_norm(pool0, filters=32, padding="SAME", name="1.4")
 
     with tf.name_scope('conv1.5') as scope:
-        conv12 = _conv2d_batch_norm(conv12, filters=32, padding="VALID", name="1.5")
+        conv12 = _conv2d_batch_norm(conv12, filters=32, padding="SAME", name="1.5")
 
     # concat the results
     with tf.name_scope("concat1") as scope:
