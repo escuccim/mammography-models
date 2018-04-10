@@ -121,7 +121,7 @@ with graph.as_default():
 
     # Convolutional layer 1
     with tf.name_scope('conv1') as scope:
-        conv1 = _conv2d_batch_norm(X, filters=32, padding="VALID", name="conv_1.0")
+        conv1 = _conv2d_batch_norm(X, filters=32, padding="VALID", name="1.0")
 
     # reduce dimensionality
     with tf.name_scope('pool1') as scope:
@@ -135,12 +135,12 @@ with graph.as_default():
 
     # conv layer 2 branch 1
     with tf.name_scope('conv2.1') as scope:
-        conv21 = _conv2d_batch_norm(pool1, filters=64, padding="SAME", name="conv_2.1")
-        conv21 = _conv2d_batch_norm(conv21, filters=64, padding="SAME", name="conv_2.2")
+        conv21 = _conv2d_batch_norm(pool1, filters=64, padding="SAME", name="2.1")
+        conv21 = _conv2d_batch_norm(conv21, filters=64, padding="SAME", name="2.2")
 
     # conv layer 2 branch 2
     with tf.name_scope('conv2.2') as scope:
-        conv22 = _conv2d_batch_norm(pool1, filters=64, padding="SAME", name="conv_2.3")
+        conv22 = _conv2d_batch_norm(pool1, filters=64, padding="SAME", name="2.3")
 
     # concat the results
     with tf.name_scope("concat2") as scope:
@@ -162,8 +162,8 @@ with graph.as_default():
 
     # conv layer 3
     with tf.name_scope('conv3.1') as scope:
-        conv3 = _conv2d_batch_norm(pool2, filters=192, padding="SAME", name="conv_3.1")
-        conv3 = _conv2d_batch_norm(conv3, filters=192, padding="SAME", name="conv_3.2")
+        conv3 = _conv2d_batch_norm(pool2, filters=192, padding="SAME", name="3.1")
+        conv3 = _conv2d_batch_norm(conv3, filters=192, padding="SAME", name="3.2")
 
     # max pool
     with tf.name_scope('pool3') as scope:
@@ -177,8 +177,8 @@ with graph.as_default():
 
     # conv layer 4
     with tf.name_scope('conv4.1') as scope:
-        conv4 = _conv2d_batch_norm(pool3, filters=256, padding="SAME", name="conv_4.1")
-        conv4 = _conv2d_batch_norm(conv4, filters=256, padding="SAME", name="conv_4.2")
+        conv4 = _conv2d_batch_norm(pool3, filters=256, padding="SAME", name="4.1")
+        conv4 = _conv2d_batch_norm(conv4, filters=256, padding="SAME", name="4.2")
 
     # max pool
     with tf.name_scope('pool4') as scope:
@@ -192,8 +192,8 @@ with graph.as_default():
 
     # conv layer 5
     with tf.name_scope('conv5.1') as scope:
-        conv5 = _conv2d_batch_norm(pool4, filters=256, padding="SAME", name="conv_5.1")
-        conv5 = _conv2d_batch_norm(conv5, filters=256, padding="SAME", name="conv_5.2")
+        conv5 = _conv2d_batch_norm(pool4, filters=256, padding="SAME", name="5.1")
+        conv5 = _conv2d_batch_norm(conv5, filters=256, padding="SAME", name="5.2")
 
     # max pool
     with tf.name_scope('pool5') as scope:
@@ -291,7 +291,7 @@ with graph.as_default():
         kernel_transposed = tf.transpose(conv_kernels1, [3, 0, 1, 2])
 
     with tf.variable_scope('visualization'):
-        tf.summary.image('conv1/filters', kernel_transposed, max_outputs=32, collections=["kernels"])
+        tf.summary.image('conv1.0/filters', kernel_transposed, max_outputs=32, collections=["kernels"])
 
     ## Loss function options
     # Regular mean cross entropy
