@@ -88,15 +88,15 @@ with graph.as_default():
         X = tf.cast(X, dtype=tf.float32)
 
     # Input stem
-    conv1 = _conv2d_batch_norm(X, filters=32, stride=(2, 2), training=training, padding="VALID", name="1.1")
+    conv1 = _conv2d_batch_norm(X, filters=32, stride=(1, 1), training=training, padding="VALID", name="1.1")
 
     # Max pooling layer 1
     with tf.name_scope('pool1') as scope:
         pool1 = tf.layers.max_pooling2d(
             conv1,  # Input
-            pool_size=(3, 3),  # Pool size: 3x3
-            strides=(2, 2),  # Stride: 2
-            padding='SAME',  # "same" padding
+            pool_size=(2, 2),
+            strides=(2, 2),
+            padding='VALID',
             name='pool1'
         )
 
