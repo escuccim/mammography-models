@@ -58,7 +58,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.1.2.03"
+model_name = "model_s1.1.2.04"
 # 1.1.2.01 - trying to mimic some features of VGG
 # 1.1.2.02 - changed conv1 to stride 2, otherwise used too much memory
 
@@ -169,7 +169,7 @@ with graph.as_default():
     conv5 = _conv2d_batch_norm(pool4, filters=384, stride=(1, 1), training=training, padding="SAME", name="5.1")
     conv5 = _conv2d_batch_norm(conv5, filters=384, stride=(1, 1), training=training, padding="SAME", name="5.2")
 
-    # Max pooling layer 4
+    # Max pooling layer 5
     with tf.name_scope('pool5') as scope:
         pool5 = tf.layers.max_pooling2d(
             conv5,
@@ -182,9 +182,25 @@ with graph.as_default():
         if dropout:
             pool5 = tf.layers.dropout(pool5, rate=pooldropout_rate, seed=115, training=training)
 
+    # Layer 6
+    conv6 = _conv2d_batch_norm(pool5, filters=512, stride=(1, 1), training=training, padding="SAME", name="6.1")
+
+    # Max pooling layer 6
+    with tf.name_scope('pool6') as scope:
+        pool6 = tf.layers.max_pooling2d(
+            conv6,
+            pool_size=(3, 3),  # Pool size: 2x2
+            strides=(3, 3),  # Stride: 2
+            padding='SAME',
+            name='pool6'
+        )
+
+        if dropout:
+            pool6 = tf.layers.dropout(pool6, rate=pooldropout_rate, seed=115, training=training)
+
     # Flatten output
     with tf.name_scope('flatten') as scope:
-        flat_output = tf.contrib.layers.flatten(pool5)
+        flat_output = tf.contrib.layers.flatten(pool6)
 
         # dropout at fc rate
         flat_output = tf.layers.dropout(flat_output, rate=fcdropout_rate, seed=116, training=training)
