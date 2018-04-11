@@ -315,15 +315,17 @@ def get_training_data(type="new"):
         total_records = 41527
 
     elif type == "medium":
-        train_path_10 = os.path.join("data", "training3_0.tfrecords")
-        train_path_11 = os.path.join("data", "training3_1.tfrecords")
-        train_path_12 = os.path.join("data", "training3_2.tfrecords")
-        train_path_13 = os.path.join("data", "training3_3.tfrecords")
-        train_path_14 = os.path.join("data", "training3_4.tfrecords")
-
-        train_files = [train_path_10, train_path_11, train_path_12, train_path_13, train_path_14]
-        total_records = 23297
-
+        # train_path_10 = os.path.join("data", "training3_0.tfrecords")
+        # train_path_11 = os.path.join("data", "training3_1.tfrecords")
+        # train_path_12 = os.path.join("data", "training3_2.tfrecords")
+        # train_path_13 = os.path.join("data", "training3_3.tfrecords")
+        # train_path_14 = os.path.join("data", "training3_4.tfrecords")
+        #
+        # train_files = [train_path_10, train_path_11, train_path_12, train_path_13, train_path_14]
+        # total_records = 23297
+        total_records = 0
+        train_files = []
+        
     else:
         train_path_0 = os.path.join("data", "training_0.tfrecords")
         train_path_1 = os.path.join("data", "training_1.tfrecords")
