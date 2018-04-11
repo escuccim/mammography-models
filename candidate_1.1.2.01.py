@@ -190,7 +190,7 @@ with graph.as_default():
     # Fully connected layer 1
     fc1 = _dense_batch_norm(flat_output, 2048, training=training, epsilon=1e-8, dropout_rate=fcdropout_rate, lambd=lamF, name="1.1")
     fc2 = _dense_batch_norm(fc1, 1024, training=training, epsilon=1e-8, dropout_rate=fcdropout_rate, lambd=lamF, name="1.2")
-    fc3 = _dense_batch_norm(fc2, 512, training=training, epsilon=1e-8, dropout_rate=fcdropout_rate, lambd=lamF, name="1.2")
+    fc3 = _dense_batch_norm(fc2, 512, training=training, epsilon=1e-8, dropout_rate=fcdropout_rate, lambd=lamF, name="1.3")
 
     # Output layer
     logits = tf.layers.dense(
@@ -299,7 +299,7 @@ with graph.as_default():
     kernel_summaries = tf.summary.merge_all("kernels")
 
     print("Graph created...")
-    
+
 ## CONFIGURE OPTIONS
 if os.path.exists(os.path.join("model", model_name + '.ckpt.index')):
     init = False
