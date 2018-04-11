@@ -100,10 +100,6 @@ with graph.as_default():
             name='pool1'
         )
 
-        # optional dropout
-        if dropout:
-            pool1 = tf.layers.dropout(pool1, rate=pooldropout_rate, seed=103, training=training)
-
     # Layer 2 branch 1
     conv2 = _conv2d_batch_norm(pool1, filters=64, stride=(1, 1), training=training, padding="SAME", name="2.1")
     conv2 = _conv2d_batch_norm(conv2, filters=64, stride=(1, 1), training=training, padding="SAME", name="2.2")
@@ -145,9 +141,6 @@ with graph.as_default():
             name='pool3'
         )
 
-        if dropout:
-            pool3 = tf.layers.dropout(pool3, rate=pooldropout_rate, seed=109, training=training)
-
     # Layer 4
     conv4 = _conv2d_batch_norm(pool3, filters=256, stride=(1, 1), training=training, padding="SAME", name="4.1")
     conv4 = _conv2d_batch_norm(conv4, filters=256, stride=(1, 1), training=training, padding="SAME", name="4.2")
@@ -161,9 +154,6 @@ with graph.as_default():
             padding='SAME',  # "same" padding
             name='pool4'
         )
-
-        if dropout:
-            pool4 = tf.layers.dropout(pool4, rate=pooldropout_rate, seed=112, training=training)
 
     # Layer 5
     conv5 = _conv2d_batch_norm(pool4, filters=384, stride=(1, 1), training=training, padding="SAME", name="5.1")
@@ -179,9 +169,6 @@ with graph.as_default():
             name='pool5'
         )
 
-        if dropout:
-            pool5 = tf.layers.dropout(pool5, rate=pooldropout_rate, seed=115, training=training)
-
     # Layer 6
     conv6 = _conv2d_batch_norm(pool5, filters=512, stride=(1, 1), training=training, padding="SAME", name="6.1")
 
@@ -194,9 +181,6 @@ with graph.as_default():
             padding='SAME',
             name='pool6'
         )
-
-        if dropout:
-            pool6 = tf.layers.dropout(pool6, rate=pooldropout_rate, seed=115, training=training)
 
     # Flatten output
     with tf.name_scope('flatten') as scope:
