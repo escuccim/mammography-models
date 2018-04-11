@@ -939,7 +939,13 @@ with tf.Session(graph=graph, config=config) as sess:
     test_predictions = []
     ground_truth = []
 
-    # evaluate the test data
+    # evaluate the test data# Evaluate on test data
+    X_te, y_te = load_validation_data(how="normal", data="test")
+
+    test_accuracy = []
+    test_recall = []
+    test_predictions = []
+    ground_truth = []
     for X_batch, y_batch in get_batches(X_te, y_te, batch_size, distort=False):
         yhat, test_acc_value, test_recall_value = sess.run([predictions, accuracy, rec_op], feed_dict=
         {

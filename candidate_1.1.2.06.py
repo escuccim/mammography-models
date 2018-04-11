@@ -58,7 +58,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.1.2.05"
+model_name = "model_s1.1.2.06"
 # 1.1.2.01 - trying to mimic some features of VGG
 # 1.1.2.02 - changed conv1 to stride 2, otherwise used too much memory
 # 1.1.2.05 - removed 1 conv from layer 3, sizing down model to try to speed up training
@@ -102,11 +102,11 @@ with graph.as_default():
         )
 
     # Layer 2 branch 1
-    conv2 = _conv2d_batch_norm(pool1, filters=64, stride=(1, 1), training=training, padding="SAME", name="2.1")
-    conv2 = _conv2d_batch_norm(conv2, filters=64, stride=(1, 1), training=training, padding="SAME", name="2.2")
+    conv2 = _conv2d_batch_norm(pool1, filters=48, stride=(1, 1), training=training, padding="SAME", name="2.1")
+    conv2 = _conv2d_batch_norm(conv2, filters=48, stride=(1, 1), training=training, padding="SAME", name="2.2")
 
     # Layer 2 branch 2
-    conv21 = _conv2d_batch_norm(pool1, filters=64, stride=(1, 1), training=training, padding="SAME", name="2.3")
+    conv21 = _conv2d_batch_norm(pool1, filters=48, stride=(1, 1), training=training, padding="SAME", name="2.3")
 
     # Concat 2
     with tf.name_scope("concat2") as scope:
@@ -127,8 +127,7 @@ with graph.as_default():
         )
 
     # Layer 3
-    conv3 = _conv2d_batch_norm(pool2, filters=96, kernel_size=(1,1), stride=(1, 1), training=training, padding="SAME", name="3.0")
-    conv3 = _conv2d_batch_norm(conv3, filters=128, stride=(1, 1), training=training, padding="SAME", name="3.1")
+    conv3 = _conv2d_batch_norm(pool2, filters=128, stride=(1, 1), training=training, padding="SAME", name="3.1")
     conv3 = _conv2d_batch_norm(conv3, filters=128, stride=(1, 1), training=training, padding="SAME", name="3.2")
 
     # Max pooling layer 3
@@ -142,8 +141,8 @@ with graph.as_default():
         )
 
     # Layer 4
-    conv4 = _conv2d_batch_norm(pool3, filters=256, stride=(1, 1), training=training, padding="SAME", name="4.1")
-    conv4 = _conv2d_batch_norm(conv4, filters=256, stride=(1, 1), training=training, padding="SAME", name="4.2")
+    conv4 = _conv2d_batch_norm(pool3, filters=192, stride=(1, 1), training=training, padding="SAME", name="4.1")
+    conv4 = _conv2d_batch_norm(conv4, filters=192, stride=(1, 1), training=training, padding="SAME", name="4.2")
 
     # Max pooling layer 4
     with tf.name_scope('pool4') as scope:
@@ -156,8 +155,8 @@ with graph.as_default():
         )
 
     # Layer 5
-    conv5 = _conv2d_batch_norm(pool4, filters=384, stride=(1, 1), training=training, padding="SAME", name="5.1")
-    conv5 = _conv2d_batch_norm(conv5, filters=384, stride=(1, 1), training=training, padding="SAME", name="5.2")
+    conv5 = _conv2d_batch_norm(pool4, filters=256, stride=(1, 1), training=training, padding="SAME", name="5.1")
+    conv5 = _conv2d_batch_norm(conv5, filters=256, stride=(1, 1), training=training, padding="SAME", name="5.2")
 
     # Max pooling layer 5
     with tf.name_scope('pool5') as scope:

@@ -325,7 +325,7 @@ def get_training_data(type="new"):
         # total_records = 23297
         total_records = 0
         train_files = []
-        
+
     else:
         train_path_0 = os.path.join("data", "training_0.tfrecords")
         train_path_1 = os.path.join("data", "training_1.tfrecords")
