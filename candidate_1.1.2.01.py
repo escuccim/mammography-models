@@ -58,8 +58,9 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.1.2.01"
+model_name = "model_s1.1.2.02"
 # 1.1.2.01 - trying to mimic some features of VGG
+# 1.1.2.02 - changed conv1 to stride 2, otherwise used too much memory
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -87,7 +88,7 @@ with graph.as_default():
         X = tf.cast(X, dtype=tf.float32)
 
     # Input stem
-    conv1 = _conv2d_batch_norm(X, filters=32, stride=(1, 1), training=training, padding="VALID", name="1.1")
+    conv1 = _conv2d_batch_norm(X, filters=32, stride=(2, 2), training=training, padding="VALID", name="1.1")
 
     # Max pooling layer 1
     with tf.name_scope('pool1') as scope:
