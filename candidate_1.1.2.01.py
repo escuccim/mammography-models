@@ -130,7 +130,7 @@ with graph.as_default():
         )
 
     # Layer 3
-    conv3 = _conv2d_batch_norm(pool2, filters=96, kernel_size=(1,1), stride=(1, 1), training=training, padding="SAME", name="3.1")
+    conv3 = _conv2d_batch_norm(pool2, filters=96, kernel_size=(1,1), stride=(1, 1), training=training, padding="SAME", name="3.0")
     conv3 = _conv2d_batch_norm(pool2, filters=128, stride=(1, 1), training=training, padding="SAME", name="3.1")
     conv3 = _conv2d_batch_norm(conv3, filters=128, stride=(1, 1), training=training, padding="SAME", name="3.2")
     conv3 = _conv2d_batch_norm(conv3, filters=128, stride=(1, 1), training=training, padding="SAME", name="3.3")
