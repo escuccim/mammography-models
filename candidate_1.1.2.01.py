@@ -189,9 +189,9 @@ with graph.as_default():
         flat_output = tf.layers.dropout(flat_output, rate=fcdropout_rate, seed=116, training=training)
 
     # Fully connected layer 1
-    fc1 = _dense_batch_norm(flat_output, 2048, training=training, epsilon=1e-8, dropout_rate=fcdropout_rate, lambd=lamF, name="1.1")
-    fc2 = _dense_batch_norm(fc1, 1024, training=training, epsilon=1e-8, dropout_rate=fcdropout_rate, lambd=lamF, name="1.2")
-    fc3 = _dense_batch_norm(fc2, 512, training=training, epsilon=1e-8, dropout_rate=fcdropout_rate, lambd=lamF, name="1.3")
+    fc1 = _dense_batch_norm(flat_output, 1024, training=training, epsilon=1e-8, dropout_rate=fcdropout_rate, lambd=lamF, name="1.1")
+    fc2 = _dense_batch_norm(fc1, 512, training=training, epsilon=1e-8, dropout_rate=fcdropout_rate, lambd=lamF, name="1.2")
+    fc3 = _dense_batch_norm(fc2, 256, training=training, epsilon=1e-8, dropout_rate=fcdropout_rate, lambd=lamF, name="1.3")
 
     # Output layer
     logits = tf.layers.dense(
