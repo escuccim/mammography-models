@@ -4,7 +4,7 @@ import wget
 from sklearn.model_selection import train_test_split
 import tensorflow as tf
 from training_utils import download_file, get_batches, read_and_decode_single_example, load_validation_data, \
-    download_data, evaluate_model, get_training_data, _conv2d_batch_norm
+    download_data, evaluate_model, get_training_data, _conv2d_batch_norm, _dense_batch_norm
 import sys
 import argparse
 from tensorboard import summary as summary_lib
@@ -124,25 +124,19 @@ with graph.as_default():
         X = tf.cast(X, dtype=tf.float32)
 
     # downsize input
-    with tf.name_scope('conv1.1') as scope:
-        conv1 = _conv2d_batch_norm(X, filters=32, stride=(2,2), padding="SAME", name="1.1")
+    conv1 = _conv2d_batch_norm(X, filters=32, stride=(2,2), training=training, padding="SAME", name="1.1")
 
     # layer 1 branch 1
-    with tf.name_scope('conv1.2') as scope:
-        conv12 = _conv2d_batch_norm(conv1, filters=32, padding="SAME", name="1.2")
+    conv12 = _conv2d_batch_norm(conv1, filters=32, padding="SAME", training=training, name="1.2")
 
-    with tf.name_scope('conv1.3') as scope:
-        conv12 = _conv2d_batch_norm(conv12, filters=32, padding="SAME", name="1.3")
+    conv12 = _conv2d_batch_norm(conv12, filters=32, padding="SAME", training=training, name="1.3")
 
-    with tf.name_scope('conv1.4') as scope:
-        conv12 = _conv2d_batch_norm(conv12, filters=32, padding="SAME", name="1.4")
+    conv12 = _conv2d_batch_norm(conv12, filters=32, padding="SAME", training=training, name="1.4")
 
     # layer 1 branch 2
-    with tf.name_scope('conv1.5') as scope:
-        conv13 = _conv2d_batch_norm(conv1, filters=32, padding="SAME", name="1.5")
+    conv13 = _conv2d_batch_norm(conv1, filters=32, padding="SAME", training=training, name="1.5")
 
-    with tf.name_scope('conv1.6') as scope:
-        conv13 = _conv2d_batch_norm(conv13, filters=32, padding="SAME", name="1.6")
+    conv13 = _conv2d_batch_norm(conv13, filters=32, padding="SAME", training=training, name="1.6")
 
     # concat the results
     with tf.name_scope("concat1") as scope:
@@ -163,11 +157,9 @@ with graph.as_default():
         )
 
     # conv layer 2 branch 1
-    with tf.name_scope('conv2.1') as scope:
-        conv21 = _conv2d_batch_norm(pool1, filters=96, padding="SAME", name="2.1")
+    conv21 = _conv2d_batch_norm(pool1, filters=96, padding="SAME", training=training, name="2.1")
 
-    with tf.name_scope('conv2.2') as scope:
-        conv21 = _conv2d_batch_norm(conv21, filters=96, padding="SAME", name="2.2")
+    conv21 = _conv2d_batch_norm(conv21, filters=96, padding="SAME", training=training, name="2.2")
 
     # max pool
     with tf.name_scope('pool2') as scope:
@@ -180,11 +172,9 @@ with graph.as_default():
         )
 
     # conv layer 3
-    with tf.name_scope('conv3.1') as scope:
-        conv3 = _conv2d_batch_norm(pool2, filters=192, padding="SAME", name="3.1")
+    conv3 = _conv2d_batch_norm(pool2, filters=192, padding="SAME", training=training, name="3.1")
 
-    with tf.name_scope('conv3.2') as scope:
-        conv3 = _conv2d_batch_norm(conv3, filters=192, padding="SAME", name="3.2")
+    conv3 = _conv2d_batch_norm(conv3, filters=192, padding="SAME", training=training, name="3.2")
 
     # max pool
     with tf.name_scope('pool3') as scope:
@@ -197,11 +187,9 @@ with graph.as_default():
         )
 
     # conv layer 4
-    with tf.name_scope('conv4.1') as scope:
-        conv4 = _conv2d_batch_norm(pool3, filters=256, padding="SAME", name="4.1")
+    conv4 = _conv2d_batch_norm(pool3, filters=256, padding="SAME", training=training,  name="4.1")
 
-    with tf.name_scope('conv4.2') as scope:
-        conv4 = _conv2d_batch_norm(conv4, filters=256, padding="SAME", name="4.2")
+    conv4 = _conv2d_batch_norm(conv4, filters=256, padding="SAME", training=training, name="4.2")
 
     # max pool
     with tf.name_scope('pool4') as scope:
@@ -214,11 +202,9 @@ with graph.as_default():
         )
 
     # conv layer 5
-    with tf.name_scope('conv5.1') as scope:
-        conv5 = _conv2d_batch_norm(pool4, filters=384, padding="SAME", name="5.1")
+    conv5 = _conv2d_batch_norm(pool4, filters=384, padding="SAME", training=training, name="5.1")
 
-    with tf.name_scope('conv5.2') as scope:
-        conv5 = _conv2d_batch_norm(conv5, filters=384, padding="SAME", name="5.2")
+    conv5 = _conv2d_batch_norm(conv5, filters=384, padding="SAME", training=training, name="5.2")
 
     # max pool
     with tf.name_scope('pool5') as scope:
@@ -231,12 +217,10 @@ with graph.as_default():
         )
 
     # conv layer 6
-    with tf.name_scope('conv6.1') as scope:
-        conv6 = _conv2d_batch_norm(pool5, filters=512, padding="SAME", name="6.1")
+    conv6 = _conv2d_batch_norm(pool5, filters=512, padding="SAME", training=training, name="6.1")
 
     # conv layer 6.2
-    with tf.name_scope('conv6.2') as scope:
-        conv6 = _conv2d_batch_norm(conv6, filters=512, padding="SAME", name="6.2")
+    conv6 = _conv2d_batch_norm(conv6, filters=512, padding="SAME",training=training,  name="6.2")
 
     # average pool
     with tf.name_scope('pool6') as scope:

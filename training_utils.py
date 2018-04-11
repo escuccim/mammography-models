@@ -338,37 +338,72 @@ def get_training_data(type="new"):
 def evaluate_model():
     pass
 
-# function to help build the graph
-def _conv2d_batch_norm(input, filters, kernel_size=(3,3), stride=(1,1), padding="SAME", seed=None, lambd=0.0, name=None):
-    conv = tf.layers.conv2d(
-        input,
-        filters=filters,
-        kernel_size=kernel_size,
-        strides=stride,
-        padding=padding,
-        activation=None,
-        kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=seed),
-        kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lambd),
-        name='conv_'+name
-    )
+## functions to help build the graph
+def _conv2d_batch_norm(input, filters, kernel_size=(3,3), stride=(1,1), training=training, padding="SAME", seed=None, lambd=0.0, name=None):
+    with tf.name_scope('layer_'+name) as scope:
+        conv = tf.layers.conv2d(
+            input,
+            filters=filters,
+            kernel_size=kernel_size,
+            strides=stride,
+            padding=padding,
+            activation=None,
+            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=seed),
+            kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lambd),
+            name='conv_'+name
+        )
 
-    # apply batch normalization
-    conv = tf.layers.batch_normalization(
-        conv,
-        axis=-1,
-        momentum=0.99,
-        epsilon=epsilon,
-        center=True,
-        scale=True,
-        beta_initializer=tf.zeros_initializer(),
-        gamma_initializer=tf.ones_initializer(),
-        moving_mean_initializer=tf.zeros_initializer(),
-        moving_variance_initializer=tf.ones_initializer(),
-        training=training,
-        name='bn_'+name
-    )
+        # apply batch normalization
+        conv = tf.layers.batch_normalization(
+            conv,
+            axis=-1,
+            momentum=0.99,
+            epsilon=epsilon,
+            center=True,
+            scale=True,
+            beta_initializer=tf.zeros_initializer(),
+            gamma_initializer=tf.ones_initializer(),
+            moving_mean_initializer=tf.zeros_initializer(),
+            moving_variance_initializer=tf.ones_initializer(),
+            training=training,
+            name='bn_'+name
+        )
 
-    # apply relu
-    conv = tf.nn.relu(conv, name='relu_'+name)
+        # apply relu
+        conv = tf.nn.relu(conv, name='relu_'+name)
 
     return conv
+
+def _dense_batch_norm(input, units, training=training, epsilon=1e-8, seed=None, dropout_rate=0.5, lambd=0.0, name=None):
+    with tf.name_scope('layer_' + name) as scope:
+        fc = tf.layers.dense(
+            input,  # input
+            units,  # 1024 hidden units
+            activation=None,  # None
+            kernel_initializer=tf.variance_scaling_initializer(scale=2, seed=seed),
+            bias_initializer=tf.zeros_initializer(),
+            kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lambd),
+            name="fc_"+name
+        )
+
+        fc = tf.layers.batch_normalization(
+            fc,
+            axis=-1,
+            momentum=0.9,
+            epsilon=epsilon,
+            center=True,
+            scale=True,
+            beta_initializer=tf.zeros_initializer(),
+            gamma_initializer=tf.ones_initializer(),
+            moving_mean_initializer=tf.zeros_initializer(),
+            moving_variance_initializer=tf.ones_initializer(),
+            training=training,
+            name='bn_fc_' + name
+        )
+
+        fc = tf.nn.relu(fc, name='fc_relu' + name)
+
+        # dropout
+        fc = tf.layers.dropout(fc, rate=dropout_rate, seed=seed, training=training)
+
+    return fc
