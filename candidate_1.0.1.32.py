@@ -143,11 +143,11 @@ with graph.as_default():
         )
 
         # apply relu
-        conv1_bn_relu = tf.nn.relu(conv1, name='relu1')
+        conv1 = tf.nn.relu(conv1, name='relu1')
 
     with tf.name_scope('conv1.1') as scope:
         conv11 = tf.layers.conv2d(
-            conv1_bn_relu,  # Input data
+            conv1,  # Input data
             filters=32,  # 32 filters
             kernel_size=(3, 3),  # Kernel size: 5x5
             strides=(1, 1),  # Stride: 2
@@ -209,7 +209,7 @@ with graph.as_default():
 
     with tf.name_scope('conv1.3') as scope:
         conv113 = tf.layers.conv2d(
-            conv1_bn_relu,  # Input data
+            conv1,  # Input data
             filters=32,  # 32 filters
             kernel_size=(3, 3),  # Kernel size: 5x5
             strides=(1, 1),  # Stride: 2
@@ -734,7 +734,6 @@ with graph.as_default():
     tf.summary.scalar('accuracy', accuracy, collections=["summaries"])
     tf.summary.scalar('recall_1', recall, collections=["summaries"])
     tf.summary.scalar('cross_entropy', mean_ce, collections=["summaries"])
-    #tf.summary.scalar('loss', loss, collections=["summaries"])
     tf.summary.scalar('learning_rate', learning_rate, collections=["summaries"])
 
     _, update_op = summary_lib.pr_curve_streaming_op(name='pr_curve',
