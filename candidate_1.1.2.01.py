@@ -58,7 +58,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.1.2.02"
+model_name = "model_s1.1.2.03"
 # 1.1.2.01 - trying to mimic some features of VGG
 # 1.1.2.02 - changed conv1 to stride 2, otherwise used too much memory
 
@@ -131,7 +131,7 @@ with graph.as_default():
 
     # Layer 3
     conv3 = _conv2d_batch_norm(pool2, filters=96, kernel_size=(1,1), stride=(1, 1), training=training, padding="SAME", name="3.0")
-    conv3 = _conv2d_batch_norm(pool2, filters=128, stride=(1, 1), training=training, padding="SAME", name="3.1")
+    conv3 = _conv2d_batch_norm(conv3, filters=128, stride=(1, 1), training=training, padding="SAME", name="3.1")
     conv3 = _conv2d_batch_norm(conv3, filters=128, stride=(1, 1), training=training, padding="SAME", name="3.2")
     conv3 = _conv2d_batch_norm(conv3, filters=128, stride=(1, 1), training=training, padding="SAME", name="3.3")
 
