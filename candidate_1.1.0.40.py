@@ -701,7 +701,7 @@ with graph.as_default():
             moving_mean_initializer=tf.zeros_initializer(),
             moving_variance_initializer=tf.ones_initializer(),
             training=training,
-            name='bn_fc2'
+            name='bn_fc3'
         )
 
         fc3 = tf.nn.relu(fc3, name='fc3_relu')
