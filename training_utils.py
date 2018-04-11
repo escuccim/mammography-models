@@ -339,7 +339,7 @@ def evaluate_model():
     pass
 
 ## functions to help build the graph
-def _conv2d_batch_norm(input, filters, kernel_size=(3,3), stride=(1,1), training, padding="SAME", seed=None, lambd=0.0, name=None):
+def _conv2d_batch_norm(input, filters, kernel_size=(3,3), stride=(1,1), training = tf.placeholder(dtype=tf.bool, name="is_training"), padding="SAME", seed=None, lambd=0.0, name=None):
     with tf.name_scope('layer_'+name) as scope:
         conv = tf.layers.conv2d(
             input,
@@ -374,7 +374,7 @@ def _conv2d_batch_norm(input, filters, kernel_size=(3,3), stride=(1,1), training
 
     return conv
 
-def _dense_batch_norm(input, units, training, epsilon=1e-8, seed=None, dropout_rate=0.5, lambd=0.0, name=None):
+def _dense_batch_norm(input, units,  training = tf.placeholder(dtype=tf.bool, name="is_training"), epsilon=1e-8, seed=None, dropout_rate=0.5, lambd=0.0, name=None):
     with tf.name_scope('layer_' + name) as scope:
         fc = tf.layers.dense(
             input,  # input

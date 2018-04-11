@@ -26,9 +26,11 @@
       <file leaf-file-name="candidate_1.4.1.04.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/candidate_1.4.1.04.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="231">
-              <caret line="7" column="10" lean-forward="true" selection-start-line="7" selection-start-column="10" selection-end-line="7" selection-end-column="10" />
-              <folding />
+            <state relative-caret-position="1089">
+              <caret line="102" column="4" lean-forward="true" selection-start-line="102" selection-start-column="4" selection-end-line="102" selection-end-column="64" />
+              <folding>
+                <element signature="e#0#18#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -78,8 +80,8 @@
       <file leaf-file-name="training_utils.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/training_utils.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="627">
-              <caret line="367" column="30" lean-forward="true" selection-start-line="367" selection-start-column="30" selection-end-line="367" selection-end-column="30" />
+            <state relative-caret-position="330">
+              <caret line="376" column="98" lean-forward="false" selection-start-line="376" selection-start-column="98" selection-end-line="376" selection-end-column="98" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -603,16 +605,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/candidate_1.4.1.04.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="231">
-          <caret line="7" column="10" lean-forward="true" selection-start-line="7" selection-start-column="10" selection-end-line="7" selection-end-column="10" />
-          <folding />
+        <state relative-caret-position="1089">
+          <caret line="102" column="4" lean-forward="true" selection-start-line="102" selection-start-column="4" selection-end-line="102" selection-end-column="64" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/training_utils.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="627">
-          <caret line="367" column="30" lean-forward="true" selection-start-line="367" selection-start-column="30" selection-end-line="367" selection-end-column="30" />
+        <state relative-caret-position="330">
+          <caret line="376" column="98" lean-forward="false" selection-start-line="376" selection-start-column="98" selection-end-line="376" selection-end-column="98" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
