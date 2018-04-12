@@ -13,7 +13,7 @@ from tensorboard import summary as summary_lib
 parser = argparse.ArgumentParser()
 parser.add_argument("-e", "--epochs", help="number of epochs to train", type=int)
 parser.add_argument("-d", "--data", help="which dataset to use", type=int)
-parser.add_argument("-m", "--model", help="model to initialize with", type=int)
+parser.add_argument("-m", "--model", help="model to initialize with")
 args = parser.parse_args()
 
 if args.epochs:
@@ -601,8 +601,6 @@ with graph.as_default():
         name="accuracy",
     )
 
-
-
     # calculate recall
     if num_classes > 2:
         recall = [0] * num_classes
@@ -706,7 +704,9 @@ with tf.Session(graph=graph, config=config) as sess:
     else:
         # if we are initializing with the weights from another model load it
         if init_model is not None:
-            saver.restore(sess, './model/'+init_model+'.ckpt')
+            print("Initializing with model", init_model)
+            saver.restore(sess, './model/' + init_model + '.ckpt')
+
         # otherwise load this model
         else:
             saver.restore(sess, './model/' + model_name + '.ckpt')

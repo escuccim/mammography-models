@@ -463,3 +463,13 @@ def _dense_batch_norm(input, units,  training = tf.placeholder(dtype=tf.bool, na
         fc = tf.layers.dropout(fc, rate=dropout_rate, seed=seed, training=training)
 
     return fc
+
+## load weights from a checkpoint, excluding any and return the init function
+def load_weights(model_name, exclude=None):
+    model_path = os.path.join("model", model_name)
+
+    variables_to_restore = tf.contrib.framework.get_variables_to_restore(exclude=exclude)
+    init_fn = tf.contrib.framework.assign_from_checkpoint_fn(model_path, variables_to_restore)
+
+    return init_fn
+
