@@ -113,6 +113,9 @@ def load_validation_data(data="validation", how="normal", which="newest", percen
         elif which == "newest":
             X_cv = np.load(os.path.join("data", "cv5_data.npy"))
             labels = np.load(os.path.join("data", "cv5_labels.npy"))
+        elif which == "newerest":
+            X_cv = np.load(os.path.join("data", "cv6_data.npy"))
+            labels = np.load(os.path.join("data", "cv6_labels.npy"))
 
     elif data == "test":
         if which == "new":
@@ -121,6 +124,9 @@ def load_validation_data(data="validation", how="normal", which="newest", percen
         elif which == "newest":
             X_cv = np.load(os.path.join("data", "test5_data.npy"))
             labels = np.load(os.path.join("data", "test5_labels.npy"))
+        elif which == "newerest":
+            X_cv = np.load(os.path.join("data", "test6_data.npy"))
+            labels = np.load(os.path.join("data", "test6_labels.npy"))
 
     # encode the labels appropriately
     if how == "class":
@@ -291,6 +297,56 @@ def download_data(what="new"):
             _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/cv5_filenames.npy',
                               'cv5_filenames.npy')
 
+    elif what == "newerest":
+        # download and unzip tfrecords training data
+        if not os.path.exists(os.path.join("data", "training6_0.tfrecords")):
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training6_0.zip',
+                              'training6_0.zip')
+
+        if not os.path.exists(os.path.join("data", "training6_1.tfrecords")):
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training6_1.zip',
+                              'training6_1.zip')
+
+        if not os.path.exists(os.path.join("data", "training6_2.tfrecords")):
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training6_2.zip',
+                              'training6_2.zip')
+
+        if not os.path.exists(os.path.join("data", "training6_3.tfrecords")):
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training6_3.zip',
+                              'training6_3.zip')
+
+        if not os.path.exists(os.path.join("data", "training6_4.tfrecords")):
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training6_4.zip',
+                              'training6_4.zip')
+
+        # download and unzip test data
+        if not os.path.exists(os.path.join("data", "test6_data.npy")):
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/test6_data.zip',
+                              'test6_data.zip')
+
+        if not os.path.exists(os.path.join("data", "test6_filenames.npy")):
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/test6_filenames.npy',
+                              'test6_filenames.npy')
+
+        # download test labels
+        if not os.path.exists(os.path.join("data", "test6_labels.npy")):
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/test6_labels.npy',
+                              'test6_labels.npy')
+
+        # download and unzip validation data
+        if not os.path.exists(os.path.join("data", "cv6_data.npy")):
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/cv6_data.zip',
+                              'cv6_data.zip')
+
+        # download validation labels
+        if not os.path.exists(os.path.join("data", "cv6_labels.npy")):
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/cv6_labels.npy',
+                              'cv6_labels.npy')
+
+        if not os.path.exists(os.path.join("data", "cv6_filenames.npy")):
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/cv6_filenames.npy',
+                              'cv6_filenames.npy')
+
 ## Load the training data and return a list of the tfrecords file and the size of the dataset
 ## Multiple data sets have been created for this project, which one to be used can be set with the type argument
 def get_training_data(type="new"):
@@ -313,6 +369,16 @@ def get_training_data(type="new"):
 
         train_files = [train_path_10, train_path_11, train_path_12, train_path_13, train_path_14]
         total_records = 41527
+
+    elif type == "newerest":
+        train_path_10 = os.path.join("data", "training6_0.tfrecords")
+        train_path_11 = os.path.join("data", "training6_1.tfrecords")
+        train_path_12 = os.path.join("data", "training6_2.tfrecords")
+        train_path_13 = os.path.join("data", "training6_3.tfrecords")
+        train_path_14 = os.path.join("data", "training6_4.tfrecords")
+
+        train_files = [train_path_10, train_path_11, train_path_12, train_path_13, train_path_14]
+        total_records = 62764
 
     elif type == "medium":
         # train_path_10 = os.path.join("data", "training3_0.tfrecords")
