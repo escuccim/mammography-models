@@ -784,7 +784,7 @@ with tf.Session(graph=graph, config=config) as sess:
             # run the initializer
             init_fn(sess)
             
-            print("Initializing with model", init_model)
+            print("Initializing weights from model", init_model)
             #saver.restore(sess, './model/' + init_model + '.ckpt')
         # otherwise load this model
         else:
