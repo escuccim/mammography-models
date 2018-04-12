@@ -10,7 +10,7 @@ import argparse
 from tensorboard import summary as summary_lib
 
 # download the data
-dataset = 5
+dataset = 6
 download_data(what=dataset)
 # ## Create Model
 

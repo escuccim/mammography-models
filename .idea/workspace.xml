@@ -3,19 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="98c4e5b0-4f90-4540-b87f-9bd6d2ddc583" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/candidate_1.0.0.28.py" afterPath="$PROJECT_DIR$/candidate_1.0.0.28.py" />
-      <change beforePath="$PROJECT_DIR$/candidate_1.0.1.32.py" afterPath="$PROJECT_DIR$/candidate_1.0.1.32.py" />
-      <change beforePath="$PROJECT_DIR$/candidate_1.0.1.40.py" afterPath="$PROJECT_DIR$/candidate_1.0.1.40.py" />
-      <change beforePath="$PROJECT_DIR$/candidate_1.1.3.01.py" afterPath="$PROJECT_DIR$/candidate_1.1.3.01.py" />
-      <change beforePath="$PROJECT_DIR$/candidate_1.3.1.01n.py" afterPath="$PROJECT_DIR$/candidate_1.3.1.01n.py" />
-      <change beforePath="$PROJECT_DIR$/candidate_1.4.0.01.py" afterPath="$PROJECT_DIR$/candidate_1.4.0.01.py" />
-      <change beforePath="$PROJECT_DIR$/candidate_1.4.1.04.py" afterPath="$PROJECT_DIR$/candidate_1.4.1.04.py" />
-      <change beforePath="$PROJECT_DIR$/model_1.0.0.24.py" afterPath="$PROJECT_DIR$/model_1.0.0.24.py" />
-      <change beforePath="$PROJECT_DIR$/model_1.0.0.30.py" afterPath="$PROJECT_DIR$/model_1.0.0.30.py" />
-      <change beforePath="$PROJECT_DIR$/model_1.0.1.32.py" afterPath="$PROJECT_DIR$/model_1.0.1.32.py" />
-      <change beforePath="$PROJECT_DIR$/model_1.0.1.39n.py" afterPath="$PROJECT_DIR$/model_1.0.1.39n.py" />
-      <change beforePath="$PROJECT_DIR$/model_1.0.2.02.py" afterPath="$PROJECT_DIR$/model_1.0.2.02.py" />
-      <change beforePath="$PROJECT_DIR$/model_1.0.3.02.py" afterPath="$PROJECT_DIR$/model_1.0.3.02.py" />
-      <change beforePath="$PROJECT_DIR$/training_utils.py" afterPath="$PROJECT_DIR$/training_utils.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -103,8 +90,8 @@
       <file leaf-file-name="candidate_1.0.0.28.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/candidate_1.0.0.28.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="363">
-              <caret line="62" column="30" lean-forward="false" selection-start-line="62" selection-start-column="30" selection-end-line="62" selection-end-column="30" />
+            <state relative-caret-position="99">
+              <caret line="12" column="11" lean-forward="false" selection-start-line="12" selection-start-column="11" selection-end-line="12" selection-end-column="11" />
               <folding />
             </state>
           </provider>
@@ -731,8 +718,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/candidate_1.0.0.28.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="363">
-          <caret line="62" column="30" lean-forward="false" selection-start-line="62" selection-start-column="30" selection-end-line="62" selection-end-column="30" />
+        <state relative-caret-position="99">
+          <caret line="12" column="11" lean-forward="false" selection-start-line="12" selection-start-column="11" selection-end-line="12" selection-end-column="11" />
           <folding />
         </state>
       </provider>
