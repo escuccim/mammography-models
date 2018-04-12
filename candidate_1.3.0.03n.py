@@ -8,13 +8,10 @@ from training_utils import download_file, get_batches, read_and_decode_single_ex
 import argparse
 from tensorboard import summary as summary_lib
 
-# download the data
-download_data()
-
-## config
-# If number of epochs has been passed in use that, otherwise default to 50
+# get args
 parser = argparse.ArgumentParser()
 parser.add_argument("-e", "--epochs", help="number of epochs to train", type=int)
+parser.add_argument("-d", "--data", help="which dataset to use", type=int)
 args = parser.parse_args()
 
 if args.epochs:
@@ -22,10 +19,19 @@ if args.epochs:
 else:
     epochs = 50
 
+if args.data:
+    dataset = args.data
+else:
+    dataset = 5
+
+# download the data
+download_data(what=dataset)
+
+## config
 # set the batch size
 batch_size = 64
 
-train_files, total_records = get_training_data(type="newest")
+train_files, total_records = get_training_data(what=dataset)
 
 ## Hyperparameters
 # Small epsilon value for the BN transform
@@ -703,11 +709,11 @@ with graph.as_default():
 
     ## Loss function options
     # Regular mean cross entropy
-    #mean_ce = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits))
+    mean_ce = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits))
 
     # This will weight the positive examples higher so as to improve recall
-    weights = tf.multiply(2, tf.cast(tf.equal(y, 1), tf.int32)) + 1
-    mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=logits, weights=weights))
+    # weights = tf.multiply(2, tf.cast(tf.equal(y, 1), tf.int32)) + 1
+    # mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=logits, weights=weights))
 
     # Add in l2 loss
     loss = mean_ce + tf.losses.get_regularization_loss()
@@ -910,7 +916,7 @@ with tf.Session(graph=graph, config=config) as sess:
 
         print("Evaluating model...")
         # load the test data
-        X_cv, y_cv = load_validation_data(percentage=1, how="normal")
+        X_cv, y_cv = load_validation_data(percentage=1, how="normal", which=dataset)
 
         # evaluate the test data
         for X_batch, y_batch in get_batches(X_cv, y_cv, batch_size, distort=False):
@@ -970,7 +976,7 @@ with tf.Session(graph=graph, config=config) as sess:
     coord.join(threads)
 
     ## Evaluate on test data
-    X_te, y_te = load_validation_data(how="normal", data="test")
+    X_te, y_te = load_validation_data(how="normal", data="test", which=dataset)
 
     test_accuracy = []
     test_recall = []
