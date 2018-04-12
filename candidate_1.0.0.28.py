@@ -4,8 +4,7 @@ import wget
 from sklearn.model_selection import train_test_split
 import tensorflow as tf
 from training_utils import download_file, get_batches, read_and_decode_single_example, load_validation_data, \
-    download_data, evaluate_model, get_training_data
-import sys
+    download_data, evaluate_model, get_training_data, load_weights
 import argparse
 from tensorboard import summary as summary_lib
 
@@ -24,7 +23,7 @@ else:
 if args.data:
     dataset = args.data
 else:
-    dataset = 5
+    dataset = 6
 
 if args.model:
     init_model = args.model
@@ -704,9 +703,17 @@ with tf.Session(graph=graph, config=config) as sess:
     else:
         # if we are initializing with the weights from another model load it
         if init_model is not None:
-            print("Initializing with model", init_model)
-            saver.restore(sess, './model/' + init_model + '.ckpt')
+            # initialize the global variables
+            sess.run(tf.global_variables_initializer())
 
+            # create the initializer function to initialize the weights
+            init_fn = load_weights(init_model, exclude=["fc1", "fc2"])
+
+            # run the initializer
+            init_fn(sess)
+            
+            print("Initializing with model", init_model)
+            #saver.restore(sess, './model/' + init_model + '.ckpt')
         # otherwise load this model
         else:
             saver.restore(sess, './model/' + model_name + '.ckpt')
