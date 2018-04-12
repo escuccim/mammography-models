@@ -11,7 +11,7 @@ from tensorboard import summary as summary_lib
 
 # download the data
 dataset = 6
-init_model = "model_s1.0.0.28"
+#init_model = "model_s1.0.0.28"
 download_data(what=dataset)
 # ## Create Model
 
@@ -688,7 +688,7 @@ with tf.Session(graph=graph, config=config) as sess:
     if init:
         sess.run(tf.global_variables_initializer())
     else:
-        saver.restore(sess, './model/'+init_model+'.ckpt')
+        saver.restore(sess, './model/'+model_name+'.ckpt')
 
     coord = tf.train.Coordinator()
     threads = tf.train.start_queue_runners(coord=coord)
