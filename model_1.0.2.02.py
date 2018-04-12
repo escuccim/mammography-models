@@ -7,14 +7,15 @@ from training_utils import download_file, get_batches, read_and_decode_single_ex
     download_data, evaluate_model, get_training_data
 from tensorboard import summary as summary_lib
 
-download_data()
-# ## Create Model
+dataset = 5
+download_data(what=dataset)
 
+# ## Create Model
 # config
 epochs = 50
 batch_size = 64
 
-train_files, total_records = get_training_data(type="new")
+train_files, total_records = get_training_data(what=dataset)
 
 ## Hyperparameters
 # Small epsilon value for the BN transform
@@ -853,7 +854,7 @@ with tf.Session(graph=graph, config=config) as sess:
 
             print("Evaluating model...")
             # load the test data
-            X_cv, y_cv = load_validation_data(percentage=1, how="normal")
+            X_cv, y_cv = load_validation_data(percentage=1, how="normal", which=dataset)
 
             # evaluate the test data
             for X_batch, y_batch in get_batches(X_cv, y_cv, batch_size, distort=False):
@@ -931,7 +932,7 @@ with tf.Session(graph=graph, config=config) as sess:
     coord.join(threads)
 
     ## Evaluate on test data
-    X_te, y_te = load_validation_data(how="normal", data="test")
+    X_te, y_te = load_validation_data(how="normal", data="test", which=dataset)
 
     test_accuracy = []
     test_recall = []

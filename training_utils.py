@@ -104,27 +104,27 @@ def read_and_decode_single_example(filenames, label_type='label_normal', normali
 
 
 ## load the test data from files
-def load_validation_data(data="validation", how="normal", which="newest", percentage=1):
+def load_validation_data(data="validation", how="normal", which=5, percentage=1):
     if data == "validation":
         # load the two data files
-        if which == "new":
+        if which == 4:
             X_cv = np.load(os.path.join("data", "cv4_data.npy"))
             labels = np.load(os.path.join("data", "cv4_labels.npy"))
-        elif which == "newest":
+        elif which == 5:
             X_cv = np.load(os.path.join("data", "cv5_data.npy"))
             labels = np.load(os.path.join("data", "cv5_labels.npy"))
-        elif which == "newerest":
+        elif which == 6:
             X_cv = np.load(os.path.join("data", "cv6_data.npy"))
             labels = np.load(os.path.join("data", "cv6_labels.npy"))
 
     elif data == "test":
-        if which == "new":
+        if which == 4:
             X_cv = np.load(os.path.join("data", "test4_data.npy"))
             labels = np.load(os.path.join("data", "test4_labels.npy"))
-        elif which == "newest":
+        elif which == 5:
             X_cv = np.load(os.path.join("data", "test5_data.npy"))
             labels = np.load(os.path.join("data", "test5_labels.npy"))
-        elif which == "newerest":
+        elif which == 6:
             X_cv = np.load(os.path.join("data", "test6_data.npy"))
             labels = np.load(os.path.join("data", "test6_labels.npy"))
 
@@ -154,8 +154,8 @@ def load_validation_data(data="validation", how="normal", which="newest", percen
 
 ## Download the data if it doesn't already exist, many datasets have been created, which one to download can be specified using
 ## the what argument
-def download_data(what="new"):
-    if what == "new":
+def download_data(what=4):
+    if what == 4:
         # download and unzip tfrecords training data
         if not os.path.exists(os.path.join("data", "training4_0.tfrecords")):
             _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training4_0.zip',
@@ -203,7 +203,7 @@ def download_data(what="new"):
             _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/cv4_filenames.npy',
                               'cv4_filenames.npy')
 
-    elif what == "old":
+    elif what == 1:
         # download main training tfrecords files
         if not os.path.exists(os.path.join("data", "training_0.tfrecords")):
             _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training_0.tfrecords',
@@ -247,7 +247,7 @@ def download_data(what="new"):
             _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/test2_data_1.npy',
                               'test2_data_1.npy')
 
-    elif what == "newest":
+    elif what == 5:
         # download and unzip tfrecords training data
         if not os.path.exists(os.path.join("data", "training5_0.tfrecords")):
             _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training5_0.zip',
@@ -297,7 +297,7 @@ def download_data(what="new"):
             _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/cv5_filenames.npy',
                               'cv5_filenames.npy')
 
-    elif what == "newerest":
+    elif what ==6:
         # download and unzip tfrecords training data
         if not os.path.exists(os.path.join("data", "training6_0.tfrecords")):
             _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training6_0.zip',
@@ -349,8 +349,8 @@ def download_data(what="new"):
 
 ## Load the training data and return a list of the tfrecords file and the size of the dataset
 ## Multiple data sets have been created for this project, which one to be used can be set with the type argument
-def get_training_data(type="new"):
-    if type == "newest":
+def get_training_data(what=5):
+    if what == 5:
         train_path_10 = os.path.join("data", "training5_0.tfrecords")
         train_path_11 = os.path.join("data", "training5_1.tfrecords")
         train_path_12 = os.path.join("data", "training5_2.tfrecords")
@@ -360,7 +360,7 @@ def get_training_data(type="new"):
         train_files = [train_path_10, train_path_11, train_path_12, train_path_13, train_path_14]
         total_records = 39316
 
-    elif type == "new":
+    elif what == 4:
         train_path_10 = os.path.join("data", "training4_0.tfrecords")
         train_path_11 = os.path.join("data", "training4_1.tfrecords")
         train_path_12 = os.path.join("data", "training4_2.tfrecords")
@@ -370,7 +370,7 @@ def get_training_data(type="new"):
         train_files = [train_path_10, train_path_11, train_path_12, train_path_13, train_path_14]
         total_records = 41527
 
-    elif type == "newerest":
+    elif what == 6:
         train_path_10 = os.path.join("data", "training6_0.tfrecords")
         train_path_11 = os.path.join("data", "training6_1.tfrecords")
         train_path_12 = os.path.join("data", "training6_2.tfrecords")
@@ -379,18 +379,6 @@ def get_training_data(type="new"):
 
         train_files = [train_path_10, train_path_11, train_path_12, train_path_13, train_path_14]
         total_records = 62764
-
-    elif type == "medium":
-        # train_path_10 = os.path.join("data", "training3_0.tfrecords")
-        # train_path_11 = os.path.join("data", "training3_1.tfrecords")
-        # train_path_12 = os.path.join("data", "training3_2.tfrecords")
-        # train_path_13 = os.path.join("data", "training3_3.tfrecords")
-        # train_path_14 = os.path.join("data", "training3_4.tfrecords")
-        #
-        # train_files = [train_path_10, train_path_11, train_path_12, train_path_13, train_path_14]
-        # total_records = 23297
-        total_records = 0
-        train_files = []
 
     else:
         train_path_0 = os.path.join("data", "training_0.tfrecords")
