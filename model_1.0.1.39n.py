@@ -631,6 +631,10 @@ with graph.as_default():
     # Regular mean cross entropy
     #mean_ce = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits))
 
+    # weighted mean cross entropy
+    # onehot_labels = tf.one_hot(y, depth=num_classes)
+    # mean_ce = tf.reduce_mean(tf.nn.weighted_cross_entropy_with_logits(targets=tf.one_hot(y, depth=num_classes), logits=logits, pos_weight=classes_weights))
+
     # Different weighting method
     # This will weight the positive examples higher so as to improve recall
     weights = tf.multiply(2, tf.cast(tf.equal(y, 1), tf.int32)) + 1

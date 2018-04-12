@@ -16,12 +16,18 @@ download_data()
 # If number of epochs has been passed in use that, otherwise default to 50
 parser = argparse.ArgumentParser()
 parser.add_argument("-e", "--epochs", help="number of epochs to train", type=int)
+parser.add_argument("-h", "--how", help="how to classify the data (normal, mass, benign)", type=int)
 args = parser.parse_args()
 
 if args.epochs:
     epochs = args.epochs
 else:
     epochs = 50
+
+if args.how:
+    how = args.how
+else:
+    how = "normal"
 
 batch_size = 64
 
@@ -63,6 +69,7 @@ model_name = "model_s1.1.2.07"
 # 1.1.2.02 - changed conv1 to stride 2, otherwise used too much memory
 # 1.1.2.05 - removed 1 conv from layer 3, sizing down model to try to speed up training
 # 1.1.2.07 - removed branch
+# 1.1.3.01 - changing conv 1 to stride 2
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -78,7 +85,7 @@ with graph.as_default():
                                                staircase=staircase)
 
     with tf.name_scope('inputs') as scope:
-        image, label = read_and_decode_single_example(train_files, label_type="label_normal", normalize=False)
+        image, label = read_and_decode_single_example(train_files, label_type='label_'+how, normalize=False)
 
         X_def, y_def = tf.train.shuffle_batch([image, label], batch_size=batch_size, capacity=2000,
                                               min_after_dequeue=1000)
@@ -90,37 +97,37 @@ with graph.as_default():
         X = tf.cast(X, dtype=tf.float32)
 
     # Input stem
-    conv1 = _conv2d_batch_norm(X, filters=32, stride=(1, 1), training=training, padding="VALID", name="1.1")
+    conv1 = _conv2d_batch_norm(X, filters=32, stride=(2, 2), training=training, padding="VALID", name="1.1")
 
     # Max pooling layer 1
-    with tf.name_scope('pool1') as scope:
-        pool1 = tf.layers.max_pooling2d(
-            conv1,  # Input
-            pool_size=(2, 2),
-            strides=(2, 2),
-            padding='VALID',
-            name='pool1'
-        )
+    # with tf.name_scope('pool1') as scope:
+    #     pool1 = tf.layers.max_pooling2d(
+    #         conv1,  # Input
+    #         pool_size=(2, 2),
+    #         strides=(2, 2),
+    #         padding='VALID',
+    #         name='pool1'
+    #     )
 
     # Layer 2 branch 1
-    conv2 = _conv2d_batch_norm(pool1, filters=48, stride=(1, 1), training=training, padding="SAME", name="2.1")
-    conv2 = _conv2d_batch_norm(conv2, filters=48, stride=(1, 1), training=training, padding="SAME", name="2.2")
+    conv2 = _conv2d_batch_norm(conv1, filters=32, stride=(1, 1), training=training, padding="SAME", name="2.1")
+    conv2 = _conv2d_batch_norm(conv2, filters=32, stride=(1, 1), training=training, padding="SAME", name="2.2")
 
     # Layer 2 branch 2
-    # conv21 = _conv2d_batch_norm(pool1, filters=48, stride=(1, 1), training=training, padding="SAME", name="2.3")
+    conv21 = _conv2d_batch_norm(conv1, filters=32, stride=(1, 1), training=training, padding="SAME", name="2.3")
 
     # Concat 2
-    # with tf.name_scope("concat2") as scope:
-    #     concat2 = tf.concat(
-    #         [conv2, conv21],
-    #         axis=3,
-    #         name='concat2'
-    #     )
+    with tf.name_scope("concat2") as scope:
+         concat2 = tf.concat(
+             [conv2, conv21],
+             axis=3,
+             name='concat2'
+         )
 
     # Pool 2
     with tf.name_scope('pool2') as scope:
         pool2 = tf.layers.max_pooling2d(
-            conv2,
+            concat2,
             pool_size=(3, 3),
             strides=(2, 2),
             padding='SAME',
@@ -142,8 +149,8 @@ with graph.as_default():
         )
 
     # Layer 4
-    conv4 = _conv2d_batch_norm(pool3, filters=192, stride=(1, 1), training=training, padding="SAME", name="4.1")
-    conv4 = _conv2d_batch_norm(conv4, filters=192, stride=(1, 1), training=training, padding="SAME", name="4.2")
+    conv4 = _conv2d_batch_norm(pool3, filters=256, stride=(1, 1), training=training, padding="SAME", name="4.1")
+    conv4 = _conv2d_batch_norm(conv4, filters=256, stride=(1, 1), training=training, padding="SAME", name="4.2")
 
     # Max pooling layer 4
     with tf.name_scope('pool4') as scope:
@@ -156,8 +163,8 @@ with graph.as_default():
         )
 
     # Layer 5
-    conv5 = _conv2d_batch_norm(pool4, filters=256, stride=(1, 1), training=training, padding="SAME", name="5.1")
-    conv5 = _conv2d_batch_norm(conv5, filters=256, stride=(1, 1), training=training, padding="SAME", name="5.2")
+    conv5 = _conv2d_batch_norm(pool4, filters=384, stride=(1, 1), training=training, padding="SAME", name="5.1")
+    conv5 = _conv2d_batch_norm(conv5, filters=384, stride=(1, 1), training=training, padding="SAME", name="5.2")
 
     # Max pooling layer 5
     with tf.name_scope('pool5') as scope:
@@ -418,7 +425,7 @@ with tf.Session(graph=graph, config=config) as sess:
 
         print("Evaluating model...")
         # load the test data
-        X_cv, y_cv = load_validation_data(percentage=1, how="normal")
+        X_cv, y_cv = load_validation_data(percentage=1, how=how)
 
         # evaluate the test data
         for X_batch, y_batch in get_batches(X_cv, y_cv, batch_size, distort=False):
@@ -478,7 +485,7 @@ with tf.Session(graph=graph, config=config) as sess:
     coord.join(threads)
 
     ## Evaluate on test data
-    X_te, y_te = load_validation_data(how="normal", data="test")
+    X_te, y_te = load_validation_data(how=how, data="test")
 
     test_accuracy = []
     test_recall = []
