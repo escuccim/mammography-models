@@ -68,7 +68,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.0.1.39h"
+model_name = "model_s1.0.1.39i"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -783,7 +783,11 @@ with tf.Session(graph=graph, config=config) as sess:
 
             # run the initializer
             init_fn(sess)
-            
+
+            # reset the global step
+            initial_global_step = global_step.assign(0)
+            sess.run(initial_global_step)
+
             print("Initializing weights from model", init_model)
             #saver.restore(sess, './model/' + init_model + '.ckpt')
         # otherwise load this model
