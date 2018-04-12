@@ -776,17 +776,8 @@ with tf.Session(graph=graph, config=config) as sess:
     else:
         # if we are initializing with the weights from another model load it
         if init_model is not None:
-            # initialize the global variables
-            sess.run(tf.global_variables_initializer())
-
-            # create the initializer function to initialize the weights
-            init_fn = load_weights(init_model, exclude=["fc1", "fc2"])
-
-            # run the initializer
-            init_fn(sess)
-
             print("Initializing with model", init_model)
-            #saver.restore(sess, './model/' + init_model + '.ckpt')
+            saver.restore(sess, './model/' + init_model + '.ckpt')
         # otherwise load this model
         else:
             saver.restore(sess, './model/' + model_name + '.ckpt')
