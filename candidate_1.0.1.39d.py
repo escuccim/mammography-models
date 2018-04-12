@@ -12,7 +12,7 @@ from tensorboard import summary as summary_lib
 parser = argparse.ArgumentParser()
 parser.add_argument("-e", "--epochs", help="number of epochs to train", type=int)
 parser.add_argument("-d", "--data", help="which dataset to use", type=int)
-parser.add_argument("-m", "--model", help="model to initialize with", type=string)
+parser.add_argument("-m", "--model", help="model to initialize with")
 args = parser.parse_args()
 
 if args.epochs:
