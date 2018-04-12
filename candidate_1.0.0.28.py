@@ -9,16 +9,11 @@ import sys
 import argparse
 from tensorboard import summary as summary_lib
 
-# download the data
-dataset = 6
-#init_model = "model_s1.0.0.28"
-download_data(what=dataset)
-# ## Create Model
-
-## config
 # If number of epochs has been passed in use that, otherwise default to 50
 parser = argparse.ArgumentParser()
 parser.add_argument("-e", "--epochs", help="number of epochs to train", type=int)
+parser.add_argument("-d", "--data", help="which dataset to use", type=int)
+parser.add_argument("-m", "--model", help="model to initialize with", type=int)
 args = parser.parse_args()
 
 if args.epochs:
@@ -26,6 +21,20 @@ if args.epochs:
 else:
     epochs = 50
 
+if args.data:
+    dataset = args.data
+else:
+    dataset = 5
+
+if args.model:
+    init_model = args.model
+else:
+    init_model = None
+
+# download the data
+download_data(what=dataset)
+
+## config
 batch_size = 64
 
 train_files, total_records = get_training_data(what=dataset)
@@ -653,10 +662,17 @@ with graph.as_default():
     print("Graph created...")
 
 ## CONFIGURE OPTIONS
-if os.path.exists(os.path.join("model", model_name + '.ckpt.index')):
-    init = False
+if init_model is not None:
+    if os.path.exists(os.path.join("model", init_model + '.ckpt.index')):
+        init = False
+    else:
+        init = True
+
 else:
-    init = True
+    if os.path.exists(os.path.join("model", model_name + '.ckpt.index')):
+        init = False
+    else:
+        init = True
 
 meta_data_every = 1
 log_to_tensorboard = True
@@ -688,7 +704,12 @@ with tf.Session(graph=graph, config=config) as sess:
     if init:
         sess.run(tf.global_variables_initializer())
     else:
-        saver.restore(sess, './model/'+model_name+'.ckpt')
+        # if we are initializing with the weights from another model load it
+        if init_model is not None:
+            saver.restore(sess, './model/'+init_model+'.ckpt')
+        # otherwise load this model
+        else:
+            saver.restore(sess, './model/' + model_name + '.ckpt')
 
     coord = tf.train.Coordinator()
     threads = tf.train.start_queue_runners(coord=coord)

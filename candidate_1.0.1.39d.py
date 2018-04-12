@@ -23,17 +23,15 @@ else:
 if args.data:
     dataset = args.data
 else:
-    dataset = 5
+    dataset = 6
 
 if args.model:
     init_model = args.model
 else:
-    init_model = None
+    init_model = "model_s1.0.1.39n"
 
 # download the data
 download_data(what=dataset)
-
-# config
 
 batch_size = 64
 
@@ -70,7 +68,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.0.1.43n"
+model_name = "model_s1.0.1.39c"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -99,9 +97,6 @@ model_name = "model_s1.0.1.43n"
 # 1.0.1.36 - updated number of filters for layers 2 on
 # 1.0.1.37 - added extra conv in layer 4
 # 1.0.1.38 - reduced number of filters to try to speed up training
-# 1.0.1.40 - added extra fc layer
-# 1.0.1.41 - adding some residual connections
-# 1.0.1.43 - adding some extra layers with residual connections
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -255,7 +250,7 @@ with graph.as_default():
 
     with tf.name_scope("concat1") as scope:
         concat1 = tf.concat(
-            [conv1, conv12, conv113],
+            [conv12, conv113],
             axis=3,
             name='concat1'
         )
@@ -275,42 +270,10 @@ with graph.as_default():
             pool1 = tf.layers.dropout(pool1, rate=pooldropout_rate, seed=103, training=training)
 
     # Convolutional layer 2
-    with tf.name_scope('conv2.0') as scope:
-        conv2 = tf.layers.conv2d(
-            pool1,  # Input data
-            filters=48,  # 32 filters
-            kernel_size=(1, 1),  # Kernel size: 9x9
-            strides=(1, 1),  # Stride: 1
-            padding='SAME',  # "same" padding
-            activation=None,  # None
-            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=104),
-            kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
-            name='conv2.0'
-        )
-
-        conv2 = tf.layers.batch_normalization(
-            conv2,
-            axis=-1,
-            momentum=0.99,
-            epsilon=epsilon,
-            center=True,
-            scale=True,
-            beta_initializer=tf.zeros_initializer(),
-            gamma_initializer=tf.ones_initializer(),
-            moving_mean_initializer=tf.zeros_initializer(),
-            moving_variance_initializer=tf.ones_initializer(),
-            training=training,
-            name='bn2.0'
-        )
-
-        # apply relu
-        conv2 = tf.nn.relu(conv2, name='relu2.0')
-
-    # Convolutional layer 2
     with tf.name_scope('conv2.1') as scope:
         conv2 = tf.layers.conv2d(
-            conv2,  # Input data
-            filters=64,  # 32 filters
+            pool1,  # Input data
+            filters=96,  # 32 filters
             kernel_size=(3, 3),  # Kernel size: 9x9
             strides=(1, 1),  # Stride: 1
             padding='SAME',  # "same" padding
@@ -336,13 +299,13 @@ with graph.as_default():
         )
 
         # apply relu
-        conv2_relu = tf.nn.relu(conv2, name='relu2.1')
+        conv2 = tf.nn.relu(conv2, name='relu2.1')
 
     # Convolutional layer 2
     with tf.name_scope('conv2.2') as scope:
         conv22 = tf.layers.conv2d(
-            conv2_relu,  # Input data
-            filters=64,  # 32 filters
+            conv2,  # Input data
+            filters=96,  # 32 filters
             kernel_size=(3, 3),  # Kernel size: 9x9
             strides=(1, 1),  # Stride: 1
             padding='SAME',  # "same" padding
@@ -369,40 +332,6 @@ with graph.as_default():
 
         # apply relu
         conv22 = tf.nn.relu(conv22, name='relu2.2')
-
-    # Convolutional layer 2
-    with tf.name_scope('conv2.3') as scope:
-        conv22 = tf.layers.conv2d(
-            conv2_relu,  # Input data
-            filters=64,  # 32 filters
-            kernel_size=(3, 3),  # Kernel size: 9x9
-            strides=(1, 1),  # Stride: 1
-            padding='SAME',  # "same" padding
-            activation=None,  # None
-            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=1104),
-            kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
-            name='conv2.3'
-        )
-
-        conv22 = tf.layers.batch_normalization(
-            conv22,
-            axis=-1,
-            momentum=0.99,
-            epsilon=epsilon,
-            center=True,
-            scale=True,
-            beta_initializer=tf.zeros_initializer(),
-            gamma_initializer=tf.ones_initializer(),
-            moving_mean_initializer=tf.zeros_initializer(),
-            moving_variance_initializer=tf.ones_initializer(),
-            training=training,
-            name='bn2.3'
-        )
-
-        conv22 = conv22 + conv2
-
-        # apply relu
-        conv22 = tf.nn.relu(conv22, name='relu2.3')
 
     # Max pooling layer 2
     with tf.name_scope('pool2') as scope:
@@ -448,12 +377,12 @@ with graph.as_default():
         )
 
         # apply relu
-        conv3_relu = tf.nn.relu(conv3, name='relu3.1')
+        conv3 = tf.nn.relu(conv3, name='relu3.1')
 
     # Convolutional layer 3
     with tf.name_scope('conv3.2') as scope:
         conv32 = tf.layers.conv2d(
-            conv3_relu,  # Input data
+            conv3,  # Input data
             filters=128,  # 48 filters
             kernel_size=(3, 3),  # Kernel size: 5x5
             strides=(1, 1),  # Stride: 1
@@ -478,8 +407,6 @@ with graph.as_default():
             training=training,
             name='bn3.2'
         )
-
-        conv32 = conv32 + conv3
 
         # apply relu
         conv32 = tf.nn.relu(conv32, name='relu3.2')
@@ -527,12 +454,12 @@ with graph.as_default():
         )
 
         # apply relu
-        conv4_relu = tf.nn.relu(conv4, name='relu4')
+        conv4 = tf.nn.relu(conv4, name='relu4')
 
     # Convolutional layer 4.1
     with tf.name_scope('conv4.1') as scope:
-        conv41 = tf.layers.conv2d(
-            conv4_relu,  # Input data
+        conv4 = tf.layers.conv2d(
+            conv4,  # Input data
             filters=256,  # 48 filters
             kernel_size=(3, 3),  # Kernel size: 5x5
             strides=(1, 1),  # Stride: 1
@@ -543,8 +470,8 @@ with graph.as_default():
             name='conv4.1'
         )
 
-        conv41 = tf.layers.batch_normalization(
-            conv41,
+        conv4 = tf.layers.batch_normalization(
+            conv4,
             axis=-1,
             momentum=0.99,
             epsilon=epsilon,
@@ -558,15 +485,13 @@ with graph.as_default():
             name='bn4.1'
         )
 
-        conv41 = conv41 + conv4
-
         # apply relu
-        conv41 = tf.nn.relu(conv41, name='relu4.1')
+        conv4 = tf.nn.relu(conv4, name='relu4.1')
 
     # Max pooling layer 4
     with tf.name_scope('pool4') as scope:
         pool4 = tf.layers.max_pooling2d(
-            conv41,  # Input
+            conv4,  # Input
             pool_size=(2, 2),  # Pool size: 2x2
             strides=(2, 2),  # Stride: 2
             padding='SAME',  # "same" padding
@@ -675,7 +600,7 @@ with graph.as_default():
             name="fc2"
         )
 
-        fc2 = tf.layers.batch_normalization(
+        bn_fc2 = tf.layers.batch_normalization(
             fc2,
             axis=-1,
             momentum=0.9,
@@ -690,46 +615,14 @@ with graph.as_default():
             name='bn_fc2'
         )
 
-        fc2 = tf.nn.relu(fc2, name='fc2_relu')
+        fc2_relu = tf.nn.relu(bn_fc2, name='fc2_relu')
 
         # dropout
-        fc2 = tf.layers.dropout(fc2, rate=fcdropout_rate, seed=120, training=training)
-
-    # Fully connected layer 3
-    with tf.name_scope('fc3') as scope:
-        fc3 = tf.layers.dense(
-            fc2,  # input
-            1024,  # 1024 hidden units
-            activation=None,  # None
-            kernel_initializer=tf.variance_scaling_initializer(scale=2, seed=1193),
-            bias_initializer=tf.zeros_initializer(),
-            kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamF),
-            name="fc3"
-        )
-
-        fc3 = tf.layers.batch_normalization(
-            fc3,
-            axis=-1,
-            momentum=0.9,
-            epsilon=epsilon,
-            center=True,
-            scale=True,
-            beta_initializer=tf.zeros_initializer(),
-            gamma_initializer=tf.ones_initializer(),
-            moving_mean_initializer=tf.zeros_initializer(),
-            moving_variance_initializer=tf.ones_initializer(),
-            training=training,
-            name='bn_fc3'
-        )
-
-        fc3 = tf.nn.relu(fc3, name='fc3_relu')
-
-        # dropout
-        fc3 = tf.layers.dropout(fc3, rate=fcdropout_rate, seed=1270, training=training)
+        fc2_relu = tf.layers.dropout(fc2_relu, rate=fcdropout_rate, seed=120, training=training)
 
     # Output layer
     logits = tf.layers.dense(
-        fc3,
+        fc2_relu,
         num_classes,  # One output unit per category
         activation=None,  # No activation function
         kernel_initializer=tf.variance_scaling_initializer(scale=1, seed=121),
