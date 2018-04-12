@@ -58,7 +58,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.0.1.41n"
+model_name = "model_s1.0.1.42n"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -489,7 +489,7 @@ with graph.as_default():
     # Max pooling layer 4
     with tf.name_scope('pool4') as scope:
         pool4 = tf.layers.max_pooling2d(
-            conv4,  # Input
+            conv41,  # Input
             pool_size=(2, 2),  # Pool size: 2x2
             strides=(2, 2),  # Stride: 2
             padding='SAME',  # "same" padding
