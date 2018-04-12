@@ -789,7 +789,9 @@ with tf.Session(graph=graph, config=config) as sess:
             sess.run(initial_global_step)
 
             print("Initializing weights from model", init_model)
-            #saver.restore(sess, './model/' + init_model + '.ckpt')
+
+            # reset init model so we don't do this again
+            init_model = None
         # otherwise load this model
         else:
             saver.restore(sess, './model/' + model_name + '.ckpt')

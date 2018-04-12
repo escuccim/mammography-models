@@ -464,11 +464,11 @@ def _dense_batch_norm(input, units,  training = tf.placeholder(dtype=tf.bool, na
 
     return fc
 
-## load weights from a checkpoint, excluding any and return the init function
-def load_weights(model_name, exclude=None):
+## load weights from a checkpoint, excluding any or including specified vars and returning initializer function
+def load_weights(model_name, exclude=None, include=None):
     model_path = os.path.join("model", model_name + ".ckpt")
 
-    variables_to_restore = tf.contrib.framework.get_variables_to_restore(exclude=exclude)
+    variables_to_restore = tf.contrib.framework.get_variables_to_restore(exclude=exclude, include=include)
     init_fn = tf.contrib.framework.assign_from_checkpoint_fn(model_path, variables_to_restore)
 
     return init_fn
