@@ -68,7 +68,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.0.1.39d"
+model_name = "model_s1.0.1.39e"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -731,10 +731,17 @@ with graph.as_default():
 # ## Train
 
 ## CONFIGURE OPTIONS
-if os.path.exists(os.path.join("model", model_name + '.ckpt.index')):
-    init = False
+if init_model is not None:
+    if os.path.exists(os.path.join("model", init_model + '.ckpt.index')):
+        init = False
+    else:
+        init = True
+
 else:
-    init = True
+    if os.path.exists(os.path.join("model", model_name + '.ckpt.index')):
+        init = False
+    else:
+        init = True
 
 meta_data_every = 1
 log_to_tensorboard = True
