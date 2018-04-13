@@ -82,7 +82,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.0.0.29e"
+model_name = "model_s1.0.0.29f"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -583,13 +583,12 @@ with graph.as_default():
 
     ## Loss function options
     # Regular mean cross entropy
-    if num_classes > 2:
-        mean_ce = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits))
-    else:
-        # Different weighting method
-        # This will weight the positive examples higher so as to improve recall
-        weights = tf.multiply(2, tf.cast(tf.equal(y, 1), tf.int32)) + 1
-        mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=logits, weights=weights))
+    #mean_ce = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits))
+
+    # Different weighting method
+    # This will weight the positive examples higher so as to improve recall
+    weights = tf.multiply(1, tf.cast(tf.greater(y, 0), tf.int32)) + 1
+    mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=logits, weights=weights))
 
     # Add in l2 loss
     loss = mean_ce + tf.losses.get_regularization_loss()
@@ -686,7 +685,7 @@ else:
 meta_data_every = 1
 log_to_tensorboard = True
 print_every = 5  # how often to print metrics
-checkpoint_every = 3  # how often to save model in epochs
+checkpoint_every = 1  # how often to save model in epochs
 use_gpu = False  # whether or not to use the GPU
 print_metrics = True  # whether to print or plot metrics, if False a plot will be created and updated every epoch
 

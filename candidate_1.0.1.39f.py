@@ -691,7 +691,7 @@ with graph.as_default():
     else:
         # Different weighting method
         # This will weight the positive examples higher so as to improve recall
-        weights = tf.multiply(2, tf.cast(tf.equal(y, 1), tf.int32)) + 1
+        weights = tf.multiply(2, tf.cast(tf.greater(y, 0), tf.int32)) + 1
         mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=logits, weights=weights))
 
     # Add in l2 loss
@@ -720,9 +720,9 @@ with graph.as_default():
 
     # calculate recall
     if num_classes > 2:
-        # collapse the predictions down to normal or not
+        # collapse the predictions down to normal or not for our pr metrics
         zero = tf.constant(0, dtype=tf.int64)
-        collapsed_predictions = tf.greater(predictions, zero)
+        collapsed_predictions = tf.cast(tf.greater(predictions, zero), tf.int64)
         collapsed_labels = tf.greater(y, zero)
 
         recall, rec_op = tf.metrics.recall(labels=collapsed_labels, predictions=collapsed_predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="recall")
@@ -785,7 +785,7 @@ else:
 meta_data_every = 1
 log_to_tensorboard = True
 print_every = 5  # how often to print metrics
-checkpoint_every = 3  # how often to save model in epochs
+checkpoint_every = 1  # how often to save model in epochs
 use_gpu = False  # whether or not to use the GPU
 print_metrics = True  # whether to print or plot metrics, if False a plot will be created and updated every epoch
 
