@@ -68,7 +68,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.0.1.39i"
+model_name = "model_s1.0.1.40c"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -97,6 +97,7 @@ model_name = "model_s1.0.1.39i"
 # 1.0.1.36 - updated number of filters for layers 2 on
 # 1.0.1.37 - added extra conv in layer 4
 # 1.0.1.38 - reduced number of filters to try to speed up training
+# 1.0.1.40 - classifying by class
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -112,7 +113,7 @@ with graph.as_default():
                                                staircase=staircase)
 
     with tf.name_scope('inputs') as scope:
-        image, label = read_and_decode_single_example(train_files, label_type="label_normal", normalize=False)
+        image, label = read_and_decode_single_example(train_files, label_type="label", normalize=False)
 
         X_def, y_def = tf.train.shuffle_batch([image, label], batch_size=batch_size, capacity=2000,
                                               min_after_dequeue=1000)
@@ -874,7 +875,7 @@ with tf.Session(graph=graph, config=config) as sess:
 
         print("Evaluating model...")
         # load the test data
-        X_cv, y_cv = load_validation_data(percentage=1, how="normal", which=dataset)
+        X_cv, y_cv = load_validation_data(percentage=1, how="class", which=dataset)
 
         # evaluate the test data
         for X_batch, y_batch in get_batches(X_cv, y_cv, batch_size, distort=False):
@@ -934,7 +935,7 @@ with tf.Session(graph=graph, config=config) as sess:
     coord.join(threads)
 
     # evaluate the test data
-    X_te, y_te = load_validation_data(how="normal", data="test", which=dataset)
+    X_te, y_te = load_validation_data(how="class", data="test", which=dataset)
 
     test_accuracy = []
     test_recall = []
