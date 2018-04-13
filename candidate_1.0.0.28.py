@@ -13,7 +13,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-e", "--epochs", help="number of epochs to train", type=int)
 parser.add_argument("-d", "--data", help="which dataset to use", type=int)
 parser.add_argument("-m", "--model", help="model to initialize with")
-parser.add_argument("-h", "--how", help="how to classify data")
+parser.add_argument("-l", "--label", help="how to classify data")
 args = parser.parse_args()
 
 if args.epochs:
@@ -31,8 +31,8 @@ if args.model:
 else:
     init_model = None
 
-if args.how:
-    how = args.how
+if args.label:
+    how = args.label
 else:
     how = "label"
 
