@@ -648,7 +648,7 @@ with graph.as_default():
         #
         # recall = tf.reduce_mean(recall)
         # precision = tf.reduce_mean(precision)
-        # update_op = [[]]
+        update_op = [[]]
     else:
         recall, rec_op = tf.metrics.recall(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="recall")
         precision, prec_op = tf.metrics.precision(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="precision")
