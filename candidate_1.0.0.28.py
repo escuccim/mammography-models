@@ -648,7 +648,12 @@ with graph.as_default():
         #
         # recall = tf.reduce_mean(recall)
         # precision = tf.reduce_mean(precision)
-        update_op = [[]]
+        _, update_op = summary_lib.pr_curve_streaming_op(name='pr_curve',
+                                                        predictions=(1 - probabilities[:, 0]),
+                                                        labels=y,
+                                                        updates_collections=tf.GraphKeys.UPDATE_OPS,
+                                                        # metrics_collections=["summaries"],
+                                                        num_thresholds=20)
     else:
         recall, rec_op = tf.metrics.recall(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="recall")
         precision, prec_op = tf.metrics.precision(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="precision")
