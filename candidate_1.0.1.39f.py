@@ -695,7 +695,6 @@ with graph.as_default():
                 metrics_collections=["summaries"]
             )
 
-            f1_score = 2 * ((precision * recall) / (precision + recall))
     else:
         recall, rec_op = tf.metrics.recall(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="recall")
         precision, prec_op = tf.metrics.precision(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="precision")
