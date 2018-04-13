@@ -698,9 +698,6 @@ with graph.as_default():
         recall = tf.reduce_mean(recall)
         precision = tf.reduce_mean(precision)
 
-        tf.summary.scalar('recall_1', recall, collections=["summaries"])
-        tf.summary.scalar('precision_1', precision, collections=["summaries"])
-
     else:
         recall, rec_op = tf.metrics.recall(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="recall")
         precision, prec_op = tf.metrics.precision(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="precision")
