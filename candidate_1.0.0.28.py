@@ -700,6 +700,7 @@ with tf.Session(graph=graph, config=config) as sess:
     # If the model is new initialize variables, else restore the session
     if init:
         sess.run(tf.global_variables_initializer())
+        print("Initializing model...")
     else:
         # if we are initializing with the weights from another model load it
         if init_model is not None:
@@ -721,6 +722,7 @@ with tf.Session(graph=graph, config=config) as sess:
         # otherwise load this model
         else:
             saver.restore(sess, './model/' + model_name + '.ckpt')
+            print("Restoring model", model_name)
 
     coord = tf.train.Coordinator()
     threads = tf.train.start_queue_runners(coord=coord)
