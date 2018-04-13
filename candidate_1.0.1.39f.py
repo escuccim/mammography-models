@@ -705,20 +705,21 @@ with graph.as_default():
 
         #tf.summary.scalar('auc_', auc, collections=["summaries"])
 
+        _, update_op = summary_lib.pr_curve_streaming_op(name='pr_curve',
+                                                         predictions=probabilities[:, 1],
+                                                         labels=y,
+                                                         updates_collections=tf.GraphKeys.UPDATE_OPS,
+                                                         # metrics_collections=["summaries"],
+                                                         num_thresholds=20)
+
     # Create summary hooks
     tf.summary.scalar('accuracy', accuracy, collections=["summaries"])
     tf.summary.scalar('recall_1', recall, collections=["summaries"])
     tf.summary.scalar('cross_entropy', mean_ce, collections=["summaries"])
     tf.summary.scalar('learning_rate', learning_rate, collections=["summaries"])
+    tf.summary.scalar('precision_1', precision, collections=["summaries"])
 
-    _, update_op = summary_lib.pr_curve_streaming_op(name='pr_curve',
-                                                     predictions=probabilities[:,1],
-                                                     labels=y,
-                                                     updates_collections=tf.GraphKeys.UPDATE_OPS,
-													 #metrics_collections=["summaries"],
-                                                     num_thresholds=20)
     if num_classes == 2:
-        tf.summary.scalar('precision_1', precision, collections=["summaries"])
         tf.summary.scalar('f1_score', f1_score, collections=["summaries"])
 
     # add this so that the batch norm gets run
