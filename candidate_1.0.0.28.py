@@ -82,7 +82,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.0.0.29d"
+model_name = "model_s1.0.0.29e"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -605,6 +605,7 @@ with graph.as_default():
     # Compute predictions from the probabilities
     predictions = tf.argmax(probabilities, axis=1, output_type=tf.int64)
 
+
     # get the accuracy
     accuracy, acc_op = tf.metrics.accuracy(
         labels=y,
@@ -616,28 +617,38 @@ with graph.as_default():
 
     # calculate recall
     if num_classes > 2:
-        recall = [0] * num_classes
-        rec_op = [[]] * num_classes
+        is_normal = tf.equal(0, predictions)
 
-        precision = [0] * num_classes
-        prec_op = [[]] * num_classes
+        recall, rec_op = tf.metrics.recall(labels=y, predictions=is_normal, updates_collections=tf.GraphKeys.UPDATE_OPS, name="recall")
+        precision, prec_op = tf.metrics.precision(labels=y, predictions=is_normal, updates_collections=tf.GraphKeys.UPDATE_OPS, name="precision")
+        f1_score = 2 * ((precision * recall) / (precision + recall))
 
-        for k in range(num_classes):
-            recall[k], rec_op[k] = tf.metrics.recall(
-                labels=tf.equal(y, k),
-                predictions=tf.equal(predictions, k),
-                updates_collections=tf.GraphKeys.UPDATE_OPS,
-            )
+        tf.summary.scalar('recall_1', recall, collections=["summaries"])
+        tf.summary.scalar('precision_1', precision, collections=["summaries"])
+        tf.summary.scalar('f1_score', f1_score, collections=["summaries"])
 
-            precision[k], prec_op[k] = tf.metrics.precision(
-                labels=tf.equal(y, k),
-                predictions=tf.equal(predictions, k),
-                updates_collections=tf.GraphKeys.UPDATE_OPS,
-            )
-
-        recall = tf.reduce_mean(recall)
-        precision = tf.reduce_mean(precision)
-        update_op = [[]]
+        # recall = [0] * num_classes
+        # rec_op = [[]] * num_classes
+        #
+        # precision = [0] * num_classes
+        # prec_op = [[]] * num_classes
+        #
+        # for k in range(num_classes):
+        #     recall[k], rec_op[k] = tf.metrics.recall(
+        #         labels=tf.equal(y, k),
+        #         predictions=tf.equal(predictions, k),
+        #         updates_collections=tf.GraphKeys.UPDATE_OPS,
+        #     )
+        #
+        #     precision[k], prec_op[k] = tf.metrics.precision(
+        #         labels=tf.equal(y, k),
+        #         predictions=tf.equal(predictions, k),
+        #         updates_collections=tf.GraphKeys.UPDATE_OPS,
+        #     )
+        #
+        # recall = tf.reduce_mean(recall)
+        # precision = tf.reduce_mean(precision)
+        # update_op = [[]]
     else:
         recall, rec_op = tf.metrics.recall(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="recall")
         precision, prec_op = tf.metrics.precision(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="precision")

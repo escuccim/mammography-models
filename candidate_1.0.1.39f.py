@@ -13,7 +13,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-e", "--epochs", help="number of epochs to train", type=int)
 parser.add_argument("-d", "--data", help="which dataset to use", type=int)
 parser.add_argument("-m", "--model", help="model to initialize with")
-parser.add_argument("-h", "--how", help="how to classify data")
+parser.add_argument("-l", "--label", help="how to classify data")
 args = parser.parse_args()
 
 if args.epochs:
@@ -31,8 +31,8 @@ if args.model:
 else:
     init_model = None
 
-if args.how:
-    how = args.how
+if args.label:
+    how = args.label
 else:
     how = "label"
 
@@ -67,7 +67,14 @@ fcdropout_rate = 0.7
 convdropout_rate = 0.01
 pooldropout_rate = 0.25
 
-num_classes = 5
+if how == "label":
+    num_classes = 5
+elif how == "normal":
+    num_classes = 2
+elif how == "mass":
+    num_classes = 3
+elif how == "benign":
+    num_classes = 3
 
 ## Build the graph
 graph = tf.Graph()
@@ -673,7 +680,7 @@ with graph.as_default():
         labels=y,
         predictions=predictions,
         updates_collections=tf.GraphKeys.UPDATE_OPS,
-        #metrics_collections="summaries",
+        #metrics_collections=["summaries"],
         name="accuracy",
     )
 
