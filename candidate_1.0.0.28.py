@@ -605,7 +605,6 @@ with graph.as_default():
     # Compute predictions from the probabilities
     predictions = tf.argmax(probabilities, axis=1, output_type=tf.int64)
 
-
     # get the accuracy
     accuracy, acc_op = tf.metrics.accuracy(
         labels=y,
@@ -617,7 +616,8 @@ with graph.as_default():
 
     # calculate recall
     if num_classes > 2:
-        is_normal = tf.equal(0, predictions)
+        zero = tf.constant(0, dtype=tf.int64)
+        is_normal = tf.equal(zero, predictions)
 
         recall, rec_op = tf.metrics.recall(labels=y, predictions=is_normal, updates_collections=tf.GraphKeys.UPDATE_OPS, name="recall")
         precision, prec_op = tf.metrics.precision(labels=y, predictions=is_normal, updates_collections=tf.GraphKeys.UPDATE_OPS, name="precision")
