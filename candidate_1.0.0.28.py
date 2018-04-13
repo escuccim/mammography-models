@@ -13,6 +13,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-e", "--epochs", help="number of epochs to train", type=int)
 parser.add_argument("-d", "--data", help="which dataset to use", type=int)
 parser.add_argument("-m", "--model", help="model to initialize with")
+parser.add_argument("-h", "--how", help="how to classify data")
 args = parser.parse_args()
 
 if args.epochs:
@@ -29,6 +30,11 @@ if args.model:
     init_model = args.model
 else:
     init_model = None
+
+if args.how:
+    how = args.how
+else:
+    how = "label"
 
 # download the data
 download_data(what=dataset)
@@ -62,14 +68,21 @@ fcdropout_rate = 0.5
 convdropout_rate = 0.01
 pooldropout_rate = 0.2
 
-num_classes = 2
+if how == "label":
+    num_classes = 5
+elif how == "normal":
+    num_classes = 2
+elif how == "mass":
+    num_classes = 3
+elif how == "benign":
+    num_classes = 3
 
 ## Build the graph
 graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.0.0.28d"
+model_name = "model_s1.0.0.29d"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -90,6 +103,7 @@ model_name = "model_s1.0.0.28d"
 # 1.0.0.23 - added extra conv layers
 # 1.0.0.27 - updates to training code and metrics
 # 1.0.0.28 - using weighted x-entropy to improve recall
+# 1.0.0.29 - updated code to work training to classify for multiple classes
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -105,7 +119,7 @@ with graph.as_default():
                                                staircase=staircase)
 
     with tf.name_scope('inputs') as scope:
-        image, label = read_and_decode_single_example(train_files, label_type="label_normal", normalize=False)
+        image, label = read_and_decode_single_example(train_files, label_type=how, normalize=False)
 
         X_def, y_def = tf.train.shuffle_batch([image, label], batch_size=batch_size, capacity=2000,
                                               min_after_dequeue=1000)
@@ -613,17 +627,17 @@ with graph.as_default():
                 labels=tf.equal(y, k),
                 predictions=tf.equal(predictions, k),
                 updates_collections=tf.GraphKeys.UPDATE_OPS,
-                metrics_collections=["summaries"]
             )
 
             precision[k], prec_op[k] = tf.metrics.precision(
                 labels=tf.equal(y, k),
                 predictions=tf.equal(predictions, k),
                 updates_collections=tf.GraphKeys.UPDATE_OPS,
-                metrics_collections=["summaries"]
             )
 
-            f1_score = 2 * ((precision * recall) / (precision + recall))
+        recall = tf.reduce_mean(recall)
+        precision = tf.reduce_mean(precision)
+        update_op = [[]]
     else:
         recall, rec_op = tf.metrics.recall(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="recall")
         precision, prec_op = tf.metrics.precision(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="precision")
@@ -633,21 +647,21 @@ with graph.as_default():
 
         #tf.summary.scalar('auc_', auc, collections=["summaries"])
 
-    # Create summary hooks
-    tf.summary.scalar('accuracy', accuracy, collections=["summaries"])
-    tf.summary.scalar('recall_1', recall, collections=["summaries"])
-    tf.summary.scalar('cross_entropy', mean_ce, collections=["summaries"])
-    tf.summary.scalar('learning_rate', learning_rate, collections=["summaries"])
+        _, update_op = summary_lib.pr_curve_streaming_op(name='pr_curve',
+                                                         predictions=probabilities[:, 1],
+                                                         labels=y,
+                                                         updates_collections=tf.GraphKeys.UPDATE_OPS,
+                                                         # metrics_collections=["summaries"],
+                                                         num_thresholds=20)
 
-    _, update_op = summary_lib.pr_curve_streaming_op(name='pr_curve',
-                                                     predictions=probabilities[:,1],
-                                                     labels=y,
-                                                     updates_collections=tf.GraphKeys.UPDATE_OPS,
-													 #metrics_collections=["summaries"],
-                                                     num_thresholds=20)
-    if num_classes == 2:
+        tf.summary.scalar('recall_1', recall, collections=["summaries"])
         tf.summary.scalar('precision_1', precision, collections=["summaries"])
         tf.summary.scalar('f1_score', f1_score, collections=["summaries"])
+
+    # Create summary hooks
+    tf.summary.scalar('accuracy', accuracy, collections=["summaries"])
+    tf.summary.scalar('cross_entropy', mean_ce, collections=["summaries"])
+    tf.summary.scalar('learning_rate', learning_rate, collections=["summaries"])
 
     # add this so that the batch norm gets run
     extra_update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
@@ -718,7 +732,9 @@ with tf.Session(graph=graph, config=config) as sess:
             sess.run(initial_global_step)
 
             print("Initializing weights from model", init_model)
-            #saver.restore(sess, './model/' + init_model + '.ckpt')
+
+            # reset init model so we don't do this again
+            init_model = None
         # otherwise load this model
         else:
             saver.restore(sess, './model/' + model_name + '.ckpt')
@@ -802,7 +818,7 @@ with tf.Session(graph=graph, config=config) as sess:
 
         print("Evaluating model...")
         # load the test data
-        X_cv, y_cv = load_validation_data(how="normal", which=dataset)
+        X_cv, y_cv = load_validation_data(percentage=1, how=how, which=dataset)
 
         # evaluate the test data
         for X_batch, y_batch in get_batches(X_cv, y_cv, batch_size, distort=False):
@@ -861,15 +877,13 @@ with tf.Session(graph=graph, config=config) as sess:
     # Wait for threads to stop
     coord.join(threads)
 
-    ## Evaluate on test data
-    X_te, y_te = load_validation_data(how="normal", data="test", which=dataset)
+    # evaluate the test data
+    X_te, y_te = load_validation_data(how=how, data="test", which=dataset)
 
     test_accuracy = []
     test_recall = []
     test_predictions = []
     ground_truth = []
-
-    # evaluate the test data
     for X_batch, y_batch in get_batches(X_te, y_te, batch_size, distort=False):
         yhat, test_acc_value, test_recall_value = sess.run([predictions, accuracy, rec_op], feed_dict=
         {

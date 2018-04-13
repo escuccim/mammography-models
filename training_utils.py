@@ -97,8 +97,6 @@ def read_and_decode_single_example(filenames, label_type='label_normal', normali
         image = tf.image.random_flip_left_right(image)
         image = tf.image.random_flip_up_down(image)
 
-    #tf.cast(image, dtype=tf.float32)
-
     # return the image and the label
     return image, label
 
@@ -129,18 +127,18 @@ def load_validation_data(data="validation", how="normal", which=5, percentage=1)
             labels = np.load(os.path.join("data", "test6_labels.npy"))
 
     # encode the labels appropriately
-    if how == "class":
+    if how == "label":
         y_cv = labels
-    elif how == "normal":
+    elif how == "label_normal":
         y_cv = np.zeros(len(labels))
         y_cv[labels != 0] = 1
-    elif how == "mass":
+    elif how == "label_mass":
         y_cv = np.zeros(len(labels))
         y_cv[labels == 1] = 1
         y_cv[labels == 3] = 1
         y_cv[labels == 2] = 2
-        y_cv[labels == 4] = 4
-    elif how == "benign":
+        y_cv[labels == 4] = 2
+    elif how == "label_benign":
         y_cv = np.zeros(len(labels))
         y_cv[labels == 1] = 1
         y_cv[labels == 2] = 1

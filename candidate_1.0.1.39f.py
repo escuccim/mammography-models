@@ -13,6 +13,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-e", "--epochs", help="number of epochs to train", type=int)
 parser.add_argument("-d", "--data", help="which dataset to use", type=int)
 parser.add_argument("-m", "--model", help="model to initialize with")
+parser.add_argument("-h", "--how", help="how to classify data")
 args = parser.parse_args()
 
 if args.epochs:
@@ -29,6 +30,11 @@ if args.model:
     init_model = args.model
 else:
     init_model = None
+
+if args.how:
+    how = args.how
+else:
+    how = "label"
 
 # download the data
 download_data(what=dataset)
@@ -113,7 +119,7 @@ with graph.as_default():
                                                staircase=staircase)
 
     with tf.name_scope('inputs') as scope:
-        image, label = read_and_decode_single_example(train_files, label_type="label", normalize=False)
+        image, label = read_and_decode_single_example(train_files, label_type=how, normalize=False)
 
         X_def, y_def = tf.train.shuffle_batch([image, label], batch_size=batch_size, capacity=2000,
                                               min_after_dequeue=1000)
@@ -656,11 +662,13 @@ with graph.as_default():
     # Minimize cross-entropy
     train_op = optimizer.minimize(loss, global_step=global_step)
 
-    # Compute predictions and accuracy
-    predictions = tf.argmax(logits, axis=1, output_type=tf.int64)
-    is_correct = tf.equal(y, predictions)
-    #accuracy = tf.reduce_mean(tf.cast(is_correct, dtype=tf.float32))
+    # get the probabilites for the classes
+    probabilities = tf.nn.softmax(logits, name="probabilities")
 
+    # Compute predictions from the probabilities
+    predictions = tf.argmax(probabilities, axis=1, output_type=tf.int64)
+
+    # get the accuracy
     accuracy, acc_op = tf.metrics.accuracy(
         labels=y,
         predictions=predictions,
@@ -668,9 +676,6 @@ with graph.as_default():
         #metrics_collections="summaries",
         name="accuracy",
     )
-
-    # get the probabilites for the classes
-    probabilities = tf.nn.softmax(logits, name="probabilities")
 
     # calculate recall
     if num_classes > 2:
@@ -689,7 +694,7 @@ with graph.as_default():
 
             precision[k], prec_op[k] = tf.metrics.precision(
                 labels=tf.equal(y, k),
-	                predictions=tf.equal(predictions, k),
+                predictions=tf.equal(predictions, k),
                 updates_collections=tf.GraphKeys.UPDATE_OPS,
             )
 
@@ -729,7 +734,6 @@ with graph.as_default():
     kernel_summaries = tf.summary.merge_all("kernels")
 
     print("Graph created...")
-# ## Train
 
 ## CONFIGURE OPTIONS
 if init_model is not None:
@@ -773,6 +777,7 @@ with tf.Session(graph=graph, config=config) as sess:
     # If the model is new initialize variables, else restore the session
     if init:
         sess.run(tf.global_variables_initializer())
+        print("Initializing model...")
     else:
         # if we are initializing with the weights from another model load it
         if init_model is not None:
@@ -796,6 +801,7 @@ with tf.Session(graph=graph, config=config) as sess:
         # otherwise load this model
         else:
             saver.restore(sess, './model/' + model_name + '.ckpt')
+            print("Restoring model", model_name)
 
     coord = tf.train.Coordinator()
     threads = tf.train.start_queue_runners(coord=coord)
@@ -875,7 +881,7 @@ with tf.Session(graph=graph, config=config) as sess:
 
         print("Evaluating model...")
         # load the test data
-        X_cv, y_cv = load_validation_data(percentage=1, how="class", which=dataset)
+        X_cv, y_cv = load_validation_data(percentage=1, how=how, which=dataset)
 
         # evaluate the test data
         for X_batch, y_batch in get_batches(X_cv, y_cv, batch_size, distort=False):
@@ -935,7 +941,7 @@ with tf.Session(graph=graph, config=config) as sess:
     coord.join(threads)
 
     # evaluate the test data
-    X_te, y_te = load_validation_data(how="class", data="test", which=dataset)
+    X_te, y_te = load_validation_data(how=how, data="test", which=dataset)
 
     test_accuracy = []
     test_recall = []
