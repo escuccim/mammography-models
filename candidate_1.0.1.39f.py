@@ -81,7 +81,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.0.1.40d"
+model_name = "model_s1.0.1.41a"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -111,6 +111,7 @@ model_name = "model_s1.0.1.40d"
 # 1.0.1.37 - added extra conv in layer 4
 # 1.0.1.38 - reduced number of filters to try to speed up training
 # 1.0.1.40 - classifying by class
+# 1.0.1.41 - fixed multi-class p/r code and added extra fc layer
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -634,9 +635,41 @@ with graph.as_default():
         # dropout
         fc2_relu = tf.layers.dropout(fc2_relu, rate=fcdropout_rate, seed=120, training=training)
 
+    # Fully connected layer 3
+    with tf.name_scope('fc3') as scope:
+        fc3 = tf.layers.dense(
+            fc2_relu,  # input
+            512,  # 1024 hidden units
+            activation=None,  # None
+            kernel_initializer=tf.variance_scaling_initializer(scale=2, seed=11937),
+            bias_initializer=tf.zeros_initializer(),
+            kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamF),
+            name="fc3"
+        )
+
+        fc3 = tf.layers.batch_normalization(
+            fc3,
+            axis=-1,
+            momentum=0.9,
+            epsilon=epsilon,
+            center=True,
+            scale=True,
+            beta_initializer=tf.zeros_initializer(),
+            gamma_initializer=tf.ones_initializer(),
+            moving_mean_initializer=tf.zeros_initializer(),
+            moving_variance_initializer=tf.ones_initializer(),
+            training=training,
+            name='bn_fc3'
+        )
+
+        fc3 = tf.nn.relu(fc3, name='fc3_relu')
+
+        # dropout
+        fc3 = tf.layers.dropout(fc3, rate=fcdropout_rate, seed=12038, training=training)
+
     # Output layer
     logits = tf.layers.dense(
-        fc2_relu,
+        fc3,
         num_classes,  # One output unit per category
         activation=None,  # No activation function
         kernel_initializer=tf.variance_scaling_initializer(scale=1, seed=121),
@@ -687,41 +720,22 @@ with graph.as_default():
 
     # calculate recall
     if num_classes > 2:
+        # collapse the predictions down to normal or not
         zero = tf.constant(0, dtype=tf.int64)
-        is_normal = tf.equal(zero, predictions)
+        collapsed_predictions = tf.greater(predictions, zero)
+        collapsed_labels = tf.greater(y, zero)
 
-        recall, rec_op = tf.metrics.recall(labels=y, predictions=is_normal, updates_collections=tf.GraphKeys.UPDATE_OPS, name="recall")
-        precision, prec_op = tf.metrics.precision(labels=y, predictions=is_normal, updates_collections=tf.GraphKeys.UPDATE_OPS, name="precision")
+        recall, rec_op = tf.metrics.recall(labels=collapsed_labels, predictions=collapsed_predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="recall")
+        precision, prec_op = tf.metrics.precision(labels=collapsed_labels, predictions=collapsed_predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="precision")
         f1_score = 2 * ((precision * recall) / (precision + recall))
 
         tf.summary.scalar('recall_1', recall, collections=["summaries"])
         tf.summary.scalar('precision_1', precision, collections=["summaries"])
         tf.summary.scalar('f1_score', f1_score, collections=["summaries"])
 
-        # recall = [0] * num_classes
-        # rec_op = [[]] * num_classes
-        #
-        # precision = [0] * num_classes
-        # prec_op = [[]] * num_classes
-        #
-        # for k in range(num_classes):
-        #     recall[k], rec_op[k] = tf.metrics.recall(
-        #         labels=tf.equal(y, k),
-        #         predictions=tf.equal(predictions, k),
-        #         updates_collections=tf.GraphKeys.UPDATE_OPS,
-        #     )
-        #
-        #     precision[k], prec_op[k] = tf.metrics.precision(
-        #         labels=tf.equal(y, k),
-        #         predictions=tf.equal(predictions, k),
-        #         updates_collections=tf.GraphKeys.UPDATE_OPS,
-        #     )
-        #
-        # recall = tf.reduce_mean(recall)
-        # precision = tf.reduce_mean(precision)
         _, update_op = summary_lib.pr_curve_streaming_op(name='pr_curve',
                                                         predictions=(1 - probabilities[:, 0]),
-                                                        labels=y,
+                                                        labels=collapsed_labels,
                                                         updates_collections=tf.GraphKeys.UPDATE_OPS,
                                                         # metrics_collections=["summaries"],
                                                         num_thresholds=20)
@@ -729,10 +743,6 @@ with graph.as_default():
         recall, rec_op = tf.metrics.recall(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="recall")
         precision, prec_op = tf.metrics.precision(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="precision")
         f1_score = 2 * ( (precision * recall) / (precision + recall))
-
-        #auc, auc_op = tf.metrics.auc(labels=y, predictions=probabilities[:,1], num_thresholds=50, name="auc_1", updates_collections=tf.GraphKeys.UPDATE_OPS)
-
-        #tf.summary.scalar('auc_', auc, collections=["summaries"])
 
         _, update_op = summary_lib.pr_curve_streaming_op(name='pr_curve',
                                                          predictions=probabilities[:, 1],
@@ -834,11 +844,11 @@ with tf.Session(graph=graph, config=config) as sess:
     for epoch in range(epochs):
         sess.run(tf.local_variables_initializer())
 
-        for i in range(steps_per_epoch):
-            # Accuracy values (train) after each batch
-            batch_acc = []
-            batch_cost = []
+        # Accuracy values (train) after each batch
+        batch_acc = []
+        batch_cost = []
 
+        for i in range(steps_per_epoch):
             # create the metadata
             run_options = tf.RunOptions(trace_level=tf.RunOptions.FULL_TRACE)
             run_metadata = tf.RunMetadata()
