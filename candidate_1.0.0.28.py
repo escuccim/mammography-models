@@ -617,41 +617,22 @@ with graph.as_default():
 
     # calculate recall
     if num_classes > 2:
+        # collapse the predictions down to normal or not
         zero = tf.constant(0, dtype=tf.int64)
-        is_normal = tf.equal(zero, predictions)
+        collapsed_predictions = tf.greater(predictions, zero)
+        collapsed_labels = tf.greater(y, zero)
 
-        recall, rec_op = tf.metrics.recall(labels=y, predictions=is_normal, updates_collections=tf.GraphKeys.UPDATE_OPS, name="recall")
-        precision, prec_op = tf.metrics.precision(labels=y, predictions=is_normal, updates_collections=tf.GraphKeys.UPDATE_OPS, name="precision")
+        recall, rec_op = tf.metrics.recall(labels=collapsed_labels, predictions=collapsed_predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="recall")
+        precision, prec_op = tf.metrics.precision(labels=collapsed_labels, predictions=collapsed_predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="precision")
         f1_score = 2 * ((precision * recall) / (precision + recall))
 
         tf.summary.scalar('recall_1', recall, collections=["summaries"])
         tf.summary.scalar('precision_1', precision, collections=["summaries"])
         tf.summary.scalar('f1_score', f1_score, collections=["summaries"])
 
-        # recall = [0] * num_classes
-        # rec_op = [[]] * num_classes
-        #
-        # precision = [0] * num_classes
-        # prec_op = [[]] * num_classes
-        #
-        # for k in range(num_classes):
-        #     recall[k], rec_op[k] = tf.metrics.recall(
-        #         labels=tf.equal(y, k),
-        #         predictions=tf.equal(predictions, k),
-        #         updates_collections=tf.GraphKeys.UPDATE_OPS,
-        #     )
-        #
-        #     precision[k], prec_op[k] = tf.metrics.precision(
-        #         labels=tf.equal(y, k),
-        #         predictions=tf.equal(predictions, k),
-        #         updates_collections=tf.GraphKeys.UPDATE_OPS,
-        #     )
-        #
-        # recall = tf.reduce_mean(recall)
-        # precision = tf.reduce_mean(precision)
         _, update_op = summary_lib.pr_curve_streaming_op(name='pr_curve',
                                                         predictions=(1 - probabilities[:, 0]),
-                                                        labels=y,
+                                                        labels=collapsed_labels,
                                                         updates_collections=tf.GraphKeys.UPDATE_OPS,
                                                         # metrics_collections=["summaries"],
                                                         num_thresholds=20)

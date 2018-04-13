@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="98c4e5b0-4f90-4540-b87f-9bd6d2ddc583" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/candidate_1.0.0.28.py" afterPath="$PROJECT_DIR$/candidate_1.0.0.28.py" />
-      <change beforePath="$PROJECT_DIR$/candidate_1.0.1.39f.py" afterPath="$PROJECT_DIR$/candidate_1.0.1.39f.py" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -17,7 +16,7 @@
       <file leaf-file-name="candidate_1.0.0.28.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/candidate_1.0.0.28.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="25014">
+            <state relative-caret-position="5313">
               <caret line="766" column="8" lean-forward="false" selection-start-line="766" selection-start-column="8" selection-end-line="766" selection-end-column="8" />
               <folding />
             </state>
@@ -27,8 +26,8 @@
       <file leaf-file-name="candidate_1.0.1.39f.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/candidate_1.0.1.39f.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1188">
-              <caret line="113" column="64" lean-forward="false" selection-start-line="113" selection-start-column="64" selection-end-line="113" selection-end-column="64" />
+            <state relative-caret-position="330">
+              <caret line="732" column="67" lean-forward="true" selection-start-line="732" selection-start-column="67" selection-end-line="732" selection-end-column="67" />
               <folding />
             </state>
           </provider>
@@ -635,7 +634,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/candidate_1.0.0.28.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="25014">
+        <state relative-caret-position="5313">
           <caret line="766" column="8" lean-forward="false" selection-start-line="766" selection-start-column="8" selection-end-line="766" selection-end-column="8" />
           <folding />
         </state>
@@ -643,8 +642,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/candidate_1.0.1.39f.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1188">
-          <caret line="113" column="64" lean-forward="false" selection-start-line="113" selection-start-column="64" selection-end-line="113" selection-end-column="64" />
+        <state relative-caret-position="330">
+          <caret line="732" column="67" lean-forward="true" selection-start-line="732" selection-start-column="67" selection-end-line="732" selection-end-column="67" />
           <folding />
         </state>
       </provider>
