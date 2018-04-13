@@ -14,11 +14,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="600">
-      <file leaf-file-name="candidate_1.0.0.28.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="candidate_1.0.0.28.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/candidate_1.0.0.28.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="396">
-              <caret line="644" column="45" lean-forward="false" selection-start-line="644" selection-start-column="45" selection-end-line="644" selection-end-column="45" />
+            <state relative-caret-position="792">
+              <caret line="584" column="8" lean-forward="false" selection-start-line="584" selection-start-column="8" selection-end-line="584" selection-end-column="8" />
               <folding />
             </state>
           </provider>
@@ -56,11 +56,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="candidate_1.0.1.39f.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="candidate_1.0.1.39f.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/candidate_1.0.1.39f.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="116">
-              <caret line="83" column="30" lean-forward="false" selection-start-line="83" selection-start-column="30" selection-end-line="83" selection-end-column="30" />
+            <state relative-caret-position="545">
+              <caret line="657" column="9" lean-forward="true" selection-start-line="657" selection-start-column="9" selection-end-line="657" selection-end-column="9" />
               <folding />
             </state>
           </provider>
@@ -163,8 +163,8 @@
         <option value="$PROJECT_DIR$/candidate_1.0.1.40.py" />
         <option value="$PROJECT_DIR$/candidate_1.0.1.39d.py" />
         <option value="$PROJECT_DIR$/training_utils.py" />
-        <option value="$PROJECT_DIR$/candidate_1.0.0.28.py" />
         <option value="$PROJECT_DIR$/candidate_1.0.1.39f.py" />
+        <option value="$PROJECT_DIR$/candidate_1.0.0.28.py" />
       </list>
     </option>
   </component>
@@ -665,18 +665,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/candidate_1.0.0.28.py">
+    <entry file="file://$PROJECT_DIR$/candidate_1.0.1.39f.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="396">
-          <caret line="644" column="45" lean-forward="false" selection-start-line="644" selection-start-column="45" selection-end-line="644" selection-end-column="45" />
+        <state relative-caret-position="545">
+          <caret line="657" column="9" lean-forward="true" selection-start-line="657" selection-start-column="9" selection-end-line="657" selection-end-column="9" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/candidate_1.0.1.39f.py">
+    <entry file="file://$PROJECT_DIR$/candidate_1.0.0.28.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="116">
-          <caret line="83" column="30" lean-forward="false" selection-start-line="83" selection-start-column="30" selection-end-line="83" selection-end-column="30" />
+        <state relative-caret-position="792">
+          <caret line="584" column="8" lean-forward="false" selection-start-line="584" selection-start-column="8" selection-end-line="584" selection-end-column="8" />
           <folding />
         </state>
       </provider>
