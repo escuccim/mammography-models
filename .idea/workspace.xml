@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="98c4e5b0-4f90-4540-b87f-9bd6d2ddc583" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change beforePath="$PROJECT_DIR$/candidate_1.0.0.28.py" afterPath="$PROJECT_DIR$/candidate_1.0.0.28.py" />
-      <change beforePath="$PROJECT_DIR$/candidate_1.0.1.39f.py" afterPath="$PROJECT_DIR$/candidate_1.0.1.39f.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -17,8 +17,8 @@
       <file leaf-file-name="candidate_1.0.0.28.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/candidate_1.0.0.28.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-363">
-              <caret line="673" column="19" lean-forward="false" selection-start-line="673" selection-start-column="19" selection-end-line="673" selection-end-column="19" />
+            <state relative-caret-position="1023">
+              <caret line="860" column="58" lean-forward="true" selection-start-line="860" selection-start-column="58" selection-end-line="860" selection-end-column="58" />
               <folding />
             </state>
           </provider>
@@ -599,8 +599,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/candidate_1.0.0.28.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-363">
-          <caret line="673" column="19" lean-forward="false" selection-start-line="673" selection-start-column="19" selection-end-line="673" selection-end-column="19" />
+        <state relative-caret-position="1023">
+          <caret line="860" column="58" lean-forward="true" selection-start-line="860" selection-start-column="58" selection-end-line="860" selection-end-column="58" />
           <folding />
         </state>
       </provider>

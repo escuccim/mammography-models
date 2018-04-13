@@ -630,11 +630,20 @@ with graph.as_default():
         tf.summary.scalar('precision_1', precision, collections=["summaries"])
         tf.summary.scalar('f1_score', f1_score, collections=["summaries"])
 
+        # additional metrics
+        true_pos, _ = tf.metrics.true_positives(labels=collapsed_labels, predictions=collapsed_predictions,
+                                                updates_collections=tf.GraphKeys.UPDATE_OPS, name="true_positives")
+        false_pos, _ = tf.metrics.false_positives(labels=collapsed_labels, predictions=collapsed_predictions,
+                                                  updates_collections=tf.GraphKeys.UPDATE_OPS, name="false_positives")
+        true_neg, _ = tf.metrics.true_negatives(labels=collapsed_labels, predictions=collapsed_predictions,
+                                                updates_collections=tf.GraphKeys.UPDATE_OPS, name="true_negatives")
+        false_neg, _ = tf.metrics.false_negatives(labels=collapsed_labels, predictions=collapsed_predictions,
+                                                  updates_collections=tf.GraphKeys.UPDATE_OPS, name="false_negatives")
+
         _, update_op = summary_lib.pr_curve_streaming_op(name='pr_curve',
                                                         predictions=(1 - probabilities[:, 0]),
                                                         labels=collapsed_labels,
                                                         updates_collections=tf.GraphKeys.UPDATE_OPS,
-                                                        # metrics_collections=["summaries"],
                                                         num_thresholds=20)
     else:
         recall, rec_op = tf.metrics.recall(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="recall")
@@ -645,8 +654,13 @@ with graph.as_default():
                                                          predictions=probabilities[:, 1],
                                                          labels=y,
                                                          updates_collections=tf.GraphKeys.UPDATE_OPS,
-                                                         # metrics_collections=["summaries"],
                                                          num_thresholds=20)
+
+        # additional metrics
+        true_pos, _ = tf.metrics.true_positives(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="true_positives")
+        false_pos, _ = tf.metrics.false_positives(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="false_positives")
+        true_neg, _ = tf.metrics.true_negatives(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="true_negatives")
+        false_neg, _ = tf.metrics.false_negatives(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="false_negatives")
 
         tf.summary.scalar('recall_1', recall, collections=["summaries"])
         tf.summary.scalar('precision_1', precision, collections=["summaries"])
@@ -657,12 +671,18 @@ with graph.as_default():
     tf.summary.scalar('cross_entropy', mean_ce, collections=["summaries"])
     tf.summary.scalar('learning_rate', learning_rate, collections=["summaries"])
 
+    tf.summary.scalar('true_posit', true_pos, collections=["per_epoch"])
+    tf.summary.scalar('true_negat', true_neg, collections=["per_epoch"])
+    tf.summary.scalar('false_posit', false_pos, collections=["per_epoch"])
+    tf.summary.scalar('false_negat', false_neg, collections=["per_epoch"])
+
     # add this so that the batch norm gets run
     extra_update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
 
     # Merge all the summaries
     merged = tf.summary.merge_all()
     kernel_summaries = tf.summary.merge_all("kernels")
+    per_epoch_summaries = tf.summary.merge_all("per_epoch")
 
     print("Graph created...")
 
@@ -753,8 +773,8 @@ with tf.Session(graph=graph, config=config) as sess:
             if (i % 50 != 0) or (i == 0):
                 # log the kernel images once per epoch
                 if (i == (steps_per_epoch - 1)) and log_to_tensorboard:
-                    _, _, _, image_summary, step = sess.run(
-                        [train_op, extra_update_ops, update_op, kernel_summaries, global_step],
+                    _, _, _, image_summary, other_summaries, step = sess.run(
+                        [train_op, extra_update_ops, update_op, kernel_summaries, per_epoch_summaries, global_step],
                         feed_dict={
                             training: True,
                         },
@@ -763,6 +783,7 @@ with tf.Session(graph=graph, config=config) as sess:
 
                     # write the summary
                     train_writer.add_summary(image_summary, step)
+                    train_writer.add_summary(other_summaries, step)
                 else:
                     _, _, _, step = sess.run(
                         [train_op, extra_update_ops, update_op, global_step],
@@ -828,8 +849,8 @@ with tf.Session(graph=graph, config=config) as sess:
         # Write average of validation data to summary logs
         if log_to_tensorboard:
             # evaluate once more to get the summary, which will then be written to tensorboard
-            summary, cv_accuracy = sess.run(
-                [merged, accuracy],
+            summary, other_summaries, cv_accuracy = sess.run(
+                [merged, per_epoch_summaries, accuracy],
                 feed_dict={
                     X: X_cv[0:2],
                     y: y_cv[0:2],
@@ -837,6 +858,7 @@ with tf.Session(graph=graph, config=config) as sess:
                 })
 
             test_writer.add_summary(summary, step)
+            test_writer.add_summary(other_summaries, step)
         step += 1
 
         # delete the test data to save memory
