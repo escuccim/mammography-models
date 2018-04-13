@@ -617,9 +617,9 @@ with graph.as_default():
 
     # calculate recall
     if num_classes > 2:
-        # collapse the predictions down to normal or not for our pr metrics
+        # collapse the predictions down to normal or not
         zero = tf.constant(0, dtype=tf.int64)
-        collapsed_predictions = tf.cast(tf.greater(predictions, zero), tf.int64)
+        collapsed_predictions = tf.greater(predictions, zero)
         collapsed_labels = tf.greater(y, zero)
 
         recall, rec_op = tf.metrics.recall(labels=collapsed_labels, predictions=collapsed_predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="recall")
