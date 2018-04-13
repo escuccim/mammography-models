@@ -685,14 +685,12 @@ with graph.as_default():
                 labels=tf.equal(y, k),
                 predictions=tf.equal(predictions, k),
                 updates_collections=tf.GraphKeys.UPDATE_OPS,
-                metrics_collections=["summaries"]
             )
 
             precision[k], prec_op[k] = tf.metrics.precision(
                 labels=tf.equal(y, k),
 	                predictions=tf.equal(predictions, k),
                 updates_collections=tf.GraphKeys.UPDATE_OPS,
-                metrics_collections=["summaries"]
             )
 
         recall = tf.reduce_mean(recall)
