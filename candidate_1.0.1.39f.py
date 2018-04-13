@@ -61,7 +61,7 @@ fcdropout_rate = 0.7
 convdropout_rate = 0.01
 pooldropout_rate = 0.25
 
-num_classes = 2
+num_classes = 5
 
 ## Build the graph
 graph = tf.Graph()
