@@ -104,6 +104,7 @@ model_name = "model_s1.0.0.29f"
 # 1.0.0.27 - updates to training code and metrics
 # 1.0.0.28 - using weighted x-entropy to improve recall
 # 1.0.0.29 - updated code to work training to classify for multiple classes
+# 1.0.0.29f - using weighted cross entropy as recall was 0 with normal cross entropy
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -640,10 +641,6 @@ with graph.as_default():
         precision, prec_op = tf.metrics.precision(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="precision")
         f1_score = 2 * ( (precision * recall) / (precision + recall))
 
-        #auc, auc_op = tf.metrics.auc(labels=y, predictions=probabilities[:,1], num_thresholds=50, name="auc_1", updates_collections=tf.GraphKeys.UPDATE_OPS)
-
-        #tf.summary.scalar('auc_', auc, collections=["summaries"])
-
         _, update_op = summary_lib.pr_curve_streaming_op(name='pr_curve',
                                                          predictions=probabilities[:, 1],
                                                          labels=y,
@@ -675,7 +672,6 @@ if init_model is not None:
         init = False
     else:
         init = True
-
 else:
     if os.path.exists(os.path.join("model", model_name + '.ckpt.index')):
         init = False

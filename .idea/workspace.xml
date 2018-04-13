@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="98c4e5b0-4f90-4540-b87f-9bd6d2ddc583" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change beforePath="$PROJECT_DIR$/candidate_1.0.0.28.py" afterPath="$PROJECT_DIR$/candidate_1.0.0.28.py" />
       <change beforePath="$PROJECT_DIR$/candidate_1.0.1.39f.py" afterPath="$PROJECT_DIR$/candidate_1.0.1.39f.py" />
     </list>
@@ -18,8 +17,8 @@
       <file leaf-file-name="candidate_1.0.0.28.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/candidate_1.0.0.28.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="495">
-              <caret line="84" column="30" lean-forward="false" selection-start-line="84" selection-start-column="30" selection-end-line="84" selection-end-column="30" />
+            <state relative-caret-position="-363">
+              <caret line="673" column="19" lean-forward="false" selection-start-line="673" selection-start-column="19" selection-end-line="673" selection-end-column="19" />
               <folding />
             </state>
           </provider>
@@ -28,8 +27,8 @@
       <file leaf-file-name="candidate_1.0.1.39f.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/candidate_1.0.1.39f.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1265">
-              <caret line="724" column="80" lean-forward="false" selection-start-line="724" selection-start-column="80" selection-end-line="724" selection-end-column="80" />
+            <state relative-caret-position="583">
+              <caret line="693" column="0" lean-forward="false" selection-start-line="686" selection-start-column="4" selection-end-line="693" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -592,16 +591,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/candidate_1.0.1.39f.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1265">
-          <caret line="724" column="80" lean-forward="false" selection-start-line="724" selection-start-column="80" selection-end-line="724" selection-end-column="80" />
+        <state relative-caret-position="583">
+          <caret line="693" column="0" lean-forward="false" selection-start-line="686" selection-start-column="4" selection-end-line="693" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/candidate_1.0.0.28.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="495">
-          <caret line="84" column="30" lean-forward="false" selection-start-line="84" selection-start-column="30" selection-end-line="84" selection-end-column="30" />
+        <state relative-caret-position="-363">
+          <caret line="673" column="19" lean-forward="false" selection-start-line="673" selection-start-column="19" selection-end-line="673" selection-end-column="19" />
           <folding />
         </state>
       </provider>
