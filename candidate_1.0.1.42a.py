@@ -44,13 +44,12 @@ batch_size = 64
 train_files, total_records = get_training_data(what=dataset)
 
 ## Hyperparameters
-# Small epsilon value for the BN transform
 epsilon = 1e-8
 
 # learning rate
 epochs_per_decay = 5
 starting_rate = 0.001
-decay_factor = 0.85
+decay_factor = 0.80
 staircase = True
 
 # learning rate decay variables
@@ -63,7 +62,7 @@ lamF = 0.00200
 
 # use dropout
 dropout = True
-fcdropout_rate = 0.5
+fcdropout_rate = 0.6
 convdropout_rate = 0.01
 pooldropout_rate = 0.2
 
@@ -81,7 +80,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.0.1.42a"
+model_name = "model_s1.0.1.42b"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -112,7 +111,7 @@ model_name = "model_s1.0.1.42a"
 # 1.0.1.38 - reduced number of filters to try to speed up training
 # 1.0.1.40 - classifying by class
 # 1.0.1.41 - fixed multi-class p/r code and added extra fc layer
-# 1.0.1.42 - updated fcs and some filters to match 1.0.0.28 which had better performance
+# 1.0.1.42 - updated fcs and some filters to match 1.0.0.28 which had better performance, initializing conv weights from model 1.41a
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")

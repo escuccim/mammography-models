@@ -77,12 +77,13 @@ elif how == "mass":
 elif how == "benign":
     num_classes = 3
 
+print("Number of classes:", num_classes)
+
 ## Build the graph
 graph = tf.Graph()
 
-# whether to retrain model from scratch or use saved model
-init = True
 model_name = "model_s1.0.0.29f"
+## Change Log
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -474,9 +475,6 @@ with graph.as_default():
 
         # apply relu
         conv5_bn_relu = tf.nn.relu(conv5, name='relu5')
-
-        #if dropout:
-        #    conv5_bn_relu = tf.layers.dropout(conv5_bn_relu, rate=convdropout_rate, seed=114, training=training)
 
     # Max pooling layer 4
     with tf.name_scope('pool5') as scope:
