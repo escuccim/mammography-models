@@ -80,7 +80,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.0.1.42b"
+model_name = "model_s1.0.1.43b"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -112,6 +112,7 @@ model_name = "model_s1.0.1.42b"
 # 1.0.1.40 - classifying by class
 # 1.0.1.41 - fixed multi-class p/r code and added extra fc layer
 # 1.0.1.42 - updated fcs and some filters to match 1.0.0.28 which had better performance, initializing conv weights from model 1.41a
+# 1.0.1.43 - reduced units in fc layers to try to speed up training
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -607,7 +608,7 @@ with graph.as_default():
     with tf.name_scope('fc2') as scope:
         fc2 = tf.layers.dense(
             fc1_relu,  # input
-            2048,  # 1024 hidden units
+            1024,  # 1024 hidden units
             activation=None,  # None
             kernel_initializer=tf.variance_scaling_initializer(scale=2, seed=119),
             bias_initializer=tf.zeros_initializer(),
@@ -639,7 +640,7 @@ with graph.as_default():
     with tf.name_scope('fc3') as scope:
         fc3 = tf.layers.dense(
             fc2_relu,  # input
-            1024,  # 1024 hidden units
+            512,  # 1024 hidden units
             activation=None,  # None
             kernel_initializer=tf.variance_scaling_initializer(scale=2, seed=11937),
             bias_initializer=tf.zeros_initializer(),
