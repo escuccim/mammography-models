@@ -80,7 +80,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.0.1.43b"
+model_name = "model_s1.0.1.44a"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -113,6 +113,7 @@ model_name = "model_s1.0.1.43b"
 # 1.0.1.41 - fixed multi-class p/r code and added extra fc layer
 # 1.0.1.42 - updated fcs and some filters to match 1.0.0.28 which had better performance, initializing conv weights from model 1.41a
 # 1.0.1.43 - reduced units in fc layers to try to speed up training
+# 1.0.1.44 - reduced number of filters in conv 5 to try to speed up training
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -521,7 +522,7 @@ with graph.as_default():
     with tf.name_scope('conv5') as scope:
         conv5 = tf.layers.conv2d(
             pool4,  # Input data
-            filters=512,  # 48 filters
+            filters=384,  # 48 filters
             kernel_size=(3, 3),  # Kernel size: 5x5
             strides=(1, 1),  # Stride: 1
             padding='SAME',  # "same" padding
@@ -836,7 +837,7 @@ with tf.Session(graph=graph, config=config) as sess:
             sess.run(tf.global_variables_initializer())
 
             # create the initializer function to initialize the weights
-            init_fn = load_weights(init_model, exclude=["fc1", "bn_fc1", "bn_fc2", "fc3", "bn_fc3", "fc2", "logits", "global_step"])
+            init_fn = load_weights(init_model, exclude=["conv5", "bn_conv5", "bn_fc2", "fc3", "bn_fc3", "fc2", "logits", "global_step"])
 
             # run the initializer
             init_fn(sess)
