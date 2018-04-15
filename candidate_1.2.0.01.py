@@ -245,7 +245,7 @@ with graph.as_default():
         )
 
         # residual connection
-        conv12 = conv12 + conv1
+        # conv12 = conv12 + conv1
 
         # apply relu
         conv12 = tf.nn.relu(conv12, name='relu1.3')
@@ -1012,7 +1012,7 @@ with tf.Session(graph=graph, config=config) as sess:
         # Write average of validation data to summary logs
         if log_to_tensorboard:
             # evaluate once more to get the summary, which will then be written to tensorboard
-            summary, other_summaries, cv_accuracy = sess.run(
+            summary, cv_accuracy = sess.run(
                 [merged, accuracy],
                 feed_dict={
                     X: X_cv[0:2],
