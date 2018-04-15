@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="98c4e5b0-4f90-4540-b87f-9bd6d2ddc583" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/candidate_1.0.1.44a.py" afterPath="$PROJECT_DIR$/candidate_1.0.1.44a.py" />
-      <change beforePath="$PROJECT_DIR$/model_families.txt" afterPath="$PROJECT_DIR$/model_families.txt" />
+      <change beforePath="$PROJECT_DIR$/candidate_1.2.0.01.py" afterPath="$PROJECT_DIR$/candidate_1.2.0.01.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -24,21 +23,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="candidate_1.2.0.01.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="candidate_1.2.0.01.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/candidate_1.2.0.01.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-412">
-              <caret line="504" column="17" lean-forward="false" selection-start-line="504" selection-start-column="17" selection-end-line="504" selection-end-column="17" />
+            <state relative-caret-position="429">
+              <caret line="21" column="15" lean-forward="false" selection-start-line="21" selection-start-column="15" selection-end-line="21" selection-end-column="15" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="candidate_1.0.1.44a.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="candidate_1.0.1.44a.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/candidate_1.0.1.44a.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-198">
-              <caret line="272" column="9" lean-forward="true" selection-start-line="267" selection-start-column="3" selection-end-line="272" selection-end-column="9" />
+            <state relative-caret-position="-599">
+              <caret line="973" column="59" lean-forward="true" selection-start-line="973" selection-start-column="59" selection-end-line="973" selection-end-column="59" />
               <folding />
             </state>
           </provider>
@@ -604,18 +603,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/candidate_1.0.1.44a.py">
+    <entry file="file://$PROJECT_DIR$/candidate_1.2.0.01.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-198">
-          <caret line="272" column="9" lean-forward="true" selection-start-line="267" selection-start-column="3" selection-end-line="272" selection-end-column="9" />
+        <state relative-caret-position="429">
+          <caret line="21" column="15" lean-forward="false" selection-start-line="21" selection-start-column="15" selection-end-line="21" selection-end-column="15" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/candidate_1.2.0.01.py">
+    <entry file="file://$PROJECT_DIR$/candidate_1.0.1.44a.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-412">
-          <caret line="504" column="17" lean-forward="false" selection-start-line="504" selection-start-column="17" selection-end-line="504" selection-end-column="17" />
+        <state relative-caret-position="-599">
+          <caret line="973" column="59" lean-forward="true" selection-start-line="973" selection-start-column="59" selection-end-line="973" selection-end-column="59" />
           <folding />
         </state>
       </provider>

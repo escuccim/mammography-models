@@ -19,7 +19,7 @@ args = parser.parse_args()
 if args.epochs:
     epochs = args.epochs
 else:
-    epochs = 50
+    epochs = 35
 
 if args.data:
     dataset = args.data
