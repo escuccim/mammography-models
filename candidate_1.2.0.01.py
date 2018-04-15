@@ -10,31 +10,18 @@ from tensorboard import summary as summary_lib
 
 # If number of epochs has been passed in use that, otherwise default to 50
 parser = argparse.ArgumentParser()
-parser.add_argument("-e", "--epochs", help="number of epochs to train", type=int)
-parser.add_argument("-d", "--data", help="which dataset to use", type=int)
-parser.add_argument("-m", "--model", help="model to initialize with")
-parser.add_argument("-l", "--label", help="how to classify data")
+parser.add_argument("-e", "--epochs", help="number of epochs to train", default=35, type=int)
+parser.add_argument("-d", "--data", help="which dataset to use", default=6, type=int)
+parser.add_argument("-m", "--model", help="model to initialize with", default=None)
+parser.add_argument("-l", "--label", help="how to classify data", default="label")
+parser.add_argument("-a", "--action", help="action to perform", default="train")
 args = parser.parse_args()
 
-if args.epochs:
-    epochs = args.epochs
-else:
-    epochs = 35
-
-if args.data:
-    dataset = args.data
-else:
-    dataset = 5
-
-if args.model:
-    init_model = args.model
-else:
-    init_model = None
-
-if args.label:
-    how = args.label
-else:
-    how = "label"
+epochs = args.epochs
+dataset = args.data
+init_model = args.model
+how = args.label
+action = args.action
 
 # download the data
 download_data(what=dataset)
@@ -750,6 +737,9 @@ with graph.as_default():
         name="fc_logits"
     )
 
+    # get the fully connected variables so we can only train them when retraining the network
+    fc_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "fc")
+
     with tf.variable_scope('conv1', reuse=True):
         conv_kernels1 = tf.get_variable('kernel')
         kernel_transposed = tf.transpose(conv_kernels1, [3, 0, 1, 2])
@@ -806,12 +796,12 @@ with graph.as_default():
         tf.summary.scalar('f1_score', f1_score, collections=["summaries"])
 
         # additional metrics
-        true_pos, _ = tf.metrics.true_positives(labels=collapsed_labels, predictions=collapsed_predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="true_positives")
-        false_pos, _ = tf.metrics.false_positives(labels=collapsed_labels, predictions=collapsed_predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="false_positives")
-        true_neg, _ = tf.metrics.true_negatives(labels=collapsed_labels, predictions=collapsed_predictions,
-                                                updates_collections=tf.GraphKeys.UPDATE_OPS, name="true_negatives")
-        false_neg, _ = tf.metrics.false_negatives(labels=collapsed_labels, predictions=collapsed_predictions,
-                                                  updates_collections=tf.GraphKeys.UPDATE_OPS, name="false_negatives")
+        # true_pos, _ = tf.metrics.true_positives(labels=collapsed_labels, predictions=collapsed_predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="true_positives")
+        # false_pos, _ = tf.metrics.false_positives(labels=collapsed_labels, predictions=collapsed_predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="false_positives")
+        # true_neg, _ = tf.metrics.true_negatives(labels=collapsed_labels, predictions=collapsed_predictions,
+        #                                         updates_collections=tf.GraphKeys.UPDATE_OPS, name="true_negatives")
+        # false_neg, _ = tf.metrics.false_negatives(labels=collapsed_labels, predictions=collapsed_predictions,
+        #                                           updates_collections=tf.GraphKeys.UPDATE_OPS, name="false_negatives")
 
         _, update_op = summary_lib.pr_curve_streaming_op(name='pr_curve',
                                                         predictions=(1 - probabilities[:, 0]),
@@ -830,10 +820,10 @@ with graph.as_default():
                                                          num_thresholds=20)
 
         # additional metrics
-        true_pos, _ = tf.metrics.true_positives(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="true_positives")
-        false_pos, _ = tf.metrics.false_positives(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="false_positives")
-        true_neg, _ = tf.metrics.true_negatives(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="true_negatives")
-        false_neg, _ = tf.metrics.false_negatives(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="false_negatives")
+        # true_pos, _ = tf.metrics.true_positives(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="true_positives")
+        # false_pos, _ = tf.metrics.false_positives(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="false_positives")
+        # true_neg, _ = tf.metrics.true_negatives(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="true_negatives")
+        # false_neg, _ = tf.metrics.false_negatives(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="false_negatives")
 
         tf.summary.scalar('recall_1', recall, collections=["summaries"])
         tf.summary.scalar('precision_1', precision, collections=["summaries"])
@@ -844,10 +834,10 @@ with graph.as_default():
     tf.summary.scalar('cross_entropy', mean_ce, collections=["summaries"])
     tf.summary.scalar('learning_rate', learning_rate, collections=["summaries"])
 
-    tf.summary.scalar('true_posit', true_pos, collections=["per_epoch"])
-    tf.summary.scalar('true_negat', true_neg, collections=["per_epoch"])
-    tf.summary.scalar('false_posit', false_pos, collections=["per_epoch"])
-    tf.summary.scalar('false_negat', false_neg, collections=["per_epoch"])
+    # tf.summary.scalar('true_posit', true_pos, collections=["per_epoch"])
+    # tf.summary.scalar('true_negat', true_neg, collections=["per_epoch"])
+    # tf.summary.scalar('false_posit', false_pos, collections=["per_epoch"])
+    # tf.summary.scalar('false_negat', false_neg, collections=["per_epoch"])
 
     # add this so that the batch norm gets run
     extra_update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
@@ -855,7 +845,8 @@ with graph.as_default():
     # Merge all the summaries
     merged = tf.summary.merge_all("summaries")
     kernel_summaries = tf.summary.merge_all("kernels")
-    per_epoch_summaries = tf.summary.merge_all("per_epoch")
+    per_epoch_summaries = [[]]
+    # per_epoch_summaries = tf.summary.merge_all("per_epoch")
 
     print("Graph created...")
 
@@ -1022,7 +1013,7 @@ with tf.Session(graph=graph, config=config) as sess:
         if log_to_tensorboard:
             # evaluate once more to get the summary, which will then be written to tensorboard
             summary, other_summaries, cv_accuracy = sess.run(
-                [merged, per_epoch_summaries, accuracy],
+                [merged, accuracy],
                 feed_dict={
                     X: X_cv[0:2],
                     y: y_cv[0:2],
@@ -1030,7 +1021,7 @@ with tf.Session(graph=graph, config=config) as sess:
                 })
 
             test_writer.add_summary(summary, step)
-            test_writer.add_summary(other_summaries, step)
+            # test_writer.add_summary(other_summaries, step)
         step += 1
 
         # delete the test data to save memory
@@ -1091,3 +1082,33 @@ with tf.Session(graph=graph, config=config) as sess:
     # save the predictions and truth for review
     np.save(os.path.join("data", "predictions_" + model_name + ".npy"), test_predictions)
     np.save(os.path.join("data", "truth_" + model_name + ".npy"), ground_truth)
+
+    ## evaluate on MIAS  data
+    X_te, y_te = load_validation_data(how=how, data="mias", which=dataset)
+
+    mias_test_accuracy = []
+    mias_test_recall = []
+    mias_test_predictions = []
+    mias_ground_truth = []
+    for X_batch, y_batch in get_batches(X_te, y_te, batch_size, distort=False):
+        yhat, test_acc_value, test_recall_value = sess.run([predictions, accuracy, rec_op], feed_dict=
+        {
+            X: X_batch,
+            y: y_batch,
+            training: False
+        })
+
+        mias_test_accuracy.append(test_acc_value)
+        mias_test_recall.append(test_recall_value)
+        mias_test_predictions.append(yhat)
+        mias_ground_truth.append(y_batch)
+
+    # print the results
+    print("Mean MIAS Accuracy:", np.mean(mias_test_accuracy))
+    print("Mean MIAS Recall:", np.mean(mias_test_recall))
+
+    # save the predictions and truth for review
+    np.save(os.path.join("data", "mias_predictions_" + model_name + ".npy"), mias_test_predictions)
+    np.save(os.path.join("data", "mias_truth_" + model_name + ".npy"), mias_ground_truth)
+
+

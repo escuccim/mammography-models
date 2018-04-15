@@ -10,31 +10,18 @@ from tensorboard import summary as summary_lib
 
 # If number of epochs has been passed in use that, otherwise default to 50
 parser = argparse.ArgumentParser()
-parser.add_argument("-e", "--epochs", help="number of epochs to train", type=int)
-parser.add_argument("-d", "--data", help="which dataset to use", type=int)
-parser.add_argument("-m", "--model", help="model to initialize with")
-parser.add_argument("-l", "--label", help="how to classify data")
+parser.add_argument("-e", "--epochs", help="number of epochs to train", default=35, type=int)
+parser.add_argument("-d", "--data", help="which dataset to use", default=6, type=int)
+parser.add_argument("-m", "--model", help="model to initialize with", default=None)
+parser.add_argument("-l", "--label", help="how to classify data", default="label")
+parser.add_argument("-a", "--action", help="action to perform", default="train")
 args = parser.parse_args()
 
-if args.epochs:
-    epochs = args.epochs
-else:
-    epochs = 50
-
-if args.data:
-    dataset = args.data
-else:
-    dataset = 6
-
-if args.model:
-    init_model = args.model
-else:
-    init_model = None
-
-if args.label:
-    how = args.label
-else:
-    how = "label"
+epochs = args.epochs
+dataset = args.data
+init_model = args.model
+how = args.label
+action = args.action
 
 # download the data
 download_data(what=dataset)
