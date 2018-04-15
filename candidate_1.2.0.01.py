@@ -750,7 +750,7 @@ with graph.as_default():
         activation=None,  # No activation function
         kernel_initializer=tf.variance_scaling_initializer(scale=1, seed=121),
         bias_initializer=tf.zeros_initializer(),
-        name="logits"
+        name="fc_logits"
     )
 
     with tf.variable_scope('conv1', reuse=True):
