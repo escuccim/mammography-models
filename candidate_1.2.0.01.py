@@ -497,41 +497,9 @@ with graph.as_default():
             pool2 = tf.layers.dropout(pool2, rate=pooldropout_rate, seed=106, training=training)
 
     # Convolutional layer 3
-    with tf.name_scope('conv3.0') as scope:
-        conv3 = tf.layers.conv2d(
-            pool2,  # Input data
-            filters=96,  # 48 filters
-            kernel_size=(1, 1),  # Kernel size: 5x5
-            strides=(1, 1),  # Stride: 1
-            padding='SAME',  # "same" padding
-            activation=None,  # None
-            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=107),
-            kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
-            name='conv3.0'
-        )
-
-        conv3 = tf.layers.batch_normalization(
-            conv3,
-            axis=-1,
-            momentum=0.99,
-            epsilon=epsilon,
-            center=True,
-            scale=True,
-            beta_initializer=tf.zeros_initializer(),
-            gamma_initializer=tf.ones_initializer(),
-            moving_mean_initializer=tf.zeros_initializer(),
-            moving_variance_initializer=tf.ones_initializer(),
-            training=training,
-            name='bn3.0'
-        )
-
-        # apply relu
-        conv3 = tf.nn.relu(conv3, name='relu3.0')
-
-    # Convolutional layer 3
     with tf.name_scope('conv3.1') as scope:
         conv3 = tf.layers.conv2d(
-            conv3,  # Input data
+            pool2,  # Input data
             filters=128,  # 48 filters
             kernel_size=(3, 3),  # Kernel size: 5x5
             strides=(1, 1),  # Stride: 1
