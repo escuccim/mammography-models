@@ -82,7 +82,7 @@ print("Number of classes:", num_classes)
 ## Build the graph
 graph = tf.Graph()
 
-model_name = "model_s1.2.0.4a"
+model_name = "model_s1.2.0.5a"
 ## Change Log
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
@@ -107,6 +107,7 @@ model_name = "model_s1.2.0.4a"
 # 1.0.0.29 - updated code to work training to classify for multiple classes
 # 1.0.0.29f - using weighted cross entropy as recall was 0 with normal cross entropy
 # 1.2.0.1 - adding extra convs, branches and residual connections
+# 1.2.05 - fixing some issues
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -225,15 +226,12 @@ with graph.as_default():
             name='bn1.2'
         )
 
-        # residual connection
-        conv12 = conv12 + conv1
-
         # apply relu
         conv12 = tf.nn.relu(conv12, name='relu1.2')
 
     with tf.name_scope('conv1.3') as scope:
-        conv13 = tf.layers.conv2d(
-            conv1_bn_relu,  # Input data
+        conv12 = tf.layers.conv2d(
+            conv11,  # Input data
             filters=32,  # 32 filters
             kernel_size=(3, 3),  # Kernel size: 5x5
             strides=(1, 1),  # Stride: 2
@@ -244,7 +242,7 @@ with graph.as_default():
             name='conv1.3'
         )
 
-        conv13 = tf.layers.batch_normalization(
+        conv12 = tf.layers.batch_normalization(
             conv12,
             axis=-1,
             momentum=0.99,
@@ -259,12 +257,46 @@ with graph.as_default():
             name='bn1.3'
         )
 
+        # residual connection
+        conv12 = conv12 + conv1
+
         # apply relu
-        conv13 = tf.nn.relu(conv12, name='relu1.3')
+        conv12 = tf.nn.relu(conv12, name='relu1.3')
+
+    with tf.name_scope('conv1.4') as scope:
+        conv14 = tf.layers.conv2d(
+            conv1_bn_relu,  # Input data
+            filters=32,  # 32 filters
+            kernel_size=(3, 3),  # Kernel size: 5x5
+            strides=(1, 1),  # Stride: 2
+            padding='SAME',  # "same" padding
+            activation=None,  # None
+            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=1101),
+            kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
+            name='conv1.4'
+        )
+
+        conv14 = tf.layers.batch_normalization(
+            conv14,
+            axis=-1,
+            momentum=0.99,
+            epsilon=epsilon,
+            center=True,
+            scale=True,
+            beta_initializer=tf.zeros_initializer(),
+            gamma_initializer=tf.ones_initializer(),
+            moving_mean_initializer=tf.zeros_initializer(),
+            moving_variance_initializer=tf.ones_initializer(),
+            training=training,
+            name='bn1.3'
+        )
+
+        # apply relu
+        conv14 = tf.nn.relu(conv14, name='relu1.3')
 
     with tf.name_scope("concat1") as scope:
         concat1 = tf.concat(
-            [conv12, conv13],
+            [conv12, conv14],
             axis=3,
             name='concat1'
         )
@@ -287,7 +319,7 @@ with graph.as_default():
     with tf.name_scope('conv2.0') as scope:
         conv2 = tf.layers.conv2d(
             pool1,  # Input data
-            filters=48,  # 32 filters
+            filters=32,  # 32 filters
             kernel_size=(1, 1),  # Kernel size: 9x9
             strides=(1, 1),  # Stride: 1
             padding='SAME',  # "same" padding
@@ -381,10 +413,10 @@ with graph.as_default():
 
     # Convolutional layer 2
     with tf.name_scope('conv2.3') as scope:
-        conv21 = tf.layers.conv2d(
-            conv21,  # Input data
-            filters=64,  # 32 filters
-            kernel_size=(3, 3),  # Kernel size: 9x9
+        conv23 = tf.layers.conv2d(
+            pool1,  # Input data
+            filters=32,  # 32 filters
+            kernel_size=(1, 1),  # Kernel size: 9x9
             strides=(1, 1),  # Stride: 1
             padding='SAME',  # "same" padding
             activation=None,  # None
@@ -393,8 +425,8 @@ with graph.as_default():
             name='conv2.3'
         )
 
-        conv21 = tf.layers.batch_normalization(
-            conv21,
+        conv23 = tf.layers.batch_normalization(
+            conv23,
             axis=-1,
             momentum=0.99,
             epsilon=epsilon,
@@ -408,16 +440,13 @@ with graph.as_default():
             name='bn2.3'
         )
 
-        # residual connection
-        conv21 = conv21 + conv2
-
         # apply relu
-        conv21 = tf.nn.relu(conv21, name='relu2.3')
+        conv23 = tf.nn.relu(conv23, name='relu2.3')
 
     # Convolutional layer 2
     with tf.name_scope('conv2.4') as scope:
         conv24 = tf.layers.conv2d(
-            conv2,  # Input data
+            conv23,  # Input data
             filters=64,  # 32 filters
             kernel_size=(3, 3),  # Kernel size: 9x9
             strides=(1, 1),  # Stride: 1
