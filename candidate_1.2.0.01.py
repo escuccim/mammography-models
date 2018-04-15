@@ -288,11 +288,11 @@ with graph.as_default():
             moving_mean_initializer=tf.zeros_initializer(),
             moving_variance_initializer=tf.ones_initializer(),
             training=training,
-            name='bn1.3'
+            name='bn1.4'
         )
 
         # apply relu
-        conv14 = tf.nn.relu(conv14, name='relu1.3')
+        conv14 = tf.nn.relu(conv14, name='relu1.4')
 
     with tf.name_scope("concat1") as scope:
         concat1 = tf.concat(
