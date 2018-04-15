@@ -69,7 +69,7 @@ print("Number of classes:", num_classes)
 ## Build the graph
 graph = tf.Graph()
 
-model_name = "model_s1.2.0.7b"
+model_name = "model_s1.2.0.8b"
 ## Change Log
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
@@ -95,6 +95,7 @@ model_name = "model_s1.2.0.7b"
 # 1.0.0.29f - using weighted cross entropy as recall was 0 with normal cross entropy
 # 1.2.0.1 - adding extra convs, branches and residual connections
 # 1.2.05 - fixing some issues
+# 1.2.08 - removed residual connection
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
