@@ -82,7 +82,7 @@ print("Number of classes:", num_classes)
 ## Build the graph
 graph = tf.Graph()
 
-model_name = "model_s1.2.0.2"
+model_name = "model_s1.2.0.3"
 ## Change Log
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
@@ -313,12 +313,12 @@ with graph.as_default():
         )
 
         # apply relu
-        conv2_relu = tf.nn.relu(conv2, name='relu2.0')
+        conv2 = tf.nn.relu(conv2, name='relu2.0')
 
     # Convolutional layer 2
     with tf.name_scope('conv2.1') as scope:
-        conv21 = tf.layers.conv2d(
-            conv2_relu,  # Input data
+        conv2 = tf.layers.conv2d(
+            conv2,  # Input data
             filters=64,  # 32 filters
             kernel_size=(3, 3),  # Kernel size: 9x9
             strides=(1, 1),  # Stride: 1
@@ -329,8 +329,8 @@ with graph.as_default():
             name='conv2.1'
         )
 
-        conv21 = tf.layers.batch_normalization(
-            conv21,
+        conv2 = tf.layers.batch_normalization(
+            conv2,
             axis=-1,
             momentum=0.99,
             epsilon=epsilon,
@@ -345,7 +345,7 @@ with graph.as_default():
         )
 
         # apply relu
-        conv21 = tf.nn.relu(conv21, name='relu2.1')
+        conv21 = tf.nn.relu(conv2, name='relu2.1')
 
     # Convolutional layer 2
     with tf.name_scope('conv2.2') as scope:
@@ -417,7 +417,7 @@ with graph.as_default():
     # Convolutional layer 2
     with tf.name_scope('conv2.4') as scope:
         conv24 = tf.layers.conv2d(
-            conv2_relu,  # Input data
+            conv2,  # Input data
             filters=64,  # 32 filters
             kernel_size=(3, 3),  # Kernel size: 9x9
             strides=(1, 1),  # Stride: 1
