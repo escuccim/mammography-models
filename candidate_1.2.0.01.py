@@ -24,7 +24,7 @@ else:
 if args.data:
     dataset = args.data
 else:
-    dataset = 6
+    dataset = 5
 
 if args.model:
     init_model = args.model
