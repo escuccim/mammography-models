@@ -126,6 +126,10 @@ def load_validation_data(data="validation", how="normal", which=5, percentage=1)
             X_cv = np.load(os.path.join("data", "test6_data.npy"))
             labels = np.load(os.path.join("data", "test6_labels.npy"))
 
+    elif data == "mias":
+        X_cv = np.load(os.path.join("data", "mias_test_images.npy"))
+        labels = np.load(os.path.join("data", "mias_test_labels_enc.npy"))
+
     # encode the labels appropriately
     if how == "label":
         y_cv = labels
@@ -218,7 +222,7 @@ def download_data(what=4):
         if not os.path.exists(os.path.join("data", "training_3.tfrecords")):
             _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training_3.tfrecords',
                               'training_3.tfrecords')
-
+    elif what == 0:
         # download MIAS test data
         if not os.path.exists(os.path.join("data", "mias_test_images.npy")):
             _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/mias_test_images.npy',
@@ -227,23 +231,6 @@ def download_data(what=4):
         if not os.path.exists(os.path.join("data", "mias_test_labels_enc.npy")):
             _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/mias_test_labels_enc.npy',
                               'mias_test_labels_enc.npy')
-
-        # download validation data
-        if not os.path.exists(os.path.join("data", "test2_labels_0.npy")):
-            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/test2_labels_0.npy',
-                              'test2_labels_0.npy')
-
-        if not os.path.exists(os.path.join("data", "test2_labels_1.npy")):
-            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/test2_labels_1.npy',
-                              'test2_labels_1.npy')
-
-        if not os.path.exists(os.path.join("data", "test2_data_0.npy")):
-            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/test2_data_0.npy',
-                              'test2_data_0.npy')
-
-        if not os.path.exists(os.path.join("data", "test2_data_1.npy")):
-            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/test2_data_1.npy',
-                              'test2_data_1.npy')
 
     elif what == 5:
         # download and unzip tfrecords training data
