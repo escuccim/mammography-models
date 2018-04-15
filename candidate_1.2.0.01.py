@@ -82,7 +82,7 @@ print("Number of classes:", num_classes)
 ## Build the graph
 graph = tf.Graph()
 
-model_name = "model_s1.2.0.5a"
+model_name = "model_s1.2.0.6a"
 ## Change Log
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
@@ -231,7 +231,7 @@ with graph.as_default():
 
     with tf.name_scope('conv1.3') as scope:
         conv12 = tf.layers.conv2d(
-            conv11,  # Input data
+            conv12,  # Input data
             filters=32,  # 32 filters
             kernel_size=(3, 3),  # Kernel size: 5x5
             strides=(1, 1),  # Stride: 2
