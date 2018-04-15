@@ -82,7 +82,7 @@ print("Number of classes:", num_classes)
 ## Build the graph
 graph = tf.Graph()
 
-model_name = "model_s1.2.0.6a"
+model_name = "model_s1.2.0.7a"
 ## Change Log
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
@@ -838,12 +838,12 @@ with graph.as_default():
         tf.summary.scalar('f1_score', f1_score, collections=["summaries"])
 
         # additional metrics
-        # true_pos, _ = tf.metrics.true_positives(labels=collapsed_labels, predictions=collapsed_predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="true_positives")
-        # false_pos, _ = tf.metrics.false_positives(labels=collapsed_labels, predictions=collapsed_predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="false_positives")
-        # true_neg, _ = tf.metrics.true_negatives(labels=collapsed_labels, predictions=collapsed_predictions,
-        #                                         updates_collections=tf.GraphKeys.UPDATE_OPS, name="true_negatives")
-        # false_neg, _ = tf.metrics.false_negatives(labels=collapsed_labels, predictions=collapsed_predictions,
-        #                                           updates_collections=tf.GraphKeys.UPDATE_OPS, name="false_negatives")
+        true_pos, _ = tf.metrics.true_positives(labels=collapsed_labels, predictions=collapsed_predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="true_positives")
+        false_pos, _ = tf.metrics.false_positives(labels=collapsed_labels, predictions=collapsed_predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="false_positives")
+        true_neg, _ = tf.metrics.true_negatives(labels=collapsed_labels, predictions=collapsed_predictions,
+                                                updates_collections=tf.GraphKeys.UPDATE_OPS, name="true_negatives")
+        false_neg, _ = tf.metrics.false_negatives(labels=collapsed_labels, predictions=collapsed_predictions,
+                                                  updates_collections=tf.GraphKeys.UPDATE_OPS, name="false_negatives")
 
         _, update_op = summary_lib.pr_curve_streaming_op(name='pr_curve',
                                                         predictions=(1 - probabilities[:, 0]),
@@ -862,10 +862,10 @@ with graph.as_default():
                                                          num_thresholds=20)
 
         # additional metrics
-        # true_pos, _ = tf.metrics.true_positives(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="true_positives")
-        # false_pos, _ = tf.metrics.false_positives(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="false_positives")
-        # true_neg, _ = tf.metrics.true_negatives(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="true_negatives")
-        # false_neg, _ = tf.metrics.false_negatives(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="false_negatives")
+        true_pos, _ = tf.metrics.true_positives(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="true_positives")
+        false_pos, _ = tf.metrics.false_positives(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="false_positives")
+        true_neg, _ = tf.metrics.true_negatives(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="true_negatives")
+        false_neg, _ = tf.metrics.false_negatives(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="false_negatives")
 
         tf.summary.scalar('recall_1', recall, collections=["summaries"])
         tf.summary.scalar('precision_1', precision, collections=["summaries"])
@@ -876,10 +876,10 @@ with graph.as_default():
     tf.summary.scalar('cross_entropy', mean_ce, collections=["summaries"])
     tf.summary.scalar('learning_rate', learning_rate, collections=["summaries"])
 
-    # tf.summary.scalar('true_posit', true_pos, collections=["per_epoch"])
-    # tf.summary.scalar('true_negat', true_neg, collections=["per_epoch"])
-    # tf.summary.scalar('false_posit', false_pos, collections=["per_epoch"])
-    # tf.summary.scalar('false_negat', false_neg, collections=["per_epoch"])
+    tf.summary.scalar('true_posit', true_pos, collections=["per_epoch"])
+    tf.summary.scalar('true_negat', true_neg, collections=["per_epoch"])
+    tf.summary.scalar('false_posit', false_pos, collections=["per_epoch"])
+    tf.summary.scalar('false_negat', false_neg, collections=["per_epoch"])
 
     # add this so that the batch norm gets run
     extra_update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
