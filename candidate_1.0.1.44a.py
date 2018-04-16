@@ -1022,6 +1022,8 @@ with tf.Session(graph=graph, config=config) as sess:
         # Wait for threads to stop
         coord.join(threads)
 
+    sess.run(tf.local_variables_initializer())
+
     # evaluate the test data
     X_te, y_te = load_validation_data(how=how, data="test", which=dataset)
 
@@ -1050,6 +1052,7 @@ with tf.Session(graph=graph, config=config) as sess:
     np.save(os.path.join("data", "predictions_" + model_name + ".npy"), test_predictions)
     np.save(os.path.join("data", "truth_" + model_name + ".npy"), ground_truth)
 
+    sess.run(tf.local_variables_initializer())
     ## evaluate on MIAS  data
     X_te, y_te = load_validation_data(how=how, data="mias", which=dataset)
 
