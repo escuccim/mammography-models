@@ -228,11 +228,11 @@ def download_data(what=4):
     elif what == 0:
         # download MIAS test data
         if not os.path.exists(os.path.join("data", "mias_test_images.npy")):
-            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/mias_test_images.npy',
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/all_mias_slices.npy',
                               'mias_test_images.npy')
 
         if not os.path.exists(os.path.join("data", "mias_test_labels_enc.npy")):
-            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/mias_test_labels_enc.npy',
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/all_mias_labels.npy',
                               'mias_test_labels_enc.npy')
 
     elif what == 5:
