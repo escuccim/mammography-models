@@ -13,7 +13,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-e", "--epochs", help="number of epochs to train", default=35, type=int)
 parser.add_argument("-d", "--data", help="which dataset to use", default=6, type=int)
 parser.add_argument("-m", "--model", help="model to initialize with", default=None)
-parser.add_argument("-l", "--label", help="how to classify data", default="label")
+parser.add_argument("-l", "--label", help="how to classify data", default="normal")
 parser.add_argument("-a", "--action", help="action to perform", default="train")
 args = parser.parse_args()
 
@@ -67,7 +67,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.0.1.44c"
+model_name = "model_s1.0.1.45a"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -101,6 +101,7 @@ model_name = "model_s1.0.1.44c"
 # 1.0.1.42 - updated fcs and some filters to match 1.0.0.28 which had better performance, initializing conv weights from model 1.41a
 # 1.0.1.43 - reduced units in fc layers to try to speed up training
 # 1.0.1.44 - reduced number of filters in conv 5 to try to speed up training
+# 1.0.1.45 - added code to save metrics for use in report and plots and such, changing to binary classification
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -799,8 +800,13 @@ use_gpu = False  # whether or not to use the GPU
 print_metrics = True  # whether to print or plot metrics, if False a plot will be created and updated every epoch
 
 # Placeholders for metrics
-valid_acc_values = []
+train_cost_values = []
+train_lr_values = []
 train_acc_values = []
+train_recall_values = []
+valid_acc_values = []
+valid_cost_values = []
+valid_recall_values = []
 
 config = tf.ConfigProto()
 
@@ -860,6 +866,7 @@ with tf.Session(graph=graph, config=config) as sess:
             # Accuracy values (train) after each batch
             batch_acc = []
             batch_cost = []
+            batch_recall = []
 
             for i in range(steps_per_epoch):
                 # create the metadata
@@ -891,8 +898,8 @@ with tf.Session(graph=graph, config=config) as sess:
 
                 # every 50th step get the metrics
                 else:
-                    _, _, _, precision_value, summary, acc_value, cost_value, recall_value, step = sess.run(
-                        [train_op, extra_update_ops, update_op, prec_op, merged, accuracy, mean_ce, rec_op, global_step],
+                    _, _, _, precision_value, summary, acc_value, cost_value, recall_value, step, lr = sess.run(
+                        [train_op, extra_update_ops, update_op, prec_op, merged, accuracy, mean_ce, rec_op, global_step, learning_rate],
                         feed_dict={
                             training: True,
                         },
@@ -902,6 +909,7 @@ with tf.Session(graph=graph, config=config) as sess:
                     # Save accuracy (current batch)
                     batch_acc.append(acc_value)
                     batch_cost.append(cost_value)
+                    batch_recall.append(recall_value)
 
                     # log the summaries to tensorboard every 50 steps
                     if log_to_tensorboard:
@@ -922,6 +930,8 @@ with tf.Session(graph=graph, config=config) as sess:
 
             # init batch arrays
             batch_cv_acc = []
+            batch_cv_loss = []
+            batch_cv_recall = []
 
             # initialize the local variables so we have metrics only on the evaluation
             sess.run(tf.local_variables_initializer())
@@ -941,6 +951,8 @@ with tf.Session(graph=graph, config=config) as sess:
                     })
 
                 batch_cv_acc.append(valid_acc)
+                batch_cv_loss.append(valid_cost)
+                batch_cv_recall.append(valid_recall)
 
             # Write average of validation data to summary logs
             if log_to_tensorboard:
@@ -966,6 +978,26 @@ with tf.Session(graph=graph, config=config) as sess:
             # take the mean of the values to add to the metrics
             valid_acc_values.append(np.mean(batch_cv_acc))
             train_acc_values.append(np.mean(batch_acc))
+
+            valid_cost_values.append(np.mean(batch_cv_loss))
+            train_cost_values.append(np.mean(batch_cost))
+
+            valid_recall_values.append(np.mean(batch_cv_recall))
+            train_recall_values.append(np.mean(batch_recall))
+
+            train_lr_values.append(lr)
+
+            # save the metrics
+            np.save(os.path.join("data", model_name + "train_acc.npy"), train_acc_values)
+            np.save(os.path.join("data", model_name + "cv_acc.npy"), valid_acc_values)
+
+            np.save(os.path.join("data", model_name + "train_loss.npy"), train_cost_values)
+            np.save(os.path.join("data", model_name + "cv_loss.npy"), valid_cost_values)
+
+            np.save(os.path.join("data", model_name + "train_recall.npy"), train_recall_values)
+            np.save(os.path.join("data", model_name + "cv_recall.npy"), valid_recall_values)
+
+            np.save(os.path.join("data", model_name + "train_lr.npy"), train_lr_values)
 
             # Print progress every nth epoch to keep output to reasonable amount
             if (epoch % print_every == 0):
