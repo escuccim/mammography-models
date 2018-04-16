@@ -71,6 +71,9 @@ def read_and_decode_single_example(filenames, label_type='label_normal', normali
 
     reader = tf.TFRecordReader()
 
+    if label_type != 'label':
+        label_type = 'label_' + label_type
+
     _, serialized_example = reader.read(filename_queue)
     features = tf.parse_single_example(
         serialized_example,
