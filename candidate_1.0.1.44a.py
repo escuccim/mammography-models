@@ -62,12 +62,14 @@ elif how == "mass":
 elif how == "benign":
     num_classes = 3
 
+print("Number of classes:", num_classes)
+
 ## Build the graph
 graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.0.1.45a"
+model_name = "model_s1.0.1.45b"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg

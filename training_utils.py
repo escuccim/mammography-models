@@ -136,16 +136,16 @@ def load_validation_data(data="validation", how="normal", which=5, percentage=1)
     # encode the labels appropriately
     if how == "label":
         y_cv = labels
-    elif how == "label_normal":
+    elif how == "normal":
         y_cv = np.zeros(len(labels))
         y_cv[labels != 0] = 1
-    elif how == "label_mass":
+    elif how == "mass":
         y_cv = np.zeros(len(labels))
         y_cv[labels == 1] = 1
         y_cv[labels == 3] = 1
         y_cv[labels == 2] = 2
         y_cv[labels == 4] = 2
-    elif how == "label_benign":
+    elif how == "benign":
         y_cv = np.zeros(len(labels))
         y_cv[labels == 1] = 1
         y_cv[labels == 2] = 1
