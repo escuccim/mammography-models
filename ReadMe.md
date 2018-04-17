@@ -107,7 +107,7 @@ _figures 3 and 4 - model 1.0.1.39_
 The use of multiple branches was evaluated on Set 5, and while they did provide better results on the training data they seemed to make the model generalize to the validation data more poorly so were not included.
 
 ### Decision Thresholds
-These results were obtained using a threshold of 0.50. The precision and recall could be drastically altered by changing the decision threshold. Altering the threshold between 0.2 and 0.85 made it surprisingly easy to achieve a precision of 1.0 with a recall around 0.50. It was also possible to get a recall close to 1.0, although this resulted in very low precision. 
+These results were obtained using a threshold of 0.50. The precision and recall could be drastically altered by changing the decision threshold. It was very easy to achieve a precision of 1.0, however this resulted in an unacceptably low recall. Achieving very high recall was possible through the adjustment of the threshold, with recalls close to 1.0 possible at the expense of the precision. 
 
 This could be very useful for radiologists, allowing them to screen out scans which are either definitely negative or definitely positive and allowing them to focus on the more ambiguous scans.
 
