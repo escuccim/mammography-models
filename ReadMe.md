@@ -77,7 +77,7 @@ We had considered using transfer learning from VGG or Inception, but decided tha
 The best two performing models were 1.0.0.28 and 1.0.1.39. 
 
 Model 1.0.0.28 consists of stacked 3x3 convolutions alternating with max pools followed by two fully connected layers with 2048 units each.
-<img src="model_1.0.0.29f.png" alt="Model 1.0.0.28">
+<img src="model_1.0.0.29f.png" alt="Model 1.0.0.28" align="right" style="width: 50%;">
 
 Model 1.0.0.39 is very similar to 1.0.0.28, but with one extra fully connected layer, and two extra convolutional layers. As the abnormal mammograms had abnormalities ranging in size from several pixels to several hundred pixels a branch was inserted after layer 1 to attempt to detect very small features. The branches are concatenated together before max pool layer 1. This model also has an extra fully connected layer.
 <img src="model_1.0.1.41a.png" alt="Model 1.0.1.39">
