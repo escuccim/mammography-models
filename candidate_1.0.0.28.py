@@ -4,7 +4,7 @@ import wget
 from sklearn.model_selection import train_test_split
 import tensorflow as tf
 from training_utils import download_file, get_batches, read_and_decode_single_example, load_validation_data, \
-    download_data, evaluate_model, get_training_data, load_weights
+    download_data, evaluate_model, get_training_data, load_weights, flatten
 import argparse
 from tensorboard import summary as summary_lib
 
@@ -13,7 +13,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-e", "--epochs", help="number of epochs to train", default=35, type=int)
 parser.add_argument("-d", "--data", help="which dataset to use", default=6, type=int)
 parser.add_argument("-m", "--model", help="model to initialize with", default=None)
-parser.add_argument("-l", "--label", help="how to classify data", default="label")
+parser.add_argument("-l", "--label", help="how to classify data", default="normal")
 parser.add_argument("-a", "--action", help="action to perform", default="train")
 args = parser.parse_args()
 
@@ -32,7 +32,6 @@ batch_size = 64
 train_files, total_records = get_training_data(what=dataset)
 
 ## Hyperparameters
-# Small epsilon value for the BN transform
 epsilon = 1e-8
 
 # learning rate
@@ -92,7 +91,7 @@ model_name = "model_s1.0.0.29g"
 # 1.0.0.27 - updates to training code and metrics
 # 1.0.0.28 - using weighted x-entropy to improve recall
 # 1.0.0.29 - updated code to work training to classify for multiple classes
-# 1.0.0.29f - using weighted cross entropy as recall was 0 with normal cross entropy
+# 1.0.0.29f - putting weighted x-entropy back
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -938,6 +937,10 @@ with tf.Session(graph=graph, config=config) as sess:
     print("Mean Test Accuracy:", np.mean(test_accuracy))
     print("Mean Test Recall:", np.mean(test_recall))
 
+    # unlist the predictions and truth
+    test_predictions = flatten(test_predictions)
+    ground_truth = flatten(ground_truth)
+
     # save the predictions and truth for review
     np.save(os.path.join("data", "predictions_" + model_name + ".npy"), test_predictions)
     np.save(os.path.join("data", "truth_" + model_name + ".npy"), ground_truth)
@@ -967,6 +970,10 @@ with tf.Session(graph=graph, config=config) as sess:
     # print the results
     print("Mean MIAS Accuracy:", np.mean(mias_test_accuracy))
     print("Mean MIAS Recall:", np.mean(mias_test_recall))
+
+    # unlist the predictions and truth
+    mias_test_predictions = flatten(mias_test_predictions)
+    mias_ground_truth = flatten(mias_ground_truth)
 
     # save the predictions and truth for review
     np.save(os.path.join("data", "mias_predictions_" + model_name + ".npy"), mias_test_predictions)

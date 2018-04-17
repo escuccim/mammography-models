@@ -4,7 +4,7 @@ import wget
 from sklearn.model_selection import train_test_split
 import tensorflow as tf
 from training_utils import download_file, get_batches, read_and_decode_single_example, load_validation_data, \
-    download_data, evaluate_model, get_training_data, load_weights
+    download_data, evaluate_model, get_training_data, load_weights, flatten
 import argparse
 from tensorboard import summary as summary_lib
 
@@ -1023,6 +1023,7 @@ with tf.Session(graph=graph, config=config) as sess:
         coord.join(threads)
 
     sess.run(tf.local_variables_initializer())
+    print("Evaluating on test data")
 
     # evaluate the test data
     X_te, y_te = load_validation_data(how=how, data="test", which=dataset)
@@ -1049,6 +1050,10 @@ with tf.Session(graph=graph, config=config) as sess:
     # print the results
     print("Mean Test Accuracy:", np.mean(test_accuracy))
     print("Mean Test Recall:", np.mean(test_recall))
+
+    # unlist the predictions and truth
+    test_predictions = flatten(test_predictions)
+    ground_truth = flatten(ground_truth)
 
     # save the predictions and truth for review
     np.save(os.path.join("data", "predictions_" + model_name + ".npy"), test_predictions)
@@ -1079,6 +1084,10 @@ with tf.Session(graph=graph, config=config) as sess:
     # print the results
     print("Mean MIAS Accuracy:", np.mean(mias_test_accuracy))
     print("Mean MIAS Recall:", np.mean(mias_test_recall))
+
+    # unlist the predictions and truth
+    mias_test_predictions = flatten(mias_test_predictions)
+    mias_ground_truth = flatten(mias_ground_truth)
 
     # save the predictions and truth for review
     np.save(os.path.join("data", "mias_predictions_" + model_name + ".npy"), mias_test_predictions)

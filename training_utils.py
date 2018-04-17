@@ -461,3 +461,11 @@ def load_weights(model_name, exclude=None, include=None):
 
     return init_fn
 
+def flatten(l):
+    out = []
+    for item in l:
+        if isinstance(item, (list, tuple)):
+            out.extend(flatten(item))
+        else:
+            out.append(item)
+    return out
