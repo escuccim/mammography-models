@@ -37,7 +37,7 @@ The analysis of the UCI data indicated that the edges of an abnormality were imp
 
 The first dataset created (referred to as Dataset 5) was a smaller dataset, consisting of 39,316 images. This dataset was created using a minimum fixed padding around the ROI during the pre-processing stage. Each ROI was extracted with a margin of between 30 pixels and 50 pixels from the edge of the image, with the ROI placed randomly within the bounds.
 
-Later another, larger dataset was created (referred to as Dataset 6), consisting of 62,764 training images. This dataset was created following the standard suggested by [1] of extracting each ROI in an area double its size. The size of this dataset was increased by including more data augmentation such as random zooms and cropping.
+Another, larger, dataset was created (referred to as Dataset 6), consisting of 62,764 training images. This dataset was created following the standard suggested by [1] of extracting each ROI in an area double its size to provide context. The size of this dataset was increased by including more data augmentation such as random zooms and cropping.
 
 ### Data Balance
 Only about 10% of mammograms are abnormal, in order to maximize recall we weighted our training data more heavily towards abnormal scan, with a target of 85% normal. The data was split between training and test data using the existing divisions of the CBIS-DDSM dataset in order to prevent overlap. The total data was split into training, validation and test at percentages of 80%, 10% and 10%
@@ -84,28 +84,25 @@ Model 1.0.0.39 is very similar to 1.0.0.28, but with one extra fully connected l
 
 ### Performance
 
-While the models all performed very well on the training data, at first they did not seem to be generalizing well, as the validation accuracy did not seem to improve in step with the training accuracy in early epochs. However, at about epoch 25 of training on Dataset 5, the validation accuracy began to improve significantly. The models performed much better on the test data set than expected, as show in Table 1.
+Both models performed better than expected on Dataset 5, but when retrained from scratch on Dataset 6 the simpler model did not perform well.
 
-|Model      |Accuracy      |Recall     |
-|-----------|-------------|------------|
-|1.0.1.39n  |.9935        |.9590       |
-|1.0.0.28n  |.9903        |.9431       |
-    
-Table 1: Performance on Test Set
+|Model      |Dataset    |Accuracy    |Recall      |
+|-----------|-----------|------------|------------| 
+|1.0.1.39n  |          5|.9935       |.9590       |
+|1.0.1.39n  |          6|     |     |
+|1.0.0.28n  |          5|.9903       |.9431       |
+|1.0.0.28n  |          6|     |     |
+_Table 1: Performance on Test Set_
 
-Model 1.0.0.28 was more stable as far as validation results as shown in Figure 1. 
+Model 1.0.0.28 performed excellent on both the training and validation data, as seen in Figure 1.
 
-_insert figure here_
- 
-Figure 1: Accuracy of model 1.0.0.28 on training and validation data
+When retrained on Dataset 6 model 1.0.0.28 scored similar on the training data as it did on the smaller dataset, but the model did not generalize to the validation data. On the validation data the model seemed to predict everything as negative, which kept the accuracy near the most frequent baseline. The precision was excellent, but the recall approached zero. This is shown in Figure 2. 
 
-Model 1.0.1.39 has slightly better results on the test data but appeared to be slightly more unstable on the validation data as seen in Figure 2.
- 
-_insert figure here_
+_figures 1 and 2 - model 1.0.0.28_
 
-Figure 2: Accuracy of model 1.0.1.39n on training and validation data
+Model 1.0.1.39 also performed remarkably well on both the training and validation data on Dataset 5, but also performed well on Dataset 6. This model was more complicated than model 1.0.0.28, and included a branch to attempt to detect smaller abnormalities. 
 
-Model 1.0.1.39n was a more complicated model than 1.0.0.28, with several extra convolutional layers and an Inception-style branch in the first layer. 
+_figures 3 and 4 - model 1.0.1.39_
 
 The use of multiple branches was evaluated on Set 5, and while they did provide better results on the training data they seemed to make the model generalize to the validation data more poorly so were not included.
 
@@ -117,7 +114,7 @@ This could be very useful for radiologists, allowing them to screen out scans wh
 ## Conclusion
 We have demonstrated that Convolutional Neural Networks can be trained to determine whether a section of a mammogram contains an abnormality with recall of 95%, substantially above human performance. Adjusting the decision threshold would further improve the recall. These methods could be used to pre-screen mammograms allowing radiologists to focus on scans which are likely to contain abnormalities.
 
-Future work would include creating a system which would take a full scan as input, segment it and analyse each segment to return a result for an entire mammogram. Levy et al [1] have already shown that ConvNets can be used to classify abnormal ROIs, those techniques can be combined with those described here to create a complete end-to-end system for analysing mammograms. 
+Future work would include creating a system which would take a full mammogram as input and analyse it, possibly with a sliding window, to determine whether the image contains abnormalities. Levy et al [1] have shown that ConvNets can be used to classify pre-identified ROIs, those techniques can be combined with the techniques demonstrated here to create a complete end-to-end system for classifying mammograms. 
 
 ## References
 [1]	D. Levy, A. Jain, Breast Mass Classification from Mammograms using Deep Convolutional Neural Networks, arXiv:1612.00542v1, 2016

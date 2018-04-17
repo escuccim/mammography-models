@@ -10,8 +10,8 @@ from tensorboard import summary as summary_lib
 
 # If number of epochs has been passed in use that, otherwise default to 50
 parser = argparse.ArgumentParser()
-parser.add_argument("-e", "--epochs", help="number of epochs to train", default=35, type=int)
-parser.add_argument("-d", "--data", help="which dataset to use", default=6, type=int)
+parser.add_argument("-e", "--epochs", help="number of epochs to train", default=50, type=int)
+parser.add_argument("-d", "--data", help="which dataset to use", default=5, type=int)
 parser.add_argument("-m", "--model", help="model to initialize with", default=None)
 parser.add_argument("-l", "--label", help="how to classify data", default="normal")
 parser.add_argument("-a", "--action", help="action to perform", default="train")
@@ -69,7 +69,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.0.0.29f"
+model_name = "model_s1.0.0.28n"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -692,8 +692,13 @@ use_gpu = False  # whether or not to use the GPU
 print_metrics = True  # whether to print or plot metrics, if False a plot will be created and updated every epoch
 
 # Placeholders for metrics
-valid_acc_values = []
+train_cost_values = []
+train_lr_values = []
 train_acc_values = []
+train_recall_values = []
+valid_acc_values = []
+valid_cost_values = []
+valid_recall_values = []
 
 config = tf.ConfigProto()
 

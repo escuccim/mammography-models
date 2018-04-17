@@ -27,17 +27,18 @@ action = args.action
 download_data(what=dataset)
 
 ## config
-batch_size = 32
+batch_size = 64
 
 train_files, total_records = get_training_data(what=dataset)
 
 ## Hyperparameters
+# Small epsilon value for the BN transform
 epsilon = 1e-8
 
 # learning rate
 epochs_per_decay = 5
 starting_rate = 0.001
-decay_factor = 0.80
+decay_factor = 0.85
 staircase = True
 
 # learning rate decay variables
@@ -63,13 +64,12 @@ elif how == "mass":
 elif how == "benign":
     num_classes = 3
 
-print("Number of classes:", num_classes)
-
 ## Build the graph
 graph = tf.Graph()
 
-model_name = "model_s1.0.0.29g"
-## Change Log
+# whether to retrain model from scratch or use saved model
+init = True
+model_name = "model_s1.0.0.29f"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -91,7 +91,7 @@ model_name = "model_s1.0.0.29g"
 # 1.0.0.27 - updates to training code and metrics
 # 1.0.0.28 - using weighted x-entropy to improve recall
 # 1.0.0.29 - updated code to work training to classify for multiple classes
-# 1.0.0.29f - putting weighted x-entropy back
+# 1.0.0.29f - using weighted cross entropy as recall was 0 with normal cross entropy
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -462,6 +462,9 @@ with graph.as_default():
         # apply relu
         conv5_bn_relu = tf.nn.relu(conv5, name='relu5')
 
+        #if dropout:
+        #    conv5_bn_relu = tf.layers.dropout(conv5_bn_relu, rate=convdropout_rate, seed=114, training=training)
+
     # Max pooling layer 4
     with tf.name_scope('pool5') as scope:
         pool5 = tf.layers.max_pooling2d(
@@ -601,9 +604,9 @@ with graph.as_default():
 
     # calculate recall
     if num_classes > 2:
-        # collapse the predictions down to normal or not for our pr metrics
+        # collapse the predictions down to normal or not
         zero = tf.constant(0, dtype=tf.int64)
-        collapsed_predictions = tf.cast(tf.greater(predictions, zero), tf.int64)
+        collapsed_predictions = tf.greater(predictions, zero)
         collapsed_labels = tf.greater(y, zero)
 
         recall, rec_op = tf.metrics.recall(labels=collapsed_labels, predictions=collapsed_predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="recall")
@@ -822,7 +825,7 @@ with tf.Session(graph=graph, config=config) as sess:
             batch_cv_loss = []
             batch_cv_recall = []
 
-            # initialize the local variables so we have metrics only on the evaluation
+        # initialize the local variables so we have metrics only on the evaluation
             sess.run(tf.local_variables_initializer())
 
             print("Evaluating model...")
