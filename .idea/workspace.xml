@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="98c4e5b0-4f90-4540-b87f-9bd6d2ddc583" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/candidate_1.0.0.28.py" afterPath="$PROJECT_DIR$/candidate_1.0.0.28.py" />
       <change beforePath="$PROJECT_DIR$/candidate_1.0.1.44a.py" afterPath="$PROJECT_DIR$/candidate_1.0.1.44a.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -13,11 +14,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="600">
-      <file leaf-file-name="candidate_1.0.0.28.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="candidate_1.0.0.28.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/candidate_1.0.0.28.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-6072">
-              <caret line="28" column="0" lean-forward="true" selection-start-line="28" selection-start-column="0" selection-end-line="66" selection-end-column="40" />
+            <state relative-caret-position="495">
+              <caret line="71" column="30" lean-forward="false" selection-start-line="71" selection-start-column="30" selection-end-line="71" selection-end-column="30" />
               <folding />
             </state>
           </provider>
@@ -45,11 +46,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="candidate_1.0.1.44a.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="candidate_1.0.1.44a.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/candidate_1.0.1.44a.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="759">
-              <caret line="1054" column="46" lean-forward="false" selection-start-line="1054" selection-start-column="46" selection-end-line="1054" selection-end-column="46" />
+            <state relative-caret-position="25377">
+              <caret line="775" column="0" lean-forward="true" selection-start-line="775" selection-start-column="0" selection-end-line="775" selection-end-column="0" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -150,10 +151,10 @@
         <option value="$PROJECT_DIR$/candidate_1.0.1.39d.py" />
         <option value="$PROJECT_DIR$/candidate_1.0.1.39f.py" />
         <option value="$PROJECT_DIR$/candidate_1.0.1.42a.py" />
-        <option value="$PROJECT_DIR$/candidate_1.0.0.28.py" />
         <option value="$PROJECT_DIR$/candidate_1.2.0.01.py" />
         <option value="$PROJECT_DIR$/training_utils.py" />
         <option value="$PROJECT_DIR$/candidate_1.0.1.44a.py" />
+        <option value="$PROJECT_DIR$/candidate_1.0.0.28.py" />
       </list>
     </option>
   </component>
@@ -607,14 +608,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/candidate_1.0.0.28.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-6072">
-          <caret line="28" column="0" lean-forward="true" selection-start-line="28" selection-start-column="0" selection-end-line="66" selection-end-column="40" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/training_utils.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="132">
@@ -627,11 +620,19 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/candidate_1.0.1.44a.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="759">
-          <caret line="1054" column="46" lean-forward="false" selection-start-line="1054" selection-start-column="46" selection-end-line="1054" selection-end-column="46" />
+        <state relative-caret-position="25377">
+          <caret line="775" column="0" lean-forward="true" selection-start-line="775" selection-start-column="0" selection-end-line="775" selection-end-column="0" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/candidate_1.0.0.28.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="495">
+          <caret line="71" column="30" lean-forward="false" selection-start-line="71" selection-start-column="30" selection-end-line="71" selection-end-column="30" />
+          <folding />
         </state>
       </provider>
     </entry>

@@ -1032,7 +1032,7 @@ with tf.Session(graph=graph, config=config) as sess:
     test_predictions = []
     ground_truth = []
     for X_batch, y_batch in get_batches(X_te, y_te, batch_size, distort=False):
-        yhat, test_acc_value, test_recall_value = sess.run([predictions, accuracy, rec_op], feed_dict=
+        _, yhat, test_acc_value, test_recall_value = sess.run([extra_update_ops, predictions, accuracy, rec_op], feed_dict=
         {
             X: X_batch,
             y: y_batch,
@@ -1044,6 +1044,8 @@ with tf.Session(graph=graph, config=config) as sess:
         test_predictions.append(yhat)
         ground_truth.append(y_batch)
 
+    print("Evaluating on test data")
+
     # print the results
     print("Mean Test Accuracy:", np.mean(test_accuracy))
     print("Mean Test Recall:", np.mean(test_recall))
@@ -1053,6 +1055,7 @@ with tf.Session(graph=graph, config=config) as sess:
     np.save(os.path.join("data", "truth_" + model_name + ".npy"), ground_truth)
 
     sess.run(tf.local_variables_initializer())
+
     ## evaluate on MIAS  data
     X_te, y_te = load_validation_data(how=how, data="mias", which=dataset)
 
@@ -1061,7 +1064,7 @@ with tf.Session(graph=graph, config=config) as sess:
     mias_test_predictions = []
     mias_ground_truth = []
     for X_batch, y_batch in get_batches(X_te, y_te, batch_size, distort=False):
-        yhat, test_acc_value, test_recall_value = sess.run([predictions, accuracy, rec_op], feed_dict=
+        _, yhat, test_acc_value, test_recall_value = sess.run([extra_update_ops, predictions, accuracy, rec_op], feed_dict=
         {
             X: X_batch,
             y: y_batch,
