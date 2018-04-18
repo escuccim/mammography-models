@@ -382,7 +382,7 @@ def get_training_data(what=5):
         train_path_14 = os.path.join("data", "training8_4.tfrecords")
 
         train_files = [train_path_10, train_path_11, train_path_12, train_path_13, train_path_14]
-        total_records = 44160
+        total_records = 40559
 
     else:
         train_path_0 = os.path.join("data", "training_0.tfrecords")

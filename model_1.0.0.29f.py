@@ -27,7 +27,7 @@ action = args.action
 download_data(what=dataset)
 
 ## config
-batch_size = 64
+batch_size = 32
 
 train_files, total_records = get_training_data(what=dataset)
 
@@ -64,12 +64,14 @@ elif how == "mass":
 elif how == "benign":
     num_classes = 3
 
+print("Number of classes:", num_classes)
+
 ## Build the graph
 graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.0.0.29f"
+model_name = "model_s1.0.0.29f.5"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg

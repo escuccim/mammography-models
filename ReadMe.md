@@ -26,7 +26,7 @@ The DDSM and CBIS-DDSM datasets are relatively small, so the images were pre-pro
 The CBIS-DDSM scans were of relatively large size, with a mean height of 5295 pixels and a mean width of 3131 pixels. Masks highlighting the ROIs were provided. In order to create usable images from the full-sized scans the ROIs were extracted using the masks and sized down to 299x299. Each ROI was extracted in multiple ways:
 1.	The ROI was extracted at 598x598 at its original size.
 2.	The ROI was zoomed to 598x598, with margins to provide context.
-3.	If the ROI was too large to fit in a 598x598 image it was extracted in 598x598 tiles with a stride of 299.
+3.	If the ROI had the size of one dimension more than 1.5 times the other dimension it was extracted as two tiles centered in the center of each half of the ROI along it's largest dimension.
 
 The 598x598 images were then resized to 299x299. In order to increase the size of the dataset data augmentation was used, including randomly positioning the ROI within the image, random horizontal flipping, random vertical flipping and random rotation. The ROIs were extracted using two systems of margins which will be detailed below.
 
@@ -37,7 +37,7 @@ The analysis of the UCI data indicated that the edges of an abnormality were imp
 
 The first dataset created (referred to as Dataset 5) was a smaller dataset, consisting of 39,316 images. This dataset was created using a minimum fixed padding around the ROI during the pre-processing stage. Each ROI was extracted with a margin of between 30 pixels and 50 pixels from the edge of the image, with the ROI placed randomly within the bounds.
 
-Another, larger, dataset was created (referred to as Dataset 6), consisting of 62,764 training images. This dataset was created following the standard suggested by [1] of extracting each ROI in an area double its size to provide context. The size of this dataset was increased by including more data augmentation such as random zooms and cropping.
+Several other datasets were created using different data augmentation methods such as tiling the ROIs in the same fashion the normal images were tiled. Most of these resulted in terrible performance so were abandoned. Dataset 8, consisting of 40,559 training images, attempted to find a balance between increasing the size of the dataset and ensuring that the images contained useful information.
 
 ### Data Balance
 Only about 10% of mammograms are abnormal, in order to maximize recall we weighted our training data more heavily towards abnormal scan, with a target of 85% normal. The data was split between training and test data using the existing divisions of the CBIS-DDSM dataset in order to prevent overlap. The total data was split into training, validation and test at percentages of 80%, 10% and 10%
@@ -64,11 +64,11 @@ The models were constructed using TensorFlow and metrics were logged to TensorBo
 The best performing architecture will be detailed below.
 
 ### Training
-As training on Dataset 6 was a very slow process, for model selection phase models were trained on Dataset 5 through 50 epochs with binary labels. Accuracy, precision, recall and f1 score were used to evaluate the models. 
+For the model selection phase models were trained on Dataset 5 through 50 epochs with binary labels. Accuracy, precision, recall and f1 score were used to evaluate the models. At this time Dataset 8 had not yet been created. 
 
-Once a model performed satisfactorily on Dataset 5 it was then retrained on Dataset 6 through 20 epochs, with the previous convolutional weights reused to speed up the training process. If the model performed well on Dataset 6, the model was then retrained from scratch to classify into all five classes, on the assumption that this would allow the convolutional layers to extract the most important features.
+The models which performed well on Dataset 5 were retrained from scratch on Dataset 8 classifying to all 5 categories, on the assumption that this would cause the convolutional filters to extract the most important features.
 
-Once the models had been trained on Dataset 6 with all classes, the convolutional layers were frozen and the fully connected layers were then retrained for the normal/abnormal binary classification.
+Once the models had been trained on Dataset 8 with all classes, the convolutional layers were frozen and the fully connected layers were then retrained for the normal/abnormal binary classification.
 
 We had considered using transfer learning from VGG or Inception, but decided that the features of the ImageNet data were different enough from those of radiological scans that it made more sense to learn the features from scratch on this dataset. However, the use of transfer learning between models greatly sped up the training process saving weeks of training time.
 
