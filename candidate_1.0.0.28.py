@@ -690,37 +690,37 @@ print_metrics = True  # whether to print or plot metrics, if False a plot will b
 
 # Initialize metrics or load them from disk if they exist
 if os.path.exists(os.path.join("data", model_name + "train_acc.npy")):
-    train_acc_values = np.load(os.path.join("data", model_name + "train_acc.npy"))
+    train_acc_values = np.load(os.path.join("data", model_name + "train_acc.npy")).tolist()
 else:
     train_acc_values = []
 
 if os.path.exists(os.path.join("data", model_name + "train_loss.npy")):
-    train_cost_values = np.load(os.path.join("data", model_name + "train_loss.npy"))
+    train_cost_values = np.load(os.path.join("data", model_name + "train_loss.npy")).tolist()
 else:
     train_cost_values = []
 
 if os.path.exists(os.path.join("data", model_name + "train_lr.npy")):
-    train_lr_values = np.load(os.path.join("data", model_name + "train_lr.npy"))
+    train_lr_values = np.load(os.path.join("data", model_name + "train_lr.npy")).tolist()
 else:
     train_lr_values = []
 
 if os.path.exists(os.path.join("data", model_name + "train_recall.npy")):
-    train_recall_values = np.load(os.path.join("data", model_name + "train_recall.npy"))
+    train_recall_values = np.load(os.path.join("data", model_name + "train_recall.npy")).tolist()
 else:
     train_recall_values = []
 
 if os.path.exists(os.path.join("data", model_name + "cv_acc.npy")):
-    valid_acc_values = np.load(os.path.join("data", model_name + "cv_acc.npy"))
+    valid_acc_values = np.load(os.path.join("data", model_name + "cv_acc.npy")).tolist()
 else:
     valid_acc_values = []
 
 if os.path.exists(os.path.join("data", model_name + "cv_loss.npy")):
-    valid_cost_values = np.load(os.path.join("data", model_name + "cv_loss.npy"))
+    valid_cost_values = np.load(os.path.join("data", model_name + "cv_loss.npy")).tolist()
 else:
     valid_cost_values = []
 
 if os.path.exists(os.path.join("data", model_name + "cv_recall.npy")):
-    valid_recall_values = np.load(os.path.join("data", model_name + "cv_recall.npy"))
+    valid_recall_values = np.load(os.path.join("data", model_name + "cv_recall.npy")).tolist()
 else:
     valid_recall_values = []
 
