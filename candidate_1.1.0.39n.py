@@ -26,7 +26,7 @@ action = args.action
 # download the data
 download_data(what=dataset)
 
-batch_size = 64
+batch_size = 32
 
 train_files, total_records = get_training_data(what=dataset)
 
@@ -70,7 +70,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.1.0.41b"
+model_name = "model_s1.1.0.42b"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -522,7 +522,7 @@ with tf.Session(graph=graph, config=config) as sess:
             sess.run(tf.global_variables_initializer())
 
             # create the initializer function to initialize the weights
-            init_fn = load_weights(init_model, exclude=["conv5", "bn5", "fc1", "bn_fc1", "bn_fc2", "fc3", "bn_fc3", "fc2", "fc_logits", "global_step"])
+            init_fn = load_weights(init_model, exclude=["conv5", "bn5", "fc1", "fc1_bb", "fc2_bn", "fc3", "fc3_bn", "fc2", "fc_logits", "global_step"])
 
             # run the initializer
             init_fn(sess)
