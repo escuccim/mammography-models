@@ -937,6 +937,7 @@ with tf.Session(graph=graph, config=config) as sess:
         coord.join(threads)
 
     sess.run(tf.local_variables_initializer())
+    print("Evaluating on test data")
 
     # evaluate the test data
     X_te, y_te = load_validation_data(how=how, data="test", which=dataset)
