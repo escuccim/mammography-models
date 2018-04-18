@@ -11,7 +11,7 @@ from tensorboard import summary as summary_lib
 # If number of epochs has been passed in use that, otherwise default to 50
 parser = argparse.ArgumentParser()
 parser.add_argument("-e", "--epochs", help="number of epochs to train", default=35, type=int)
-parser.add_argument("-d", "--data", help="which dataset to use", default=6, type=int)
+parser.add_argument("-d", "--data", help="which dataset to use", default=5, type=int)
 parser.add_argument("-m", "--model", help="model to initialize with", default=None)
 parser.add_argument("-l", "--label", help="how to classify data", default="normal")
 parser.add_argument("-a", "--action", help="action to perform", default="train")
@@ -349,12 +349,12 @@ with graph.as_default():
     # get the fully connected variables so we can only train them when retraining the network
     fc_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "fc")
 
-    with tf.variable_scope('conv1', reuse=True):
+    with tf.variable_scope('conv1.1', reuse=True):
         conv_kernels1 = tf.get_variable('kernel')
         kernel_transposed = tf.transpose(conv_kernels1, [3, 0, 1, 2])
 
     with tf.variable_scope('visualization'):
-        tf.summary.image('conv1/filters', kernel_transposed, max_outputs=32, collections=["kernels"])
+        tf.summary.image('conv1.1/filters', kernel_transposed, max_outputs=32, collections=["kernels"])
 
     ## Loss function options
     # Regular mean cross entropy
