@@ -70,7 +70,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.1.0.39n"
+model_name = "model_s1.1.0.40n"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -276,7 +276,7 @@ with graph.as_default():
     with tf.name_scope('fc1') as scope:
         fc1 = tf.layers.dense(
             flat_output,
-            1024,
+            2048,
             activation=None,
             kernel_initializer=tf.variance_scaling_initializer(scale=2, seed=117),
             bias_initializer=tf.zeros_initializer(),
@@ -296,7 +296,7 @@ with graph.as_default():
             moving_mean_initializer=tf.zeros_initializer(),
             moving_variance_initializer=tf.ones_initializer(),
             training=training,
-            name='bn_fc1'
+            name='fc1_bn'
         )
 
         fc1_relu = tf.nn.relu(bn_fc1, name='fc1_relu')
@@ -328,7 +328,7 @@ with graph.as_default():
             moving_mean_initializer=tf.zeros_initializer(),
             moving_variance_initializer=tf.ones_initializer(),
             training=training,
-            name='bn_fc2'
+            name='fc2_bn'
         )
 
         fc2_relu = tf.nn.relu(bn_fc2, name='fc2_relu')
@@ -336,9 +336,41 @@ with graph.as_default():
         # dropout
         fc2_relu = tf.layers.dropout(fc2_relu, rate=fcdropout_rate, seed=120, training=training)
 
+    # Fully connected layer 3
+    with tf.name_scope('fc3') as scope:
+        fc3 = tf.layers.dense(
+            fc2_relu,  # input
+            1024,  # 1024 hidden units
+            activation=None,  # None
+            kernel_initializer=tf.variance_scaling_initializer(scale=2, seed=11725),
+            bias_initializer=tf.zeros_initializer(),
+            kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamF),
+            name="fc3"
+        )
+
+        fc3 = tf.layers.batch_normalization(
+            fc3,
+            axis=-1,
+            momentum=0.9,
+            epsilon=epsilon,
+            center=True,
+            scale=True,
+            beta_initializer=tf.zeros_initializer(),
+            gamma_initializer=tf.ones_initializer(),
+            moving_mean_initializer=tf.zeros_initializer(),
+            moving_variance_initializer=tf.ones_initializer(),
+            training=training,
+            name='fc3_bn'
+        )
+
+        fc3 = tf.nn.relu(fc3, name='fc3_relu')
+
+        # dropout
+        fc3 = tf.layers.dropout(fc3, rate=fcdropout_rate, seed=19740, training=training)
+
     # Output layer
     logits = tf.layers.dense(
-        fc2_relu,
+        fc3,
         num_classes,  # One output unit per category
         activation=None,  # No activation function
         kernel_initializer=tf.variance_scaling_initializer(scale=1, seed=121),
