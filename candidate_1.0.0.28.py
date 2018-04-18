@@ -11,7 +11,7 @@ from tensorboard import summary as summary_lib
 # If number of epochs has been passed in use that, otherwise default to 50
 parser = argparse.ArgumentParser()
 parser.add_argument("-e", "--epochs", help="number of epochs to train", default=35, type=int)
-parser.add_argument("-d", "--data", help="which dataset to use", default=6, type=int)
+parser.add_argument("-d", "--data", help="which dataset to use", default=5, type=int)
 parser.add_argument("-m", "--model", help="model to initialize with", default=None)
 parser.add_argument("-l", "--label", help="how to classify data", default="normal")
 parser.add_argument("-a", "--action", help="action to perform", default="train")
@@ -688,14 +688,41 @@ checkpoint_every = 1  # how often to save model in epochs
 use_gpu = False  # whether or not to use the GPU
 print_metrics = True  # whether to print or plot metrics, if False a plot will be created and updated every epoch
 
-# Placeholders for metrics
-train_cost_values = []
-train_lr_values = []
-train_acc_values = []
-train_recall_values = []
-valid_acc_values = []
-valid_cost_values = []
-valid_recall_values = []
+# Initialize metrics or load them from disk if they exist
+if os.path.exists(os.path.join("data", model_name + "train_acc.npy")):
+    train_acc_values = np.load(os.path.join("data", model_name + "train_acc.npy"))
+else:
+    train_acc_values = []
+
+if os.path.exists(os.path.join("data", model_name + "train_loss.npy")):
+    train_cost_values = np.load(os.path.join("data", model_name + "train_loss.npy"))
+else:
+    train_cost_values = []
+
+if os.path.exists(os.path.join("data", model_name + "train_lr.npy")):
+    train_lr_values = np.load(os.path.join("data", model_name + "train_lr.npy"))
+else:
+    train_lr_values = []
+
+if os.path.exists(os.path.join("data", model_name + "train_recall.npy")):
+    train_recall_values = np.load(os.path.join("data", model_name + "train_recall.npy"))
+else:
+    train_recall_values = []
+
+if os.path.exists(os.path.join("data", model_name + "cv_acc.npy")):
+    valid_acc_values = np.load(os.path.join("data", model_name + "cv_acc.npy"))
+else:
+    valid_acc_values = []
+
+if os.path.exists(os.path.join("data", model_name + "cv_loss.npy")):
+    valid_cost_values = np.load(os.path.join("data", model_name + "cv_loss.npy"))
+else:
+    valid_cost_values = []
+
+if os.path.exists(os.path.join("data", model_name + "cv_recall.npy")):
+    valid_recall_values = np.load(os.path.join("data", model_name + "cv_recall.npy"))
+else:
+    valid_recall_values = []
 
 config = tf.ConfigProto()
 

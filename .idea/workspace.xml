@@ -2,8 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="98c4e5b0-4f90-4540-b87f-9bd6d2ddc583" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change beforePath="$PROJECT_DIR$/ReadMe.md" afterPath="$PROJECT_DIR$/ReadMe.md" />
       <change beforePath="$PROJECT_DIR$/candidate_1.1.0.39n.py" afterPath="$PROJECT_DIR$/candidate_1.1.0.39n.py" />
+      <change beforePath="$PROJECT_DIR$/model_1.0.0.29f.py" afterPath="$PROJECT_DIR$/model_1.0.0.29f.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -17,8 +18,8 @@
       <file leaf-file-name="candidate_1.0.0.28.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/candidate_1.0.0.28.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1221">
-              <caret line="25" column="19" lean-forward="true" selection-start-line="25" selection-start-column="19" selection-end-line="25" selection-end-column="19" />
+            <state relative-caret-position="264">
+              <caret line="68" column="0" lean-forward="true" selection-start-line="68" selection-start-column="0" selection-end-line="68" selection-end-column="18" />
               <folding />
             </state>
           </provider>
@@ -27,8 +28,8 @@
       <file leaf-file-name="model_1.0.0.29f.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/model_1.0.0.29f.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2145">
-              <caret line="73" column="32" lean-forward="false" selection-start-line="73" selection-start-column="32" selection-end-line="73" selection-end-column="32" />
+            <state relative-caret-position="825">
+              <caret line="654" column="30" lean-forward="false" selection-start-line="654" selection-start-column="30" selection-end-line="654" selection-end-column="30" />
               <folding />
             </state>
           </provider>
@@ -38,8 +39,8 @@
         <entry file="file://$PROJECT_DIR$/ReadMe.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="1138">
-                <caret line="86" column="141" lean-forward="true" selection-start-line="86" selection-start-column="141" selection-end-line="86" selection-end-column="141" />
+              <first_editor relative-caret-position="845">
+                <caret line="116" column="487" lean-forward="false" selection-start-line="116" selection-start-column="487" selection-end-line="116" selection-end-column="487" />
                 <folding />
               </first_editor>
               <second_editor />
@@ -69,7 +70,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="candidate_1.0.1.44a.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="candidate_1.0.1.44a.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/candidate_1.0.1.44a.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="792">
@@ -81,21 +82,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="model_1.0.1.39n.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/model_1.0.1.39n.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="29552">
-              <caret line="967" column="28" lean-forward="false" selection-start-line="967" selection-start-column="28" selection-end-line="967" selection-end-column="28" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="candidate_1.1.0.39n.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="candidate_1.1.0.39n.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/candidate_1.1.0.39n.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="990">
-              <caret line="102" column="31" lean-forward="false" selection-start-line="102" selection-start-column="31" selection-end-line="102" selection-end-column="31" />
+            <state relative-caret-position="891">
+              <caret line="524" column="28" lean-forward="false" selection-start-line="524" selection-start-column="28" selection-end-line="524" selection-end-column="28" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -185,11 +176,11 @@
         <option value="$PROJECT_DIR$/candidate_1.0.1.42a.py" />
         <option value="$PROJECT_DIR$/candidate_1.2.0.01.py" />
         <option value="$PROJECT_DIR$/model_1.0.0.28.py" />
-        <option value="$PROJECT_DIR$/candidate_1.0.0.28.py" />
-        <option value="$PROJECT_DIR$/model_1.0.0.29f.py" />
-        <option value="$PROJECT_DIR$/ReadMe.md" />
         <option value="$PROJECT_DIR$/candidate_1.0.1.44a.py" />
         <option value="$PROJECT_DIR$/training_utils.py" />
+        <option value="$PROJECT_DIR$/candidate_1.0.0.28.py" />
+        <option value="$PROJECT_DIR$/ReadMe.md" />
+        <option value="$PROJECT_DIR$/model_1.0.0.29f.py" />
         <option value="$PROJECT_DIR$/candidate_1.1.0.39n.py" />
       </list>
     </option>
@@ -615,51 +606,6 @@
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/candidate_1.0.0.28.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1221">
-          <caret line="25" column="19" lean-forward="true" selection-start-line="25" selection-start-column="19" selection-end-line="25" selection-end-column="19" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/model_1.0.0.29f.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2145">
-          <caret line="73" column="32" lean-forward="false" selection-start-line="73" selection-start-column="32" selection-end-line="73" selection-end-column="32" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ReadMe.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="1138">
-            <caret line="86" column="141" lean-forward="true" selection-start-line="86" selection-start-column="141" selection-end-line="86" selection-end-column="141" />
-            <folding />
-          </first_editor>
-          <second_editor />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/candidate_1.0.1.44a.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="792">
-          <caret line="24" column="20" lean-forward="true" selection-start-line="24" selection-start-column="20" selection-end-line="24" selection-end-column="20" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/model_1.0.1.39n.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="29552">
-          <caret line="967" column="28" lean-forward="false" selection-start-line="967" selection-start-column="28" selection-end-line="967" selection-end-column="28" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/training_utils.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1254">
@@ -670,10 +616,55 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/candidate_1.0.0.28.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="264">
+          <caret line="68" column="0" lean-forward="true" selection-start-line="68" selection-start-column="0" selection-end-line="68" selection-end-column="18" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ReadMe.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="845">
+            <caret line="116" column="487" lean-forward="false" selection-start-line="116" selection-start-column="487" selection-end-line="116" selection-end-column="487" />
+            <folding />
+          </first_editor>
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/model_1.0.0.29f.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="825">
+          <caret line="654" column="30" lean-forward="false" selection-start-line="654" selection-start-column="30" selection-end-line="654" selection-end-column="30" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/candidate_1.1.0.39n.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="990">
-          <caret line="102" column="31" lean-forward="false" selection-start-line="102" selection-start-column="31" selection-end-line="102" selection-end-column="31" />
+        <state relative-caret-position="891">
+          <caret line="524" column="28" lean-forward="false" selection-start-line="524" selection-start-column="28" selection-end-line="524" selection-end-column="28" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/model_1.0.1.39n.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-247">
+          <caret line="136" column="84" lean-forward="false" selection-start-line="136" selection-start-column="81" selection-end-line="136" selection-end-column="84" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/candidate_1.0.1.44a.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="792">
+          <caret line="24" column="20" lean-forward="true" selection-start-line="24" selection-start-column="20" selection-end-line="24" selection-end-column="20" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>

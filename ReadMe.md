@@ -114,7 +114,7 @@ This could be very useful for radiologists, allowing them to screen out scans wh
 ## Conclusion
 We have demonstrated that Convolutional Neural Networks can be trained to determine whether a section of a mammogram contains an abnormality with recall of 95%, substantially above human performance. Adjusting the decision threshold would further improve the recall. These methods could be used to pre-screen mammograms allowing radiologists to focus on scans which are likely to contain abnormalities.
 
-Future work would include creating a system which would take a full mammogram as input and analyse it, possibly with a sliding window, to determine whether the image contains abnormalities. Levy et al [1] have shown that ConvNets can be used to classify pre-identified ROIs, those techniques can be combined with the techniques demonstrated here to create a complete end-to-end system for classifying mammograms. 
+Future work would include creating a system which would take a full mammogram as input and analyse it, possibly with a sliding window, to determine whether the image contains abnormalities. Levy et al [1] have shown that ConvNets can be used to classify pre-identified ROIs, those techniques can be combined with the techniques demonstrated here to create a complete end-to-end system for classifying mammograms. Another option would be to use algorithms such as YOLO [20] or R-CNN [21] on an entire scan to attempt to identify and locate potential abnormalities. 
 
 ## References
 [1]	D. Levy, A. Jain, Breast Mass Classification from Mammograms using Deep Convolutional Neural Networks, arXiv:1612.00542v1, 2016
@@ -155,4 +155,6 @@ Future work would include creating a system which would take a full mammogram as
 
 [19]	K. He, X. Zhang, S. Ren, J. Sun, Deep Residual Learning for Image Recognition, arXiv:1512.03385, 2015
 
+[20]  J. Redmon, S. Divvala, R. Girshick, A. Farhadi, You Only Look One: Unified, Real-Time Object Detection, arXiv:1506.02640, 2015
 
+[21] R. Girshick, J. Donahue, T. Darrell, J. Malik, Rich feature hierarchies for accurate object detection and semantic segmentation, arXiv:1311.2524, 2013

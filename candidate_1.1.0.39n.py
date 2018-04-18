@@ -128,7 +128,7 @@ with graph.as_default():
         X = tf.cast(X, dtype=tf.float32)
 
     # Convolutional layer 1
-    conv1 = _conv2d_batch_norm(X, 32, kernel_size=(3,3), stride=(2,2), training=training, epsilon=1e-8, padding="VALID", seed=None, lambd=lamC, name="1.1")
+    conv1 = _conv2d_batch_norm(X, 32, kernel_size=(3,3), stride=(2,2), training=training, epsilon=1e-8, padding="VALID", seed=100, lambd=lamC, name="1.1")
 
     conv1 = _conv2d_batch_norm(conv1, 32, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=None, lambd=lamC, name="1.2")
 
@@ -488,14 +488,41 @@ checkpoint_every = 1  # how often to save model in epochs
 use_gpu = False  # whether or not to use the GPU
 print_metrics = True  # whether to print or plot metrics, if False a plot will be created and updated every epoch
 
-# Placeholders for metrics
-train_cost_values = []
-train_lr_values = []
-train_acc_values = []
-train_recall_values = []
-valid_acc_values = []
-valid_cost_values = []
-valid_recall_values = []
+# Initialize metrics or load them from disk if they exist
+if os.path.exists(os.path.join("data", model_name + "train_acc.npy")):
+    train_acc_values = np.load(os.path.join("data", model_name + "train_acc.npy"))
+else:
+    train_acc_values = []
+
+if os.path.exists(os.path.join("data", model_name + "train_loss.npy")):
+    train_cost_values = np.load(os.path.join("data", model_name + "train_loss.npy"))
+else:
+    train_cost_values = []
+
+if os.path.exists(os.path.join("data", model_name + "train_lr.npy")):
+    train_lr_values = np.load(os.path.join("data", model_name + "train_lr.npy"))
+else:
+    train_lr_values = []
+
+if os.path.exists(os.path.join("data", model_name + "train_recall.npy")):
+    train_recall_values = np.load(os.path.join("data", model_name + "train_recall.npy"))
+else:
+    train_recall_values = []
+
+if os.path.exists(os.path.join("data", model_name + "cv_acc.npy")):
+    valid_acc_values = np.load(os.path.join("data", model_name + "cv_acc.npy"))
+else:
+    valid_acc_values = []
+
+if os.path.exists(os.path.join("data", model_name + "cv_loss.npy")):
+    valid_cost_values = np.load(os.path.join("data", model_name + "cv_loss.npy"))
+else:
+    valid_cost_values = []
+
+if os.path.exists(os.path.join("data", model_name + "cv_recall.npy")):
+    valid_recall_values = np.load(os.path.join("data", model_name + "cv_recall.npy"))
+else:
+    valid_recall_values = []
 
 config = tf.ConfigProto()
 
