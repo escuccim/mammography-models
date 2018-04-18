@@ -100,6 +100,7 @@ model_name = "model_s1.1.0.42b"
 # 1.0.1.37 - added extra conv in layer 4
 # 1.0.1.38 - reduced number of filters to try to speed up training
 # 1.1.0.39 - fixed some problems that made first branch useless
+# 1.1.0.42 - reduced batch size
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
