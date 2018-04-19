@@ -606,7 +606,7 @@ with graph.as_default():
     truth_is_abnormal = tf.cast(tf.greater(y, 0), tf.float32)
 
     # multiple the cross entropy for the normal logit by 4
-    normal_xe = tf.reduce_mean(tf.multiply(2, tf.nn.softmax_cross_entropy_with_logits_v2(labels=one_hot_labels[:, 0], logits=logits[:, 0], name="normal_crossentropy")))
+    normal_xe = tf.reduce_mean(tf.multiply(2.0, tf.nn.softmax_cross_entropy_with_logits_v2(labels=one_hot_labels[:, 0], logits=logits[:, 0], name="normal_crossentropy")))
 
     # if the example is abnormal use the rest of the logits
     abnormal_xe = tf.reduce_mean(tf.multiply(truth_is_abnormal, tf.nn.softmax_cross_entropy_with_logits_v2(labels=one_hot_labels[:, 1:], logits=logits[:, 1:], name="abnormal_crossentropy")))
