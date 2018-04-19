@@ -50,9 +50,9 @@ lamF = 0.00250
 
 # use dropout
 dropout = True
-fcdropout_rate = 0.7
+fcdropout_rate = 0.6
 convdropout_rate = 0.01
-pooldropout_rate = 0.25
+pooldropout_rate = 0.20
 
 if how == "label":
     num_classes = 5

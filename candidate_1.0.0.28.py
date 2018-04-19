@@ -10,11 +10,12 @@ from tensorboard import summary as summary_lib
 
 # If number of epochs has been passed in use that, otherwise default to 50
 parser = argparse.ArgumentParser()
-parser.add_argument("-e", "--epochs", help="number of epochs to train", default=35, type=int)
+parser.add_argument("-e", "--epochs", help="number of epochs to train", default=30, type=int)
 parser.add_argument("-d", "--data", help="which dataset to use", default=5, type=int)
 parser.add_argument("-m", "--model", help="model to initialize with", default=None)
-parser.add_argument("-l", "--label", help="how to classify data", default="normal")
+parser.add_argument("-l", "--label", help="how to classify data", default="label")
 parser.add_argument("-a", "--action", help="action to perform", default="train")
+parser.add_argument("-t", "--threshold", help="decision threshold", default=0.5, type=int)
 args = parser.parse_args()
 
 epochs = args.epochs
@@ -22,6 +23,7 @@ dataset = args.data
 init_model = args.model
 how = args.label
 action = args.action
+threshold = args.threshold
 
 # download the data
 download_data(what=dataset)
@@ -35,7 +37,7 @@ train_files, total_records = get_training_data(what=dataset)
 epsilon = 1e-8
 
 # learning rate
-epochs_per_decay = 5
+epochs_per_decay = 10
 starting_rate = 0.001
 decay_factor = 0.80
 staircase = True
@@ -45,14 +47,14 @@ steps_per_epoch = int(total_records / batch_size)
 print("Steps per epoch:", steps_per_epoch)
 
 # lambdas
-lamC = 0.00010
-lamF = 0.00200
+lamC = 0.00001
+lamF = 0.00250
 
 # use dropout
 dropout = True
 fcdropout_rate = 0.5
-convdropout_rate = 0.01
-pooldropout_rate = 0.2
+convdropout_rate = 0.001
+pooldropout_rate = 0.1
 
 if how == "label":
     num_classes = 5
@@ -68,7 +70,7 @@ print("Number of classes:", num_classes)
 ## Build the graph
 graph = tf.Graph()
 
-model_name = "model_s1.0.0.29g.5"
+model_name = "model_s1.0.0.30b.8"
 ## Change Log
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
@@ -92,6 +94,8 @@ model_name = "model_s1.0.0.29g.5"
 # 1.0.0.28 - using weighted x-entropy to improve recall
 # 1.0.0.29 - updated code to work training to classify for multiple classes
 # 1.0.0.29f - putting weighted x-entropy back
+# 1.0.0.30b - changed some hyperparameters
+# 1.0.0.31l - added decision threshold to predictions
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -566,13 +570,36 @@ with graph.as_default():
     with tf.variable_scope('visualization'):
         tf.summary.image('conv1/filters', kernel_transposed, max_outputs=32, collections=["kernels"])
 
+    # get the probabilites for the classes
+    probabilities = tf.nn.softmax(logits, name="probabilities")
+
+    # the probability that the scan is abnormal is 1 - probability it is normal
+    abnormal_probability = (1 - probabilities[:, 0])
+
+    # the scan is abnormal if the probability is greater than the threshold
+    is_abnormal = tf.cast(tf.greater(abnormal_probability, threshold), tf.int64)
+
+    # Compute predictions from the probabilities - if the scan is normal we ignore the other probabilities
+    predictions = is_abnormal * tf.argmax(probabilities, axis=1, output_type=tf.int64)
+
+    # get the accuracy
+    accuracy, acc_op = tf.metrics.accuracy(
+        labels=y,
+        predictions=predictions,
+        updates_collections=tf.GraphKeys.UPDATE_OPS,
+        # metrics_collections=["summaries"],
+        name="accuracy",
+    )
+
     ## Loss function options
     # Regular mean cross entropy
     #mean_ce = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits))
 
     # Different weighting method
+    #mean_ce = tf.nn.weighted_cross_entropy_with_logits(targets=y, logits=logits, pos_weight=1.5)
+
     # This will weight the positive examples higher so as to improve recall
-    weights = tf.multiply(2, tf.cast(tf.greater(y, 0), tf.int32)) + 1
+    weights = tf.multiply(1, tf.cast(tf.greater(y, 0), tf.int32)) + 1
     mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=logits, weights=weights))
 
     # Add in l2 loss
@@ -583,21 +610,6 @@ with graph.as_default():
 
     # Minimize cross-entropy
     train_op = optimizer.minimize(loss, global_step=global_step)
-
-    # get the probabilites for the classes
-    probabilities = tf.nn.softmax(logits, name="probabilities")
-
-    # Compute predictions from the probabilities
-    predictions = tf.argmax(probabilities, axis=1, output_type=tf.int64)
-
-    # get the accuracy
-    accuracy, acc_op = tf.metrics.accuracy(
-        labels=y,
-        predictions=predictions,
-        updates_collections=tf.GraphKeys.UPDATE_OPS,
-        #metrics_collections=["summaries"],
-        name="accuracy",
-    )
 
     # calculate recall
     if num_classes > 2:
@@ -613,14 +625,6 @@ with graph.as_default():
         tf.summary.scalar('recall_1', recall, collections=["summaries"])
         tf.summary.scalar('precision_1', precision, collections=["summaries"])
         tf.summary.scalar('f1_score', f1_score, collections=["summaries"])
-
-        # additional metrics
-        # true_pos, _ = tf.metrics.true_positives(labels=collapsed_labels, predictions=collapsed_predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="true_positives")
-        # false_pos, _ = tf.metrics.false_positives(labels=collapsed_labels, predictions=collapsed_predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="false_positives")
-        # true_neg, _ = tf.metrics.true_negatives(labels=collapsed_labels, predictions=collapsed_predictions,
-        #                                         updates_collections=tf.GraphKeys.UPDATE_OPS, name="true_negatives")
-        # false_neg, _ = tf.metrics.false_negatives(labels=collapsed_labels, predictions=collapsed_predictions,
-        #                                           updates_collections=tf.GraphKeys.UPDATE_OPS, name="false_negatives")
 
         _, update_op = summary_lib.pr_curve_streaming_op(name='pr_curve',
                                                         predictions=(1 - probabilities[:, 0]),
@@ -638,12 +642,6 @@ with graph.as_default():
                                                          updates_collections=tf.GraphKeys.UPDATE_OPS,
                                                          num_thresholds=20)
 
-        # additional metrics
-        # true_pos, _ = tf.metrics.true_positives(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="true_positives")
-        # false_pos, _ = tf.metrics.false_positives(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="false_positives")
-        # true_neg, _ = tf.metrics.true_negatives(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="true_negatives")
-        # false_neg, _ = tf.metrics.false_negatives(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="false_negatives")
-
         tf.summary.scalar('recall_1', recall, collections=["summaries"])
         tf.summary.scalar('precision_1', precision, collections=["summaries"])
         tf.summary.scalar('f1_score', f1_score, collections=["summaries"])
@@ -653,11 +651,6 @@ with graph.as_default():
     tf.summary.scalar('cross_entropy', mean_ce, collections=["summaries"])
     tf.summary.scalar('learning_rate', learning_rate, collections=["summaries"])
 
-    # tf.summary.scalar('true_posit', true_pos, collections=["per_epoch"])
-    # tf.summary.scalar('true_negat', true_neg, collections=["per_epoch"])
-    # tf.summary.scalar('false_posit', false_pos, collections=["per_epoch"])
-    # tf.summary.scalar('false_negat', false_neg, collections=["per_epoch"])
-
     # add this so that the batch norm gets run
     extra_update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
 
@@ -665,7 +658,6 @@ with graph.as_default():
     merged = tf.summary.merge_all("summaries")
     kernel_summaries = tf.summary.merge_all("kernels")
     per_epoch_summaries = [[]]
-    # per_epoch_summaries = tf.summary.merge_all("per_epoch")
 
     print("Graph created...")
 
