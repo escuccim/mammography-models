@@ -570,13 +570,33 @@ with graph.as_default():
     with tf.variable_scope('visualization'):
         tf.summary.image('conv1/filters', kernel_transposed, max_outputs=32, collections=["kernels"])
 
+    # get the probabilites for the classes
+    probabilities = tf.nn.softmax(logits, name="probabilities")
+
+    # the probability that the scan is abnormal is 1 - probability it is normal
+    abnormal_probability = (1 - probabilities[:, 0])
+
+    # the scan is abnormal if the probability is greater than the threshold
+    is_abnormal = tf.cast(tf.greater(abnormal_probability, threshold), tf.int64)
+
+    # Compute predictions from the probabilities - if the scan is normal we ignore the other probabilities
+    predictions = is_abnormal * tf.argmax(probabilities, axis=1, output_type=tf.int64)
+
+    # get the accuracy
+    accuracy, acc_op = tf.metrics.accuracy(
+        labels=y,
+        predictions=predictions,
+        updates_collections=tf.GraphKeys.UPDATE_OPS,
+        # metrics_collections=["summaries"],
+        name="accuracy",
+    )
+
     ## Loss function options
     # Regular mean cross entropy
     #mean_ce = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits))
 
-    # Different weighting method
     # This will weight the positive examples higher so as to improve recall
-    weights = tf.multiply(1, tf.cast(tf.greater(y, 0), tf.int32)) + 1
+    weights = tf.multiply(2, tf.cast(tf.greater(y, 0), tf.int32)) + 1
     mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=logits, weights=weights))
 
     # Add in l2 loss
@@ -587,21 +607,6 @@ with graph.as_default():
 
     # Minimize cross-entropy
     train_op = optimizer.minimize(loss, global_step=global_step)
-
-    # get the probabilites for the classes
-    probabilities = tf.nn.softmax(logits, name="probabilities")
-
-    # Compute predictions from the probabilities
-    predictions = tf.argmax(probabilities, axis=1, output_type=tf.int64)
-
-    # get the accuracy
-    accuracy, acc_op = tf.metrics.accuracy(
-        labels=y,
-        predictions=predictions,
-        updates_collections=tf.GraphKeys.UPDATE_OPS,
-        # metrics_collections=["summaries"],
-        name="accuracy",
-    )
 
     # calculate recall
     if num_classes > 2:
