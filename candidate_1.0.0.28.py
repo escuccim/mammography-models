@@ -575,6 +575,12 @@ with graph.as_default():
     #mean_ce = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits))
 
     # Different weighting method
+    # this should weight abnormal classes higher than normal ones
+    # class_weight = tf.constant([[1, 2, 2, 2, 2]])
+    # weight_per_label = tf.transpose(tf.matmul(y, tf.transpose(class_weight)))
+    # xent = tf.mul(weight_per_label , tf.nn.softmax_cross_entropy_with_logits(logits, y, name="xent_raw"))
+    # mean_ce = tf.reduce_mean(xent)
+
     # This will weight the positive examples higher so as to improve recall
     weights = tf.multiply(1, tf.cast(tf.greater(y, 0), tf.int32)) + 1
     mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=logits, weights=weights))

@@ -580,7 +580,7 @@ with graph.as_default():
     is_abnormal = tf.cast(tf.greater(abnormal_probability, threshold), tf.int64)
 
     # Compute predictions from the probabilities - if the scan is normal we ignore the other probabilities
-    predictions = is_abnormal * tf.argmax(probabilities, axis=1, output_type=tf.int64)
+    predictions = is_abnormal * tf.argmax(probabilities[:,1:], axis=1, output_type=tf.int64)
 
     # get the accuracy
     accuracy, acc_op = tf.metrics.accuracy(
@@ -594,6 +594,13 @@ with graph.as_default():
     ## Loss function options
     # Regular mean cross entropy
     #mean_ce = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits))
+
+    # Different weighting method
+    # this should weight abnormal classes higher than normal ones
+    # class_weight = tf.constant([[1, 2, 2, 2, 2]])
+    # weight_per_label = tf.transpose(tf.matmul(y, tf.transpose(class_weight)))
+    # xent = tf.mul(weight_per_label, tf.nn.softmax_cross_entropy_with_logits(logits, y, name="xent_raw"))
+    # mean_ce = tf.reduce_mean(xent)
 
     # This will weight the positive examples higher so as to improve recall
     weights = tf.multiply(2, tf.cast(tf.greater(y, 0), tf.int32)) + 1
