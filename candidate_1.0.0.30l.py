@@ -15,7 +15,7 @@ parser.add_argument("-d", "--data", help="which dataset to use", default=5, type
 parser.add_argument("-m", "--model", help="model to initialize with", default=None)
 parser.add_argument("-l", "--label", help="how to classify data", default="label")
 parser.add_argument("-a", "--action", help="action to perform", default="train")
-parser.add_argument("-t", "--threshold", help="decision threshold", default=0.5, type=int)
+parser.add_argument("-t", "--threshold", help="decision threshold", default=0.3, type=int)
 args = parser.parse_args()
 
 epochs = args.epochs
@@ -70,7 +70,7 @@ print("Number of classes:", num_classes)
 ## Build the graph
 graph = tf.Graph()
 
-model_name = "model_s1.0.0.30l.8"
+model_name = "model_s1.0.0.31l.8"
 ## Change Log
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
@@ -95,7 +95,7 @@ model_name = "model_s1.0.0.30l.8"
 # 1.0.0.29 - updated code to work training to classify for multiple classes
 # 1.0.0.29f - putting weighted x-entropy back
 # 1.0.0.30b - changed some hyperparameters
-# 1.0.0.31l - added decision threshold to predictions
+# 1.0.0.31l - added decision threshold to predictions, trying out more complicated x-entropy weighting method
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -591,20 +591,29 @@ with graph.as_default():
         name="accuracy",
     )
 
+    #########################################################
     ## Loss function options
     # Regular mean cross entropy
     #mean_ce = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits))
 
-    # Different weighting method
-    # this should weight abnormal classes higher than normal ones
-    # class_weight = tf.constant([[1, 2, 2, 2, 2]])
-    # weight_per_label = tf.transpose(tf.matmul(y, tf.transpose(class_weight)))
-    # xent = tf.mul(weight_per_label, tf.nn.softmax_cross_entropy_with_logits(logits, y, name="xent_raw"))
-    # mean_ce = tf.reduce_mean(xent)
+    #########################################################
+    ## Different weighting method
+    # one-hot encode the labels
+    one_hot_labels = tf.one_hot(y, depth=5)
+    # is the example normal or not?
+    truth_is_abnormal = tf.cast(tf.greater(y, 0), tf.float32)
+    # multiple the cross entropy for the normal logit by 4
+    normal_xe = tf.multiply(4.0, tf.nn.softmax_cross_entropy_with_logits_v2(labels=one_hot_labels[:, 0], logits=logits[:, 0], name="normal_crossentropy"))
+    # if the example is abnormal use the rest of the logits
+    abnormal_xe = tf.multiply(truth_is_abnormal, tf.nn.softmax_cross_entropy_with_logits_v2(labels=one_hot_labels[:, 1:], logits=logits[:, 1:], name="abnormal_crossentropy"))
+    # add the two cross entropies together
+    mean_ce = tf.reduce_mean(normal_xe + abnormal_xe)
 
+    #########################################################
+    ## Weight the positive examples higher
     # This will weight the positive examples higher so as to improve recall
-    weights = tf.multiply(2, tf.cast(tf.greater(y, 0), tf.int32)) + 1
-    mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=logits, weights=weights))
+    # weights = tf.multiply(1, tf.cast(tf.greater(y, 0), tf.int32)) + 1
+    # mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=logits, weights=weights))
 
     # Add in l2 loss
     loss = mean_ce + tf.losses.get_regularization_loss()
