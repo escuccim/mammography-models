@@ -70,7 +70,7 @@ print("Number of classes:", num_classes)
 ## Build the graph
 graph = tf.Graph()
 
-model_name = "model_s1.0.0.32l.8"
+model_name = "model_s1.0.0.33l.8"
 ## Change Log
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
@@ -606,13 +606,13 @@ with graph.as_default():
     truth_is_abnormal = tf.cast(tf.greater(y, 0), tf.float32)
 
     # multiple the cross entropy for the normal logit by 4
-    normal_xe = tf.reduce_mean(tf.multiply(2.0, tf.nn.softmax_cross_entropy_with_logits_v2(labels=one_hot_labels[:, 0], logits=logits[:, 0], name="normal_crossentropy")))
+    normal_xe = tf.multiply(2.0, tf.nn.softmax_cross_entropy_with_logits_v2(labels=one_hot_labels[:, 0], logits=logits[:, 0], name="normal_crossentropy"))
 
     # if the example is abnormal use the rest of the logits
-    abnormal_xe = tf.reduce_mean(tf.multiply(truth_is_abnormal, tf.nn.softmax_cross_entropy_with_logits_v2(labels=one_hot_labels[:, 1:], logits=logits[:, 1:], name="abnormal_crossentropy")))
+    abnormal_xe = tf.multiply(truth_is_abnormal, tf.nn.softmax_cross_entropy_with_logits_v2(labels=one_hot_labels[:, 1:], logits=logits[:, 1:], name="abnormal_crossentropy"))
 
     # add the two cross entropies together
-    mean_ce = normal_xe + abnormal_xe
+    mean_ce = tf.reduce_mean(tf.concat(values=[normal_xe, abnormal_xe], concat_dim=1))
 
     #########################################################
     ## Weight the positive examples higher
