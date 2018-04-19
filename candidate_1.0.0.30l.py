@@ -15,7 +15,7 @@ parser.add_argument("-d", "--data", help="which dataset to use", default=5, type
 parser.add_argument("-m", "--model", help="model to initialize with", default=None)
 parser.add_argument("-l", "--label", help="how to classify data", default="label")
 parser.add_argument("-a", "--action", help="action to perform", default="train")
-parser.add_argument("-t", "--threshold", help="decision threshold", default=0.3, type=int)
+parser.add_argument("-t", "--threshold", help="decision threshold", default=0.3, type=float)
 args = parser.parse_args()
 
 epochs = args.epochs
