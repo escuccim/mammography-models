@@ -70,7 +70,7 @@ print("Number of classes:", num_classes)
 ## Build the graph
 graph = tf.Graph()
 
-model_name = "model_s1.0.0.33b.8"
+model_name = "model_s1.0.0.34b.8"
 ## Change Log
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
@@ -97,6 +97,7 @@ model_name = "model_s1.0.0.33b.8"
 # 1.0.0.30b - changed some hyperparameters
 # 1.0.0.31l - added decision threshold to predictions, trying out more complicated x-entropy weighting method
 # 1.0.0.32l - tweaks to calculating x-entropy
+# 1.0.0.34b - binary classification, back to weighted cross entropy
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -595,13 +596,13 @@ with graph.as_default():
     #########################################################
     ## Loss function options
     # Regular mean cross entropy
-    mean_ce = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits))
+    # mean_ce = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits))
 
     #########################################################
     ## Weight the positive examples higher
     # This will weight the positive examples higher so as to improve recall
-    # weights = tf.multiply(1, tf.cast(tf.greater(y, 0), tf.int32)) + 1
-    # mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=logits, weights=weights))
+    weights = tf.multiply(1, tf.cast(tf.greater(y, 0), tf.int32)) + 1
+    mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=logits, weights=weights))
 
     # Add in l2 loss
     loss = mean_ce + tf.losses.get_regularization_loss()
