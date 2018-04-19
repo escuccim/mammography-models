@@ -15,7 +15,7 @@ parser.add_argument("-d", "--data", help="which dataset to use", default=5, type
 parser.add_argument("-m", "--model", help="model to initialize with", default=None)
 parser.add_argument("-l", "--label", help="how to classify data", default="normal")
 parser.add_argument("-a", "--action", help="action to perform", default="train")
-parser.add_argument("-t", "--threshold", help="decision threshold", default=0.5, type=int)
+parser.add_argument("-t", "--threshold", help="decision threshold", default=0.4, type=float)
 args = parser.parse_args()
 
 epochs = args.epochs
@@ -397,11 +397,14 @@ with graph.as_default():
     # the probability that the scan is abnormal is 1 - probability it is normal
     abnormal_probability = (1 - probabilities[:, 0])
 
-    # the scan is abnormal if the probability is greater than the threshold
-    is_abnormal = tf.cast(tf.greater(abnormal_probability, threshold), tf.int64)
+    if num_classes > 2:
+        # the scan is abnormal if the probability is greater than the threshold
+        is_abnormal = tf.cast(tf.greater(abnormal_probability, threshold), tf.int64)
 
-    # Compute predictions from the probabilities - if the scan is normal we ignore the other probabilities
-    predictions = is_abnormal * tf.argmax(probabilities, axis=1, output_type=tf.int64)
+        # Compute predictions from the probabilities - if the scan is normal we ignore the other probabilities
+        predictions = is_abnormal * tf.argmax(probabilities[:,1:], axis=1, output_type=tf.int64)
+    else:
+        predictions = tf.cast(tf.greater(abnormal_probability, threshold), tf.int32)
 
     # get the accuracy
     accuracy, acc_op = tf.metrics.accuracy(
@@ -412,11 +415,13 @@ with graph.as_default():
         name="accuracy",
     )
 
+    #########################################################
     ## Loss function options
     # Regular mean cross entropy
     #mean_ce = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits))
 
-    # Different weighting method
+    #########################################################
+    ## Weight the positive examples higher
     # This will weight the positive examples higher so as to improve recall
     weights = tf.multiply(1, tf.cast(tf.greater(y, 0), tf.int32)) + 1
     mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=logits, weights=weights))
@@ -439,24 +444,17 @@ with graph.as_default():
 
         recall, rec_op = tf.metrics.recall(labels=collapsed_labels, predictions=collapsed_predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="recall")
         precision, prec_op = tf.metrics.precision(labels=collapsed_labels, predictions=collapsed_predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="precision")
-        f1_score = 2 * ((precision * recall) / (precision + recall))
 
-
-        _, update_op = summary_lib.pr_curve_streaming_op(name='pr_curve',
-                                                        predictions=(1 - probabilities[:, 0]),
-                                                        labels=collapsed_labels,
-                                                        updates_collections=tf.GraphKeys.UPDATE_OPS,
-                                                        num_thresholds=20)
     else:
         recall, rec_op = tf.metrics.recall(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="recall")
         precision, prec_op = tf.metrics.precision(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="precision")
-        f1_score = 2 * ( (precision * recall) / (precision + recall))
 
-        _, update_op = summary_lib.pr_curve_streaming_op(name='pr_curve',
-                                                         predictions=probabilities[:, 1],
-                                                         labels=y,
-                                                         updates_collections=tf.GraphKeys.UPDATE_OPS,
-                                                         num_thresholds=20)
+    f1_score = 2 * ((precision * recall) / (precision + recall))
+    _, update_op = summary_lib.pr_curve_streaming_op(name='pr_curve',
+                                                     predictions=(1 - probabilities[:, 0]),
+                                                     labels=y,
+                                                     updates_collections=tf.GraphKeys.UPDATE_OPS,
+                                                     num_thresholds=20)
 
     tf.summary.scalar('recall_1', recall, collections=["summaries"])
     tf.summary.scalar('precision_1', precision, collections=["summaries"])

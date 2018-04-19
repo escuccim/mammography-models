@@ -12,35 +12,45 @@ Breast cancer is the second most common cancer in women worldwide. About 1 in 8 
 The DDSM is a dataset of normal and abnormal scans; however the size is relatively small. To increase the size of the dataset we extract the Regions of Interest (ROI) from each image, perform data augmentation and then train ConvNets on the augmented data. The ConvNets were trained to predict both whether a scan was normal or abnormal, and to predict whether abnormalities were calcifications or masses and benign or malignant.
 
 ## Related Work
-There exists a great deal of research into applying deep learning to medical diagnosis, but due to the lack of available data there is not much research into mammography specifically. [1, 4] use ConvNets to classify pre-detected breast masses by pathology and type, but do not attempt to detect masses from scans. [2,3] detect abnormalities using combinations of region-based CNNs and random forests. 
+There exists a great deal of research into applying deep learning to medical diagnosis, but privacy concerns make the availability of training data a limiting factor, and thus there is not much research into applying ConvNets to mammography. [1, 4] use ConvNets to classify pre-detected breast masses by pathology and type, but do not attempt to detect masses from scans. [2,3] detect abnormalities using combinations of region-based CNNs and random forests. 
 
 ## Datasets
-The DDSM [6] is a database of 2,620 scanned film mammography studies. It contains normal, benign, and malignant cases with verified pathology information. The CBIS-DDSM [8] collection includes a subset of the DDSM data selected and curated by a trained mammographer. As the CBIS-DDSM contains only abnormal images, normal scans were taken from the DDSM and combined with the CBIS-DDSM scans.
+The DDSM [6] is a database of 2,620 scanned film mammography studies. It contains normal, benign, and malignant cases with verified pathology information. The CBIS-DDSM [8] collection includes a subset of the DDSM data selected and curated by a trained mammographer. The CBIS-DDSM images are better quality than the DDSM images, but this dataset does not contain normal images. Normal images were taken from the DDSM dataset and combined with the abnormal images from the CBIS-DDSM in order to have all classes represented.
 
 Data from the University of California Irvine Machine Learning Repository [5] was also used for exploratory data analysis to gain insight into the characteristics of abnormalities.
 
 ## Methods
-The DDSM and CBIS-DDSM datasets are relatively small, so the images were pre-processed with data augmentation to create a dataset of reasonable size. Then ConvNets were constructed and trained on the data using multiple labelling methods.
+The DDSM and CBIS-DDSM datasets are relatively small. The images were pre-processed with data augmentation to create a dataset of reasonable size. ConvNets were then constructed and trained on the data using multiple labelling methods.
 
 ### Data Augmentation
-The CBIS-DDSM scans were of relatively large size, with a mean height of 5295 pixels and a mean width of 3131 pixels. Masks highlighting the ROIs were provided. In order to create usable images from the full-sized scans the ROIs were extracted using the masks and sized down to 299x299. Each ROI was extracted in multiple ways:
+The CBIS-DDSM scans were of relatively large size, with a mean height of 5295 pixels and a mean width of 3131 pixels. Masks highlighting the ROIs were provided. In order to create training data, the ROIs were extracted from the abnormal images using the masks and sized down to 299x299 pixels. 
+
+The ROIs had a mean size of 450 pixels and a standard deviation of 396. In the interest of representing each ROI as well as possible, each ROI was extracted in multiple ways:
 1.	The ROI was extracted at 598x598 at its original size.
-2.	The ROI was zoomed to 598x598, with margins to provide context.
+2.	The ROI was zoomed to 598x598, with padding to provide context.
 3.	If the ROI had the size of one dimension more than 1.5 times the other dimension it was extracted as two tiles centered in the center of each half of the ROI along it's largest dimension.
 
 The 598x598 images were then resized to 299x299. In order to increase the size of the dataset data augmentation was used, including randomly positioning the ROI within the image, random horizontal flipping, random vertical flipping and random rotation. The ROIs were extracted using two systems of margins which will be detailed below.
 
-As the CBIS-DDSM dataset only contains abnormal scans the normal scans were taken from the DDSM dataset. While the CBIS-DDSM images had been reviewed and altered to eliminate artifacts such as white borders and overlay text, the DDSM images had not and many contained borders of variable sizes as well as patches of white which had been used to hide personal information of the patients. To remove the borderse ach DDSM images was cropped by 7% on each side. As the CBIS-DDSM ROIs were extracted proportionally to their size, rather than at a fixed zoom, the DDSM images were sized down by a random factor between 1.8 and 3.2, then segmented into 299x299 tiles with a stride ranging from 150 to 200 pixels. Each tile was then randomly flipped and rotated. To avoid the inclusion of images which contained overlay text, or were mostly black background, each tile was then added to the dataset only if it met upper and lower thresholds on mean and variance. The thresholds were determined through random sampling of tiles and careful tuning of the thresholds to eliminate images which did not contain usable data.
+The normal scans from the DDSM dataset did not have ROIs so were processed differently. As these images had not been pre-processed they contained artifacts such as white borders and white patches of pixels used to cover up personal identifying information. To remove the borders each image was cropped by 7% on each side. In order to attempt to keep these images on the same scale as the CBIS-DDSM images, the DDSM images were sized down by a random factor between 1.8 and 3.2, then segmented into 299x299 tiles with a variable stride between 150 and 200. Each tile was then randomly rotated and flipped.
+ 
+To avoid the inclusion of images which contained overlay text, or were mostly black background, each tile was then added to the dataset only if it met upper and lower thresholds on mean and variance. The thresholds were determined through random sampling of tiles and tuning of the thresholds to eliminate images which did not contain usable data.
+
+Multiple datasets were created using different data augmentation techniques. The datasets ranged in size from 27,000 training images to 62,000 training images. The datasets had differing amounts of data augmentation, and different techniques were used to extract the ROIs for each. 
 
 ### ROI Context
-The analysis of the UCI data indicated that the edges of an abnormality were important as to determining its pathology and type, and this was confirmed by a radiologist. Levy et al [1] also report that the inclusion of context was a contributor to the accuracy of the diagnosis. 
+The analysis of the UCI data indicated that the edges of an abnormality were important as to determining its pathology and type, and this was confirmed by a radiologist. Levy et al [1] also report that the inclusion of context was an important contributor to the accuracy of the classification.
 
-The first dataset created (referred to as Dataset 5) was a smaller dataset, consisting of 39,316 images. This dataset was created using a minimum fixed padding around the ROI during the pre-processing stage. Each ROI was extracted with a margin of between 30 pixels and 50 pixels from the edge of the image, with the ROI placed randomly within the bounds.
+Of the training datasets created, two were used for training:
 
-Several other datasets were created using different data augmentation methods such as tiling the ROIs in the same fashion the normal images were tiled. Most of these resulted in terrible performance so were abandoned. Dataset 8, consisting of 40,559 training images, attempted to find a balance between increasing the size of the dataset and ensuring that the images contained useful information.
+1. Dataset 5 consisted of 39,316 images. The dataset was created using padding around each ROI which was randomly set between 30 and 50 pixels. 
+2. Dataset 8 consisted of 40,559 images. This dataset used the extraction methodology described above to provide greater context for each ROI.  
+
 
 ### Data Balance
-Only about 10% of mammograms are abnormal, in order to maximize recall we weighted our training data more heavily towards abnormal scan, with a target of 85% normal. The data was split between training and test data using the existing divisions of the CBIS-DDSM dataset in order to prevent overlap. The total data was split into training, validation and test at percentages of 80%, 10% and 10%
+Only about 10% of mammograms are abnormal, in order to maximize recall we weighted our training data more heavily towards abnormal scan, with a target of 85% normal. As each ROI was extracted to multiple images, in order to prevent different images of the same ROI appearing in both the training and test data, the existing divisions of the CBIS-DDSM data were maintained. The test data was divided evenly between test and validation data with no shuffling to avoid overlap.
+
+The normal images had no overlap, so were shuffled and divided among the training, test and validation data. The final divisions were 80% training, 10% test and 10% validation.
 
 ### Labels
 In the DDSM dataset the scans are grouped into the following categories:
@@ -50,10 +60,14 @@ In the DDSM dataset the scans are grouped into the following categories:
 4.	Benign Mass
 5.	Malignant Mass
 
-As previous work [1] has already dealt with classifying pre-identified abnormalities, we focused on classifying images as normal or abnormal with the expectation of retraining the model to classify by all five labels once satisfactory performance was achieved.
+As previous work [1] has already dealt with classifying pre-identified abnormalities, we focused on classifying images as normal or abnormal.
+
+When classifying into all five categories, the predictions were also "collapsed" into binary normal/abnormal in order to measure the precision and recall. 
 
 ### ConvNet Architecture
-Our first thought was to train existing ConvNets, such as VGG or Inception, on this dataset. However a lack of computational resources combined with the slow speed of training made it impractical to do this. The scans also contain much less feature variance than the ImageNet images these ConvNets were designed for, and we were concerned that the large size of these models might lead to overfitting. For these reasons we decided to design our own architecture specifically for this task, attempting to keep the models as simple as possible. 
+Our first thought was to train existing ConvNets, such as VGG or Inception, on this dataset. However a lack of computational resources made this impractical. 
+
+The features of medical scans are very different from the features of ImageNet images used to train these ConvNets and we were concerned that the large size of these models might lead to overfitting. For these reasons we decided to design our own architecture specifically for this task, attempting to keep the models as simple as possible. 
 
 We started with a simple model based on VGG, consisting of stacked 3x3 convolutional layers alternating with max pools followed by fully connected layers. This architecture was iteratively improved, with each iteration changing only one aspect in the architecture and then being evaluated. Techniques evaluated include Inception-style branches [16, 17, 18] and residual connections [19]. 
 
@@ -64,7 +78,7 @@ The models were constructed using TensorFlow and metrics were logged to TensorBo
 The best performing architecture will be detailed below.
 
 ### Training
-For the model selection phase models were trained on Dataset 5 through 50 epochs with binary labels. Accuracy, precision, recall and f1 score were used to evaluate the models. At this time Dataset 8 had not yet been created. 
+For the model selection phase models were trained on Dataset 5 through 50 epochs with binary labels. Accuracy, precision, recall and f1 score were used to evaluate the models. 
 
 The models which performed well on Dataset 5 were retrained from scratch on Dataset 8 classifying to all 5 categories, on the assumption that this would cause the convolutional filters to extract the most important features.
 
@@ -107,7 +121,7 @@ _figures 3 and 4 - model 1.0.1.39_
 The use of multiple branches was evaluated on Set 5, and while they did provide better results on the training data they seemed to make the model generalize to the validation data more poorly so were not included.
 
 ### Decision Thresholds
-These results were obtained using a threshold of 0.50. The precision and recall could be drastically altered by changing the decision threshold. It was very easy to achieve a precision of 1.0, however this resulted in an unacceptably low recall. Achieving very high recall was possible through the adjustment of the threshold, with recalls close to 1.0 possible at the expense of the precision. 
+These results were obtained using a threshold of 0.50. The precision and recall could be drastically altered by changing the decision threshold. It was suprisingly easy to achieve a precision of close to 1.0, however we were focused on improving recall. Adjusting the threshold from between 0.20 to 0.50 allowed us to improve recall by a few percentage points while decreasing precision dramatically. 
 
 This could be very useful for radiologists, allowing them to screen out scans which are either definitely negative or definitely positive and allowing them to focus on the more ambiguous scans.
 

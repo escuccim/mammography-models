@@ -625,24 +625,17 @@ with graph.as_default():
 
         recall, rec_op = tf.metrics.recall(labels=collapsed_labels, predictions=collapsed_predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="recall")
         precision, prec_op = tf.metrics.precision(labels=collapsed_labels, predictions=collapsed_predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="precision")
-        f1_score = 2 * ((precision * recall) / (precision + recall))
 
-
-        _, update_op = summary_lib.pr_curve_streaming_op(name='pr_curve',
-                                                        predictions=(1 - probabilities[:, 0]),
-                                                        labels=collapsed_labels,
-                                                        updates_collections=tf.GraphKeys.UPDATE_OPS,
-                                                        num_thresholds=20)
     else:
         recall, rec_op = tf.metrics.recall(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="recall")
         precision, prec_op = tf.metrics.precision(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="precision")
-        f1_score = 2 * ( (precision * recall) / (precision + recall))
 
-        _, update_op = summary_lib.pr_curve_streaming_op(name='pr_curve',
-                                                         predictions=probabilities[:, 1],
-                                                         labels=y,
-                                                         updates_collections=tf.GraphKeys.UPDATE_OPS,
-                                                         num_thresholds=20)
+    f1_score = 2 * ((precision * recall) / (precision + recall))
+    _, update_op = summary_lib.pr_curve_streaming_op(name='pr_curve',
+                                                     predictions=(1 - probabilities[:, 0]),
+                                                     labels=y,
+                                                     updates_collections=tf.GraphKeys.UPDATE_OPS,
+                                                     num_thresholds=20)
 
     tf.summary.scalar('recall_1', recall, collections=["summaries"])
     tf.summary.scalar('precision_1', precision, collections=["summaries"])
