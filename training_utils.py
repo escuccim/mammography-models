@@ -81,8 +81,8 @@ def read_and_decode_single_example(filenames, label_type='label_normal', normali
         features={
             'label': tf.FixedLenFeature([], tf.int64),
             'label_normal': tf.FixedLenFeature([], tf.int64),
-            'label_mass': tf.FixedLenFeature([], tf.int64),
-            'label_benign': tf.FixedLenFeature([], tf.int64),
+            # 'label_mass': tf.FixedLenFeature([], tf.int64),
+            # 'label_benign': tf.FixedLenFeature([], tf.int64),
             'image': tf.FixedLenFeature([], tf.string)
         })
 
