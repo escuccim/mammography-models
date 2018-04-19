@@ -13,7 +13,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-e", "--epochs", help="number of epochs to train", default=30, type=int)
 parser.add_argument("-d", "--data", help="which dataset to use", default=5, type=int)
 parser.add_argument("-m", "--model", help="model to initialize with", default=None)
-parser.add_argument("-l", "--label", help="how to classify data", default="label")
+parser.add_argument("-l", "--label", help="how to classify data", default="normal")
 parser.add_argument("-a", "--action", help="action to perform", default="train")
 parser.add_argument("-t", "--threshold", help="decision threshold", default=0.3, type=float)
 args = parser.parse_args()
@@ -70,7 +70,7 @@ print("Number of classes:", num_classes)
 ## Build the graph
 graph = tf.Graph()
 
-model_name = "model_s1.0.0.33l.8"
+model_name = "model_s1.0.0.33b.8"
 ## Change Log
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
@@ -595,24 +595,7 @@ with graph.as_default():
     #########################################################
     ## Loss function options
     # Regular mean cross entropy
-    #mean_ce = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits))
-
-    #########################################################
-    ## Different weighting method
-    # one-hot encode the labels
-    one_hot_labels = tf.one_hot(y, depth=5)
-
-    # is the example actually abnormal or normal?
-    truth_is_abnormal = tf.cast(tf.greater(y, 0), tf.float32)
-
-    # multiple the cross entropy for the normal logit by 4
-    normal_xe = tf.multiply(2.0, tf.nn.softmax_cross_entropy_with_logits_v2(labels=one_hot_labels[:, 0], logits=logits[:, 0], name="normal_crossentropy"))
-
-    # if the example is abnormal use the rest of the logits
-    abnormal_xe = tf.multiply(truth_is_abnormal, tf.nn.softmax_cross_entropy_with_logits_v2(labels=one_hot_labels[:, 1:], logits=logits[:, 1:], name="abnormal_crossentropy"))
-
-    # add the two cross entropies together
-    mean_ce = tf.reduce_mean(normal_xe) + tf.reduce_mean(abnormal_xe)
+    mean_ce = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits))
 
     #########################################################
     ## Weight the positive examples higher
