@@ -70,7 +70,7 @@ print("Number of classes:", num_classes)
 ## Build the graph
 graph = tf.Graph()
 
-model_name = "model_s1.0.0.34b.8"
+model_name = "model_s1.0.0.35b.8"
 ## Change Log
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
@@ -578,11 +578,14 @@ with graph.as_default():
     # the probability that the scan is abnormal is 1 - probability it is normal
     abnormal_probability = (1 - probabilities[:, 0])
 
-    # the scan is abnormal if the probability is greater than the threshold
-    is_abnormal = tf.cast(tf.greater(abnormal_probability, threshold), tf.int64)
+    if num_classes > 2:
+        # the scan is abnormal if the probability is greater than the threshold
+        is_abnormal = tf.cast(tf.greater(abnormal_probability, threshold), tf.int64)
 
-    # Compute predictions from the probabilities - if the scan is normal we ignore the other probabilities
-    predictions = is_abnormal * tf.argmax(probabilities[:,1:], axis=1, output_type=tf.int64)
+        # Compute predictions from the probabilities - if the scan is normal we ignore the other probabilities
+        predictions = is_abnormal * tf.argmax(probabilities[:,1:], axis=1, output_type=tf.int64)
+    else:
+        predictions = tf.cast(tf.greater(abnormal_probability, threshold), tf.int32)
 
     # get the accuracy
     accuracy, acc_op = tf.metrics.accuracy(
