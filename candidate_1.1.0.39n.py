@@ -15,6 +15,7 @@ parser.add_argument("-d", "--data", help="which dataset to use", default=5, type
 parser.add_argument("-m", "--model", help="model to initialize with", default=None)
 parser.add_argument("-l", "--label", help="how to classify data", default="normal")
 parser.add_argument("-a", "--action", help="action to perform", default="train")
+parser.add_argument("-t", "--threshold", help="decision threshold", default=0.5, type=int)
 args = parser.parse_args()
 
 epochs = args.epochs
@@ -22,6 +23,7 @@ dataset = args.data
 init_model = args.model
 how = args.label
 action = args.action
+threshold = args.threshold
 
 # download the data
 download_data(what=dataset)
@@ -389,6 +391,27 @@ with graph.as_default():
     with tf.variable_scope('visualization'):
         tf.summary.image('conv_1.1/filters', kernel_transposed, max_outputs=32, collections=["kernels"])
 
+    # get the probabilites for the classes
+    probabilities = tf.nn.softmax(logits, name="probabilities")
+
+    # the probability that the scan is abnormal is 1 - probability it is normal
+    abnormal_probability = (1 - probabilities[:, 0])
+
+    # the scan is abnormal if the probability is greater than the threshold
+    is_abnormal = tf.cast(tf.greater(abnormal_probability, threshold), tf.int64)
+
+    # Compute predictions from the probabilities - if the scan is normal we ignore the other probabilities
+    predictions = is_abnormal * tf.argmax(probabilities, axis=1, output_type=tf.int64)
+
+    # get the accuracy
+    accuracy, acc_op = tf.metrics.accuracy(
+        labels=y,
+        predictions=predictions,
+        updates_collections=tf.GraphKeys.UPDATE_OPS,
+        # metrics_collections=["summaries"],
+        name="accuracy",
+    )
+
     ## Loss function options
     # Regular mean cross entropy
     #mean_ce = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits))
@@ -406,21 +429,6 @@ with graph.as_default():
 
     # Minimize cross-entropy
     train_op = optimizer.minimize(loss, global_step=global_step)
-
-    # get the probabilites for the classes
-    probabilities = tf.nn.softmax(logits, name="probabilities")
-
-    # Compute predictions from the probabilities
-    predictions = tf.argmax(probabilities, axis=1, output_type=tf.int64)
-
-    # get the accuracy
-    accuracy, acc_op = tf.metrics.accuracy(
-        labels=y,
-        predictions=predictions,
-        updates_collections=tf.GraphKeys.UPDATE_OPS,
-        #metrics_collections="summaries",
-        name="accuracy",
-    )
 
     # calculate recall
     if num_classes > 2:

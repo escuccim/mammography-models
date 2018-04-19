@@ -70,7 +70,7 @@ print("Number of classes:", num_classes)
 ## Build the graph
 graph = tf.Graph()
 
-model_name = "model_s1.0.0.30b.8"
+model_name = "model_s1.0.0.30l.8"
 ## Change Log
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
@@ -595,9 +595,6 @@ with graph.as_default():
     # Regular mean cross entropy
     #mean_ce = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits))
 
-    # Different weighting method
-    #mean_ce = tf.nn.weighted_cross_entropy_with_logits(targets=y, logits=logits, pos_weight=1.5)
-
     # This will weight the positive examples higher so as to improve recall
     weights = tf.multiply(1, tf.cast(tf.greater(y, 0), tf.int32)) + 1
     mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=logits, weights=weights))
@@ -622,9 +619,6 @@ with graph.as_default():
         precision, prec_op = tf.metrics.precision(labels=collapsed_labels, predictions=collapsed_predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="precision")
         f1_score = 2 * ((precision * recall) / (precision + recall))
 
-        tf.summary.scalar('recall_1', recall, collections=["summaries"])
-        tf.summary.scalar('precision_1', precision, collections=["summaries"])
-        tf.summary.scalar('f1_score', f1_score, collections=["summaries"])
 
         _, update_op = summary_lib.pr_curve_streaming_op(name='pr_curve',
                                                         predictions=(1 - probabilities[:, 0]),
@@ -642,9 +636,9 @@ with graph.as_default():
                                                          updates_collections=tf.GraphKeys.UPDATE_OPS,
                                                          num_thresholds=20)
 
-        tf.summary.scalar('recall_1', recall, collections=["summaries"])
-        tf.summary.scalar('precision_1', precision, collections=["summaries"])
-        tf.summary.scalar('f1_score', f1_score, collections=["summaries"])
+    tf.summary.scalar('recall_1', recall, collections=["summaries"])
+    tf.summary.scalar('precision_1', precision, collections=["summaries"])
+    tf.summary.scalar('f1_score', f1_score, collections=["summaries"])
 
     # Create summary hooks
     tf.summary.scalar('accuracy', accuracy, collections=["summaries"])

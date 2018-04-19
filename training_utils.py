@@ -208,7 +208,7 @@ def download_data(what=4):
 
         # download validation labels
         if not os.path.exists(os.path.join("data", "cv8_labels.npy")):
-            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/cv4_labels.npy','cv8_labels.npy')
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/cv8_labels.npy','cv8_labels.npy')
 
         if not os.path.exists(os.path.join("data", "cv8_filenames.npy")):
             _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/cv8_filenames.npy',
