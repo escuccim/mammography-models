@@ -612,7 +612,7 @@ with graph.as_default():
     abnormal_xe = tf.multiply(truth_is_abnormal, tf.nn.softmax_cross_entropy_with_logits_v2(labels=one_hot_labels[:, 1:], logits=logits[:, 1:], name="abnormal_crossentropy"))
 
     # add the two cross entropies together
-    mean_ce = tf.reduce_mean(tf.concat(values=[normal_xe, abnormal_xe], concat_dim=1))
+    mean_ce = tf.reduce_mean(tf.concat(values=[normal_xe, abnormal_xe], axis=1))
 
     #########################################################
     ## Weight the positive examples higher
