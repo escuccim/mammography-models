@@ -119,7 +119,7 @@ Model 1.0.1.39 also performed remarkably well on both the training and validatio
 
 _figures 3 and 4 - model 1.0.1.39_
 
-The use of multiple branches was evaluated on Set 5, and while they did provide better results on the training data they seemed to make the model generalize to the validation data more poorly so were not included.
+It is interesting to note that when training the same model on the same datasets during some runs the performance on the validation data seemed completely independent of the training performance, indicating that the model was not learning anything useful but was just fitting to the training data, while on other runs the model generalized well. 
 
 ### Decision Thresholds
 These results were obtained using a threshold of 0.50. The precision and recall could be drastically altered by changing the decision threshold. It was suprisingly easy to achieve a precision of close to 1.0, however we were focused on improving recall. Adjusting the threshold from between 0.20 to 0.50 allowed us to improve recall by a few percentage points while decreasing precision dramatically. 
@@ -127,9 +127,11 @@ These results were obtained using a threshold of 0.50. The precision and recall 
 This could be very useful for radiologists, allowing them to screen out scans which are either definitely negative or definitely positive and allowing them to focus on the more ambiguous scans.
 
 ## Conclusion
-We have demonstrated that Convolutional Neural Networks can be trained to determine whether a section of a mammogram contains an abnormality with recall of 95%, substantially above human performance. Adjusting the decision threshold would further improve the recall. These methods could be used to pre-screen mammograms allowing radiologists to focus on scans which are likely to contain abnormalities.
+We have demonstrated that Convolutional Neural Networks can be trained to determine whether a section of a mammogram contains an abnormality with recall over 95%, substantially above human performance. Adjusting the decision threshold would further improve the recall. These methods could be used to pre-screen mammograms allowing radiologists to focus on scans which are likely to contain abnormalities.
 
-Future work would include creating a system which would take a full mammogram as input and analyse it, possibly with a sliding window, to determine whether the image contains abnormalities. Levy et al [1] have shown that ConvNets can be used to classify pre-identified ROIs, those techniques can be combined with the techniques demonstrated here to create a complete end-to-end system for classifying mammograms. Another option would be to use algorithms such as YOLO [20] or R-CNN [21] on an entire scan to attempt to identify and locate potential abnormalities. 
+The models did not generalize as well as we would have liked, this could potentially be addressed with more training data or with more data augmentation. 
+
+Future work would include creating a complete end-to-end system which would take a full scan as input and determine whether the scan contains any abnormalities, possibly using a sliding window or a YOLO algorithm. Levy et al [1] have shown that ConvNets can be used to classify pre-identified ROIs, those techniques can be combined with the techniques demonstrated here to create such a complete system.  
 
 ## References
 [1]	D. Levy, A. Jain, Breast Mass Classification from Mammograms using Deep Convolutional Neural Networks, arXiv:1612.00542v1, 2016

@@ -107,11 +107,11 @@ with graph.as_default():
 
     ##################################
     ## Branch 1
-    conv1 = _conv2d_batch_norm(conv0, 32, kernel_size=(1, 1), stride=(1, 1), training=training, epsilon=1e-8, padding="VALID", seed=None, lambd=lamC, name="1.2")
+    conv1 = _conv2d_batch_norm(conv0, 32, kernel_size=(1, 1), stride=(1, 1), training=training, epsilon=1e-8, padding="VALID", seed=101, lambd=lamC, name="1.2")
 
-    conv1 = _conv2d_batch_norm(conv1, 32, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="VALID", seed=None, lambd=lamC, name="1.3")
+    conv1 = _conv2d_batch_norm(conv1, 32, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="VALID", seed=102, lambd=lamC, name="1.3")
 
-    conv1 = _conv2d_batch_norm(conv1, 32, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=None, lambd=lamC, name="1.4")
+    conv1 = _conv2d_batch_norm(conv1, 32, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=103, lambd=lamC, name="1.4")
 
     # Max pooling layer 1
     with tf.name_scope('pool1') as scope:
