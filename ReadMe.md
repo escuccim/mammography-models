@@ -107,11 +107,13 @@ Both models performed better than expected on Dataset 5, but when retrained from
 
 <div style="text-align:center;"><i>Table 1: Performance on Test Set</i></div>
 
+
 Model 1.0.0.29 performed excellent on both the training and validation data, as seen in Figure 1. 
 
 <img src="accuracy_1.0.0.29b.png" alt="Binary Accuracy and Recall of Model 1.0.0.29">
 
 <div style="text-align:center"><i>Figure 1 - Binary Accuracy and Recall for Model 1.0.0.29</i></div>
+
 
 Model 1.0.1.39 also performed remarkably well on both the training and validation data on Dataset 5, but also performed well on Dataset 6. This model was more complicated than model 1.0.0.28, and included a branch to attempt to detect smaller abnormalities. 
 
