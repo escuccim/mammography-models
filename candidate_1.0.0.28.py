@@ -53,8 +53,8 @@ lamF = 0.00250
 # use dropout
 dropout = True
 fcdropout_rate = 0.5
-convdropout_rate = 0.001
-pooldropout_rate = 0.1
+convdropout_rate = 0.000
+pooldropout_rate = 0.0015
 
 if how == "label":
     num_classes = 5
@@ -70,7 +70,7 @@ print("Number of classes:", num_classes)
 ## Build the graph
 graph = tf.Graph()
 
-model_name = "model_s1.0.0.29l.8.3"
+model_name = "model_s1.0.0.32l.8"
 ## Change Log
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
@@ -96,6 +96,7 @@ model_name = "model_s1.0.0.29l.8.3"
 # 1.0.0.29f - putting weighted x-entropy back
 # 1.0.0.30b - changed some hyperparameters
 # 1.0.0.31l - added decision threshold to predictions
+# 1.0.0.32 - removed conv lambda completely, lowered pool dropout rate
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
