@@ -47,14 +47,14 @@ steps_per_epoch = int(total_records / batch_size)
 print("Steps per epoch:", steps_per_epoch)
 
 # lambdas
-lamC = 0.00000
+lamC = 0.00001
 lamF = 0.00250
 
 # use dropout
 dropout = True
 fcdropout_rate = 0.5
-convdropout_rate = 0.000
-pooldropout_rate = 0.0015
+convdropout_rate = 0.001
+pooldropout_rate = 0.1
 
 if how == "label":
     num_classes = 5
