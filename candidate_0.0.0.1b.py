@@ -73,7 +73,8 @@ graph = tf.Graph()
 # whether to retrain model from scratch or use saved model
 init = True
 model_name = "model_s0.0.0.1b"
-# 0.0.0.1 - trying a smaller model as the bigger ones seem to overfit
+# 0.0.0.1 - trying a smaller model as the bigger ones seem to overfit, basically same as 1.0.0.28 but with much less filters in each layer
+
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
