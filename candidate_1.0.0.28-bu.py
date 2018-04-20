@@ -11,7 +11,7 @@ from tensorboard import summary as summary_lib
 # If number of epochs has been passed in use that, otherwise default to 50
 parser = argparse.ArgumentParser()
 parser.add_argument("-e", "--epochs", help="number of epochs to train", default=30, type=int)
-parser.add_argument("-d", "--data", help="which dataset to use", default=8, type=int)
+parser.add_argument("-d", "--data", help="which dataset to use", default=5, type=int)
 parser.add_argument("-m", "--model", help="model to initialize with", default=None)
 parser.add_argument("-l", "--label", help="how to classify data", default="label")
 parser.add_argument("-a", "--action", help="action to perform", default="train")
@@ -70,7 +70,7 @@ print("Number of classes:", num_classes)
 ## Build the graph
 graph = tf.Graph()
 
-model_name = "model_s1.0.0.29l.8.2"
+model_name = "model_s1.0.0.29l.8"
 ## Change Log
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
@@ -184,7 +184,6 @@ with graph.as_default():
 
         # apply relu
         conv11 = tf.nn.relu(conv11, name='relu1.1')
-
 
     with tf.name_scope('conv1.2') as scope:
         conv12 = tf.layers.conv2d(
@@ -388,53 +387,53 @@ with graph.as_default():
 
     # Convolutional layer 4
     with tf.name_scope('conv4') as scope:
-            conv4 = tf.layers.conv2d(
-                pool3,  # Input data
-                filters=256,  # 48 filters
-                kernel_size=(3, 3),  # Kernel size: 5x5
-                strides=(1, 1),  # Stride: 1
-                padding='SAME',  # "same" padding
-                activation=None,  # None
-                kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=110),
-                kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
-                name='conv4'
-            )
+        conv4 = tf.layers.conv2d(
+            pool3,  # Input data
+            filters=256,  # 48 filters
+            kernel_size=(3, 3),  # Kernel size: 5x5
+            strides=(1, 1),  # Stride: 1
+            padding='SAME',  # "same" padding
+            activation=None,  # None
+            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=110),
+            kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
+            name='conv4'
+        )
 
-            conv4 = tf.layers.batch_normalization(
-                conv4,
-                axis=-1,
-                momentum=0.99,
-                epsilon=epsilon,
-                center=True,
-                scale=True,
-                beta_initializer=tf.zeros_initializer(),
-                gamma_initializer=tf.ones_initializer(),
-                moving_mean_initializer=tf.zeros_initializer(),
-                moving_variance_initializer=tf.ones_initializer(),
-                training=training,
-                name='bn4'
-            )
+        conv4 = tf.layers.batch_normalization(
+            conv4,
+            axis=-1,
+            momentum=0.99,
+            epsilon=epsilon,
+            center=True,
+            scale=True,
+            beta_initializer=tf.zeros_initializer(),
+            gamma_initializer=tf.ones_initializer(),
+            moving_mean_initializer=tf.zeros_initializer(),
+            moving_variance_initializer=tf.ones_initializer(),
+            training=training,
+            name='bn4'
+        )
 
-            # apply relu
-            conv4_bn_relu = tf.nn.relu(conv4, name='relu4')
+        # apply relu
+        conv4_bn_relu = tf.nn.relu(conv4, name='relu4')
 
-            #if dropout:
-            #    conv4_bn_relu = tf.layers.dropout(conv4_bn_relu, rate=convdropout_rate, seed=111, training=training)
+        # if dropout:
+        #    conv4_bn_relu = tf.layers.dropout(conv4_bn_relu, rate=convdropout_rate, seed=111, training=training)
 
     # Max pooling layer 4
     with tf.name_scope('pool4') as scope:
-            pool4 = tf.layers.max_pooling2d(
-                conv4_bn_relu,  # Input
-                pool_size=(2, 2),  # Pool size: 2x2
-                strides=(2, 2),  # Stride: 2
-                padding='SAME',  # "same" padding
-                name='pool4'
-            )
+        pool4 = tf.layers.max_pooling2d(
+            conv4_bn_relu,  # Input
+            pool_size=(2, 2),  # Pool size: 2x2
+            strides=(2, 2),  # Stride: 2
+            padding='SAME',  # "same" padding
+            name='pool4'
+        )
 
-            if dropout:
-                pool4 = tf.layers.dropout(pool4, rate=pooldropout_rate, seed=112, training=training)
+        if dropout:
+            pool4 = tf.layers.dropout(pool4, rate=pooldropout_rate, seed=112, training=training)
 
-            # Convolutional layer 4
+        # Convolutional layer 4
     with tf.name_scope('conv5') as scope:
         conv5 = tf.layers.conv2d(
             pool4,  # Input data
@@ -556,15 +555,12 @@ with graph.as_default():
     # Output layer
     logits = tf.layers.dense(
         fc2_relu,
-        num_classes,      # One output unit per category
+        num_classes,  # One output unit per category
         activation=None,  # No activation function
         kernel_initializer=tf.variance_scaling_initializer(scale=1, seed=121),
         bias_initializer=tf.zeros_initializer(),
         name="logits"
     )
-
-    # get the fully connected variables so we can only train them when retraining the network
-    fc_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "fc")
 
     with tf.variable_scope('conv1', reuse=True):
         conv_kernels1 = tf.get_variable('kernel')
@@ -575,10 +571,9 @@ with graph.as_default():
 
     ## Loss function options
     # Regular mean cross entropy
-    #mean_ce = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits))
+    # mean_ce = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits))
 
-    #########################################################
-    ## Weight the positive examples higher
+    # Different weighting method
     # This will weight the positive examples higher so as to improve recall
     weights = tf.multiply(1, tf.cast(tf.greater(y, 0), tf.int32)) + 1
     mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=logits, weights=weights))
@@ -614,19 +609,29 @@ with graph.as_default():
         collapsed_predictions = tf.cast(tf.greater(predictions, zero), tf.int64)
         collapsed_labels = tf.greater(y, zero)
 
-        recall, rec_op = tf.metrics.recall(labels=collapsed_labels, predictions=collapsed_predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="recall")
-        precision, prec_op = tf.metrics.precision(labels=collapsed_labels, predictions=collapsed_predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="precision")
+        recall, rec_op = tf.metrics.recall(labels=collapsed_labels, predictions=collapsed_predictions,
+                                           updates_collections=tf.GraphKeys.UPDATE_OPS, name="recall")
+        precision, prec_op = tf.metrics.precision(labels=collapsed_labels, predictions=collapsed_predictions,
+                                                  updates_collections=tf.GraphKeys.UPDATE_OPS, name="precision")
+        f1_score = 2 * ((precision * recall) / (precision + recall))
 
+        _, update_op = summary_lib.pr_curve_streaming_op(name='pr_curve',
+                                                         predictions=(1 - probabilities[:, 0]),
+                                                         labels=collapsed_labels,
+                                                         updates_collections=tf.GraphKeys.UPDATE_OPS,
+                                                         num_thresholds=20)
     else:
-        recall, rec_op = tf.metrics.recall(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="recall")
-        precision, prec_op = tf.metrics.precision(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="precision")
+        recall, rec_op = tf.metrics.recall(labels=y, predictions=predictions,
+                                           updates_collections=tf.GraphKeys.UPDATE_OPS, name="recall")
+        precision, prec_op = tf.metrics.precision(labels=y, predictions=predictions,
+                                                  updates_collections=tf.GraphKeys.UPDATE_OPS, name="precision")
+        f1_score = 2 * ((precision * recall) / (precision + recall))
 
-    f1_score = 2 * ((precision * recall) / (precision + recall))
-    _, update_op = summary_lib.pr_curve_streaming_op(name='pr_curve',
-                                                     predictions=(1 - probabilities[:, 0]),
-                                                     labels=y,
-                                                     updates_collections=tf.GraphKeys.UPDATE_OPS,
-                                                     num_thresholds=20)
+        _, update_op = summary_lib.pr_curve_streaming_op(name='pr_curve',
+                                                         predictions=probabilities[:, 1],
+                                                         labels=y,
+                                                         updates_collections=tf.GraphKeys.UPDATE_OPS,
+                                                         num_thresholds=20)
 
     tf.summary.scalar('recall_1', recall, collections=["summaries"])
     tf.summary.scalar('precision_1', precision, collections=["summaries"])
@@ -709,14 +714,14 @@ with tf.Session(graph=graph, config=config) as sess:
     if log_to_tensorboard:
         train_writer = tf.summary.FileWriter('./logs/tr_' + model_name, sess.graph)
         test_writer = tf.summary.FileWriter('./logs/te_' + model_name)
-    
+
     if not print_metrics:
         # create a plot to be updated as model is trained
-        f, ax = plt.subplots(1,4,figsize=(24,5))
-    
+        f, ax = plt.subplots(1, 4, figsize=(24, 5))
+
     # create the saver
     saver = tf.train.Saver()
-    
+
     # If the model is new initialize variables, else restore the session
     if init:
         sess.run(tf.global_variables_initializer())
@@ -728,7 +733,7 @@ with tf.Session(graph=graph, config=config) as sess:
             sess.run(tf.global_variables_initializer())
 
             # create the initializer function to initialize the weights
-            init_fn = load_weights(init_model, exclude=["fc1", "logits", "bn_fc2", "bn_fc1", "fc2", "global_step"])
+            init_fn = load_weights(init_model, exclude=["fc1", "fc2", "global_step"])
 
             # run the initializer
             init_fn(sess)
@@ -784,16 +789,17 @@ with tf.Session(graph=graph, config=config) as sess:
                     else:
                         _, _, _, step = sess.run(
                             [train_op, extra_update_ops, update_op, global_step],
-                                feed_dict={
-                                    training: True,
-                                },
-                                options=run_options,
-                                run_metadata=run_metadata)
+                            feed_dict={
+                                training: True,
+                            },
+                            options=run_options,
+                            run_metadata=run_metadata)
 
                 # every 50th step get the metrics
                 else:
                     _, _, _, precision_value, summary, acc_value, cost_value, recall_value, step, lr = sess.run(
-                        [train_op, extra_update_ops, update_op, prec_op, merged, accuracy, mean_ce, rec_op, global_step, learning_rate],
+                        [train_op, extra_update_ops, update_op, prec_op, merged, accuracy, mean_ce, rec_op, global_step,
+                         learning_rate],
                         feed_dict={
                             training: True,
                         },
@@ -896,17 +902,17 @@ with tf.Session(graph=graph, config=config) as sess:
             # Print progress every nth epoch to keep output to reasonable amount
             if (epoch % print_every == 0):
                 print(
-                'Epoch {:02d} - step {} - cv acc: {:.4f} - train acc: {:.3f} (mean)'.format(
-                    epoch, step, np.mean(batch_cv_acc), np.mean(batch_acc)
-                ))
+                    'Epoch {:02d} - step {} - cv acc: {:.4f} - train acc: {:.3f} (mean)'.format(
+                        epoch, step, np.mean(batch_cv_acc), np.mean(batch_acc)
+                    ))
 
             # Print data every 50th epoch so I can write it down to compare models
             if (not print_metrics) and (epoch % 50 == 0) and (epoch > 1):
                 if (epoch % print_every == 0):
                     print(
-                    'Epoch {:02d} - step {} - cv acc: {:.4f} - train acc: {:.3f} (mean)'.format(
-                        epoch, step, np.mean(batch_cv_acc), np.mean(batch_acc)
-                    ))
+                        'Epoch {:02d} - step {} - cv acc: {:.4f} - train acc: {:.3f} (mean)'.format(
+                            epoch, step, np.mean(batch_cv_acc), np.mean(batch_acc)
+                        ))
 
         # stop the coordinator
         coord.request_stop()
@@ -925,12 +931,13 @@ with tf.Session(graph=graph, config=config) as sess:
     test_predictions = []
     ground_truth = []
     for X_batch, y_batch in get_batches(X_te, y_te, batch_size, distort=False):
-        _, yhat, test_acc_value, test_recall_value = sess.run([extra_update_ops, predictions, accuracy, rec_op], feed_dict=
-        {
-            X: X_batch,
-            y: y_batch,
-            training: False
-        })
+        _, yhat, test_acc_value, test_recall_value = sess.run([extra_update_ops, predictions, accuracy, rec_op],
+                                                              feed_dict=
+                                                              {
+                                                                  X: X_batch,
+                                                                  y: y_batch,
+                                                                  training: False
+                                                              })
 
         test_accuracy.append(test_acc_value)
         test_recall.append(test_recall_value)
@@ -961,12 +968,13 @@ with tf.Session(graph=graph, config=config) as sess:
     mias_test_predictions = []
     mias_ground_truth = []
     for X_batch, y_batch in get_batches(X_te, y_te, batch_size, distort=False):
-        _, yhat, test_acc_value, test_recall_value = sess.run([extra_update_ops, predictions, accuracy, rec_op], feed_dict=
-        {
-            X: X_batch,
-            y: y_batch,
-            training: False
-        })
+        _, yhat, test_acc_value, test_recall_value = sess.run([extra_update_ops, predictions, accuracy, rec_op],
+                                                              feed_dict=
+                                                              {
+                                                                  X: X_batch,
+                                                                  y: y_batch,
+                                                                  training: False
+                                                              })
 
         mias_test_accuracy.append(test_acc_value)
         mias_test_recall.append(test_recall_value)
@@ -984,5 +992,4 @@ with tf.Session(graph=graph, config=config) as sess:
     # save the predictions and truth for review
     np.save(os.path.join("data", "mias_predictions_" + model_name + ".npy"), mias_test_predictions)
     np.save(os.path.join("data", "mias_truth_" + model_name + ".npy"), mias_ground_truth)
-
 
