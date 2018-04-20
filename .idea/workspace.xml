@@ -2,8 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="98c4e5b0-4f90-4540-b87f-9bd6d2ddc583" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/ReadMe.md" afterPath="$PROJECT_DIR$/ReadMe.md" />
+      <change beforePath="$PROJECT_DIR$/candidate_1.0.0.28-bu.py" afterPath="$PROJECT_DIR$/candidate_1.0.0.28-bu.py" />
       <change beforePath="$PROJECT_DIR$/candidate_1.0.0.28.py" afterPath="$PROJECT_DIR$/candidate_1.0.0.28.py" />
-      <change beforePath="$PROJECT_DIR$/candidate_1.0.0.29.py" afterPath="$PROJECT_DIR$/candidate_1.0.0.29.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -18,17 +19,17 @@
         <entry file="file://$PROJECT_DIR$/candidate_1.0.0.29.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="12606">
-              <caret line="654" column="29" lean-forward="true" selection-start-line="654" selection-start-column="29" selection-end-line="654" selection-end-column="29" />
+              <caret line="654" column="29" lean-forward="false" selection-start-line="654" selection-start-column="29" selection-end-line="654" selection-end-column="29" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="candidate_1.0.0.28.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="candidate_1.0.0.28.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/candidate_1.0.0.28.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1782">
-              <caret line="72" column="34" lean-forward="false" selection-start-line="72" selection-start-column="34" selection-end-line="72" selection-end-column="34" />
+            <state relative-caret-position="1023">
+              <caret line="49" column="12" lean-forward="false" selection-start-line="49" selection-start-column="12" selection-end-line="49" selection-end-column="12" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -50,18 +51,18 @@
         <entry file="file://$PROJECT_DIR$/candidate_0.0.1.1l.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="33">
-              <caret line="49" column="13" lean-forward="true" selection-start-line="49" selection-start-column="12" selection-end-line="49" selection-end-column="13" />
+              <caret line="49" column="13" lean-forward="false" selection-start-line="49" selection-start-column="12" selection-end-line="49" selection-end-column="13" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ReadMe.md" pinned="false" current-in-tab="false">
+      <file leaf-file-name="ReadMe.md" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/ReadMe.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="-508">
-                <caret line="125" column="0" lean-forward="false" selection-start-line="125" selection-start-column="0" selection-end-line="125" selection-end-column="0" />
+              <first_editor relative-caret-position="515">
+                <caret line="108" column="97" lean-forward="false" selection-start-line="108" selection-start-column="97" selection-end-line="108" selection-end-column="97" />
                 <folding />
               </first_editor>
               <second_editor />
@@ -73,7 +74,7 @@
         <entry file="file://$PROJECT_DIR$/training_utils.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="715">
-              <caret line="142" column="22" lean-forward="true" selection-start-line="142" selection-start-column="22" selection-end-line="142" selection-end-column="22" />
+              <caret line="142" column="22" lean-forward="false" selection-start-line="142" selection-start-column="22" selection-end-line="142" selection-end-column="22" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -158,7 +159,6 @@
         <option value="$PROJECT_DIR$/candidate_1.0.1.44a.py" />
         <option value="$PROJECT_DIR$/model_1.0.0.29f.py" />
         <option value="$PROJECT_DIR$/candidate_1.1.0.39n.py" />
-        <option value="$PROJECT_DIR$/ReadMe.md" />
         <option value="$PROJECT_DIR$/candidate_1.0.0.30l.py" />
         <option value="$PROJECT_DIR$/candidate_1.1.0.40l.py" />
         <option value="$PROJECT_DIR$/candidate_1.2.0.05l.py" />
@@ -169,6 +169,7 @@
         <option value="$PROJECT_DIR$/candidate_0.0.0.1b.py" />
         <option value="$PROJECT_DIR$/candidate_1.0.0.29.py" />
         <option value="$PROJECT_DIR$/candidate_1.0.0.28.py" />
+        <option value="$PROJECT_DIR$/ReadMe.md" />
       </list>
     </option>
   </component>
@@ -539,17 +540,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ReadMe.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="-508">
-            <caret line="125" column="0" lean-forward="false" selection-start-line="125" selection-start-column="0" selection-end-line="125" selection-end-column="0" />
-            <folding />
-          </first_editor>
-          <second_editor />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/candidate_1.0.1.40b.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -619,16 +609,8 @@
         <state relative-caret-position="31631">
           <caret line="995" column="0" lean-forward="true" selection-start-line="995" selection-start-column="0" selection-end-line="995" selection-end-column="0" />
           <folding>
-            <element signature="e#0#18#0" expanded="true" />
+            <element signature="e#0#18#0" expanded="false" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/candidate_0.0.1.1l.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="33">
-          <caret line="49" column="13" lean-forward="true" selection-start-line="49" selection-start-column="12" selection-end-line="49" selection-end-column="13" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -643,7 +625,7 @@
     <entry file="file://$PROJECT_DIR$/candidate_1.0.0.29.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="12606">
-          <caret line="654" column="29" lean-forward="true" selection-start-line="654" selection-start-column="29" selection-end-line="654" selection-end-column="29" />
+          <caret line="654" column="29" lean-forward="false" selection-start-line="654" selection-start-column="29" selection-end-line="654" selection-end-column="29" />
           <folding />
         </state>
       </provider>
@@ -651,7 +633,7 @@
     <entry file="file://$PROJECT_DIR$/training_utils.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="715">
-          <caret line="142" column="22" lean-forward="true" selection-start-line="142" selection-start-column="22" selection-end-line="142" selection-end-column="22" />
+          <caret line="142" column="22" lean-forward="false" selection-start-line="142" selection-start-column="22" selection-end-line="142" selection-end-column="22" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
@@ -660,11 +642,30 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/candidate_1.0.0.28.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1782">
-          <caret line="72" column="34" lean-forward="false" selection-start-line="72" selection-start-column="34" selection-end-line="72" selection-end-column="34" />
+        <state relative-caret-position="1023">
+          <caret line="49" column="12" lean-forward="false" selection-start-line="49" selection-start-column="12" selection-end-line="49" selection-end-column="12" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/candidate_0.0.1.1l.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="33">
+          <caret line="49" column="13" lean-forward="false" selection-start-line="49" selection-start-column="12" selection-end-line="49" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ReadMe.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="515">
+            <caret line="108" column="97" lean-forward="false" selection-start-line="108" selection-start-column="97" selection-end-line="108" selection-end-column="97" />
+            <folding />
+          </first_editor>
+          <second_editor />
         </state>
       </provider>
     </entry>

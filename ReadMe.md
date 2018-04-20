@@ -88,10 +88,10 @@ We had considered using transfer learning from VGG or Inception, but decided tha
 
 ## Results
 ### Architecture
-The best two performing models were 1.0.0.28 and 1.0.1.39. 
+The best two performing models were 1.0.0.29 and 1.0.1.39. 
 
-Model 1.0.0.28 consists of stacked 3x3 convolutions alternating with max pools followed by two fully connected layers with 2048 units each.
-<img src="model_1.0.0.29f.png" alt="Model 1.0.0.28" align="right" style="max-width: 50%;">
+Model 1.0.0.29 consists of stacked 3x3 convolutions alternating with max pools followed by two fully connected layers with 2048 units each.
+<img src="model_s1.0.0.29.png" alt="Model 1.0.0.29" align="right" style="max-width: 50%;">
 
 Model 1.0.0.39 is very similar to 1.0.0.28, but with one extra fully connected layer, and two extra convolutional layers. As the abnormal mammograms had abnormalities ranging in size from several pixels to several hundred pixels a branch was inserted after layer 1 to attempt to detect very small features. The branches are concatenated together before max pool layer 1. This model also has an extra fully connected layer.
 <img src="model_1.0.1.41a.png" alt="Model 1.0.1.39" style="max-width: 50%;" align="right" >
@@ -100,19 +100,17 @@ Model 1.0.0.39 is very similar to 1.0.0.28, but with one extra fully connected l
 
 Both models performed better than expected on Dataset 5, but when retrained from scratch on Dataset 6 the simpler model did not perform well.
 
-|Model      |Dataset    |Accuracy    |Recall      |
-|-----------|-----------|------------|------------| 
-|1.0.1.39n  |          5|.9935       |.9590       |
-|1.0.1.39n  |          6|     |     |
-|1.0.0.28n  |          5|.9903       |.9431       |
-|1.0.0.28n  |          6|     |     |
+|Model      |Classification |Dataset    |Accuracy    |Recall      |
+|-----------|---------------|-----------|------------|------------| 
+|1.0.0.29n  |         Binary|          8|.9930       |1.0         |
+|1.0.0.29n  |    Multi-class|          8|            |            |
 _Table 1: Performance on Test Set_
 
-Model 1.0.0.28 performed excellent on both the training and validation data, as seen in Figure 1.
+Model 1.0.0.29 performed excellent on both the training and validation data, as seen in Figure 1. 
 
-When retrained on Dataset 6 model 1.0.0.28 scored similar on the training data as it did on the smaller dataset, but the model did not generalize to the validation data. On the validation data the model seemed to predict everything as negative, which kept the accuracy near the most frequent baseline. The precision was excellent, but the recall approached zero. This is shown in Figure 2. 
+<img src="accuracy_1.0.0.29b.png" alt="Binary Accuracy and Recall of Model 1.0.0.29">
 
-_figures 1 and 2 - model 1.0.0.28_
+_Figure 1 - Binary Accuracy and Recall for Model 1.0.0.29_
 
 Model 1.0.1.39 also performed remarkably well on both the training and validation data on Dataset 5, but also performed well on Dataset 6. This model was more complicated than model 1.0.0.28, and included a branch to attempt to detect smaller abnormalities. 
 
