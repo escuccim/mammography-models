@@ -72,7 +72,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s0.0.1.2l"
+model_name = "model_s0.0.1.3l"
 # 0.0.0.1 - trying a smaller model as the bigger ones seem to overfit, basically same as 1.0.0.28 but with much less filters in each layer
 # 0.0.1.1 - adding a big, long branch
 # 0.0.1.2 - increased numbers of filters
@@ -258,9 +258,9 @@ with graph.as_default():
         if dropout:
             pool4 = tf.layers.dropout(pool4, rate=pooldropout_rate, seed=109, training=training)
 
-    conv5 = _conv2d_batch_norm(pool4, 256, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=None, lambd=lamC, name="5.0")
+    conv5 = _conv2d_batch_norm(pool4, 384, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=None, lambd=lamC, name="5.0")
 
-    conv5 = _conv2d_batch_norm(conv5, 256, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=None, lambd=lamC, name="5.1")
+    conv5 = _conv2d_batch_norm(conv5, 384, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=None, lambd=lamC, name="5.1")
 
     # Max pooling layer 4
     with tf.name_scope('pool5') as scope:
