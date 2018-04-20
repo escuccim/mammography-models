@@ -2,6 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="98c4e5b0-4f90-4540-b87f-9bd6d2ddc583" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change beforePath="$PROJECT_DIR$/candidate_0.0.0.1b.py" afterPath="$PROJECT_DIR$/candidate_0.0.0.1b.py" />
       <change beforePath="$PROJECT_DIR$/candidate_0.0.1.1l.py" afterPath="$PROJECT_DIR$/candidate_0.0.1.1l.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -35,21 +37,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="candidate_0.0.0.1b.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="candidate_0.0.0.1b.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/candidate_0.0.0.1b.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="165">
-              <caret line="76" column="0" lean-forward="true" selection-start-line="76" selection-start-column="0" selection-end-line="76" selection-end-column="0" />
+            <state relative-caret-position="495">
+              <caret line="50" column="13" lean-forward="false" selection-start-line="50" selection-start-column="13" selection-end-line="50" selection-end-column="13" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="candidate_0.0.1.1l.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="candidate_0.0.1.1l.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/candidate_0.0.1.1l.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1584">
-              <caret line="56" column="22" lean-forward="false" selection-start-line="56" selection-start-column="22" selection-end-line="56" selection-end-column="22" />
+            <state relative-caret-position="33">
+              <caret line="49" column="13" lean-forward="true" selection-start-line="49" selection-start-column="12" selection-end-line="49" selection-end-column="13" />
               <folding />
             </state>
           </provider>
@@ -161,13 +163,13 @@
         <option value="$PROJECT_DIR$/ReadMe.md" />
         <option value="$PROJECT_DIR$/candidate_1.0.0.30l.py" />
         <option value="$PROJECT_DIR$/candidate_1.1.0.40l.py" />
-        <option value="$PROJECT_DIR$/candidate_0.0.0.1b.py" />
         <option value="$PROJECT_DIR$/candidate_1.0.0.29.py" />
         <option value="$PROJECT_DIR$/candidate_1.0.0.28.py" />
         <option value="$PROJECT_DIR$/candidate_1.2.0.05l.py" />
         <option value="$PROJECT_DIR$/candidate_1.0.0.28-bu.py" />
         <option value="$PROJECT_DIR$/candidate_0.0.1.1b.py" />
         <option value="$PROJECT_DIR$/candidate_0.0.1.1l.py" />
+        <option value="$PROJECT_DIR$/candidate_0.0.0.1b.py" />
       </list>
     </option>
   </component>
@@ -651,18 +653,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/candidate_0.0.0.1b.py">
+    <entry file="file://$PROJECT_DIR$/candidate_0.0.1.1l.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="76" column="0" lean-forward="true" selection-start-line="76" selection-start-column="0" selection-end-line="76" selection-end-column="0" />
+        <state relative-caret-position="33">
+          <caret line="49" column="13" lean-forward="true" selection-start-line="49" selection-start-column="12" selection-end-line="49" selection-end-column="13" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/candidate_0.0.1.1l.py">
+    <entry file="file://$PROJECT_DIR$/candidate_0.0.0.1b.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1584">
-          <caret line="56" column="22" lean-forward="false" selection-start-line="56" selection-start-column="22" selection-end-line="56" selection-end-column="22" />
+        <state relative-caret-position="495">
+          <caret line="50" column="13" lean-forward="false" selection-start-line="50" selection-start-column="13" selection-end-line="50" selection-end-column="13" />
           <folding />
         </state>
       </provider>
