@@ -70,7 +70,7 @@ print("Number of classes:", num_classes)
 ## Build the graph
 graph = tf.Graph()
 
-model_name = "model_s1.0.0.29l.8.2"
+model_name = "model_s1.0.0.29l.8.3"
 ## Change Log
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
@@ -595,8 +595,14 @@ with graph.as_default():
     # get the probabilites for the classes
     probabilities = tf.nn.softmax(logits, name="probabilities")
 
-    # Compute predictions from the probabilities
-    predictions = tf.argmax(probabilities, axis=1, output_type=tf.int64)
+    #################################################
+    ## Compute predictions from the probabilities
+    # if we have multi-class do an argmax on the probabilities
+    if num_classes != 2:
+        predictions = tf.argmax(probabilities, axis=1, output_type=tf.int64)
+    # else if we have binary, use the threshold
+    else:
+        predictions = tf.cast(tf.greater(probabilities[:,1], threshold), tf.int32)
 
     # get the accuracy
     accuracy, acc_op = tf.metrics.accuracy(

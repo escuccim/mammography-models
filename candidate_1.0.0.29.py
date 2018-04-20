@@ -580,8 +580,8 @@ with graph.as_default():
         # the scan is abnormal if the probability is greater than the threshold
         is_abnormal = tf.cast(tf.greater(abnormal_probability, threshold), tf.int64)
 
-        # Compute predictions from the probabilities - if the scan is normal we ignore the other probabilities
-        predictions = is_abnormal * tf.argmax(probabilities[:,1:], axis=1, output_type=tf.int64)
+        # If the scan is normal per the threshold we will ignore the rest of the logits
+        predictions = is_abnormal * tf.argmax(probabilities, axis=1, output_type=tf.int64)
     else:
         predictions = tf.cast(tf.greater(abnormal_probability, threshold), tf.int32)
 
