@@ -105,7 +105,7 @@ Both models performed better than expected on Dataset 5, but when retrained from
 |1.0.0.29n  |         Binary|          8|.9930       |1.0         |
 |1.0.0.29n  |    Multi-class|          8|            |            |
 
-<div style="text-align:center">_Table 1: Performance on Test Set_</div>
+<p style="text-align:center"><i>Table 1: Performance on Test Set</i></p>
 
 Model 1.0.0.29 performed excellent on both the training and validation data, as seen in Figure 1. 
 
