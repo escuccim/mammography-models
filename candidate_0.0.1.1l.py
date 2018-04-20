@@ -47,7 +47,7 @@ steps_per_epoch = int(total_records / batch_size)
 print("Steps per epoch:", steps_per_epoch)
 
 # lambdas
-lamC = 0.00010
+lamC = 0.00001
 lamF = 0.00250
 
 # use dropout
