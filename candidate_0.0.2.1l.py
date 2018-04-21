@@ -105,21 +105,20 @@ with graph.as_default():
         X = tf.cast(X, dtype=tf.float32)
 
     # Convolutional layer 1
-    conv0_res = _conv2d_batch_norm(X, 64, kernel_size=(3,3), stride=(2,2), training=training, epsilon=1e-8, padding="VALID", seed=100, lambd=lamC, name="1.1", activation=None)
-
-    # apply the relu
-    conv0 = tf.nn.relu(conv0_res, name='relu_1.4.1')
+    conv0 = _conv2d_batch_norm(X, 64, kernel_size=(3,3), stride=(2,2), training=training, epsilon=1e-8, padding="VALID", seed=100, lambd=lamC, name="1.1")
 
     ##################################
     ## Branch 1
-    conv1 = _conv2d_batch_norm(conv0, 32, kernel_size=(1, 1), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=101, lambd=lamC, name="1.2")
+    conv1_res = _conv2d_batch_norm(conv0, 32, kernel_size=(1, 1), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=101, lambd=lamC, name="1.2", activation=None)
+
+    conv1 = tf.nn.relu(conv1_res, name="relu_1.1.1")
 
     conv1 = _conv2d_batch_norm(conv1, 32, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=102, lambd=lamC, name="1.3")
 
     conv1  = _conv2d_batch_norm(conv1, 32, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=103, lambd=lamC, name="1.4", activation=None)
 
     # create the residual connection
-    conv1 = conv1 + conv0_res
+    conv1 = conv1 + conv1_res
 
     # apply the relu
     conv1 = tf.nn.relu(conv1, name='relu_1.4.1')
@@ -184,11 +183,7 @@ with graph.as_default():
     conv11 = _conv2d_batch_norm(conv0, 32, kernel_size=(1, 1), stride=(1, 1), training=training, epsilon=1e-8,
                                padding="SAME", seed=None, lambd=lamC, name="1.1.2")
 
-    conv11_res = _conv2d_batch_norm(conv11, 32, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=None, lambd=lamC, name="1.1.3", activation=None)
-
-    # add the residual and apply relu
-    conv11 = conv11_res + conv0_res
-    conv11 = tf.nn.relu(conv11, name='relu_1.1.3.1')
+    conv11 = _conv2d_batch_norm(conv11, 32, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=None, lambd=lamC, name="1.1.3")
 
     # Max pooling layer 1
     with tf.name_scope('pool1.1') as scope:
