@@ -72,7 +72,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s0.0.1.4l"
+model_name = "model_s0.0.1.5l"
 # 0.0.0.1 - trying a smaller model as the bigger ones seem to overfit, basically same as 1.0.0.28 but with much less filters in each layer
 # 0.0.1.1 - adding a big, long branch
 # 0.0.1.2 - increased numbers of filters
