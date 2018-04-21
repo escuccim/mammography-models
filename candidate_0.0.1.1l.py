@@ -72,10 +72,11 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s0.0.1.3l"
+model_name = "model_s0.0.1.4l"
 # 0.0.0.1 - trying a smaller model as the bigger ones seem to overfit, basically same as 1.0.0.28 but with much less filters in each layer
 # 0.0.1.1 - adding a big, long branch
 # 0.0.1.2 - increased numbers of filters
+# 0.0.1.4 - changing structure of branches
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -153,24 +154,7 @@ with graph.as_default():
 
     conv3 = _conv2d_batch_norm(conv3, 96, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=None, lambd=lamC, name="3.1")
 
-    # Max pooling layer 2
-    with tf.name_scope('pool3') as scope:
-        pool3 = tf.layers.max_pooling2d(
-            conv3,  # Input
-            pool_size=(2, 2),  # Pool size: 3x3
-            strides=(2, 2),  # Stride: 2
-            padding='SAME',  # "same" padding
-            name='pool3'
-        )
-
-        # optional dropout
-        if dropout:
-            pool3 = tf.layers.dropout(pool3, rate=pooldropout_rate, seed=106, training=training)
-
-    # conv layer 4
-    conv4 = _conv2d_batch_norm(pool3, 128, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=None, lambd=lamC, name="4.0")
-
-    conv4 = _conv2d_batch_norm(conv4, 128, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=None, lambd=lamC, name="4.1")
+    conv3 = _conv2d_batch_norm(conv3, 96, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=None, lambd=lamC, name="3.2")
 
     ##################################
     ## Branch 2
@@ -219,10 +203,20 @@ with graph.as_default():
     conv31 = _conv2d_batch_norm(pool21, 96, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8,
                                padding="SAME", seed=None, lambd=lamC, name="3.1.0")
 
-    # Max pooling layer 2
+    #########################################################
+    ## Merge
+    # concat 3
+    with tf.name_scope("concat3") as scope:
+        concat3 = tf.concat(
+            [conv3, conv31],
+            axis=3,
+            name='concat3'
+        )
+
+    # Max pooling layer 3
     with tf.name_scope('pool3.1') as scope:
-        pool31 = tf.layers.max_pooling2d(
-            conv31,  # Input
+        pool3 = tf.layers.max_pooling2d(
+            concat3,  # Input
             pool_size=(2, 2),  # Pool size: 3x3
             strides=(2, 2),  # Stride: 2
             padding='SAME',  # "same" padding
@@ -231,24 +225,19 @@ with graph.as_default():
 
         # optional dropout
         if dropout:
-            pool31 = tf.layers.dropout(pool31, rate=pooldropout_rate, seed=106, training=training)
+            pool3 = tf.layers.dropout(pool3, rate=pooldropout_rate, seed=106, training=training)
 
     # conv layer 4
-    conv41 = _conv2d_batch_norm(pool31, 128, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8,
-                               padding="SAME", seed=None, lambd=lamC, name="4.1.0")
+    conv4 = _conv2d_batch_norm(pool3, 256, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8,
+                                padding="SAME", seed=None, lambd=lamC, name="4.1")
 
-    # concat 4
-    with tf.name_scope("concat4") as scope:
-        concat4 = tf.concat(
-            [conv4, conv41],
-            axis=3,
-            name='concat4'
-        )
+    conv4 = _conv2d_batch_norm(conv4, 256, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8,
+                               padding="SAME", seed=None, lambd=lamC, name="4.2")
 
     # Max pooling layer 3
     with tf.name_scope('pool4') as scope:
         pool4 = tf.layers.max_pooling2d(
-            concat4,  # Input
+            conv4,  # Input
             pool_size=(2, 2),  # Pool size: 2x2
             strides=(2, 2),  # Stride: 2
             padding='SAME',  # "same" padding
