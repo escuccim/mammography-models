@@ -72,12 +72,13 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s0.0.2.01l"
+model_name = "model_s0.0.2.02l"
 # 0.0.0.1 - trying a smaller model as the bigger ones seem to overfit, basically same as 1.0.0.28 but with much less filters in each layer
 # 0.0.1.1 - adding a big, long branch
 # 0.0.1.2 - increased numbers of filters
 # 0.0.1.4 - changing structure of branches
 # 0.0.2.01 - adding residual connections
+# 0.0.2.02 - fixed residuals
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -118,7 +119,7 @@ with graph.as_default():
     conv1  = _conv2d_batch_norm(conv1, 32, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=103, lambd=lamC, name="1.4", activation=None)
 
     # create the residual connection
-    conv1 = conv1 + conv1_res
+    conv1 = tf.add(conv1, conv1_res, name="res_1.4")
 
     # apply the relu
     conv1 = tf.nn.relu(conv1, name='relu_1.4.1')
@@ -147,7 +148,7 @@ with graph.as_default():
     conv2 = _conv2d_batch_norm(conv2, 64, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=None, lambd=lamC, name="2.2", activation=None)
 
     # add the residual and apply relu
-    conv2 = conv2_res + conv2
+    conv2 = tf.add(conv2_res, conv2, name="res_2.2")
     conv2 = tf.nn.relu(conv2, name='relu_2.2.1')
 
     # Max pooling layer 1
@@ -175,7 +176,7 @@ with graph.as_default():
     conv3 = _conv2d_batch_norm(conv3, 96, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=None, lambd=lamC, name="3.2", activation=None)
 
     # add the residual and apply relu
-    conv3 = conv3_res + conv3
+    conv3 = tf.add(conv3_res, conv3, name="res_3.2")
     conv3 = tf.nn.relu(conv3, name='relu_3.2.1')
 
     ##################################
