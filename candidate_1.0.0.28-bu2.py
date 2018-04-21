@@ -11,7 +11,7 @@ from tensorboard import summary as summary_lib
 # If number of epochs has been passed in use that, otherwise default to 50
 parser = argparse.ArgumentParser()
 parser.add_argument("-e", "--epochs", help="number of epochs to train", default=30, type=int)
-parser.add_argument("-d", "--data", help="which dataset to use", default=8, type=int)
+parser.add_argument("-d", "--data", help="which dataset to use", default=5, type=int)
 parser.add_argument("-m", "--model", help="model to initialize with", default=None)
 parser.add_argument("-l", "--label", help="how to classify data", default="label")
 parser.add_argument("-a", "--action", help="action to perform", default="train")
@@ -70,7 +70,7 @@ print("Number of classes:", num_classes)
 ## Build the graph
 graph = tf.Graph()
 
-model_name = "model_s1.0.0.29l.13"
+model_name = "model_s1.0.0.29l.8"
 ## Change Log
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
@@ -96,7 +96,6 @@ model_name = "model_s1.0.0.29l.13"
 # 1.0.0.29f - putting weighted x-entropy back
 # 1.0.0.30b - changed some hyperparameters
 # 1.0.0.31l - added decision threshold to predictions
-# 1.0.0.32 - removed conv lambda completely, lowered pool dropout rate
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -564,9 +563,6 @@ with graph.as_default():
         name="logits"
     )
 
-    # get the fully connected variables so we can only train them when retraining the network
-    fc_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "fc")
-
     with tf.variable_scope('conv1', reuse=True):
         conv_kernels1 = tf.get_variable('kernel')
         kernel_transposed = tf.transpose(conv_kernels1, [3, 0, 1, 2])
@@ -578,10 +574,9 @@ with graph.as_default():
     # Regular mean cross entropy
     #mean_ce = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits))
 
-    #########################################################
-    ## Weight the positive examples higher
+    # Different weighting method
     # This will weight the positive examples higher so as to improve recall
-    weights = tf.multiply(2, tf.cast(tf.greater(y, 0), tf.int32)) + 1
+    weights = tf.multiply(1, tf.cast(tf.greater(y, 0), tf.int32)) + 1
     mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=logits, weights=weights))
 
     # Add in l2 loss
@@ -596,14 +591,8 @@ with graph.as_default():
     # get the probabilites for the classes
     probabilities = tf.nn.softmax(logits, name="probabilities")
 
-    #################################################
-    ## Compute predictions from the probabilities
-    # if we have multi-class do an argmax on the probabilities
-    if num_classes != 2:
-        predictions = tf.argmax(probabilities, axis=1, output_type=tf.int64)
-    # else if we have binary, use the threshold
-    else:
-        predictions = tf.cast(tf.greater(probabilities[:,1], threshold), tf.int32)
+    # Compute predictions from the probabilities
+    predictions = tf.argmax(probabilities, axis=1, output_type=tf.int64)
 
     # get the accuracy
     accuracy, acc_op = tf.metrics.accuracy(
@@ -623,17 +612,24 @@ with graph.as_default():
 
         recall, rec_op = tf.metrics.recall(labels=collapsed_labels, predictions=collapsed_predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="recall")
         precision, prec_op = tf.metrics.precision(labels=collapsed_labels, predictions=collapsed_predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="precision")
+        f1_score = 2 * ((precision * recall) / (precision + recall))
 
+
+        _, update_op = summary_lib.pr_curve_streaming_op(name='pr_curve',
+                                                        predictions=(1 - probabilities[:, 0]),
+                                                        labels=collapsed_labels,
+                                                        updates_collections=tf.GraphKeys.UPDATE_OPS,
+                                                        num_thresholds=20)
     else:
         recall, rec_op = tf.metrics.recall(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="recall")
         precision, prec_op = tf.metrics.precision(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="precision")
+        f1_score = 2 * ( (precision * recall) / (precision + recall))
 
-    f1_score = 2 * ((precision * recall) / (precision + recall))
-    _, update_op = summary_lib.pr_curve_streaming_op(name='pr_curve',
-                                                     predictions=(1 - probabilities[:, 0]),
-                                                     labels=y,
-                                                     updates_collections=tf.GraphKeys.UPDATE_OPS,
-                                                     num_thresholds=20)
+        _, update_op = summary_lib.pr_curve_streaming_op(name='pr_curve',
+                                                         predictions=probabilities[:, 1],
+                                                         labels=y,
+                                                         updates_collections=tf.GraphKeys.UPDATE_OPS,
+                                                         num_thresholds=20)
 
     tf.summary.scalar('recall_1', recall, collections=["summaries"])
     tf.summary.scalar('precision_1', precision, collections=["summaries"])
@@ -735,7 +731,7 @@ with tf.Session(graph=graph, config=config) as sess:
             sess.run(tf.global_variables_initializer())
 
             # create the initializer function to initialize the weights
-            init_fn = load_weights(init_model, exclude=["fc1", "logits", "bn_fc2", "bn_fc1", "fc2", "global_step"])
+            init_fn = load_weights(init_model, exclude=["fc1", "fc2", "global_step"])
 
             # run the initializer
             init_fn(sess)
