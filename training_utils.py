@@ -399,7 +399,7 @@ def evaluate_model():
     pass
 
 ## functions to help build the graph
-def _conv2d_batch_norm(input, filters, kernel_size=(3,3), stride=(1,1), training = tf.placeholder(dtype=tf.bool, name="is_training"), epsilon=1e-8, padding="SAME", seed=None, lambd=0.0, name=None):
+def _conv2d_batch_norm(input, filters, kernel_size=(3,3), stride=(1,1), training = tf.placeholder(dtype=tf.bool, name="is_training"), epsilon=1e-8, padding="SAME", seed=None, lambd=0.0, name=None, activation="relu"):
     with tf.name_scope('layer_'+name) as scope:
         conv = tf.layers.conv2d(
             input,
@@ -429,8 +429,9 @@ def _conv2d_batch_norm(input, filters, kernel_size=(3,3), stride=(1,1), training
             name='bn_'+name
         )
 
-        # apply relu
-        conv = tf.nn.relu(conv, name='relu_'+name)
+        if activation == "relu":
+            # apply relu
+            conv = tf.nn.relu(conv, name='relu_'+name)
 
     return conv
 
