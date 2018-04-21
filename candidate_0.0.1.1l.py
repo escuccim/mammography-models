@@ -37,9 +37,9 @@ train_files, total_records = get_training_data(what=dataset)
 epsilon = 1e-8
 
 # learning rate
-epochs_per_decay = 5
+epochs_per_decay = 10
 starting_rate = 0.001
-decay_factor = 0.85
+decay_factor = 0.80
 staircase = True
 
 # learning rate decay variables
@@ -47,14 +47,14 @@ steps_per_epoch = int(total_records / batch_size)
 print("Steps per epoch:", steps_per_epoch)
 
 # lambdas
-lamC = 0.00001
+lamC = 0.00000
 lamF = 0.00250
 
 # use dropout
 dropout = True
-fcdropout_rate = 0.6
-convdropout_rate = 0.01
-pooldropout_rate = 0.20
+fcdropout_rate = 0.5
+convdropout_rate = 0.001
+pooldropout_rate = 0.1
 
 if how == "label":
     num_classes = 5
