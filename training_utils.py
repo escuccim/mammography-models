@@ -299,6 +299,15 @@ def download_data(what=4):
             _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/all_mias_labels.npy',
                               'mias_test_labels_enc.npy')
 
+        # download MIAS test data
+        if not os.path.exists(os.path.join("data", "all_mias_slices9.npy")):
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/all_mias_slices9.npy',
+                              'all_mias_slices9.npy')
+
+        if not os.path.exists(os.path.join("data", "all_mias_labels9.npy")):
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/all_mias_labels9.npy',
+                              'all_mias_labels9.npy')
+
     elif what == 5:
         # download and unzip tfrecords training data
         if not os.path.exists(os.path.join("data", "training5_0.tfrecords")):
