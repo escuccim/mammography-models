@@ -142,8 +142,12 @@ def load_validation_data(data="validation", how="normal", which=5, percentage=1)
             labels = np.load(os.path.join("data", "test9_labels.npy"))
 
     elif data == "mias":
-        X_cv = np.load(os.path.join("data", "mias_test_images.npy"))
-        labels = np.load(os.path.join("data", "mias_test_labels_enc.npy"))
+        if which == 9:
+            X_cv = np.load(os.path.join("data", "all_mias_slices9.npy"))
+            labels = np.load(os.path.join("data", "all_mias_labels9.npy"))
+        else:
+            X_cv = np.load(os.path.join("data", "mias_test_images.npy"))
+            labels = np.load(os.path.join("data", "mias_test_labels_enc.npy"))
 
     # encode the labels appropriately
     if how == "label":
@@ -262,7 +266,7 @@ def download_data(what=4):
 
         # download validation labels
         if not os.path.exists(os.path.join("data", "cv9_labels.npy")):
-            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/cv8_labels.npy','cv9_labels.npy')
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/cv9_labels.npy','cv9_labels.npy')
 
         if not os.path.exists(os.path.join("data", "cv9_filenames.npy")):
             _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/cv9_filenames.npy',
