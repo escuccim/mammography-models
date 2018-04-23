@@ -121,6 +121,9 @@ def load_validation_data(data="validation", how="normal", which=5, percentage=1)
         elif which == 8:
             X_cv = np.load(os.path.join("data", "cv8_data.npy"))
             labels = np.load(os.path.join("data", "cv8_labels.npy"))
+        elif which == 9:
+            X_cv = np.load(os.path.join("data", "cv9_data.npy"))
+            labels = np.load(os.path.join("data", "cv9_labels.npy"))
     elif data == "test":
         if which == 4:
             X_cv = np.load(os.path.join("data", "test4_data.npy"))
@@ -134,10 +137,17 @@ def load_validation_data(data="validation", how="normal", which=5, percentage=1)
         elif which == 8:
             X_cv = np.load(os.path.join("data", "test8_data.npy"))
             labels = np.load(os.path.join("data", "test8_labels.npy"))
+        elif which == 9:
+            X_cv = np.load(os.path.join("data", "test9_data.npy"))
+            labels = np.load(os.path.join("data", "test9_labels.npy"))
 
     elif data == "mias":
-        X_cv = np.load(os.path.join("data", "mias_test_images.npy"))
-        labels = np.load(os.path.join("data", "mias_test_labels_enc.npy"))
+        if which == 9:
+            X_cv = np.load(os.path.join("data", "all_mias_slices9.npy"))
+            labels = np.load(os.path.join("data", "all_mias_labels9.npy"))
+        else:
+            X_cv = np.load(os.path.join("data", "mias_test_images.npy"))
+            labels = np.load(os.path.join("data", "mias_test_labels_enc.npy"))
 
     # encode the labels appropriately
     if how == "label":
@@ -213,6 +223,54 @@ def download_data(what=4):
         if not os.path.exists(os.path.join("data", "cv8_filenames.npy")):
             _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/cv8_filenames.npy',
                               'cv8_filenames.npy')
+
+    if what == 9:
+        # download and unzip tfrecords training data
+        if not os.path.exists(os.path.join("data", "training9_0.tfrecords")):
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training9_0.zip',
+                              'training9_0.zip')
+
+        if not os.path.exists(os.path.join("data", "training9_1.tfrecords")):
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training9_1.zip',
+                              'training9_1.zip')
+
+        if not os.path.exists(os.path.join("data", "training9_2.tfrecords")):
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training9_2.zip',
+                              'training9_2.zip')
+
+        if not os.path.exists(os.path.join("data", "training9_3.tfrecords")):
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training9_3.zip',
+                              'training9_3.zip')
+
+        if not os.path.exists(os.path.join("data", "training9_4.tfrecords")):
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training9_4.zip',
+                              'training9_4.zip')
+
+        # download and unzip test data
+        if not os.path.exists(os.path.join("data", "test9_data.npy")):
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/test9_data.zip',
+                              'test9_data.zip')
+
+        if not os.path.exists(os.path.join("data", "test9_filenames.npy")):
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/test9_filenames.npy',
+                              'test9_filenames.npy')
+
+        # download test labels
+        if not os.path.exists(os.path.join("data", "test9_labels.npy")):
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/test9_labels.npy',
+                              'test9_labels.npy')
+
+        # download and unzip validation data
+        if not os.path.exists(os.path.join("data", "cv9_data.npy")):
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/cv9_data.zip', 'cv9_data.zip')
+
+        # download validation labels
+        if not os.path.exists(os.path.join("data", "cv9_labels.npy")):
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/cv9_labels.npy','cv9_labels.npy')
+
+        if not os.path.exists(os.path.join("data", "cv9_filenames.npy")):
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/cv9_filenames.npy',
+                              'cv9_filenames.npy')
 
     elif what == 1:
         # download main training tfrecords files
@@ -383,6 +441,16 @@ def get_training_data(what=5):
 
         train_files = [train_path_10, train_path_11, train_path_12, train_path_13, train_path_14]
         total_records = 40559
+
+    elif what == 9:
+        train_path_10 = os.path.join("data", "training9_0.tfrecords")
+        train_path_11 = os.path.join("data", "training9_1.tfrecords")
+        train_path_12 = os.path.join("data", "training9_2.tfrecords")
+        train_path_13 = os.path.join("data", "training9_3.tfrecords")
+        train_path_14 = os.path.join("data", "training9_4.tfrecords")
+
+        train_files = [train_path_10, train_path_11, train_path_12, train_path_13, train_path_14]
+        total_records = 43739
 
     else:
         train_path_0 = os.path.join("data", "training_0.tfrecords")
