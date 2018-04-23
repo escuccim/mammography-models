@@ -75,14 +75,14 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s0.0.2.05b"
+model_name = "model_s0.0.3.05b"
 # 0.0.0.1 - trying a smaller model as the bigger ones seem to overfit, basically same as 1.0.0.28 but with much less filters in each layer
 # 0.0.1.1 - adding a big, long branch
 # 0.0.1.2 - increased numbers of filters
 # 0.0.1.4 - changing structure of branches
 # 0.0.2.01 - adding residual connections
 # 0.0.2.02 - fixed residuals
-# 0.0.3.01 - centering input data
+# 0.0.3.05 - centering input data
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
