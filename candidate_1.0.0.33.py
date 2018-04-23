@@ -73,7 +73,7 @@ print("Number of classes:", num_classes)
 ## Build the graph
 graph = tf.Graph()
 
-model_name = "model_s1.0.0.33b"
+model_name = "model_s1.0.0.34b"
 ## Change Log
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
@@ -101,6 +101,7 @@ model_name = "model_s1.0.0.33b"
 # 1.0.0.31l - added decision threshold to predictions
 # 1.0.0.32 - removed conv lambda completely, lowered pool dropout rate
 # 1.0.0.33 - subtracting pre-calculated mean from input data
+# 1.0.0.34 - scaling the input data
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -130,6 +131,9 @@ with graph.as_default():
         # center the pixel data
         mu = tf.constant(mu, name="pixel_mean")
         X = tf.subtract(X, mu, name="centered_input")
+
+        # scale the data
+        X = tf.divide(X, 255.0)
 
     # Convolutional layer 1
     with tf.name_scope('conv1') as scope:
