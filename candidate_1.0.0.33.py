@@ -73,7 +73,7 @@ print("Number of classes:", num_classes)
 ## Build the graph
 graph = tf.Graph()
 
-model_name = "model_s1.0.0.35b"
+model_name = "model_s1.0.0.36b"
 ## Change Log
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
@@ -103,6 +103,7 @@ model_name = "model_s1.0.0.35b"
 # 1.0.0.33 - subtracting pre-calculated mean from input data
 # 1.0.0.34 - scaling the input data
 # 1.0.0.35 - centering by subtracting 128, not the mean
+# 1.0.0.36 - trying centering data with mean instead of scaling
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -130,11 +131,11 @@ with graph.as_default():
         X = tf.cast(X, dtype=tf.float32)
 
         # center the pixel data
-        mu = tf.constant(128.0, name="pixel_mean")
+        mu = tf.constant(mu, name="pixel_mean")
         X = tf.subtract(X, mu, name="centered_input")
 
         # scale the data
-        X = tf.divide(X, 255.0)
+        # X = tf.divide(X, 255.0)
 
     # Convolutional layer 1
     with tf.name_scope('conv1') as scope:
