@@ -121,6 +121,9 @@ def load_validation_data(data="validation", how="normal", which=5, percentage=1)
         elif which == 8:
             X_cv = np.load(os.path.join("data", "cv8_data.npy"))
             labels = np.load(os.path.join("data", "cv8_labels.npy"))
+        elif which == 9:
+            X_cv = np.load(os.path.join("data", "cv9_data.npy"))
+            labels = np.load(os.path.join("data", "cv9_labels.npy"))
     elif data == "test":
         if which == 4:
             X_cv = np.load(os.path.join("data", "test4_data.npy"))
@@ -134,6 +137,9 @@ def load_validation_data(data="validation", how="normal", which=5, percentage=1)
         elif which == 8:
             X_cv = np.load(os.path.join("data", "test8_data.npy"))
             labels = np.load(os.path.join("data", "test8_labels.npy"))
+        elif which == 9:
+            X_cv = np.load(os.path.join("data", "test9_data.npy"))
+            labels = np.load(os.path.join("data", "test9_labels.npy"))
 
     elif data == "mias":
         X_cv = np.load(os.path.join("data", "mias_test_images.npy"))
