@@ -111,7 +111,7 @@ with graph.as_default():
 
         # center the pixel data
         mu = tf.constant(mu, name="pixel_mean")
-        X = tf.sub(X, mu, name="centered_input")
+        X = tf.subtract(X, mu, name="centered_input")
 
     # Convolutional layer 1
     conv0 = _conv2d_batch_norm(X, 64, kernel_size=(3,3), stride=(2,2), training=training, epsilon=1e-8, padding="VALID", seed=100, lambd=lamC, name="1.1")
