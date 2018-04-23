@@ -50,10 +50,9 @@ Multiple datasets were created using different data augmentation techniques. The
 
 While each dataset was evaluated by being trained on, only three are reported on here:
 
-1. Dataset 5 consisted of 39,316 images. The dataset was created using padding around each ROI which was randomly set between 30 and 50 pixels.
-2. Dataset 6 consisted of 62,764 images. This dataset was created using an "everything but the kitchen street" philosophy. Each ROI was extracted with random padding as well as context of double the ROI size, with random cropping, flipping and rotation.  
+2. Dataset 6 consisted of 62,764 images. This dataset was created using an "everything but the kitchen street" approach to the ROI extraction. Each ROI was extracted at size, zoomed, cropped and with random rotation and flipping.   
 3. Dataset 8 consisted of 40,559 images. This dataset used the extraction method 1 described above to provide greater context for each ROI.  
-4. Dataset 9 consisted of x images. This dataset was created in order to do binary classification of scans using extraction method 2. The other datasets used zooms on the ROIs which requires pre-identifying the ROI. This dataset was created to attempt to avoid that problem and train a model which could be used to detect abnormalities in an un-processed scan. 
+4. Dataset 9 consisted of 43,739 images. The previous datasets had used zoomed images of the ROIs. While this worked well for training the models, the fact that the sizes of the ROIs varied quite a bit meant that most of the ROI images were zoomed in or out, making the models not terribly useful for analysing raw scans. This dataset was created specifically to attempt to detect abnormalities in un-processed scans. The ROIs were extracted using method 2 described above.  
 
 ### Data Balance
 Only about 10% of mammograms are abnormal, in order to maximize recall we weighted our training data more heavily towards abnormal scan, with a target of 85% normal. As each ROI was extracted to multiple images, in order to prevent different images of the same ROI appearing in both the training and test data, the existing divisions of the CBIS-DDSM data were maintained. The test data was divided evenly between test and validation data with no shuffling to avoid overlap.
