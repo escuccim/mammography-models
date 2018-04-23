@@ -25,27 +25,35 @@ The DDSM and CBIS-DDSM datasets are relatively small. The images were pre-proces
 ### Data Augmentation
 The CBIS-DDSM scans were of relatively large size, with a mean height of 5295 pixels and a mean width of 3131 pixels. Masks highlighting the ROIs were provided. In order to create training data, the ROIs were extracted from the abnormal images using the masks and sized down to 299x299 pixels. 
 
+The analysis of the UCI data indicated that the edges of an abnormality were important as to determining its pathology and type, and this was confirmed by a radiologist. Levy et al [1] also report that the inclusion of context was an important contributor to the accuracy of the classification. To account for this multiple methods were used to extract the ROIs. The ROIs were extracted at 598x598 and then sized down to 299x299. In order to increase the size of the dataset data augmentation was used, including randomly positioning the ROI within the image, random horizontal flipping, random vertical flipping and random rotation. The ROIs were extracted using two systems of margins which will be detailed below.
+ 
+#### ROI Extraction Method 1
 The ROIs had a mean size of 450 pixels and a standard deviation of 396. In the interest of representing each ROI as well as possible, each ROI was extracted in multiple ways:
 1.	The ROI was extracted at 598x598 at its original size.
 2.	The ROI was zoomed to 598x598, with padding to provide context.
 3.	If the ROI had the size of one dimension more than 1.5 times the other dimension it was extracted as two tiles centered in the center of each half of the ROI along it's largest dimension.
 
-The 598x598 images were then resized to 299x299. In order to increase the size of the dataset data augmentation was used, including randomly positioning the ROI within the image, random horizontal flipping, random vertical flipping and random rotation. The ROIs were extracted using two systems of margins which will be detailed below.
+#### ROI Extraction Method 2
+In order to create a dataset which could be used to train a network to predict if scans were normal or abnormal without resizing them different augmentation techniques were used. For this method the ROIs were not zoomed.
 
+If the ROI was smaller than a 598x598 tile it was extracted with 20% padding on either side. If the ROI was larger than a 598x598 tile it was extracted with 5% padding.
+
+Each ROI image was then randomly cropped three times, with random flips and rotation. 
+
+#### Normal Images
 The normal scans from the DDSM dataset did not have ROIs so were processed differently. As these images had not been pre-processed they contained artifacts such as white borders and white patches of pixels used to cover up personal identifying information. To remove the borders each image was cropped by 7% on each side. In order to attempt to keep these images on the same scale as the CBIS-DDSM images, the DDSM images were sized down by a random factor between 1.8 and 3.2, then segmented into 299x299 tiles with a variable stride between 150 and 200. Each tile was then randomly rotated and flipped.
  
-To avoid the inclusion of images which contained overlay text, or were mostly black background, each tile was then added to the dataset only if it met upper and lower thresholds on mean and variance. The thresholds were determined through random sampling of tiles and tuning of the thresholds to eliminate images which did not contain usable data.
+To avoid the inclusion of images which contained overlay text, or were mostly black background, each tile was then added to the dataset only if it met upper and lower thresholds on mean and variance. The thresholds were determined through random sampling of tiles and tuning of the thresholds to eliminate images which did not contain usable data. 
 
-Multiple datasets were created using different data augmentation techniques. The datasets ranged in size from 27,000 training images to 62,000 training images. The datasets had differing amounts of data augmentation, and different techniques were used to extract the ROIs for each. 
+#### Training Datasets
+Multiple datasets were created using different data augmentation techniques. The datasets ranged in size from 27,000 training images to 62,000 training images. The datasets had differing amounts of data augmentation, and different techniques were used to extract the ROIs for each.
 
-### ROI Context
-The analysis of the UCI data indicated that the edges of an abnormality were important as to determining its pathology and type, and this was confirmed by a radiologist. Levy et al [1] also report that the inclusion of context was an important contributor to the accuracy of the classification.
+While each dataset was evaluated by being trained on, only three are reported on here:
 
-Of the training datasets created, two were used for training:
-
-1. Dataset 5 consisted of 39,316 images. The dataset was created using padding around each ROI which was randomly set between 30 and 50 pixels. 
-2. Dataset 8 consisted of 40,559 images. This dataset used the extraction methodology described above to provide greater context for each ROI.  
-
+1. Dataset 5 consisted of 39,316 images. The dataset was created using padding around each ROI which was randomly set between 30 and 50 pixels.
+2. Dataset 6 consisted of 62,764 images. This dataset was created using an "everything but the kitchen street" philosophy. Each ROI was extracted with random padding as well as context of double the ROI size, with random cropping, flipping and rotation.  
+3. Dataset 8 consisted of 40,559 images. This dataset used the extraction method 1 described above to provide greater context for each ROI.  
+4. Dataset 9 consisted of x images. This dataset was created in order to do binary classification of scans using extraction method 2. The other datasets used zooms on the ROIs which requires pre-identifying the ROI. This dataset was created to attempt to avoid that problem and train a model which could be used to detect abnormalities in an un-processed scan. 
 
 ### Data Balance
 Only about 10% of mammograms are abnormal, in order to maximize recall we weighted our training data more heavily towards abnormal scan, with a target of 85% normal. As each ROI was extracted to multiple images, in order to prevent different images of the same ROI appearing in both the training and test data, the existing divisions of the CBIS-DDSM data were maintained. The test data was divided evenly between test and validation data with no shuffling to avoid overlap.
@@ -103,7 +111,8 @@ Both models performed better than expected on Dataset 5, but when retrained from
 |Model      |Classification |Dataset    |Accuracy    |Recall      |
 |-----------|---------------|-----------|------------|------------| 
 |1.0.0.29n  |         Binary|          8|.9930       |1.0         |
-|1.0.0.29n  |    Multi-class|          8|            |            |
+|1.0.0.29n  |    Multi-class|          6|       |         |
+
 
 <div style="text-align:center;"><i>Table 1: Performance on Test Set</i></div>
 
