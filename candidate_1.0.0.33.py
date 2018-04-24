@@ -73,7 +73,7 @@ print("Number of classes:", num_classes)
 ## Build the graph
 graph = tf.Graph()
 
-model_name = "model_s1.0.0.36b"
+model_name = "model_s1.0.0.36b.8"
 ## Change Log
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
@@ -101,9 +101,9 @@ model_name = "model_s1.0.0.36b"
 # 1.0.0.31l - added decision threshold to predictions
 # 1.0.0.32 - removed conv lambda completely, lowered pool dropout rate
 # 1.0.0.33 - subtracting pre-calculated mean from input data
-# 1.0.0.34 - scaling the input data
+# 1.0.0.34 - scaling the input data by dividing by 255.0
 # 1.0.0.35 - centering by subtracting 128, not the mean
-# 1.0.0.36 - trying centering data with mean instead of scaling
+# 1.0.0.36 - going back to version 33, just subtracting the mean from the data
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
