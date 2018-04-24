@@ -98,6 +98,7 @@ A slightly modified version of VGG-16 was also trained as a benchmark. A full ve
 1. The architecture was altered to accept 299x299 images as input
 2. The stride of the first convolutional layer was changed to 2
 3. The fully connected layers were changed to have 2048 units each instead of 4096.
+4. Batch normalization was included after every layer
 
 These changes brought the memory requirements down to acceptable levels and doubled the training speed. While changing the stride of convolutional layer 1 decreased the training accuracy, we felt that it might allow the model to generalize a bit better.
 
