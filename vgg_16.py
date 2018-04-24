@@ -105,12 +105,11 @@ with graph.as_default():
 
         # center the pixel data
         mu = tf.constant(mu, name="pixel_mean")
-        X = tf.sub(X, mu, name="centered_input")
+        X = tf.subtract(X, mu, name="centered_input")
 
     # Convolutional layer 1
     conv1 = _conv2d_batch_norm(X, 64, kernel_size=(3,3), stride=(1,1), training=training, epsilon=1e-8, padding="SAME", seed=100, lambd=lamC, name="1.1")
-    conv1 = _conv2d_batch_norm(conv1, 64, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8,
-                               padding="SAME", seed=100, lambd=lamC, name="1.2")
+    conv1 = _conv2d_batch_norm(conv1, 64, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=100, lambd=lamC, name="1.2")
 
     # Max pooling layer 1
     with tf.name_scope('pool1') as scope:
@@ -129,8 +128,7 @@ with graph.as_default():
     # Layer 2
     conv2 = _conv2d_batch_norm(pool1, 128, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=None, lambd=lamC, name="2.1")
 
-    conv2 = _conv2d_batch_norm(conv2, 128, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8,
-                               padding="SAME", seed=None, lambd=lamC, name="2.2")
+    conv2 = _conv2d_batch_norm(conv2, 128, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=None, lambd=lamC, name="2.2")
 
     # Max pooling layer 1
     with tf.name_scope('pool2') as scope:
@@ -149,8 +147,7 @@ with graph.as_default():
     # Convolutional layer 3
     conv3 = _conv2d_batch_norm(pool2, 256, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=None, lambd=lamC, name="3.1")
 
-    conv3 = _conv2d_batch_norm(conv3, 256, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8,
-                               padding="SAME", seed=None, lambd=lamC, name="3.2")
+    conv3 = _conv2d_batch_norm(conv3, 256, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=None, lambd=lamC, name="3.2")
 
     # Max pooling layer 3
     with tf.name_scope('pool3') as scope:
@@ -165,14 +162,11 @@ with graph.as_default():
         if dropout:
             pool3 = tf.layers.dropout(pool3, rate=pooldropout_rate, seed=115, training=training)
 
-    conv4 = _conv2d_batch_norm(pool3, 512, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8,
-                               padding="SAME", seed=None, lambd=lamC, name="4.1")
+    conv4 = _conv2d_batch_norm(pool3, 512, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=None, lambd=lamC, name="4.1")
 
-    conv4 = _conv2d_batch_norm(conv4, 512, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8,
-                               padding="SAME", seed=None, lambd=lamC, name="4.2")
+    conv4 = _conv2d_batch_norm(conv4, 512, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=None, lambd=lamC, name="4.2")
 
-    conv4 = _conv2d_batch_norm(conv4, 512, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8,
-                               padding="SAME", seed=None, lambd=lamC, name="4.3")
+    conv4 = _conv2d_batch_norm(conv4, 512, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=None, lambd=lamC, name="4.3")
 
     # Max pooling layer 4
     with tf.name_scope('pool4') as scope:
@@ -187,14 +181,11 @@ with graph.as_default():
         if dropout:
             pool4 = tf.layers.dropout(pool4, rate=pooldropout_rate, seed=115, training=training)
 
-    conv5 = _conv2d_batch_norm(pool4, 512, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8,
-                               padding="SAME", seed=None, lambd=lamC, name="5.1")
+    conv5 = _conv2d_batch_norm(pool4, 512, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=None, lambd=lamC, name="5.1")
 
-    conv5 = _conv2d_batch_norm(conv5, 512, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8,
-                               padding="SAME", seed=None, lambd=lamC, name="5.2")
+    conv5 = _conv2d_batch_norm(conv5, 512, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=None, lambd=lamC, name="5.2")
 
-    conv5 = _conv2d_batch_norm(conv5, 512, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8,
-                               padding="SAME", seed=None, lambd=lamC, name="5.3")
+    conv5 = _conv2d_batch_norm(conv5, 512, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=None, lambd=lamC, name="5.3")
 
     # Max pooling layer 5
     with tf.name_scope('pool5') as scope:
@@ -332,7 +323,7 @@ with graph.as_default():
     #########################################################
     ## Weight the positive examples higher
     # This will weight the positive examples higher so as to improve recall
-    weights = tf.multiply(2, tf.cast(tf.greater(y, 0), tf.int32)) + 1
+    weights = tf.multiply(1, tf.cast(tf.greater(y, 0), tf.int32)) + 1
     mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=logits, weights=weights))
 
     # Add in l2 loss
