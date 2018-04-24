@@ -73,7 +73,7 @@ print("Number of classes:", num_classes)
 ## Build the graph
 graph = tf.Graph()
 
-model_name = "model_s1.0.0.36b.8"
+model_name = "model_s1.0.0.37b.8"
 ## Change Log
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
@@ -104,6 +104,7 @@ model_name = "model_s1.0.0.36b.8"
 # 1.0.0.34 - scaling the input data by dividing by 255.0
 # 1.0.0.35 - centering by subtracting 128, not the mean
 # 1.0.0.36 - going back to version 33, just subtracting the mean from the data
+# 1.0.0.37 - lowered x-entropy weighting back to 2 from 3
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -595,7 +596,7 @@ with graph.as_default():
     #########################################################
     ## Weight the positive examples higher
     # This will weight the positive examples higher so as to improve recall
-    weights = tf.multiply(2, tf.cast(tf.greater(y, 0), tf.int32)) + 1
+    weights = tf.multiply(1, tf.cast(tf.greater(y, 0), tf.int32)) + 1
     mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=logits, weights=weights))
 
     # Add in l2 loss
