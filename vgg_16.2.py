@@ -31,7 +31,7 @@ mu = 104.1353
 # download the data
 download_data(what=dataset)
 
-batch_size = 32
+batch_size = 16
 
 train_files, total_records = get_training_data(what=dataset)
 
@@ -75,10 +75,10 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "vgg_16.03"
+model_name = "vgg_16.2.01"
 # vgg_19.01 - attempting to recreate vgg 19 architecture
 # vgg_16.02 - went to vgg 16 architecture, reducing units in fc layers
-# vgg_16.03 - increased batch size as otherwise each epoch will take an hour
+# vgg_16.2.01 - changing first conv layers to stride 2 to get dimensions down to reasonable size
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -110,7 +110,7 @@ with graph.as_default():
         X = tf.subtract(X, mu, name="centered_input")
 
     # Convolutional layer 1
-    conv1 = _conv2d_batch_norm(X, 64, kernel_size=(3,3), stride=(1,1), training=training, epsilon=1e-8, padding="VALID", seed=100, lambd=lamC, name="1.1")
+    conv1 = _conv2d_batch_norm(X, 64, kernel_size=(3,3), stride=(2,2), training=training, epsilon=1e-8, padding="SAME", seed=100, lambd=lamC, name="1.1")
     conv1 = _conv2d_batch_norm(conv1, 64, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=100, lambd=lamC, name="1.2")
 
     # Max pooling layer 1

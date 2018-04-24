@@ -48,8 +48,7 @@ To avoid the inclusion of images which contained overlay text, or were mostly bl
 #### Training Datasets
 Multiple datasets were created using different data augmentation techniques. The datasets ranged in size from 27,000 training images to 62,000 training images. The datasets had differing amounts of data augmentation, and different techniques were used to extract the ROIs for each.
 
-While each dataset was evaluated by being trained on, only three are reported on here:
-
+1. Dataset 5 consisted of 39,316 images. This dataset was the first to use data augmentation so that each ROI was represented in multiple ways.
 2. Dataset 6 consisted of 62,764 images. This dataset was created using an "everything but the kitchen street" approach to the ROI extraction. Each ROI was extracted at size, zoomed, cropped and with random rotation and flipping.   
 3. Dataset 8 consisted of 40,559 images. This dataset used the extraction method 1 described above to provide greater context for each ROI.  
 4. Dataset 9 consisted of 43,739 images. The previous datasets had used zoomed images of the ROIs. While this worked well for training the models, the fact that the sizes of the ROIs varied quite a bit meant that most of the ROI images were zoomed in or out, making the models not terribly useful for analysing raw scans. This dataset was created specifically to attempt to detect abnormalities in un-processed scans. The ROIs were extracted using method 2 described above.  
@@ -72,11 +71,9 @@ As previous work [1] has already dealt with classifying pre-identified abnormali
 When classifying into all five categories, the predictions were also "collapsed" into binary normal/abnormal in order to measure the precision and recall. 
 
 ### ConvNet Architecture
-Our first thought was to train existing ConvNets, such as VGG or Inception, on this dataset. However a lack of computational resources made this impractical. 
+Our first thought was to train existing ConvNets, such as VGG or Inception, on this dataset. However a lack of computational resources made this impractical. In addition, the features of medical scans contain much less variance than does the ImageNet data, so we were concerned that large-scale models like VGG would lead to overfitting. For these reasons we decided to design our own architecture specifically for this task, attempting to keep the models as simple as possible. 
 
-The features of medical scans are very different from the features of ImageNet images used to train these ConvNets and we were concerned that the large size of these models might lead to overfitting. For these reasons we decided to design our own architecture specifically for this task, attempting to keep the models as simple as possible. 
-
-We started with a simple model based on VGG, consisting of stacked 3x3 convolutional layers alternating with max pools followed by fully connected layers. This architecture was iteratively improved, with each iteration changing only one aspect in the architecture and then being evaluated. Techniques evaluated include Inception-style branches [16, 17, 18] and residual connections [19]. 
+We started with a simple model based on VGG, consisting of stacked 3x3 convolutional layers alternating with max pools followed by fully connected layers. Our model had fewer convolutional layers than did VGG and smaller fully connected layers. This architecture was iteratively improved, with each iteration changing only one aspect in the architecture and then being evaluated. Techniques evaluated include Inception-style branches [16, 17, 18] and residual connections [19]. 
 
 The architecture was designed so that the same model could be used for both binary classification and multi-class classification by retraining the fully connected layers. In order to maximize recall a weighted cross entropy loss function was used giving abnormal scans double the weight of normal scans.
 
@@ -87,11 +84,14 @@ The best performing architecture will be detailed below.
 ### Training
 For the model selection phase models were trained on Dataset 5 through 50 epochs with binary labels. Accuracy, precision, recall and f1 score were used to evaluate the models. 
 
-The models which performed well on Dataset 5 were retrained from scratch on Dataset 8 classifying to all 5 categories, on the assumption that this would cause the convolutional filters to extract the most important features.
+The models which performed well on Dataset 5 were retrained from scratch on Datasets 6 and 8 separately for both binary and multi-class classification.
 
-Once the models had been trained on Dataset 8 with all classes, the convolutional layers were frozen and the fully connected layers were then retrained for the normal/abnormal binary classification.
+We had considered using transfer learning from VGG or Inception, but decided that the features of the ImageNet data were different enough from those of radiological scans that it made more sense to learn the features from scratch on this dataset. However, once a model had been trained successfully for multi-class classification, it was then retrained for binary classification with the weights initialized from the pre-trained model. This was done in two manners: 
 
-We had considered using transfer learning from VGG or Inception, but decided that the features of the ImageNet data were different enough from those of radiological scans that it made more sense to learn the features from scratch on this dataset. However, the use of transfer learning between models greatly sped up the training process saving weeks of training time.
+1. Freezing the convolutional weights and just re-training the fully connected layers.
+2. Training all of the layers.
+
+A slightly modified version of VGG-16 was also trained as a benchmark. A full version of VGG-16 required more memory than we had available, so we reduced the number of units in the fully connected layers from 4096 to 2048, we also altered the architecture to accept our 299x299 images as input.  
 
 ## Results
 ### Architecture
@@ -105,16 +105,19 @@ Model 1.0.0.39 is very similar to 1.0.0.28, but with one extra fully connected l
 
 ### Performance
 
-Both models performed better than expected on Dataset 5, but when retrained from scratch on Dataset 6 the simpler model did not perform well.
+The performance of the models turned out to be highly dependent on the dataset used for training combined with the classification method. Binary classification scored significantly better on Dataset 8 while multi-class classification performed best on Dataset 6. 
 
 |Model      |Classification |Dataset    |Accuracy    |Recall      |
 |-----------|---------------|-----------|------------|------------| 
+|1.0.0.29n  |         Binary|          6|.8299       |.0477       |
+|1.0.0.29n  |    Multi-class|          6|.9142       |.9353       |
 |1.0.0.29n  |         Binary|          8|.9930       |1.0         |
-|1.0.0.29n  |    Multi-class|          6|       |         |
+|1.0.0.29n  |    Multi-class|          8|.8890       |.9092       |
 
 
 <div style="text-align:center;"><i>Table 1: Performance on Test Set</i></div>
 
+Dataset 8 was created specifically for multi-class classification, including each ROI with varying amounts of context and different amounts of zoom, so this dataset 
 
 Model 1.0.0.29 performed excellent on both the training and validation data, as seen in Figure 1. 
 
