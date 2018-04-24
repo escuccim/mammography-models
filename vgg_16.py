@@ -75,8 +75,9 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "vgg_16.01"
+model_name = "vgg_16.02"
 # vgg_19.01 - attempting to recreate vgg 19 architecture
+# vgg_16.02 - went to vgg 16 architecture, reducing units in fc layers
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -108,7 +109,7 @@ with graph.as_default():
         X = tf.subtract(X, mu, name="centered_input")
 
     # Convolutional layer 1
-    conv1 = _conv2d_batch_norm(X, 64, kernel_size=(3,3), stride=(1,1), training=training, epsilon=1e-8, padding="SAME", seed=100, lambd=lamC, name="1.1")
+    conv1 = _conv2d_batch_norm(X, 64, kernel_size=(3,3), stride=(1,1), training=training, epsilon=1e-8, padding="VALID", seed=100, lambd=lamC, name="1.1")
     conv1 = _conv2d_batch_norm(conv1, 64, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=100, lambd=lamC, name="1.2")
 
     # Max pooling layer 1
@@ -211,7 +212,7 @@ with graph.as_default():
     with tf.name_scope('fc1') as scope:
         fc1 = tf.layers.dense(
             flat_output,
-            4096,
+            2048,
             activation=None,
             kernel_initializer=tf.variance_scaling_initializer(scale=2, seed=117),
             bias_initializer=tf.zeros_initializer(),
@@ -243,7 +244,7 @@ with graph.as_default():
     with tf.name_scope('fc2') as scope:
         fc2 = tf.layers.dense(
             fc1,  # input
-            4096,  # 1024 hidden units
+            2048,  # 1024 hidden units
             activation=None,  # None
             kernel_initializer=tf.variance_scaling_initializer(scale=2, seed=119),
             bias_initializer=tf.zeros_initializer(),
