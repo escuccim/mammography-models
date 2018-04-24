@@ -31,7 +31,7 @@ mu = 104.1353
 # download the data
 download_data(what=dataset)
 
-batch_size = 32
+batch_size = 16
 
 train_files, total_records = get_training_data(what=dataset)
 

@@ -135,11 +135,11 @@ These results were obtained using a threshold of 0.50. The precision and recall 
 The ability to adjust the threshold could be very useful for radiologists, allowing them to screen out scans which are either definitely negative or definitely positive and allowing them to focus on the more ambiguous scans.
 
 ## Conclusion
-We have demonstrated that Convolutional Neural Networks can be trained to determine whether a section of a mammogram contains an abnormality with recall over 95%, substantially above human performance. Adjusting the decision threshold would further improve the recall. These methods could be used to pre-screen mammograms allowing radiologists to focus on scans which are likely to contain abnormalities.
+While we have been able to achieve high accuracy on both classifying to normal/abnormal as well as classifying the type and pathology of abnormalities, the training data used was specifically tailored for these tasks. Training on dataset 9, which used segments of the scans without zooming in on ROIs, did not yield results better than baseline accuracy.
 
-The models did not generalize as well as we would have liked, this could potentially be addressed with more training data or with more data augmentation. 
+However, as a proof of concept, we have demonstrated that Convolutional Neural Networks can be trained to determine whether a section of a mammogram contains an abnormality with recall over 95%, substantially above human performance. Adjusting the decision threshold would further improve the recall. These methods could be used to pre-screen mammograms allowing radiologists to focus on scans which are likely to contain abnormalities.  
 
-Future work would include creating a complete end-to-end system which would take a full scan as input and determine whether the scan contains any abnormalities, possibly using a sliding window or a YOLO algorithm. Levy et al [1] have shown that ConvNets can be used to classify pre-identified ROIs, those techniques can be combined with the techniques demonstrated here to create such a complete system.  
+The techniques used in this work could be applied to analysing entire mammograms using a sliding window, however this would be very computationally expensive due to the size of raw scans and the fact that the window would need to be resized multiple times. Future work would include applying other techniques to this problem, such as YOLO or attention based models.  
 
 ## References
 [1]	D. Levy, A. Jain, Breast Mass Classification from Mammograms using Deep Convolutional Neural Networks, arXiv:1612.00542v1, 2016
