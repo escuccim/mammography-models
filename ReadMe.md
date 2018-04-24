@@ -73,6 +73,8 @@ When classifying into all five categories, the predictions were also "collapsed"
 ### ConvNet Architecture
 Our first thought was to train existing ConvNets, such as VGG or Inception, on this dataset. However a lack of computational resources made this impractical. In addition, the features of medical scans contain much less variance than does the ImageNet data, so we were concerned that large-scale models like VGG would lead to overfitting. For these reasons we decided to design our own architecture specifically for this task, attempting to keep the models as simple as possible. 
 
+When trying to train models on the first dataset we noticed that while the training accuracy increased as expected, the validation accuracy often seemed to vary randomly and did not appear correlated to the training performance. We suspected that the model might be learning features of the training data which did not generalize, so attempted to create models which would avoid this issue of overfitting.
+
 We started with a simple model based on VGG, consisting of stacked 3x3 convolutional layers alternating with max pools followed by fully connected layers. Our model had fewer convolutional layers than did VGG and smaller fully connected layers. This architecture was iteratively improved, with each iteration changing only one aspect in the architecture and then being evaluated. Techniques evaluated include Inception-style branches [16, 17, 18] and residual connections [19]. 
 
 The architecture was designed so that the same model could be used for both binary classification and multi-class classification by retraining the fully connected layers. In order to maximize recall a weighted cross entropy loss function was used giving abnormal scans double the weight of normal scans.
@@ -91,7 +93,13 @@ We had considered using transfer learning from VGG or Inception, but decided tha
 1. Freezing the convolutional weights and just re-training the fully connected layers.
 2. Training all of the layers.
 
-A slightly modified version of VGG-16 was also trained as a benchmark. A full version of VGG-16 required more memory than we had available, so we reduced the number of units in the fully connected layers from 4096 to 2048, we also altered the architecture to accept our 299x299 images as input.  
+A slightly modified version of VGG-16 was also trained as a benchmark. A full version of VGG-16 required more memory than we had available, so we made the following alterations to the architecture:
+
+1. The architecture was altered to accept 299x299 images as input
+2. The stride of the first convolutional layer was changed to 2
+3. The fully connected layers were changed to have 2048 units each instead of 4096.
+
+These changes brought the memory requirements down to acceptable levels and doubled the training speed. While changing the stride of convolutional layer 1 decreased the training accuracy, we felt that it might allow the model to generalize a bit better.
 
 ## Results
 ### Architecture
@@ -117,14 +125,13 @@ The performance of the models turned out to be highly dependent on the dataset u
 
 <div style="text-align:center;"><i>Table 1: Performance on Test Set</i></div>
 
-Dataset 8 was created specifically for multi-class classification, including each ROI with varying amounts of context and different amounts of zoom, so this dataset 
+Dataset 8 was created specifically for multi-class classification, including each ROI with varying amounts of context and different amounts of zoom, so the performance on this dataset may be partly contributable to it's artificial nature. 
 
 Model 1.0.0.29 performed excellent on both the training and validation data, as seen in Figure 1. 
 
 <img src="accuracy_1.0.0.29b.png" alt="Binary Accuracy and Recall of Model 1.0.0.29">
 
 <div style="text-align:center"><i>Figure 1 - Binary Accuracy and Recall for Model 1.0.0.29</i></div>
-
 
 Model 1.0.1.39 also performed remarkably well on both the training and validation data on Dataset 5, but also performed well on Dataset 6. This model was more complicated than model 1.0.0.28, and included a branch to attempt to detect smaller abnormalities. 
 

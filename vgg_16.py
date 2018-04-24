@@ -106,7 +106,7 @@ with graph.as_default():
         X = tf.cast(X, dtype=tf.float32)
 
         # center the pixel data
-        mu = tf.constant(mu, name="pixel_mean")
+        mu = tf.constant(mu, name="pixel_mean, dtype=tf.float32")
         X = tf.subtract(X, mu, name="centered_input")
 
     # Convolutional layer 1

@@ -132,7 +132,7 @@ with graph.as_default():
         X = tf.cast(X, dtype=tf.float32)
 
         # center the pixel data
-        mu = tf.constant(mu, name="pixel_mean")
+        mu = tf.constant(mu, name="pixel_mean", dtype=tf.float32)
         X = tf.subtract(X, mu, name="centered_input")
 
         # scale the data
@@ -589,11 +589,11 @@ with graph.as_default():
     with tf.variable_scope('visualization'):
         tf.summary.image('conv1/filters', kernel_transposed, max_outputs=32, collections=["kernels"])
 
+    #########################################################
     ## Loss function options
     # Regular mean cross entropy
     #mean_ce = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits))
 
-    #########################################################
     ## Weight the positive examples higher
     # This will weight the positive examples higher so as to improve recall
     weights = tf.multiply(1, tf.cast(tf.greater(y, 0), tf.int32)) + 1
