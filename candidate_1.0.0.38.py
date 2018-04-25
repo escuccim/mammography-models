@@ -132,15 +132,15 @@ with graph.as_default():
         X = tf.placeholder_with_default(X_def, shape=[None, 299, 299, 1])
         y = tf.placeholder_with_default(y_def, shape=[None])
 
-        X = tf.cast(X, dtype=tf.float64)
+        X = tf.cast(X, dtype=tf.float32)
 
         # center the pixel data
-        mu = tf.constant(mu, name="pixel_mean", dtype=tf.float64)
-        range = tf.constant(255.0, name="range", dtype=tf.float64)
+        mu = tf.constant(mu, name="pixel_mean", dtype=tf.float32)
+        sigma = tf.constant(44.0, name="range", dtype=tf.float32)
         X = tf.subtract(X, mu, name="centered_input")
 
         # scale the data
-        X = tf.divide(X, range)
+        X = tf.divide(X, sigma)
 
     # Convolutional layer 1
     with tf.name_scope('conv1') as scope:
