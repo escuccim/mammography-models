@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="98c4e5b0-4f90-4540-b87f-9bd6d2ddc583" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/candidate_1.0.0.38.py" afterPath="$PROJECT_DIR$/candidate_1.0.0.38.py" />
+      <change beforePath="$PROJECT_DIR$/inception_utils.py" afterPath="$PROJECT_DIR$/inception_utils.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -29,9 +29,11 @@
       <file leaf-file-name="training_utils.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/training_utils.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="33">
-              <caret line="1" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
-              <folding />
+            <state relative-caret-position="220">
+              <caret line="478" column="133" lean-forward="false" selection-start-line="478" selection-start-column="72" selection-end-line="478" selection-end-column="133" />
+              <folding>
+                <element signature="e#0#18#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -39,8 +41,8 @@
       <file leaf-file-name="candidate_1.0.0.38.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/candidate_1.0.0.38.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-726">
-              <caret line="8" column="46" lean-forward="false" selection-start-line="8" selection-start-column="46" selection-end-line="8" selection-end-column="46" />
+            <state relative-caret-position="693">
+              <caret line="78" column="13" lean-forward="true" selection-start-line="78" selection-start-column="13" selection-end-line="78" selection-end-column="13" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -51,8 +53,8 @@
       <file leaf-file-name="inception_utils.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/inception_utils.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="99">
-              <caret line="3" column="0" lean-forward="true" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
+            <state relative-caret-position="1106">
+              <caret line="217" column="40" lean-forward="false" selection-start-line="217" selection-start-column="40" selection-end-line="217" selection-end-column="40" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -60,12 +62,24 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="candidate_1.1.0.40l.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/candidate_1.1.0.40l.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="0">
+              <caret line="146" column="0" lean-forward="true" selection-start-line="146" selection-start-column="0" selection-end-line="146" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="vgg_16.2.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/vgg_16.2.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1023">
-              <caret line="108" column="0" lean-forward="true" selection-start-line="108" selection-start-column="0" selection-end-line="110" selection-end-column="53" />
-              <folding />
+            <state relative-caret-position="852">
+              <caret line="128" column="96" lean-forward="true" selection-start-line="116" selection-start-column="4" selection-end-line="128" selection-end-column="96" />
+              <folding>
+                <element signature="e#0#18#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -157,9 +171,9 @@
         <option value="$PROJECT_DIR$/vgg_16.2.py" />
         <option value="$PROJECT_DIR$/vgg_16.py" />
         <option value="$PROJECT_DIR$/training_utils.py" />
-        <option value="$PROJECT_DIR$/inception_utils.py" />
         <option value="$PROJECT_DIR$/ReadMe.md" />
         <option value="$PROJECT_DIR$/candidate_1.0.0.38.py" />
+        <option value="$PROJECT_DIR$/inception_utils.py" />
       </list>
     </option>
   </component>
@@ -591,14 +605,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/candidate_1.1.0.40l.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1023">
-          <caret line="168" column="9" lean-forward="true" selection-start-line="163" selection-start-column="4" selection-end-line="168" selection-end-column="9" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/old_models/candidate_1.0.1.39f.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="19895">
@@ -623,37 +629,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/vgg_16.2.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1023">
-          <caret line="108" column="0" lean-forward="true" selection-start-line="108" selection-start-column="0" selection-end-line="110" selection-end-column="53" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/vgg_16.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="858">
           <caret line="106" column="0" lean-forward="true" selection-start-line="106" selection-start-column="0" selection-end-line="109" selection-end-column="53" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/training_utils.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="33">
-          <caret line="1" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/inception_utils.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="99">
-          <caret line="3" column="0" lean-forward="true" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -668,10 +648,48 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/training_utils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="220">
+          <caret line="478" column="133" lean-forward="false" selection-start-line="478" selection-start-column="72" selection-end-line="478" selection-end-column="133" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/vgg_16.2.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="852">
+          <caret line="128" column="96" lean-forward="true" selection-start-line="116" selection-start-column="4" selection-end-line="128" selection-end-column="96" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/candidate_1.1.0.40l.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="146" column="0" lean-forward="true" selection-start-line="146" selection-start-column="0" selection-end-line="146" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/inception_utils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1106">
+          <caret line="217" column="40" lean-forward="false" selection-start-line="217" selection-start-column="40" selection-end-line="217" selection-end-column="40" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/candidate_1.0.0.38.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-726">
-          <caret line="8" column="46" lean-forward="false" selection-start-line="8" selection-start-column="46" selection-end-line="8" selection-end-column="46" />
+        <state relative-caret-position="693">
+          <caret line="78" column="13" lean-forward="true" selection-start-line="78" selection-start-column="13" selection-end-line="78" selection-end-column="13" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
