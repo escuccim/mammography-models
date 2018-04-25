@@ -90,11 +90,6 @@ For the model selection phase models were trained on Dataset 5 through 50 epochs
 
 The models which performed well on Dataset 5 were retrained from scratch on Datasets 6 and 8 separately for both binary and multi-class classification.
 
-We had considered using transfer learning from VGG or Inception, but decided that the features of the ImageNet data were different enough from those of radiological scans that it made more sense to learn the features from scratch on this dataset. However, once a model had been trained successfully for multi-class classification, it was then retrained for binary classification with the weights initialized from the pre-trained model. This was done in two manners: 
-
-1. Freezing the convolutional weights and just re-training the fully connected layers.
-2. Training all of the layers.
-
 A slightly modified version of VGG-16 was also trained as a benchmark. A full version of VGG-16 required more memory than we had available, so we made the following alterations to the architecture:
 
 1. The architecture was altered to accept 299x299 images as input
@@ -103,6 +98,11 @@ A slightly modified version of VGG-16 was also trained as a benchmark. A full ve
 4. Batch normalization was included after every layer
 
 These changes brought the memory requirements down to acceptable levels and doubled the training speed. While changing the stride of convolutional layer 1 decreased the training accuracy, we felt that it might allow the model to generalize a bit better.
+
+### Transfer Learning
+We had considered using transfer learning from VGG or Inception, but decided that the features of the ImageNet data were different enough from those of radiological scans that it made more sense to learn the features from scratch on this dataset. To evaluate the usefulness of transfer learning from pre-trained networks, VGG-19 and Inception v3, the features were extracted from the CBIS-DDSM and DDSM images using pre-trained ConvNets. The final layers of the networks were then retrained to classify to our classes while the convolutional weights were frozen. Our hypothesis that the features extracted by these networks would not be applicable to classifying medical scans seemed to be confirmed by the results of this experiment, which 
+
+Transfer learning did, however, proof very useful in training our own networks, where initializing the convolutional weights to weights pre-trained on our datasets greatly sped up the training process. However, this method was not entirely reliable. When trained past 30 epochs or so, most of our models began to overfit the training data, and continuing to train a pre-trained model usually led to quick drops in validation accuracy unless the convolutional weights were frozen. 
 
 ## Results
 ### Architecture
@@ -116,14 +116,19 @@ Model 1.0.0.39 is very similar to 1.0.0.28, but with one extra fully connected l
 
 ### Performance
 
+
 The performance of the models turned out to be highly dependent on the dataset used for training combined with the classification method. Binary classification scored significantly better on Dataset 8 while multi-class classification performed best on Dataset 6. 
 
-|Model      |Classification |Dataset    |Accuracy    |Recall      |
-|-----------|---------------|-----------|------------|------------| 
-|1.0.0.29n  |         Binary|          6|.8299       |.0477       |
-|1.0.0.29n  |    Multi-class|          6|.9142       |.9353       |
-|1.0.0.29n  |         Binary|          8|.9930       |1.0         |
-|1.0.0.29n  |    Multi-class|          8|.8890       |.9092       |
+|Model      |Classification |Dataset    |Accuracy    |Recall      |Initialization |
+|-----------|---------------|-----------|------------|------------|---------------|
+|VGG-16.02  |         Binary|          9|       |       |     |
+|1.0.0.29n  |    Multi-class|          6|.9142       |.9353       |Scratch        |
+|1.0.0.29n  |         Binary|          6|.8299       |.0477       |Scratch        |
+|1.0.0.29n  |    Multi-class|          6|.9142       |.9353       |Scratch        |
+|1.0.0.29n  |         Binary|          8|.9930       |1.0         |Scratch        |
+|1.0.0.29n  |    Multi-class|          8|.8890       |.9092       |Scratch        |
+|1.0.0.41   |         Binary|          9|       |         |Scratch        |
+|1.0.0.41   |    Multi-class|          9|       |       |Scratch        |
 
 
 <div style="text-align:center;"><i>Table 1: Performance on Test Set</i></div>
