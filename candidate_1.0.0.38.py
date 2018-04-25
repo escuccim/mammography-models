@@ -15,6 +15,7 @@ parser.add_argument("-d", "--data", help="which dataset to use", default=9, type
 parser.add_argument("-m", "--model", help="model to initialize with", default=None)
 parser.add_argument("-l", "--label", help="how to classify data", default="normal")
 parser.add_argument("-a", "--action", help="action to perform", default="train")
+parser.add_argument("-f", "--freeze", help="whether to freeze convolutional layers", nargs='?', const=True, default=False)
 parser.add_argument("-t", "--threshold", help="decision threshold", default=0.5, type=int)
 args = parser.parse_args()
 
@@ -24,6 +25,7 @@ init_model = args.model
 how = args.label
 action = args.action
 threshold = args.threshold
+freeze = args.freeze
 
 # precalculated pixel mean of images
 mu = 104.1353
@@ -606,8 +608,11 @@ with graph.as_default():
     # Adam optimizer
     optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate)
 
-    # Minimize cross-entropy
-    train_op = optimizer.minimize(loss, global_step=global_step, var_list=fc_vars)
+    # Minimize cross-entropy - freeze certain layers depending on input
+    if freeze:
+        train_op = optimizer.minimize(loss, global_step=global_step, var_list=fc_vars)
+    else:
+        train_op = optimizer.minimize(loss, global_step=global_step)
 
     # get the probabilites for the classes
     probabilities = tf.nn.softmax(logits, name="probabilities")
