@@ -121,14 +121,14 @@ The performance of the models turned out to be highly dependent on the dataset u
 
 |Model      |Classification |Dataset    |Accuracy    |Recall      |Initialization |
 |-----------|---------------|-----------|------------|------------|---------------|
-|VGG-16.02  |         Binary|          9|       |       |     |
+|VGG-16.02  |         Binary|          9|            |            |Scratch        |
 |1.0.0.29n  |    Multi-class|          6|.9142       |.9353       |Scratch        |
 |1.0.0.29n  |         Binary|          6|.8299       |.0477       |Scratch        |
 |1.0.0.29n  |    Multi-class|          6|.9142       |.9353       |Scratch        |
 |1.0.0.29n  |         Binary|          8|.9930       |1.0         |Scratch        |
 |1.0.0.29n  |    Multi-class|          8|.8890       |.9092       |Scratch        |
-|1.0.0.41   |         Binary|          9|       |         |Scratch        |
-|1.0.0.41   |    Multi-class|          9|       |       |Scratch        |
+|1.0.0.41b  |         Binary|          9|.7721       |.7852       |Scratch        |
+|1.0.0.41l  |    Multi-class|          9|            |            |C 1.0.0.41b    |
 
 
 <div style="text-align:center;"><i>Table 1: Performance on Test Set</i></div>
