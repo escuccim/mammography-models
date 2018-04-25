@@ -73,7 +73,7 @@ print("Number of classes:", num_classes)
 ## Build the graph
 graph = tf.Graph()
 
-model_name = "model_s1.0.0.39b.9"
+model_name = "model_s1.0.0.40b.9"
 ## Change Log
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
@@ -107,6 +107,7 @@ model_name = "model_s1.0.0.39b.9"
 # 1.0.0.37 - lowered x-entropy weighting back to 2 from 3
 # 1.0.0.38 - scaling the input data ignoring the mean
 # 1.0.0.39 - scaling and centering input data, removed weighted x-entropy
+# 1.0.0.40 - casting input to float64, maybe that will resolve the issues?
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -131,14 +132,15 @@ with graph.as_default():
         X = tf.placeholder_with_default(X_def, shape=[None, 299, 299, 1])
         y = tf.placeholder_with_default(y_def, shape=[None])
 
-        X = tf.cast(X, dtype=tf.float32)
+        X = tf.cast(X, dtype=tf.float64)
 
         # center the pixel data
-        mu = tf.constant(mu, name="pixel_mean", dtype=tf.float32)
+        mu = tf.constant(mu, name="pixel_mean", dtype=tf.float64)
+        range = tf.constant(255.0, name="range", dtype=tf.float64)
         X = tf.subtract(X, mu, name="centered_input")
 
         # scale the data
-        X = tf.divide(X, 255.0)
+        X = tf.divide(X, range)
 
     # Convolutional layer 1
     with tf.name_scope('conv1') as scope:

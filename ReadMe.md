@@ -77,7 +77,9 @@ When trying to train models on the first dataset we noticed that while the train
 
 We started with a simple model based on VGG, consisting of stacked 3x3 convolutional layers alternating with max pools followed by fully connected layers. Our model had fewer convolutional layers than did VGG and smaller fully connected layers. This architecture was iteratively improved, with each iteration changing only one aspect in the architecture and then being evaluated. Techniques evaluated include Inception-style branches [16, 17, 18] and residual connections [19]. 
 
-The architecture was designed so that the same model could be used for both binary classification and multi-class classification by retraining the fully connected layers. In order to maximize recall a weighted cross entropy loss function was used giving abnormal scans double the weight of normal scans.
+The architecture was designed so that the same model could be used for both binary classification and multi-class classification by retraining the fully connected layers. 
+
+Two loss functions were evaluated - a normal cross entropy and a weighted cross entropy was also evaluated which weighted abnormal examples at double the weight of normal examples. This was an attempt to improve recall. In some cases the weighted cross-entropy caused the model to predict everything as positive. 
 
 The models were constructed using TensorFlow and metrics were logged to TensorBoard. Batch normalization [15] was used for every layer, with dropout applied to the fully connected and pooling layers, and L2 regularization applied to all layers, with different lambdas for convolutional layers and fully connected layers.
 
