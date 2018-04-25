@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="98c4e5b0-4f90-4540-b87f-9bd6d2ddc583" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/inception_utils.py" afterPath="$PROJECT_DIR$/inception_utils.py" />
+      <change beforePath="$PROJECT_DIR$/vgg_16.2.py" afterPath="$PROJECT_DIR$/vgg_16.2.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -38,7 +38,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="candidate_1.0.0.38.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="candidate_1.0.0.38.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/candidate_1.0.0.38.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="693">
@@ -72,11 +72,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="vgg_16.2.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="vgg_16.2.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/vgg_16.2.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="852">
-              <caret line="128" column="96" lean-forward="true" selection-start-line="116" selection-start-column="4" selection-end-line="128" selection-end-column="96" />
+            <state relative-caret-position="759">
+              <caret line="77" column="28" lean-forward="false" selection-start-line="77" selection-start-column="28" selection-end-line="77" selection-end-column="28" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -168,12 +168,12 @@
         <option value="$PROJECT_DIR$/vgg_19.py" />
         <option value="$PROJECT_DIR$/candidate_0.0.3.01l.py" />
         <option value="$PROJECT_DIR$/candidate_1.0.0.33.py" />
-        <option value="$PROJECT_DIR$/vgg_16.2.py" />
         <option value="$PROJECT_DIR$/vgg_16.py" />
         <option value="$PROJECT_DIR$/training_utils.py" />
         <option value="$PROJECT_DIR$/ReadMe.md" />
         <option value="$PROJECT_DIR$/candidate_1.0.0.38.py" />
         <option value="$PROJECT_DIR$/inception_utils.py" />
+        <option value="$PROJECT_DIR$/vgg_16.2.py" />
       </list>
     </option>
   </component>
@@ -658,16 +658,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/vgg_16.2.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="852">
-          <caret line="128" column="96" lean-forward="true" selection-start-line="116" selection-start-column="4" selection-end-line="128" selection-end-column="96" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/candidate_1.1.0.40l.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -690,6 +680,16 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="693">
           <caret line="78" column="13" lean-forward="true" selection-start-line="78" selection-start-column="13" selection-end-line="78" selection-end-column="13" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/vgg_16.2.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="759">
+          <caret line="77" column="28" lean-forward="false" selection-start-line="77" selection-start-column="28" selection-end-line="77" selection-end-column="28" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
