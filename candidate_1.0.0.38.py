@@ -11,9 +11,9 @@ from tensorboard import summary as summary_lib
 # If number of epochs has been passed in use that, otherwise default to 50
 parser = argparse.ArgumentParser()
 parser.add_argument("-e", "--epochs", help="number of epochs to train", default=30, type=int)
-parser.add_argument("-d", "--data", help="which dataset to use", default=8, type=int)
+parser.add_argument("-d", "--data", help="which dataset to use", default=9, type=int)
 parser.add_argument("-m", "--model", help="model to initialize with", default=None)
-parser.add_argument("-l", "--label", help="how to classify data", default="label")
+parser.add_argument("-l", "--label", help="how to classify data", default="normal")
 parser.add_argument("-a", "--action", help="action to perform", default="train")
 parser.add_argument("-t", "--threshold", help="decision threshold", default=0.5, type=int)
 args = parser.parse_args()
@@ -73,7 +73,7 @@ print("Number of classes:", num_classes)
 ## Build the graph
 graph = tf.Graph()
 
-model_name = "model_s1.0.0.38l.6"
+model_name = "model_s1.0.0.39b.9"
 ## Change Log
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
@@ -106,6 +106,7 @@ model_name = "model_s1.0.0.38l.6"
 # 1.0.0.36 - going back to version 33, just subtracting the mean from the data
 # 1.0.0.37 - lowered x-entropy weighting back to 2 from 3
 # 1.0.0.38 - scaling the input data ignoring the mean
+# 1.0.0.39 - scaling and centering input data, removed weighted x-entropy
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -593,12 +594,12 @@ with graph.as_default():
     #########################################################
     ## Loss function options
     # Regular mean cross entropy
-    #mean_ce = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits))
+    mean_ce = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits))
 
     ## Weight the positive examples higher
     # This will weight the positive examples higher so as to improve recall
-    weights = tf.multiply(1, tf.cast(tf.greater(y, 0), tf.int32)) + 1
-    mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=logits, weights=weights))
+    # weights = tf.multiply(1, tf.cast(tf.greater(y, 0), tf.int32)) + 1
+    # mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=logits, weights=weights))
 
     # Add in l2 loss
     loss = mean_ce + tf.losses.get_regularization_loss()

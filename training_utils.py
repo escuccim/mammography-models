@@ -93,8 +93,8 @@ def read_and_decode_single_example(filenames, label_type='label_normal', normali
     # reshape and scale the image
     image = tf.reshape(image, [299, 299, 1])
 
-    if normalize:
-        image = tf.image.per_image_standardization(image)
+    # if normalize:
+    #     image = tf.image.per_image_standardization(image)
 
     # random flipping of image
     if distort:
