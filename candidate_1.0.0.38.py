@@ -138,7 +138,7 @@ with graph.as_default():
         X = tf.subtract(X, mu, name="centered_input")
 
         # scale the data
-        # X = tf.divide(X, 255.0)
+        X = tf.divide(X, 255.0)
 
     # Convolutional layer 1
     with tf.name_scope('conv1') as scope:
