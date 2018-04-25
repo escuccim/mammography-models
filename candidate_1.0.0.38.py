@@ -73,7 +73,7 @@ print("Number of classes:", num_classes)
 ## Build the graph
 graph = tf.Graph()
 
-model_name = "model_s1.0.0.39l.6"
+model_name = "model_s1.0.0.38l.6"
 ## Change Log
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
@@ -106,7 +106,6 @@ model_name = "model_s1.0.0.39l.6"
 # 1.0.0.36 - going back to version 33, just subtracting the mean from the data
 # 1.0.0.37 - lowered x-entropy weighting back to 2 from 3
 # 1.0.0.38 - scaling the input data ignoring the mean
-# 1.0.0.39 - scaling the data and centering it to the mean
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -138,7 +137,7 @@ with graph.as_default():
         X = tf.subtract(X, mu, name="centered_input")
 
         # scale the data
-        X = tf.divide(X, 255.0)
+        # X = tf.divide(X, 255.0)
 
     # Convolutional layer 1
     with tf.name_scope('conv1') as scope:
