@@ -2,8 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="98c4e5b0-4f90-4540-b87f-9bd6d2ddc583" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/ReadMe.md" afterPath="$PROJECT_DIR$/ReadMe.md" />
       <change beforePath="$PROJECT_DIR$/inception_utils.py" afterPath="$PROJECT_DIR$/inception_utils.py" />
-      <change beforePath="$PROJECT_DIR$/vgg_16.3.01.py" afterPath="$PROJECT_DIR$/vgg_16.3.01.py" />
+      <change beforePath="$PROJECT_DIR$/inception_v4.01.py" afterPath="$PROJECT_DIR$/inception_v4.01.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -14,12 +15,12 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="600">
-      <file leaf-file-name="ReadMe.md" pinned="false" current-in-tab="false">
+      <file leaf-file-name="ReadMe.md" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/ReadMe.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="839">
-                <caret line="130" column="82" lean-forward="false" selection-start-line="130" selection-start-column="82" selection-end-line="130" selection-end-column="82" />
+              <first_editor relative-caret-position="443">
+                <caret line="151" column="23" lean-forward="true" selection-start-line="151" selection-start-column="23" selection-end-line="151" selection-end-column="23" />
                 <folding />
               </first_editor>
               <second_editor />
@@ -54,8 +55,8 @@
       <file leaf-file-name="inception_utils.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/inception_utils.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="330">
-              <caret line="187" column="95" lean-forward="false" selection-start-line="187" selection-start-column="4" selection-end-line="187" selection-end-column="95" />
+            <state relative-caret-position="1007">
+              <caret line="305" column="47" lean-forward="false" selection-start-line="305" selection-start-column="47" selection-end-line="305" selection-end-column="47" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -66,8 +67,8 @@
       <file leaf-file-name="inception_v4.01.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/inception_v4.01.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1452">
-              <caret line="182" column="24" lean-forward="false" selection-start-line="177" selection-start-column="6" selection-end-line="182" selection-end-column="24" />
+            <state relative-caret-position="-5445">
+              <caret line="328" column="65" lean-forward="false" selection-start-line="328" selection-start-column="65" selection-end-line="328" selection-end-column="65" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -97,11 +98,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="vgg_16.3.01.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="vgg_16.3.01.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/vgg_16.3.01.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="462">
-              <caret line="77" column="25" lean-forward="false" selection-start-line="77" selection-start-column="25" selection-end-line="77" selection-end-column="25" />
+            <state relative-caret-position="660">
+              <caret line="656" column="27" lean-forward="true" selection-start-line="448" selection-start-column="0" selection-end-line="656" selection-end-column="27" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -193,12 +194,12 @@
         <option value="$PROJECT_DIR$/candidate_1.0.0.33.py" />
         <option value="$PROJECT_DIR$/vgg_16.py" />
         <option value="$PROJECT_DIR$/training_utils.py" />
-        <option value="$PROJECT_DIR$/ReadMe.md" />
         <option value="$PROJECT_DIR$/candidate_1.0.0.38.py" />
         <option value="$PROJECT_DIR$/vgg_16.2.py" />
+        <option value="$PROJECT_DIR$/vgg_16.3.01.py" />
         <option value="$PROJECT_DIR$/inception_utils.py" />
         <option value="$PROJECT_DIR$/inception_v4.01.py" />
-        <option value="$PROJECT_DIR$/vgg_16.3.01.py" />
+        <option value="$PROJECT_DIR$/ReadMe.md" />
       </list>
     </option>
   </component>
@@ -318,12 +319,6 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/inception_v4.01.py</url>
-          <line>118</line>
-        </line-breakpoint>
-      </breakpoints>
       <option name="time" value="1" />
     </breakpoint-manager>
     <watches-manager />
@@ -648,17 +643,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ReadMe.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="839">
-            <caret line="130" column="82" lean-forward="false" selection-start-line="130" selection-start-column="82" selection-end-line="130" selection-end-column="82" />
-            <folding />
-          </first_editor>
-          <second_editor />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/training_utils.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="220">
@@ -707,18 +691,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/inception_utils.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="187" column="95" lean-forward="false" selection-start-line="187" selection-start-column="4" selection-end-line="187" selection-end-column="95" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/inception_v4.01.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1452">
-          <caret line="182" column="24" lean-forward="false" selection-start-line="177" selection-start-column="6" selection-end-line="182" selection-end-column="24" />
+        <state relative-caret-position="1007">
+          <caret line="305" column="47" lean-forward="false" selection-start-line="305" selection-start-column="47" selection-end-line="305" selection-end-column="47" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
@@ -727,11 +701,32 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/vgg_16.3.01.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="462">
-          <caret line="77" column="25" lean-forward="false" selection-start-line="77" selection-start-column="25" selection-end-line="77" selection-end-column="25" />
+        <state relative-caret-position="660">
+          <caret line="656" column="27" lean-forward="true" selection-start-line="448" selection-start-column="0" selection-end-line="656" selection-end-column="27" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/inception_v4.01.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-5445">
+          <caret line="328" column="65" lean-forward="false" selection-start-line="328" selection-start-column="65" selection-end-line="328" selection-end-column="65" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ReadMe.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="443">
+            <caret line="151" column="23" lean-forward="true" selection-start-line="151" selection-start-column="23" selection-end-line="151" selection-end-column="23" />
+            <folding />
+          </first_editor>
+          <second_editor />
         </state>
       </provider>
     </entry>

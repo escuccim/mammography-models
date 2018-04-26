@@ -36,6 +36,7 @@ batch_size = 32
 
 train_files, total_records = get_training_data(what=dataset)
 
+#################################################################
 ## Hyperparameters
 # Small epsilon value for the BN transform
 epsilon = 1e-8
@@ -71,6 +72,7 @@ elif how == "benign":
 
 print("Number of classes:", num_classes)
 
+#################################################################
 ## Build the graph
 graph = tf.Graph()
 
@@ -112,59 +114,52 @@ with graph.as_default():
         mu = tf.constant(mu, name="pixel_mean", dtype=tf.float32)
         X = tf.subtract(X, mu, name="centered_input")
 
-    # Average pool the image
-    with tf.name_scope('pool0') as scope:
-        X = tf.layers.average_pooling2d(
-            X,  # Input
-            pool_size=(2, 2),  # Pool size: 2x2
-            strides=(2, 2),  # Stride: 2
-            padding='SAME',  # "same" padding
-            name='pool0'
-        )
-
     # input stem
     stem = _stem(X, lamC, training)
 
     # 4 Block As
-    blocka = _block_a(stem, name="a_1.1", lamC=0, training = training)
-    blocka = _block_a(blocka, name="a_1.2", lamC=0, training=training)
-    blocka = _block_a(blocka, name="a_1.3", lamC=0, training=training)
-    blocka = _block_a(blocka, name="a_1.4", lamC=0, training=training)
+    blocka = _block_a(stem, name="a_1.1", lamC=0.0, training=training)
+    blocka = _block_a(blocka, name="a_1.2", lamC=0.0, training=training)
+    blocka = _block_a(blocka, name="a_1.3", lamC=0.0, training=training)
+    blocka = _block_a(blocka, name="a_1.4", lamC=0.0, training=training)
 
     # Reduction A
-    reducea = _reduce_a(blocka, "a_reduce_1", k=192, l=224, m=256, n=384, training = training)
+    reducea = _reduce_a(blocka, "a_reduce_1", k=192, l=224, m=256, n=384, training=training)
 
     # 7 Block Bs
-    blockb = _block_b(reducea, "b_1.1", lamC=0, training = training)
-    blockb = _block_b(blockb, "b_1.2", lamC=0, training=training)
-    blockb = _block_b(blockb, "b_1.3", lamC=0, training=training)
-    blockb = _block_b(blockb, "b_1.4", lamC=0, training=training)
-    blockb = _block_b(blockb, "b_1.5", lamC=0, training=training)
-    blockb = _block_b(blockb, "b_1.6", lamC=0, training=training)
-    blockb = _block_b(blockb, "b_1.7", lamC=0, training=training)
+    blockb = _block_b(reducea, "b_1.1", lamC=0.0, training=training)
+    blockb = _block_b(blockb, "b_1.2", lamC=0.0, training=training)
+    blockb = _block_b(blockb, "b_1.3", lamC=0.0, training=training)
+    blockb = _block_b(blockb, "b_1.4", lamC=0.0, training=training)
+    blockb = _block_b(blockb, "b_1.5", lamC=0.0, training=training)
+    blockb = _block_b(blockb, "b_1.6", lamC=0.0, training=training)
+    blockb = _block_b(blockb, "b_1.7", lamC=0.0, training=training)
 
     # Reduction B
-    reduceb = _reduce_b(blockb, name="b_reduce_1", training = training)
+    reduceb = _reduce_b(blockb, name="b_reduce_1", training=training)
 
     # 3 Block Cs
-    blockc = _block_c(reduceb, name="c_1.1", lamC=0, training = training)
-    blockc = _block_c(blockc, name="c_1.2", lamC=0, training=training)
-    blockc = _block_c(blockc, name="c_1.2", lamC=0, training=training)
+    blockc = _block_c(reduceb, name="c_1.1", lamC=0.0, training=training)
+    blockc = _block_c(blockc, name="c_1.2", lamC=0.0, training=training)
+    blockc = _block_c(blockc, name="c_1.3", lamC=0.0, training=training)
 
     # Global Average Pooling
     global_pool = tf.layers.average_pooling2d(
-            blockc,  # Input
-            pool_size=(8, 8),  # Pool size: 2x2
-            strides=(8, 8),  # Stride: 2
-            padding='SAME',  # "same" padding
-            name='global_pool'
-        )
+        blockc,  # Input
+        pool_size=(8, 8),  # Pool size: 2x2
+        strides=(8, 8),  # Stride: 2
+        padding='SAME',  # "same" padding
+        name='global_pool'
+    )
 
     global_pool = tf.layers.dropout(global_pool, rate=0.2, seed=103, training=training)
 
+    # flatten the output
+    flat_output = tf.contrib.layers.flatten(global_pool)
+
     # Output layer
     logits = tf.layers.dense(
-        global_pool,
+        flat_output,
         num_classes,  # One output unit per category
         activation=None,  # No activation function
         kernel_initializer=tf.variance_scaling_initializer(scale=1, seed=121),
@@ -190,12 +185,15 @@ with graph.as_default():
 
     if num_classes > 2:
         # the scan is abnormal if the probability is greater than the threshold
-        is_abnormal = tf.cast(tf.greater(abnormal_probability, threshold), tf.int64)
+        # is_abnormal = tf.cast(tf.greater(abnormal_probability, threshold), tf.int64)
 
         # Compute predictions from the probabilities - if the scan is normal we ignore the other probabilities
-        predictions = is_abnormal * tf.argmax(probabilities[:,1:], axis=1, output_type=tf.int64)
+        # predictions = is_abnormal * tf.argmax(probabilities[:,1:], axis=1, output_type=tf.int64)
+        predictions = tf.argmax(logits, axis=1, output_type=tf.int64)
     else:
         predictions = tf.cast(tf.greater(abnormal_probability, threshold), tf.int32)
+
+    print("Predictions:", predictions.shape)
 
     # get the accuracy
     accuracy, acc_op = tf.metrics.accuracy(
@@ -214,8 +212,8 @@ with graph.as_default():
     #########################################################
     ## Weight the positive examples higher
     # This will weight the positive examples higher so as to improve recall
-    #weights = tf.multiply(1, tf.cast(tf.greater(y, 0), tf.int32)) + 1
-    #mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=logits, weights=weights))
+    # weights = tf.multiply(1, tf.cast(tf.greater(y, 0), tf.int32)) + 1
+    # mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=logits, weights=weights))
 
     # Add in l2 loss
     loss = mean_ce + tf.losses.get_regularization_loss()
@@ -233,12 +231,16 @@ with graph.as_default():
         collapsed_predictions = tf.cast(tf.greater(predictions, zero), tf.int64)
         collapsed_labels = tf.greater(y, zero)
 
-        recall, rec_op = tf.metrics.recall(labels=collapsed_labels, predictions=collapsed_predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="recall")
-        precision, prec_op = tf.metrics.precision(labels=collapsed_labels, predictions=collapsed_predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="precision")
+        recall, rec_op = tf.metrics.recall(labels=collapsed_labels, predictions=collapsed_predictions,
+                                           updates_collections=tf.GraphKeys.UPDATE_OPS, name="recall")
+        precision, prec_op = tf.metrics.precision(labels=collapsed_labels, predictions=collapsed_predictions,
+                                                  updates_collections=tf.GraphKeys.UPDATE_OPS, name="precision")
 
     else:
-        recall, rec_op = tf.metrics.recall(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="recall")
-        precision, prec_op = tf.metrics.precision(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="precision")
+        recall, rec_op = tf.metrics.recall(labels=y, predictions=predictions,
+                                           updates_collections=tf.GraphKeys.UPDATE_OPS, name="recall")
+        precision, prec_op = tf.metrics.precision(labels=y, predictions=predictions,
+                                                  updates_collections=tf.GraphKeys.UPDATE_OPS, name="precision")
 
     f1_score = 2 * ((precision * recall) / (precision + recall))
     _, update_op = summary_lib.pr_curve_streaming_op(name='pr_curve',
@@ -266,6 +268,7 @@ with graph.as_default():
 
     print("Graph created...")
 
+#################################################################
 ## CONFIGURE OPTIONS
 if init_model is not None:
     if os.path.exists(os.path.join("model", init_model + '.ckpt.index')):
@@ -323,6 +326,7 @@ else:
 
 config = tf.ConfigProto()
 
+#################################################################
 ## train the model
 with tf.Session(graph=graph, config=config) as sess:
     if log_to_tensorboard:

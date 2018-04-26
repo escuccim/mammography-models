@@ -2,7 +2,7 @@ import numpy as np
 import tensorflow as tf
 from training_utils import _conv2d_batch_norm, _dense_batch_norm
 
-def _stem(input, lamC=0, training = tf.placeholder(dtype=tf.bool, name="is_training")):
+def _stem(input, lamC=0.0, training = tf.placeholder(dtype=tf.bool, name="is_training")):
     conv1 = _conv2d_batch_norm(input, 32, kernel_size=(3, 3), stride=(2, 2), training=training, epsilon=1e-8,
                                padding="VALID", seed=100, lambd=lamC, name="stem_1.1")
 
@@ -37,7 +37,7 @@ def _stem(input, lamC=0, training = tf.placeholder(dtype=tf.bool, name="is_train
     conv11 = _conv2d_batch_norm(concat1, 64, kernel_size=(1, 1), stride=(1, 1), training=training, epsilon=1e-8,
                                padding="SAME", lambd=lamC, name="stem_1.1.1")
 
-    conv11 = _conv2d_batch_norm(conv11, 96, kernel_size=(1, 1), stride=(1, 1), training=training, epsilon=1e-8,
+    conv11 = _conv2d_batch_norm(conv11, 96, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8,
                                 padding="VALID", lambd=lamC, name="stem_1.1.2")
 
     # Stem Branch 2
@@ -85,7 +85,7 @@ def _stem(input, lamC=0, training = tf.placeholder(dtype=tf.bool, name="is_train
     return concat3
 
 
-def _block_a(input, name, lamC=0, training = tf.placeholder(dtype=tf.bool, name="is_training")):
+def _block_a(input, name, lamC=0.0, training = tf.placeholder(dtype=tf.bool, name="is_training")):
     ## Branch 1 - average pool and 1x1 conv
     with tf.name_scope(name+"a_branch_1_pool") as scope:
         branch1 = tf.layers.average_pooling2d(
@@ -131,7 +131,7 @@ def _block_a(input, name, lamC=0, training = tf.placeholder(dtype=tf.bool, name=
     return concat1
 
 
-def _block_b(input, name, lamC=0, training = tf.placeholder(dtype=tf.bool, name="is_training")):
+def _block_b(input, name, lamC=0.0, training = tf.placeholder(dtype=tf.bool, name="is_training")):
     ## Branch 1 - average pool and 1x1 conv
     with tf.name_scope(name+"b_branch_1_pool") as scope:
         branch1 = tf.layers.average_pooling2d(
@@ -185,7 +185,7 @@ def _block_b(input, name, lamC=0, training = tf.placeholder(dtype=tf.bool, name=
 
     return concat1
 
-def _block_c(input, name, lamC=0, training = tf.placeholder(dtype=tf.bool, name="is_training")):
+def _block_c(input, name, lamC=0.0, training = tf.placeholder(dtype=tf.bool, name="is_training")):
     ## Branch 1 - average pool and 1x1 conv
     with tf.name_scope(name+"b_branch_1_pool") as scope:
         branch1 = tf.layers.average_pooling2d(
@@ -239,7 +239,7 @@ def _block_c(input, name, lamC=0, training = tf.placeholder(dtype=tf.bool, name=
 
     return concat1
 
-def _reduce_a(input, name, k, l, m, n, training = tf.placeholder(dtype=tf.bool, name="is_training")):
+def _reduce_a(input, name, k, l, m, n, training = tf.placeholder(dtype=tf.bool, name="is_training"), lamC=0.0):
     # branch 1
     with tf.name_scope(name+"reduce_a_branch_1") as scope:
         branch1 = tf.layers.max_pooling2d(
@@ -252,17 +252,17 @@ def _reduce_a(input, name, k, l, m, n, training = tf.placeholder(dtype=tf.bool, 
 
     # branch 2
     branch2 = _conv2d_batch_norm(input, n, kernel_size=(3, 3), stride=(2, 2), training=training, epsilon=1e-8,
-                               padding="VALID", lambd=0, name=name+"a_reduce_branch_2")
+                               padding="VALID", lambd=lamC, name=name+"a_reduce_branch_2")
 
     # Branch 3
     branch3 = _conv2d_batch_norm(input, k, kernel_size=(1, 1), stride=(1, 1), training=training, epsilon=1e-8,
-                               padding="SAME", lambd=0, name=name+"a_reduce_branch_3.1")
+                               padding="SAME", lambd=lamC, name=name+"a_reduce_branch_3.1")
 
     branch3 = _conv2d_batch_norm(branch3, l, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8,
-                                 padding="SAME", lambd=0, name=name + "a_reduce_branch_3.2")
+                                 padding="SAME", lambd=lamC, name=name + "a_reduce_branch_3.2")
 
     branch3 = _conv2d_batch_norm(branch3, m, kernel_size=(3, 3), stride=(2, 2), training=training, epsilon=1e-8,
-                                 padding="VALID", lambd=0, name=name + "a_reduce_branch_3.3")
+                                 padding="VALID", lambd=lamC, name=name + "a_reduce_branch_3.3")
 
     # concat 1
     with tf.name_scope(name + "a_reduce_concat_1") as scope:
@@ -274,7 +274,7 @@ def _reduce_a(input, name, k, l, m, n, training = tf.placeholder(dtype=tf.bool, 
 
     return concat1
 
-def _reduce_b(input, name, training = tf.placeholder(dtype=tf.bool, name="is_training")):
+def _reduce_b(input, name, training = tf.placeholder(dtype=tf.bool, name="is_training"), lamC=0.0):
     # branch 1
     with tf.name_scope(name+"reduce_b_branch_1") as scope:
         branch1 = tf.layers.max_pooling2d(
@@ -287,23 +287,23 @@ def _reduce_b(input, name, training = tf.placeholder(dtype=tf.bool, name="is_tra
 
     # branch 2
     branch2 = _conv2d_batch_norm(input, 192, kernel_size=(1, 1), stride=(1, 1), training=training, epsilon=1e-8,
-                               padding="SAME", lambd=0, name=name+"b_reduce_branch_2")
+                               padding="SAME", lambd=lamC, name=name+"b_reduce_branch_2")
 
     branch2 = _conv2d_batch_norm(branch2, 192, kernel_size=(3, 3), stride=(2, 2), training=training, epsilon=1e-8,
-                                 padding="VALID", lambd=0, name=name + "b_reduce_branch_2.1")
+                                 padding="VALID", lambd=lamC, name=name + "b_reduce_branch_2.1")
 
     # Branch 3
     branch3 = _conv2d_batch_norm(input, 256, kernel_size=(1, 1), stride=(1, 1), training=training, epsilon=1e-8,
-                               padding="SAME", lambd=0, name=name+"b_reduce_branch_3.1")
+                               padding="SAME", lambd=lamC, name=name+"b_reduce_branch_3.1")
 
     branch3 = _conv2d_batch_norm(branch3, 256, kernel_size=(1, 7), stride=(1, 1), training=training, epsilon=1e-8,
-                                 padding="SAME", lambd=0, name=name + "b_reduce_branch_3.2")
+                                 padding="SAME", lambd=lamC, name=name + "b_reduce_branch_3.2")
 
     branch3 = _conv2d_batch_norm(branch3, 320, kernel_size=(7, 1), stride=(1, 1), training=training, epsilon=1e-8,
-                                 padding="SAME", lambd=0, name=name + "b_reduce_branch_3.3")
+                                 padding="SAME", lambd=lamC, name=name + "b_reduce_branch_3.3")
 
     branch3 = _conv2d_batch_norm(branch3, 320, kernel_size=(3, 3), stride=(2, 2), training=training, epsilon=1e-8,
-                                 padding="SAME", lambd=0, name=name + "b_reduce_branch_3.4")
+                                 padding="VALID", lambd=lamC, name=name + "b_reduce_branch_3.4")
     # concat 1
     with tf.name_scope(name + "b_reduce_concat_1") as scope:
         concat1 = tf.concat(
