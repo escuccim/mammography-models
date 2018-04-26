@@ -104,6 +104,8 @@ The custom model which performed the best was 1.0.0.29, which was based on VGG. 
 
 <img src="model_s1.0.0.29.png" alt="Model 1.0.0.29" align="right" style="max-width: 50%;">
 
+The other custom model which performed well was 0.0.2.02. When looking at ROIs, we noticed that the range in sizes was quite large. In order to attempt to detect very small, early stage abnormalities in addition to the larger ones we designed this model with two branches. Each branch consists of three sets of 3x3 convolutional layers. Each set in Branch 1 has three 3x3 layers while in Branch 2 each set has two layers with the last set containing only one 3x3 convolutional layer. The branches are then concatenated and fed into the last two sets of convolutional layers. Residual connections are used in Branch 1. While this model scored accuracy of .9755 the recall of .8920 was unimpressive, and the validation accuracy tended to be slightly more unstable than in the simpler models.  
+
 A slightly modified version of VGG-16 was also trained as a benchmark. A full version of VGG-16 required more memory than we had available, so we made the following alterations to the architecture:
 
 1. The architecture was altered to accept 299x299 images as input
@@ -130,8 +132,7 @@ The time required to train a model from scratch made it impossible to train each
 |1.0.0.29n  |    Multi-class|          8|.8890       |.9092       |Scratch        |All             |        
 |1.0.0.41b  |         Binary|          9|.7721       |.7852       |Scratch        |All             |
 |1.0.0.41l  |    Multi-class|          9|.8261       |.0135       |1.0.0.41b      |All             |
-|1.0.0.41l  |    Multi-class|          9|.8054       |.4065       |1.0.0.41b*     |FC              |
-|VGG-16.02  |         Binary|          9|.8947       |.4046       |Scratch        |All             |                 
+|0.0.2.02l  |         Binary|          8|.9755       |.8920       |Scratch        |All             |               
 
 <div style="text-align:center;"><i>Table 1: Performance on Test Set</i></div>
 
@@ -143,19 +144,21 @@ Model 1.0.0.29 performed excellent on both the training and validation data, as 
 
 Many of the models appeared to be unstable in that training the same model on the same dataset could produce drastically different results. We assume that this is due to the model learning to recognize features which did not generalize to the test data and attempted to combat this by keeping the size of the models small.
 
+In general, most models evaluated seemed to overfit the training data very quickly. Once the model started to overfit, while the training accuracy would improve, it would begin to predict all of the test examples as either all positive or all negative. 
+
 ### Decision Thresholds
 These results were obtained using a threshold of 0.50. The precision and recall could be drastically altered by changing the decision threshold. It was suprisingly easy to achieve a precision of close to 1.0, however we were focused on improving recall. Adjusting the threshold from between 0.20 to 0.50 allowed us to improve recall by a few percentage points while decreasing precision dramatically. 
 
 The ability to adjust the threshold could be very useful for radiologists, allowing them to screen out scans which are either definitely negative or definitely positive and allowing them to focus on the more ambiguous scans.
 
 ## Conclusion
-While we have been able to achieve high accuracy on both classifying to normal/abnormal as well as classifying the type and pathology of abnormalities, the training data used was specifically tailored for these tasks. When models which performed well on the test data were evaluated on images from the MIAS data set which had been processed in order to make them as similar to the DDSM images as possible, the poor results indicate that our models do not generalize well enough to classify images from a different distribution.
+While we have been able to achieve high accuracy on both classifying to normal/abnormal as well as classifying the type and pathology of abnormalities, the training datasets used were artificially constructed, making the ability of the models to generalize questionable. While a model trained on Dataset 6 or 8 scored well when evaluated on the dataset it was not trained on, when the models were evaluated on the MIAS data, which was from a completely different distribution, the results were rather poor. 
 
-However, as a proof of concept, we have demonstrated that Convolutional Neural Networks can be trained to determine whether a section of a mammogram contains an abnormality with recall over 95%, substantially above human performance. Adjusting the decision threshold would further improve the recall. These methods could be used to pre-screen mammograms allowing radiologists to focus on scans which are likely to contain abnormalities.  
+This difficulty generalizing, along with the unstable and volatile validation results, make it unclear whether the models are actually learning useful features or if the accuracy on the test data is mostly due to chance.
 
-The techniques used in this work could be applied to analysing entire mammograms using a sliding window, however this would be very computationally expensive due to the size of raw scans and the fact that the window would need to be resized multiple times. 
+Despite these problems with our results, we feel that we have demonstrated the Convolutional Neural Networks can be trained to recognize abnormalities in mammograms, with recall close to 99%, substantially above human performance. Adjusting the decision threshold would further improve the recall. These methods could be used to pre-screen mammograms allowing radiologists to focus on scans which are likely to contain abnormalities.  
 
-Future work would include applying other techniques to this problem, such as YOLO or attention based models; and creating models which will generalize better.
+Once a model is created which can generalize better, future work would include combining other techniques with those we have used to create a system which could analyse entire mammograms. Possibilities include using a sliding window, YOLO or attention based models.
 
 ## Supplementary Files
 Two personal GitHub repositories were used for this work:
