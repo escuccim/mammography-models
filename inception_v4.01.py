@@ -5,6 +5,7 @@ from sklearn.model_selection import train_test_split
 import tensorflow as tf
 from training_utils import download_file, get_batches, read_and_decode_single_example, load_validation_data, \
     download_data, evaluate_model, get_training_data, load_weights, flatten, _conv2d_batch_norm
+from inception_utils import _stem, _block_a, _block_b, _block_c, _reduce_a, _reduce_b
 import argparse
 from tensorboard import summary as summary_lib
 
@@ -75,7 +76,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "vgg_16.3.02l.6"
+model_name = "vgg_16.3.01l.6"
 # vgg_19.01 - attempting to recreate vgg 19 architecture
 # vgg_16.02 - went to vgg 16 architecture, reducing units in fc layers
 # vgg_16.2.01 - changing first conv layers to stride 2 to get dimensions down to reasonable size
@@ -113,7 +114,7 @@ with graph.as_default():
 
     # Average pool the image
     with tf.name_scope('pool0') as scope:
-        pool0 = tf.layers.average_pooling2d(
+        X = tf.layers.average_pooling2d(
             X,  # Input
             pool_size=(2, 2),  # Pool size: 2x2
             strides=(2, 2),  # Stride: 2
@@ -121,173 +122,49 @@ with graph.as_default():
             name='pool0'
         )
 
-    # Convolutional layer 1
-    conv1 = _conv2d_batch_norm(pool0, 64, kernel_size=(3,3), stride=(1,1), training=training, epsilon=1e-8, padding="SAME", seed=100, lambd=lamC, name="1.1")
-    conv1 = _conv2d_batch_norm(conv1, 64, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=100, lambd=lamC, name="1.2")
+    # input stem
+    stem = _stem(X, lamC, training)
 
-    # Max pooling layer 1
-    with tf.name_scope('pool1') as scope:
-        pool1 = tf.layers.max_pooling2d(
-            conv1,  # Input
-            pool_size=(2, 2),  # Pool size: 2x2
-            strides=(2, 2),  # Stride: 2
+    # 4 Block As
+    blocka = _block_a(stem, name="a_1.1", lamC=0, training = training)
+    blocka = _block_a(blocka, name="a_1.2", lamC=0, training=training)
+    blocka = _block_a(blocka, name="a_1.3", lamC=0, training=training)
+    blocka = _block_a(blocka, name="a_1.4", lamC=0, training=training)
+
+    # Reduction A
+    reducea = _reduce_a(blocka, "a_reduce_1", k=192, l=224, m=256, n=384, training = training)
+
+    # 7 Block Bs
+    blockb = _block_b(reducea, "b_1.1", lamC=0, training = training)
+    blockb = _block_b(blockb, "b_1.2", lamC=0, training=training)
+    blockb = _block_b(blockb, "b_1.3", lamC=0, training=training)
+    blockb = _block_b(blockb, "b_1.4", lamC=0, training=training)
+    blockb = _block_b(blockb, "b_1.5", lamC=0, training=training)
+    blockb = _block_b(blockb, "b_1.6", lamC=0, training=training)
+    blockb = _block_b(blockb, "b_1.7", lamC=0, training=training)
+
+    # Reduction B
+    reduceb = _reduce_b(blockb, name="b_reduce_1", training = training)
+
+    # 3 Block Cs
+    blockc = _block_c(reduceb, name="c_1.1", lamC=0, training = training)
+    blockc = _block_c(blockc, name="c_1.2", lamC=0, training=training)
+    blockc = _block_c(blockc, name="c_1.2", lamC=0, training=training)
+
+    # Global Average Pooling
+    global_pool = tf.layers.average_pooling2d(
+            blockc,  # Input
+            pool_size=(8, 8),  # Pool size: 2x2
+            strides=(8, 8),  # Stride: 2
             padding='SAME',  # "same" padding
-            name='pool1'
+            name='global_pool'
         )
 
-        # optional dropout
-        if dropout:
-            pool1 = tf.layers.dropout(pool1, rate=pooldropout_rate, seed=103, training=training)
-
-    # Layer 2
-    conv2 = _conv2d_batch_norm(pool1, 128, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=None, lambd=lamC, name="2.1")
-
-    conv2 = _conv2d_batch_norm(conv2, 128, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=None, lambd=lamC, name="2.2")
-
-    # Max pooling layer 1
-    with tf.name_scope('pool2') as scope:
-        pool2 = tf.layers.max_pooling2d(
-            conv2,  # Input
-            pool_size=(2, 2),  # Pool size: 3x3
-            strides=(2, 2),  # Stride: 2
-            padding='SAME',  # "same" padding
-            name='pool2'
-        )
-
-        # optional dropout
-        if dropout:
-            pool2 = tf.layers.dropout(pool2, rate=pooldropout_rate, seed=103, training=training)
-
-    # Convolutional layer 3
-    conv3 = _conv2d_batch_norm(pool2, 256, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=None, lambd=lamC, name="3.1")
-
-    conv3 = _conv2d_batch_norm(conv3, 256, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=None, lambd=lamC, name="3.2")
-
-    # Max pooling layer 3
-    with tf.name_scope('pool3') as scope:
-        pool3 = tf.layers.max_pooling2d(
-            conv3,
-            pool_size=(2, 2),  # Pool size: 2x2
-            strides=(2, 2),  # Stride: 2
-            padding='SAME',
-            name='pool5'
-        )
-
-        if dropout:
-            pool3 = tf.layers.dropout(pool3, rate=pooldropout_rate, seed=115, training=training)
-
-    conv4 = _conv2d_batch_norm(pool3, 512, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=None, lambd=lamC, name="4.1")
-
-    conv4 = _conv2d_batch_norm(conv4, 512, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=None, lambd=lamC, name="4.2")
-
-    conv4 = _conv2d_batch_norm(conv4, 512, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=None, lambd=lamC, name="4.3")
-
-    # Max pooling layer 4
-    with tf.name_scope('pool4') as scope:
-        pool4 = tf.layers.max_pooling2d(
-            conv4,
-            pool_size=(2, 2),  # Pool size: 2x2
-            strides=(2, 2),  # Stride: 2
-            padding='SAME',
-            name='pool4'
-        )
-
-        if dropout:
-            pool4 = tf.layers.dropout(pool4, rate=pooldropout_rate, seed=115, training=training)
-
-    conv5 = _conv2d_batch_norm(pool4, 512, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=None, lambd=lamC, name="5.1")
-
-    conv5 = _conv2d_batch_norm(conv5, 512, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=None, lambd=lamC, name="5.2")
-
-    conv5 = _conv2d_batch_norm(conv5, 512, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=None, lambd=lamC, name="5.3")
-
-    # Max pooling layer 5
-    with tf.name_scope('pool5') as scope:
-        pool5 = tf.layers.max_pooling2d(
-            conv5,
-            pool_size=(2, 2),  # Pool size: 2x2
-            strides=(2, 2),  # Stride: 2
-            padding='SAME',
-            name='pool5'
-        )
-
-        if dropout:
-            pool5 = tf.layers.dropout(pool5, rate=pooldropout_rate, seed=115, training=training)
-
-    # Flatten output
-    with tf.name_scope('flatten') as scope:
-        flat_output = tf.contrib.layers.flatten(pool5)
-
-        # dropout at fc rate
-        flat_output = tf.layers.dropout(flat_output, rate=fcdropout_rate, seed=116, training=training)
-
-    # Fully connected layer 1
-    with tf.name_scope('fc1') as scope:
-        fc1 = tf.layers.dense(
-            flat_output,
-            2048,
-            activation=None,
-            kernel_initializer=tf.variance_scaling_initializer(scale=2, seed=117),
-            bias_initializer=tf.zeros_initializer(),
-            kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamF),
-            name="fc1"
-        )
-
-        fc1 = tf.layers.batch_normalization(
-            fc1,
-            axis=-1,
-            momentum=0.9,
-            epsilon=epsilon,
-            center=True,
-            scale=True,
-            beta_initializer=tf.zeros_initializer(),
-            gamma_initializer=tf.ones_initializer(),
-            moving_mean_initializer=tf.zeros_initializer(),
-            moving_variance_initializer=tf.ones_initializer(),
-            training=training,
-            name='fc1_bn'
-        )
-
-        fc1 = tf.nn.relu(fc1, name='fc1_relu')
-
-        # dropout
-        fc1 = tf.layers.dropout(fc1, rate=fcdropout_rate, seed=118, training=training)
-
-    # Fully connected layer 2
-    with tf.name_scope('fc2') as scope:
-        fc2 = tf.layers.dense(
-            fc1,  # input
-            2048,  # 1024 hidden units
-            activation=None,  # None
-            kernel_initializer=tf.variance_scaling_initializer(scale=2, seed=119),
-            bias_initializer=tf.zeros_initializer(),
-            kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamF),
-            name="fc2"
-        )
-
-        fc2 = tf.layers.batch_normalization(
-            fc2,
-            axis=-1,
-            momentum=0.9,
-            epsilon=epsilon,
-            center=True,
-            scale=True,
-            beta_initializer=tf.zeros_initializer(),
-            gamma_initializer=tf.ones_initializer(),
-            moving_mean_initializer=tf.zeros_initializer(),
-            moving_variance_initializer=tf.ones_initializer(),
-            training=training,
-            name='fc2_bn'
-        )
-
-        fc2 = tf.nn.relu(fc2, name='fc2_relu')
-
-        # dropout
-        fc2 = tf.layers.dropout(fc2, rate=fcdropout_rate, seed=120, training=training)
+    global_pool = tf.layers.dropout(global_pool, rate=0.2, seed=103, training=training)
 
     # Output layer
     logits = tf.layers.dense(
-        fc2,
+        global_pool,
         num_classes,  # One output unit per category
         activation=None,  # No activation function
         kernel_initializer=tf.variance_scaling_initializer(scale=1, seed=121),
@@ -298,12 +175,12 @@ with graph.as_default():
     # get the fully connected variables so we can only train them when retraining the network
     fc_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "fc")
 
-    with tf.variable_scope('conv_1.1', reuse=True):
-        conv_kernels1 = tf.get_variable('kernel')
-        kernel_transposed = tf.transpose(conv_kernels1, [3, 0, 1, 2])
-
-    with tf.variable_scope('visualization'):
-        tf.summary.image('conv_1.1/filters', kernel_transposed, max_outputs=32, collections=["kernels"])
+    # with tf.variable_scope('conv_1.1', reuse=True):
+    #     conv_kernels1 = tf.get_variable('kernel')
+    #     kernel_transposed = tf.transpose(conv_kernels1, [3, 0, 1, 2])
+    #
+    # with tf.variable_scope('visualization'):
+    #     tf.summary.image('conv_1.1/filters', kernel_transposed, max_outputs=32, collections=["kernels"])
 
     # get the probabilites for the classes
     probabilities = tf.nn.softmax(logits, name="probabilities")
