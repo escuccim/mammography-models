@@ -78,7 +78,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "vgg_16.3.01l.6"
+model_name = "inception_v4.01l.6"
 # vgg_19.01 - attempting to recreate vgg 19 architecture
 # vgg_16.02 - went to vgg 16 architecture, reducing units in fc layers
 # vgg_16.2.01 - changing first conv layers to stride 2 to get dimensions down to reasonable size
@@ -192,8 +192,6 @@ with graph.as_default():
         predictions = tf.argmax(logits, axis=1, output_type=tf.int64)
     else:
         predictions = tf.cast(tf.greater(abnormal_probability, threshold), tf.int32)
-
-    print("Predictions:", predictions.shape)
 
     # get the accuracy
     accuracy, acc_op = tf.metrics.accuracy(
