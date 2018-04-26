@@ -78,12 +78,9 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "inception_v4.01l.6"
-# vgg_19.01 - attempting to recreate vgg 19 architecture
-# vgg_16.02 - went to vgg 16 architecture, reducing units in fc layers
-# vgg_16.2.01 - changing first conv layers to stride 2 to get dimensions down to reasonable size
-# vgg_16.2.02 - using normal x-entropy instead of weighted
-# vgg_16.3.01 - average pooling image before first conv, changing conv1 to stride 1
+model_name = "inception_v4.02l.6"
+# 4.01 - attempt to make a copy of inception
+# 4.02 - removing some layers so training doesn't take forever
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -131,9 +128,9 @@ with graph.as_default():
     blockb = _block_b(blockb, "b_1.2", lamC=0.0, training=training)
     blockb = _block_b(blockb, "b_1.3", lamC=0.0, training=training)
     blockb = _block_b(blockb, "b_1.4", lamC=0.0, training=training)
-    blockb = _block_b(blockb, "b_1.5", lamC=0.0, training=training)
-    blockb = _block_b(blockb, "b_1.6", lamC=0.0, training=training)
-    blockb = _block_b(blockb, "b_1.7", lamC=0.0, training=training)
+    # blockb = _block_b(blockb, "b_1.5", lamC=0.0, training=training)
+    # blockb = _block_b(blockb, "b_1.6", lamC=0.0, training=training)
+    # blockb = _block_b(blockb, "b_1.7", lamC=0.0, training=training)
 
     # Reduction B
     reduceb = _reduce_b(blockb, name="b_reduce_1", training=training)
