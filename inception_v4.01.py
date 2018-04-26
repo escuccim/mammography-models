@@ -78,9 +78,10 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "inception_v4.02l.6"
+model_name = "inception_v4.03l.6"
 # 4.01 - attempt to make a copy of inception
 # 4.02 - removing some layers so training doesn't take forever
+# 4.03 - putting some things back in I had taken out when testing, removing a few more layers
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -115,30 +116,30 @@ with graph.as_default():
     stem = _stem(X, lamC, training)
 
     # 4 Block As
-    blocka = _block_a(stem, name="a_1.1", lamC=0.0, training=training)
-    blocka = _block_a(blocka, name="a_1.2", lamC=0.0, training=training)
-    blocka = _block_a(blocka, name="a_1.3", lamC=0.0, training=training)
-    blocka = _block_a(blocka, name="a_1.4", lamC=0.0, training=training)
+    blocka = _block_a(stem, name="a_1.1", lamC=lamC, training=training)
+    blocka = _block_a(blocka, name="a_1.2", lamC=lamC, training=training)
+    blocka = _block_a(blocka, name="a_1.3", lamC=lamC, training=training)
+    # blocka = _block_a(blocka, name="a_1.4", lamC=lamC, training=training)
 
     # Reduction A
     reducea = _reduce_a(blocka, "a_reduce_1", k=192, l=224, m=256, n=384, training=training)
 
     # 7 Block Bs
-    blockb = _block_b(reducea, "b_1.1", lamC=0.0, training=training)
-    blockb = _block_b(blockb, "b_1.2", lamC=0.0, training=training)
-    blockb = _block_b(blockb, "b_1.3", lamC=0.0, training=training)
-    blockb = _block_b(blockb, "b_1.4", lamC=0.0, training=training)
-    # blockb = _block_b(blockb, "b_1.5", lamC=0.0, training=training)
-    # blockb = _block_b(blockb, "b_1.6", lamC=0.0, training=training)
-    # blockb = _block_b(blockb, "b_1.7", lamC=0.0, training=training)
+    blockb = _block_b(reducea, "b_1.1", lamC=lamC, training=training)
+    blockb = _block_b(blockb, "b_1.2", lamC=lamC, training=training)
+    blockb = _block_b(blockb, "b_1.3", lamC=lamC, training=training)
+    blockb = _block_b(blockb, "b_1.4", lamC=lamC, training=training)
+    # blockb = _block_b(blockb, "b_1.5", lamC=lamC, training=training)
+    # blockb = _block_b(blockb, "b_1.6", lamC=lamC, training=training)
+    # blockb = _block_b(blockb, "b_1.7", lamC=lamC, training=training)
 
     # Reduction B
     reduceb = _reduce_b(blockb, name="b_reduce_1", training=training)
 
     # 3 Block Cs
-    blockc = _block_c(reduceb, name="c_1.1", lamC=0.0, training=training)
-    blockc = _block_c(blockc, name="c_1.2", lamC=0.0, training=training)
-    blockc = _block_c(blockc, name="c_1.3", lamC=0.0, training=training)
+    blockc = _block_c(reduceb, name="c_1.1", lamC=lamC, training=training)
+    blockc = _block_c(blockc, name="c_1.2", lamC=lamC, training=training)
+    # blockc = _block_c(blockc, name="c_1.3", lamC=lamC, training=training)
 
     # Global Average Pooling
     global_pool = tf.layers.average_pooling2d(
@@ -167,12 +168,12 @@ with graph.as_default():
     # get the fully connected variables so we can only train them when retraining the network
     fc_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "fc")
 
-    # with tf.variable_scope('conv_1.1', reuse=True):
-    #     conv_kernels1 = tf.get_variable('kernel')
-    #     kernel_transposed = tf.transpose(conv_kernels1, [3, 0, 1, 2])
-    #
-    # with tf.variable_scope('visualization'):
-    #     tf.summary.image('conv_1.1/filters', kernel_transposed, max_outputs=32, collections=["kernels"])
+    with tf.variable_scope('conv_stem_1.1', reuse=True):
+        conv_kernels1 = tf.get_variable('kernel')
+        kernel_transposed = tf.transpose(conv_kernels1, [3, 0, 1, 2])
+
+    with tf.variable_scope('visualization'):
+        tf.summary.image('conv_stem_1.1/filters', kernel_transposed, max_outputs=32, collections=["kernels"])
 
     # get the probabilites for the classes
     probabilities = tf.nn.softmax(logits, name="probabilities")
@@ -182,11 +183,11 @@ with graph.as_default():
 
     if num_classes > 2:
         # the scan is abnormal if the probability is greater than the threshold
-        # is_abnormal = tf.cast(tf.greater(abnormal_probability, threshold), tf.int64)
+        is_abnormal = tf.cast(tf.greater(abnormal_probability, threshold), tf.int64)
 
         # Compute predictions from the probabilities - if the scan is normal we ignore the other probabilities
-        # predictions = is_abnormal * tf.argmax(probabilities[:,1:], axis=1, output_type=tf.int64)
-        predictions = tf.argmax(logits, axis=1, output_type=tf.int64)
+        predictions = is_abnormal * tf.argmax(probabilities[:,1:], axis=1, output_type=tf.int64)
+        # predictions = tf.argmax(logits, axis=1, output_type=tf.int64)
     else:
         predictions = tf.cast(tf.greater(abnormal_probability, threshold), tf.int32)
 
