@@ -75,10 +75,12 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "vgg_16.03"
+model_name = "vgg_16.3.01l.6"
 # vgg_19.01 - attempting to recreate vgg 19 architecture
 # vgg_16.02 - went to vgg 16 architecture, reducing units in fc layers
-# vgg_16.03 - increased batch size as otherwise each epoch will take an hour
+# vgg_16.2.01 - changing first conv layers to stride 2 to get dimensions down to reasonable size
+# vgg_16.2.02 - using normal x-entropy instead of weighted
+# vgg_16.3.01 - average pooling image before first conv, changing conv1 to stride 1
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -109,8 +111,18 @@ with graph.as_default():
         mu = tf.constant(mu, name="pixel_mean", dtype=tf.float32)
         X = tf.subtract(X, mu, name="centered_input")
 
+    # Average pool the image
+    with tf.name_scope('pool0') as scope:
+        pool0 = tf.layers.average_pooling2d(
+            X,  # Input
+            pool_size=(2, 2),  # Pool size: 2x2
+            strides=(2, 2),  # Stride: 2
+            padding='SAME',  # "same" padding
+            name='pool0'
+        )
+
     # Convolutional layer 1
-    conv1 = _conv2d_batch_norm(X, 64, kernel_size=(3,3), stride=(1,1), training=training, epsilon=1e-8, padding="VALID", seed=100, lambd=lamC, name="1.1")
+    conv1 = _conv2d_batch_norm(pool0, 64, kernel_size=(3,3), stride=(1,1), training=training, epsilon=1e-8, padding="SAME", seed=100, lambd=lamC, name="1.1")
     conv1 = _conv2d_batch_norm(conv1, 64, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=100, lambd=lamC, name="1.2")
 
     # Max pooling layer 1
@@ -320,13 +332,13 @@ with graph.as_default():
     #########################################################
     ## Loss function options
     # Regular mean cross entropy
-    #mean_ce = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits))
+    mean_ce = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits))
 
     #########################################################
     ## Weight the positive examples higher
     # This will weight the positive examples higher so as to improve recall
-    weights = tf.multiply(1, tf.cast(tf.greater(y, 0), tf.int32)) + 1
-    mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=logits, weights=weights))
+    #weights = tf.multiply(1, tf.cast(tf.greater(y, 0), tf.int32)) + 1
+    #mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=logits, weights=weights))
 
     # Add in l2 loss
     loss = mean_ce + tf.losses.get_regularization_loss()
