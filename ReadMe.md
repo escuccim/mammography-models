@@ -1,34 +1,32 @@
 # ConvNets for Detection of Abnormalities in Mammograms
 Eric Scuccimarra (skooch@gmail.com)
 
-## Abstract
-Mammography is the most common method of detecting breast cancer. Early detection significantly improves survival rates, and between 8% and 25% of abnormalities go undetected. We trained ConvNets on the DDSM dataset to detect the presence of lesions and predict the class and pathology of the lesions.
-
-We were able to achieve an accuracy of 99% on determining whether scans were normal or abnormal and 89% on full multi-class classification.
-
 ## Introduction
 Breast cancer is the second most common cancer in women worldwide. About 1 in 8 U.S. women (about 12.4%) will develop invasive breast cancer over the course of her lifetime. The five year survival rates for stage 0 or stage 1 breast cancers are close to 100%, but the rates go down dramatically for later stages: 93% for stage II, 72% for stage III and 22% for stage IV. Human recall for identifying lesions is estimated to be between 0.75 and 0.92 [1], which means that as many as 25% of abnormalities may go undetected. 
 
-The DDSM is a dataset of normal and abnormal scans; however the size is relatively small. To increase the size of the dataset we extract the Regions of Interest (ROI) from each image, perform data augmentation and then train ConvNets on the augmented data. The ConvNets were trained to predict both whether a scan was normal or abnormal, and to predict whether abnormalities were calcifications or masses and benign or malignant.
+The DDSM is a well-known dataset of normal and abnormal scans, and one of the few publicly available datasets of mammography imaging. Unfortunately, the size of the dataset is relatively small. To increase the amount of training data we extract the Regions of Interest (ROI) from each image, perform data augmentation and then train ConvNets on the augmented data. The ConvNets were trained to predict both whether a scan was normal or abnormal, and to predict whether abnormalities were calcifications or masses and benign or malignant.
 
 ## Related Work
 There exists a great deal of research into applying deep learning to medical diagnosis, but privacy concerns make the availability of training data a limiting factor, and thus there is not much research into applying ConvNets to mammography. [1, 4] use ConvNets to classify pre-detected breast masses by pathology and type, but do not attempt to detect masses from scans. [2,3] detect abnormalities using combinations of region-based CNNs and random forests. 
 
 ## Datasets
-The DDSM [6] is a database of 2,620 scanned film mammography studies. It contains normal, benign, and malignant cases with verified pathology information. The CBIS-DDSM [8] collection includes a subset of the DDSM data selected and curated by a trained mammographer. The CBIS-DDSM images are better quality than the DDSM images, but this dataset does not contain normal images. Normal images were taken from the DDSM dataset and combined with the abnormal images from the CBIS-DDSM in order to have all classes represented.
+The DDSM [6] is a database of 2,620 scanned film mammography studies. It contains normal, benign, and malignant cases with verified pathology information. The DDSM is saved as Lossless JPEGs, an archaic format which has not been maintained in about 20 years. The CBIS-DDSM [8] collection includes a subset of the DDSM data selected and curated by a trained mammographer. The CBIS-DDSM images have been pre-processed and saved as Dicom images, and thus are better quality than the DDSM images, but this dataset only contains scans with abnormalities. In order to create a dataset which can be used to predict the presence of abnormalities, the ROIs were extracted from the CBIS-DDSM dataset and combined with normal images taken from the DDSM dataset.
+
+The MIAS dataset is a very small set of mammography images, consisting of 330 scans of all classes. The scans are standardized to a size of 1024x1024 pixels. The size of the dataset made this unusable for training.
 
 Data from the University of California Irvine Machine Learning Repository [5] was also used for exploratory data analysis to gain insight into the characteristics of abnormalities.
 
 ## Methods
-The DDSM and CBIS-DDSM datasets are relatively small. The images were pre-processed with data augmentation to create a dataset of reasonable size. ConvNets were then constructed and trained on the data using multiple labelling methods.
+Images from both the CBIS-DDSM and the DDSM datasets were pre-processed to extract the ROIs into images of a size suitable to train a ConvNet on. Multiple datasets were created of differing sizes using different extraction methods and amounts of data augmentation. Then these datasets were used to train several ConvNets, including custom designed architectures as well as customized variations on VGG and Inception.
 
-### Data Augmentation
-The CBIS-DDSM scans were of relatively large size, with a mean height of 5295 pixels and a mean width of 3131 pixels. Masks highlighting the ROIs were provided. In order to create training data, the ROIs were extracted from the abnormal images using the masks and sized down to 299x299 pixels. 
+### ROI Extraction
+The CBIS-DDSM scans were of relatively large size, with a mean height of 5295 pixels and a mean width of 3131 pixels. Masks highlighting the ROIs were provided. In order to create training data, the ROIs were extracted from the abnormal images using the masks and sized down to 299x299 pixels. Multiple methods for extracting the ROI were used.
 
-The analysis of the UCI data indicated that the edges of an abnormality were important as to determining its pathology and type, and this was confirmed by a radiologist. Levy et al [1] also report that the inclusion of context was an important contributor to the accuracy of the classification. To account for this multiple methods were used to extract the ROIs. The ROIs were extracted at 598x598 and then sized down to 299x299. In order to increase the size of the dataset data augmentation was used, including randomly positioning the ROI within the image, random horizontal flipping, random vertical flipping and random rotation. The ROIs were extracted using two systems of margins which will be detailed below.
- 
 #### ROI Extraction Method 1
+The analysis of the UCI data indicated that the edges of an abnormality were important as to determining its pathology and type, and this was confirmed by a radiologist. Levy et al [1] also report that the inclusion of context was an important contributor to the accuracy of the classification.
+
 The ROIs had a mean size of 450 pixels and a standard deviation of 396. In the interest of representing each ROI as well as possible, each ROI was extracted in multiple ways:
+
 1.	The ROI was extracted at 598x598 at its original size.
 2.	The ROI was zoomed to 598x598, with padding to provide context.
 3.	If the ROI had the size of one dimension more than 1.5 times the other dimension it was extracted as two tiles centered in the center of each half of the ROI along it's largest dimension.
@@ -38,20 +36,25 @@ In order to create a dataset which could be used to train a network to predict i
 
 If the ROI was smaller than a 598x598 tile it was extracted with 20% padding on either side. If the ROI was larger than a 598x598 tile it was extracted with 5% padding.
 
-Each ROI image was then randomly cropped three times, with random flips and rotation. 
+Each ROI image was then randomly cropped three times, with random augmentation as described below.
+
+#### Data Augmentation
+The ROIs were extracted at 598x598 and then sized down to 299x299. To increase the size of the training data, each ROI was extracted multiple times using the methodologies described above. The size and variety of the data was also increased by randomly horizontally flipping each tile, randomly vertically flipping each tile, randomly rotating each tile, and by randomly positioning each ROI within the tile.
 
 #### Normal Images
-The normal scans from the DDSM dataset did not have ROIs so were processed differently. As these images had not been pre-processed they contained artifacts such as white borders and white patches of pixels used to cover up personal identifying information. To remove the borders each image was cropped by 7% on each side. In order to attempt to keep these images on the same scale as the CBIS-DDSM images, the DDSM images were sized down by a random factor between 1.8 and 3.2, then segmented into 299x299 tiles with a variable stride between 150 and 200. Each tile was then randomly rotated and flipped.
+The normal scans from the DDSM dataset did not have ROIs so were processed differently. As these images had not been pre-processed they contained artifacts such as white borders and white patches of pixels used to cover up personal identifying information. To remove the borders each image was cropped by 7% on each side. 
+
+In order to attempt to keep these images on the same scale as the CBIS-DDSM images, the DDSM images were sized down by a random factor between 1.8 and 3.2, then segmented into 299x299 tiles with a variable stride between 150 and 200. Each tile was then randomly rotated and flipped.
  
 To avoid the inclusion of images which contained overlay text, or were mostly black background, each tile was then added to the dataset only if it met upper and lower thresholds on mean and variance. The thresholds were determined through random sampling of tiles and tuning of the thresholds to eliminate images which did not contain usable data. 
 
 #### Training Datasets
-Multiple datasets were created using different data augmentation techniques. The datasets ranged in size from 27,000 training images to 62,000 training images. The datasets had differing amounts of data augmentation, and different techniques were used to extract the ROIs for each.
+Multiple datasets were created using different data augmentation techniques. The datasets ranged in size from 27,000 training images to 62,000 training images. The datasets had differing amounts of data augmentation, and used one or a combination of the ROI extraction techniques detailed above.
 
 1. Dataset 5 consisted of 39,316 images. This dataset was the first to use data augmentation so that each ROI was represented in multiple ways.
-2. Dataset 6 consisted of 62,764 images. This dataset was created using an "everything but the kitchen street" approach to the ROI extraction. Each ROI was extracted at size, zoomed, cropped and with random rotation and flipping.   
+2. Dataset 6 consisted of 62,764 images. This dataset was created using an "everything but the kitchen street" approach to the ROI extraction, combining elements of both extraction methods. Each ROI was extracted at size, zoomed, cropped and with random rotation and flipping.   
 3. Dataset 8 consisted of 40,559 images. This dataset used the extraction method 1 described above to provide greater context for each ROI.  
-4. Dataset 9 consisted of 43,739 images. The previous datasets had used zoomed images of the ROIs. While this worked well for training the models, the fact that the sizes of the ROIs varied quite a bit meant that most of the ROI images were zoomed in or out, making the models not terribly useful for analysing raw scans. This dataset was created specifically to attempt to detect abnormalities in un-processed scans. The ROIs were extracted using method 2 described above.  
+4. Dataset 9 consisted of 43,739 images. The previous datasets had used zoomed images of the ROIs, which was problematic as it required the ROI to be pre-identified and isolated. This dataset was created using extraction method 2 with the goal of training a ConvNet to recognize abnormalities from un-augmented input images.
 
 ### Data Balance
 Only about 10% of mammograms are abnormal, in order to maximize recall we weighted our training data more heavily towards abnormal scan, with a target of 85% normal. As each ROI was extracted to multiple images, in order to prevent different images of the same ROI appearing in both the training and test data, the existing divisions of the CBIS-DDSM data were maintained. The test data was divided evenly between test and validation data with no shuffling to avoid overlap.
@@ -71,24 +74,35 @@ As previous work [1] has already dealt with classifying pre-identified abnormali
 When classifying into all five categories, the predictions were also "collapsed" into binary normal/abnormal in order to measure the precision and recall. 
 
 ### ConvNet Architecture
-Our first thought was to train existing ConvNets, such as VGG or Inception, on this dataset. However a lack of computational resources made this impractical. In addition, the features of medical scans contain much less variance than does the ImageNet data, so we were concerned that large-scale models like VGG would lead to overfitting. For these reasons we decided to design our own architecture specifically for this task, attempting to keep the models as simple as possible. 
+Our first thought was to train existing ConvNets, such as VGG or Inception, on this dataset. However a lack of computational resources made this impractical. In addition, the features of medical scans contain much less variance than does the ImageNet data, so we were concerned that a large model like VGG would lead to overfitting. For these reasons we decided to design our own architecture specifically for this task, attempting to keep the models as simple as possible. 
 
-When trying to train models on the first dataset we noticed that while the training accuracy increased as expected, the validation accuracy often seemed to vary randomly and did not appear correlated to the training performance. We suspected that the model might be learning features of the training data which did not generalize, so attempted to create models which would avoid this issue of overfitting.
+When trying to train models on our first dataset we noticed that while the training accuracy increased as expected, the validation accuracy seemed to vary randomly and did not appear correlated to the training performance. We suspected that the model might be learning features of the training data which did not generalize, so attempted to create models which would avoid this issue of overfitting.
 
 We started with a simple model based on VGG, consisting of stacked 3x3 convolutional layers alternating with max pools followed by fully connected layers. Our model had fewer convolutional layers than did VGG and smaller fully connected layers. This architecture was iteratively improved, with each iteration changing only one aspect in the architecture and then being evaluated. Techniques evaluated include Inception-style branches [16, 17, 18] and residual connections [19]. 
 
 The architecture was designed so that the same model could be used for both binary classification and multi-class classification by retraining the fully connected layers. 
 
-Two loss functions were evaluated - a normal cross entropy and a weighted cross entropy was also evaluated which weighted abnormal examples at double the weight of normal examples. This was an attempt to improve recall. In some cases the weighted cross-entropy caused the model to predict everything as positive. 
+Two loss functions were evaluated - a normal cross entropy and a weighted cross entropy was also evaluated which weighted abnormal examples at double the weight of normal examples in an attempt to improve recall.
 
 The models were constructed using TensorFlow and metrics were logged to TensorBoard. Batch normalization [15] was used for every layer, with dropout applied to the fully connected and pooling layers, and L2 regularization applied to all layers, with different lambdas for convolutional layers and fully connected layers.
 
 The best performing architecture will be detailed below.
 
 ### Training
-For the model selection phase models were trained on Dataset 5 through 50 epochs with binary labels. Accuracy, precision, recall and f1 score were used to evaluate the models. 
+Initial evaluation of models was done using Dataset 5 due to its relatively small size. Each model was trained through between 30 and 50 epochs and accuracy, precision and recall were used to evaluate performance.
 
-The models which performed well on Dataset 5 were retrained from scratch on Datasets 6 and 8 separately for both binary and multi-class classification.
+The models which performed well on Dataset 5 were retrained from scratch on Dataset 6 for both binary and multi-class classification. Models which resulted in satisfactory performance on Dataset 6 were then retrained on Datasets 8 and 9, both from scratch and retraining the model pre-trained on Dataset 6.
+
+### Transfer Learning
+We had considered using transfer learning from VGG or Inception, but decided that the features of the ImageNet data were different enough from those of radiological scans that it made more sense to learn the features from scratch on this dataset. To evaluate the usefulness of transfer learning from pre-trained networks, VGG-19 and Inception v3, the features were extracted from our datasets using pre-trained versions of these models. The final layers of the networks were then retrained to classify to our classes while the convolutional weights were frozen. Our hypothesis that the features extracted by these networks would not be applicable to classifying medical scans seemed to be confirmed by the results of this experiment, which were significantly below the accuracy of the most-frequent baseline.
+
+Transfer learning did, however, proof very useful in training our own networks, where initializing the convolutional weights to weights pre-trained on our datasets greatly sped up the training process. However, this method was not entirely reliable. When trained past 30 epochs or so, most of our models began to overfit the training data, and continuing to train a pre-trained model usually led to quick drops in validation accuracy unless the convolutional weights were frozen. 
+
+## Results
+### Architecture
+The custom model which performed the best was 1.0.0.29, which was based on VGG. Model 1.0.0.29 consists of stacked 3x3 convolutions alternating with max pools followed by two fully connected layers with 2048 units each. Model 1.0.0.41 was the same architecture as 1.0.0.29 but with the input data centered by subtracting the pre-calculated pixel mean.
+
+<img src="model_s1.0.0.29.png" alt="Model 1.0.0.29" align="right" style="max-width: 50%;">
 
 A slightly modified version of VGG-16 was also trained as a benchmark. A full version of VGG-16 required more memory than we had available, so we made the following alterations to the architecture:
 
@@ -99,29 +113,16 @@ A slightly modified version of VGG-16 was also trained as a benchmark. A full ve
 
 These changes brought the memory requirements down to acceptable levels and doubled the training speed. While changing the stride of convolutional layer 1 decreased the training accuracy, we felt that it might allow the model to generalize a bit better.
 
-### Transfer Learning
-We had considered using transfer learning from VGG or Inception, but decided that the features of the ImageNet data were different enough from those of radiological scans that it made more sense to learn the features from scratch on this dataset. To evaluate the usefulness of transfer learning from pre-trained networks, VGG-19 and Inception v3, the features were extracted from the CBIS-DDSM and DDSM images using pre-trained ConvNets. The final layers of the networks were then retrained to classify to our classes while the convolutional weights were frozen. Our hypothesis that the features extracted by these networks would not be applicable to classifying medical scans seemed to be confirmed by the results of this experiment, which 
-
-Transfer learning did, however, proof very useful in training our own networks, where initializing the convolutional weights to weights pre-trained on our datasets greatly sped up the training process. However, this method was not entirely reliable. When trained past 30 epochs or so, most of our models began to overfit the training data, and continuing to train a pre-trained model usually led to quick drops in validation accuracy unless the convolutional weights were frozen. 
-
-## Results
-### Architecture
-The best two performing models were 1.0.0.29 and 1.0.1.39. 
-
-Model 1.0.0.29 consists of stacked 3x3 convolutions alternating with max pools followed by two fully connected layers with 2048 units each.
-<img src="model_s1.0.0.29.png" alt="Model 1.0.0.29" align="right" style="max-width: 50%;">
-
-Model 1.0.0.39 is very similar to 1.0.0.28, but with one extra fully connected layer, and two extra convolutional layers. As the abnormal mammograms had abnormalities ranging in size from several pixels to several hundred pixels a branch was inserted after layer 1 to attempt to detect very small features. The branches are concatenated together before max pool layer 1. This model also has an extra fully connected layer.
-<img src="model_1.0.1.41a.png" alt="Model 1.0.1.39" style="max-width: 50%;" align="right" >
+Finally a customized version of Inception v4 was evaluated. This was built from scratch by following the Inception v4 paper [18] and the architecture had fewer layers. There were three Block As, four Block Bs, and two Block Cs. These changes were made so that the model could be trained in a reasonable amount of time, however even with these changes training the model was still incredibly slow.
 
 ### Performance
 
+The performance of the models turned out to be highly dependent on the dataset used for training combined with the classification method. While we had created certain datasets specifically for certain classification methods, the performance did not correlate with our expectations. For example, Dataset 8 was created specifically for multi-class classification, but produced better results for binary classification. 
 
-The performance of the models turned out to be highly dependent on the dataset used for training combined with the classification method. Binary classification scored significantly better on Dataset 8 while multi-class classification performed best on Dataset 6. 
+The time required to train a model from scratch made it impossible to train each model on each dataset with each classification method, but the results in Table 1 below cover a decent number of combinations.
 
 |Model      |Classification |Dataset    |Accuracy    |Recall      |Initialization |Layers Trained  |
 |-----------|---------------|-----------|------------|------------|---------------|----------------|
-|VGG-16.02  |         Binary|          9|.8947       |.4046       |Scratch        |All             |                 
 |VGG-16.02  |    Multi-class|          6|       |       |Scratch        |All             |
 |1.0.0.29n  |    Multi-class|          6|.9142       |.9353       |Scratch        |All             |
 |1.0.0.29n  |         Binary|          6|.8299       |.0477       |Scratch        |All             |
@@ -131,11 +132,9 @@ The performance of the models turned out to be highly dependent on the dataset u
 |1.0.0.41b  |         Binary|          9|.7721       |.7852       |Scratch        |All             |
 |1.0.0.41l  |    Multi-class|          9|.8261       |.0135       |1.0.0.41b      |All             |
 |1.0.0.41l  |    Multi-class|          9|.8054       |.4065       |1.0.0.41b*     |FC |
-
+|VGG-16.02  |         Binary|          9|.8947       |.4046       |Scratch        |All             |                 
 
 <div style="text-align:center;"><i>Table 1: Performance on Test Set</i></div>
-
-Dataset 8 was created specifically for multi-class classification, including each ROI with varying amounts of context and different amounts of zoom, so the performance on this dataset may be partly contributable to it's artificial nature. 
 
 Model 1.0.0.29 performed excellent on both the training and validation data, as seen in Figure 1. 
 
@@ -143,11 +142,7 @@ Model 1.0.0.29 performed excellent on both the training and validation data, as 
 
 <div style="text-align:center"><i>Figure 1 - Binary Accuracy and Recall for Model 1.0.0.29</i></div>
 
-Model 1.0.1.39 also performed remarkably well on both the training and validation data on Dataset 5, but also performed well on Dataset 6. This model was more complicated than model 1.0.0.28, and included a branch to attempt to detect smaller abnormalities. 
-
-_figures 3 and 4 - model 1.0.1.39_
-
-It is interesting to note that when training the same model on the same datasets during some runs the performance on the validation data seemed completely independent of the training performance, indicating that the model was not learning anything useful but was just fitting to the training data, while on other runs the model generalized well. 
+Many of the models appeared to be unstable in that training the same model on the same dataset could produce drastically different results. We assume that this is due to the model learning to recognize features which did not generalize to the test data and attempted to combat this by keeping the size of the models small.
 
 ### Decision Thresholds
 These results were obtained using a threshold of 0.50. The precision and recall could be drastically altered by changing the decision threshold. It was suprisingly easy to achieve a precision of close to 1.0, however we were focused on improving recall. Adjusting the threshold from between 0.20 to 0.50 allowed us to improve recall by a few percentage points while decreasing precision dramatically. 
@@ -155,11 +150,13 @@ These results were obtained using a threshold of 0.50. The precision and recall 
 The ability to adjust the threshold could be very useful for radiologists, allowing them to screen out scans which are either definitely negative or definitely positive and allowing them to focus on the more ambiguous scans.
 
 ## Conclusion
-While we have been able to achieve high accuracy on both classifying to normal/abnormal as well as classifying the type and pathology of abnormalities, the training data used was specifically tailored for these tasks. Training on dataset 9, which used segments of the scans without zooming in on ROIs, did not yield results better than baseline accuracy.
+While we have been able to achieve high accuracy on both classifying to normal/abnormal as well as classifying the type and pathology of abnormalities, the training data used was specifically tailored for these tasks. When models which performed well on the test data were evaluated on images from the MIAS data set which had been processed in order to make them as similar to the DDSM images as possible, the poor results indicate that our models do not generalize well enough to classify images from a different distribution.
 
 However, as a proof of concept, we have demonstrated that Convolutional Neural Networks can be trained to determine whether a section of a mammogram contains an abnormality with recall over 95%, substantially above human performance. Adjusting the decision threshold would further improve the recall. These methods could be used to pre-screen mammograms allowing radiologists to focus on scans which are likely to contain abnormalities.  
 
-The techniques used in this work could be applied to analysing entire mammograms using a sliding window, however this would be very computationally expensive due to the size of raw scans and the fact that the window would need to be resized multiple times. Future work would include applying other techniques to this problem, such as YOLO or attention based models.  
+The techniques used in this work could be applied to analysing entire mammograms using a sliding window, however this would be very computationally expensive due to the size of raw scans and the fact that the window would need to be resized multiple times. 
+
+Future work would include applying other techniques to this problem, such as YOLO or attention based models; and creating models which will generalize better.
 
 ## References
 [1]	D. Levy, A. Jain, Breast Mass Classification from Mammograms using Deep Convolutional Neural Networks, arXiv:1612.00542v1, 2016
