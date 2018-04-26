@@ -11,7 +11,7 @@ from tensorboard import summary as summary_lib
 # If number of epochs has been passed in use that, otherwise default to 50
 parser = argparse.ArgumentParser()
 parser.add_argument("-e", "--epochs", help="number of epochs to train", default=30, type=int)
-parser.add_argument("-d", "--data", help="which dataset to use", default=9, type=int)
+parser.add_argument("-d", "--data", help="which dataset to use", default=6, type=int)
 parser.add_argument("-m", "--model", help="model to initialize with", default=None)
 parser.add_argument("-l", "--label", help="how to classify data", default="normal")
 parser.add_argument("-a", "--action", help="action to perform", default="train")
@@ -72,13 +72,14 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s0.0.2.05b"
+model_name = "model_s0.0.2.06b"
 # 0.0.0.1 - trying a smaller model as the bigger ones seem to overfit, basically same as 1.0.0.28 but with much less filters in each layer
 # 0.0.1.1 - adding a big, long branch
 # 0.0.1.2 - increased numbers of filters
 # 0.0.1.4 - changing structure of branches
 # 0.0.2.01 - adding residual connections
 # 0.0.2.02 - fixed residuals
+# 0.0.2.06 - removed fc3, it wasn't necessary
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -357,41 +358,9 @@ with graph.as_default():
         # dropout
         fc2_relu = tf.layers.dropout(fc2_relu, rate=fcdropout_rate, seed=120, training=training)
 
-    # Fully connected layer 3
-    with tf.name_scope('fc3') as scope:
-        fc3 = tf.layers.dense(
-            fc2_relu,  # input
-            1024,  # 1024 hidden units
-            activation=None,  # None
-            kernel_initializer=tf.variance_scaling_initializer(scale=2, seed=11725),
-            bias_initializer=tf.zeros_initializer(),
-            kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamF),
-            name="fc3"
-        )
-
-        fc3 = tf.layers.batch_normalization(
-            fc3,
-            axis=-1,
-            momentum=0.9,
-            epsilon=epsilon,
-            center=True,
-            scale=True,
-            beta_initializer=tf.zeros_initializer(),
-            gamma_initializer=tf.ones_initializer(),
-            moving_mean_initializer=tf.zeros_initializer(),
-            moving_variance_initializer=tf.ones_initializer(),
-            training=training,
-            name='fc3_bn'
-        )
-
-        fc3 = tf.nn.relu(fc3, name='fc3_relu')
-
-        # dropout
-        fc3 = tf.layers.dropout(fc3, rate=fcdropout_rate, seed=19740, training=training)
-
     # Output layer
     logits = tf.layers.dense(
-        fc3,
+        fc2_relu,
         num_classes,  # One output unit per category
         activation=None,  # No activation function
         kernel_initializer=tf.variance_scaling_initializer(scale=1, seed=121),
