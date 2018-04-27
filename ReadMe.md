@@ -104,7 +104,7 @@ The custom model which performed the best was 1.0.0.29, which was based on VGG. 
 
 <img src="model_s1.0.0.29.png" alt="Model 1.0.0.29" align="right" style="max-width: 50%;">
 
-The other custom model which performed well was 0.0.2.02. When looking at ROIs, we noticed that the range in sizes was quite large. In order to attempt to detect very small, early stage abnormalities in addition to the larger ones we designed this model with two branches. Each branch consists of three sets of 3x3 convolutional layers. Each set in Branch 1 has three 3x3 layers while in Branch 2 each set has two layers with the last set containing only one 3x3 convolutional layer. The branches are then concatenated and fed into the last two sets of convolutional layers. Residual connections are used in Branch 1. While this model scored accuracy of .9755 the recall of .8920 was unimpressive, and the validation accuracy tended to be slightly more unstable than in the simpler models.  
+A variety of other models were evaluated which included things like Inception-style branches and residual connections, and while some performed well during some training runs, the majority did not generalize to the validation data - they learned to predict the validation and test examples as either all positive or all negative.
 
 A slightly modified version of VGG-16 was also trained as a benchmark. A full version of VGG-16 required more memory than we had available, so we made the following alterations to the architecture:
 
