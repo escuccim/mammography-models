@@ -143,7 +143,7 @@ The time required to train a model from scratch made it impossible to train each
 Model 1.0.0.29 performed excellent on both the training and validation data, as seen in Figures 1 and 2.
 
 <img src="accuracy_1.0.0.29b.png" alt="Binary Accuracy and Recall of Model 1.0.0.29">
-<div style="text-align:center"><i>Figure 1 - Binary Accuracy and Recall for Model 1.0.0.29</i></div>
+<div style="text-align:center; width=100%;"><i>Figure 1 - Binary Accuracy and Recall for Model 1.0.0.29</i></div>
 
 <img src="accuracy_1.0.0.29l.6.png" alt="Multi-class Accuracy and Recall of Model 1.0.0.29">
 <div style="text-align:center"><i>Figure 2 - Multi-class Accuracy and Recall for Model 1.0.0.29</i></div>
