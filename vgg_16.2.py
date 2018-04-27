@@ -75,7 +75,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "vgg_16.2.02b.6"
+model_name = "vgg_16.2.03b.6"
 # vgg_19.01 - attempting to recreate vgg 19 architecture
 # vgg_16.02 - went to vgg 16 architecture, reducing units in fc layers
 # vgg_16.2.01 - changing first conv layers to stride 2 to get dimensions down to reasonable size

@@ -133,8 +133,8 @@ The time required to train a model from scratch made it impossible to train each
 |1.0.0.41l  |    Multi-class|          6|       |       |Scratch        |
 |1.0.0.29n  |         Binary|          8|.9930       |1.0         |Scratch        |
 |1.0.0.29n  |    Multi-class|          8|.8890       |.9092       |Scratch        |        
-|1.0.0.41b  |         Binary|          8|       |1.0         |Scratch        |
-|1.0.0.41l  |    Multi-class|          8|       |.9092       |Scratch        |        
+|1.0.0.41b  |         Binary|          8|       |         |Scratch        |
+|1.0.0.41l  |    Multi-class|          8|       |       |Scratch        |        
 |1.0.0.41b  |         Binary|          9|.7721       |.7852       |Scratch        |
 |1.0.0.41l  |    Multi-class|          9|.8261       |.0135       |1.0.0.41b      |              
 
