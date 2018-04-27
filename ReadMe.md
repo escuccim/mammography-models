@@ -115,7 +115,7 @@ A slightly modified version of VGG-16 was also trained as a benchmark. A full ve
 
 These changes brought the memory requirements down to acceptable levels and doubled the training speed. While changing the stride of convolutional layer 1 decreased the training accuracy, we felt that it might allow the model to generalize a bit better.
 
-Finally a customized version of Inception v4 was evaluated. This was built from scratch by following the Inception v4 paper [18] and the architecture had fewer layers. There were three Block As, four Block Bs, and two Block Cs. These changes were made so that the model could be trained in a reasonable amount of time, however even with these changes training the model was still incredibly slow.
+Finally we attempted to train a customized version of Inception v4 on our datasets, however the training was so slow it was abandoned.
 
 ### Performance
 

@@ -3,7 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="98c4e5b0-4f90-4540-b87f-9bd6d2ddc583" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/candidate_1.0.0.38.py" afterPath="$PROJECT_DIR$/candidate_1.0.0.38.py" />
+      <change beforePath="$PROJECT_DIR$/ReadMe.md" afterPath="$PROJECT_DIR$/ReadMe.md" />
+      <change beforePath="$PROJECT_DIR$/candidate_0.0.2.06b.py" afterPath="$PROJECT_DIR$/old_models/candidate_0.0.2.06b.py" />
+      <change beforePath="$PROJECT_DIR$/candidate_0.0.3.01l.py" afterPath="$PROJECT_DIR$/old_models/candidate_0.0.3.01l.py" />
+      <change beforePath="$PROJECT_DIR$/vgg_16.2.py" afterPath="$PROJECT_DIR$/vgg_16.2.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -18,8 +21,8 @@
         <entry file="file://$PROJECT_DIR$/ReadMe.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="1230">
-                <caret line="160" column="54" lean-forward="false" selection-start-line="160" selection-start-column="54" selection-end-line="160" selection-end-column="54" />
+              <first_editor relative-caret-position="801">
+                <caret line="117" column="134" lean-forward="false" selection-start-line="117" selection-start-column="134" selection-end-line="117" selection-end-column="134" />
                 <folding />
               </first_editor>
               <second_editor />
@@ -39,10 +42,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="candidate_1.0.0.38.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="candidate_1.0.0.38.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/candidate_1.0.0.38.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="363">
+            <state relative-caret-position="-28528">
               <caret line="77" column="30" lean-forward="false" selection-start-line="77" selection-start-column="30" selection-end-line="77" selection-end-column="30" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
@@ -51,45 +54,41 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="candidate_0.0.2.06b.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/candidate_0.0.2.06b.py">
+      <file leaf-file-name="candidate_0.0.3.01l.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/old_models/candidate_0.0.3.01l.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="429">
+            <state relative-caret-position="594">
+              <caret line="77" column="29" lean-forward="false" selection-start-line="77" selection-start-column="29" selection-end-line="77" selection-end-column="29" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="candidate_1.1.2.06.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/old_models/candidate_1.1.2.06.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-1102">
+              <caret line="440" column="27" lean-forward="false" selection-start-line="440" selection-start-column="27" selection-end-line="440" selection-end-column="27" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="candidate_0.0.2.06b.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/old_models/candidate_0.0.2.06b.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-20768">
               <caret line="105" column="0" lean-forward="true" selection-start-line="105" selection-start-column="0" selection-end-line="105" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="inception_utils.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/inception_utils.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1007">
-              <caret line="305" column="47" lean-forward="false" selection-start-line="305" selection-start-column="47" selection-end-line="305" selection-end-column="47" />
-              <folding>
-                <element signature="e#0#18#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="inception_v4.01.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/inception_v4.01.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-3399">
-              <caret line="149" column="26" lean-forward="true" selection-start-line="149" selection-start-column="26" selection-end-line="149" selection-end-column="26" />
-              <folding>
-                <element signature="e#0#18#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="vgg_16.2.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="vgg_16.2.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/vgg_16.2.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-7161">
-              <caret line="77" column="28" lean-forward="false" selection-start-line="77" selection-start-column="28" selection-end-line="77" selection-end-column="28" />
+            <state relative-caret-position="561">
+              <caret line="77" column="26" lean-forward="false" selection-start-line="77" selection-start-column="26" selection-end-line="77" selection-end-column="26" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -125,6 +124,7 @@
       <find>Dataset 6</find>
       <find>weigh</find>
       <find>convdropout_rate</find>
+      <find>[0:2]</find>
     </findStrings>
     <dirStrings>
       <dir>C:\Users\eric\Documents\Machine Learning\mammography</dir>
@@ -178,15 +178,15 @@
         <option value="$PROJECT_DIR$/candidate_1.0.0.33.py" />
         <option value="$PROJECT_DIR$/vgg_16.py" />
         <option value="$PROJECT_DIR$/training_utils.py" />
-        <option value="$PROJECT_DIR$/vgg_16.2.py" />
         <option value="$PROJECT_DIR$/vgg_16.3.01.py" />
         <option value="$PROJECT_DIR$/inception_utils.py" />
         <option value="$PROJECT_DIR$/inception_v4.01.py" />
         <option value="$PROJECT_DIR$/candidate_1.0.1.42a.py" />
         <option value="$PROJECT_DIR$/candidate_0.0.2.1l.py" />
-        <option value="$PROJECT_DIR$/ReadMe.md" />
         <option value="$PROJECT_DIR$/candidate_0.0.2.06b.py" />
         <option value="$PROJECT_DIR$/candidate_1.0.0.38.py" />
+        <option value="$PROJECT_DIR$/ReadMe.md" />
+        <option value="$PROJECT_DIR$/vgg_16.2.py" />
       </list>
     </option>
   </component>
@@ -281,6 +281,7 @@
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3297587" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
@@ -293,7 +294,6 @@
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3297587" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
@@ -360,13 +360,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/old_models/candidate_1.1.2.06.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="33">
-          <caret line="313" column="20" lean-forward="false" selection-start-line="313" selection-start-column="20" selection-end-line="313" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/model_1.0.1.32.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="594">
@@ -406,6 +399,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="27819">
           <caret line="862" column="72" lean-forward="false" selection-start-line="862" selection-start-column="72" selection-end-line="862" selection-end-column="72" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -413,6 +407,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="25839">
           <caret line="828" column="72" lean-forward="false" selection-start-line="828" selection-start-column="72" selection-end-line="828" selection-end-column="72" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -527,14 +522,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/candidate_0.0.3.01l.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="594">
-          <caret line="77" column="29" lean-forward="false" selection-start-line="77" selection-start-column="29" selection-end-line="77" selection-end-column="29" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/candidate_2.0.1.1l.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-1914">
@@ -633,16 +620,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/inception_utils.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1007">
-          <caret line="305" column="47" lean-forward="false" selection-start-line="305" selection-start-column="47" selection-end-line="305" selection-end-column="47" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/candidate_1.1.0.40l.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="3168">
@@ -679,30 +656,38 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ReadMe.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="1230">
-            <caret line="160" column="54" lean-forward="false" selection-start-line="160" selection-start-column="54" selection-end-line="160" selection-end-column="54" />
-            <folding />
-          </first_editor>
-          <second_editor />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/vgg_16.2.py">
+    <entry file="file://$PROJECT_DIR$/inception_utils.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-7161">
-          <caret line="77" column="28" lean-forward="false" selection-start-line="77" selection-start-column="28" selection-end-line="77" selection-end-column="28" />
+        <state relative-caret-position="1007">
+          <caret line="305" column="47" lean-forward="false" selection-start-line="305" selection-start-column="47" selection-end-line="305" selection-end-column="47" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/candidate_0.0.2.06b.py">
+    <entry file="file://$PROJECT_DIR$/ReadMe.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="801">
+            <caret line="117" column="134" lean-forward="false" selection-start-line="117" selection-start-column="134" selection-end-line="117" selection-end-column="134" />
+            <folding />
+          </first_editor>
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/old_models/candidate_1.1.2.06.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="429">
+        <state relative-caret-position="-1102">
+          <caret line="440" column="27" lean-forward="false" selection-start-line="440" selection-start-column="27" selection-end-line="440" selection-end-column="27" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/old_models/candidate_0.0.2.06b.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-20768">
           <caret line="105" column="0" lean-forward="true" selection-start-line="105" selection-start-column="0" selection-end-line="105" selection-end-column="0" />
           <folding />
         </state>
@@ -710,8 +695,26 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/candidate_1.0.0.38.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="363">
+        <state relative-caret-position="-28528">
           <caret line="77" column="30" lean-forward="false" selection-start-line="77" selection-start-column="30" selection-end-line="77" selection-end-column="30" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/old_models/candidate_0.0.3.01l.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="594">
+          <caret line="77" column="29" lean-forward="false" selection-start-line="77" selection-start-column="29" selection-end-line="77" selection-end-column="29" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/vgg_16.2.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="561">
+          <caret line="77" column="26" lean-forward="false" selection-start-line="77" selection-start-column="26" selection-end-line="77" selection-end-column="26" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
