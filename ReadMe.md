@@ -140,15 +140,17 @@ The time required to train a model from scratch made it impossible to train each
 
 <div style="text-align:center;"><i>Table 1: Performance on Test Set</i></div>
 
-Model 1.0.0.29 performed excellent on both the training and validation data, as seen in Figures 1 and 2.
+<p>Model 1.0.0.29 performed excellent on both the training and validation data, as seen in Figures 1 and 2.
 
+<div style="margin: auto;">
 <img src="accuracy_1.0.0.29b.png" alt="Binary Accuracy and Recall of Model 1.0.0.29">
-<div style="text-align:center; width=100%;"><i>Figure 1 - Binary Accuracy and Recall for Model 1.0.0.29</i></div>
+<div style="text-align:center;"><i>Figure 1 - Binary Accuracy and Recall for Model 1.0.0.29</i></div>
 
 <img src="accuracy_1.0.0.29l.6.png" alt="Multi-class Accuracy and Recall of Model 1.0.0.29">
 <div style="text-align:center"><i>Figure 2 - Multi-class Accuracy and Recall for Model 1.0.0.29</i></div>
+</div>
 
-Many of the models appeared to be unstable in that training the same model on the same dataset could produce drastically different results. We assume that this is due to the model learning to recognize features which did not generalize to the test data and attempted to combat this by keeping the size of the models small.
+<p>Many of the models appeared to be unstable in that training the same model on the same dataset could produce drastically different results. We assume that this is due to the model learning to recognize features which did not generalize to the test data and attempted to combat this by keeping the size of the models small.
 
 In general, most models evaluated seemed to overfit the training data very quickly. Once the model started to overfit, while the training accuracy would improve, it would begin to predict all of the test examples as either all positive or all negative. 
 
