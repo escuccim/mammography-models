@@ -16,7 +16,7 @@ parser.add_argument("-m", "--model", help="model to initialize with", default=No
 parser.add_argument("-l", "--label", help="how to classify data", default="normal")
 parser.add_argument("-a", "--action", help="action to perform", default="train")
 parser.add_argument("-f", "--freeze", help="whether to freeze convolutional layers", nargs='?', const=True, default=False)
-parser.add_argument("-t", "--threshold", help="decision threshold", default=0.5, type=int)
+parser.add_argument("-t", "--threshold", help="decision threshold", default=0.4, type=int)
 args = parser.parse_args()
 
 epochs = args.epochs
