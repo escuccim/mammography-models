@@ -123,24 +123,30 @@ The performance of the models turned out to be highly dependent on the dataset u
 
 The time required to train a model from scratch made it impossible to train each model on each dataset with each classification method, but the results in Table 1 below cover a decent number of combinations.
 
-|Model      |Classification |Dataset    |Accuracy    |Recall      |Initialization |Layers Trained  |
-|-----------|---------------|-----------|------------|------------|---------------|----------------|
-|VGG-16.02  |    Multi-class|          6|       |       |Scratch        |All             |
-|1.0.0.29n  |    Multi-class|          6|.9142       |.9353       |Scratch        |All             |
-|1.0.0.29n  |         Binary|          6|.8299       |.0477       |Scratch        |All             |    
-|1.0.0.29n  |         Binary|          8|.9930       |1.0         |Scratch        |All             |
-|1.0.0.29n  |    Multi-class|          8|.8890       |.9092       |Scratch        |All             |        
-|1.0.0.41b  |         Binary|          9|.7721       |.7852       |Scratch        |All             |
-|1.0.0.41l  |    Multi-class|          9|.8261       |.0135       |1.0.0.41b      |All             |
-|0.0.2.02l  |         Binary|          8|.9755       |.8920       |Scratch        |All             |               
+|Model      |Classification |Dataset    |Accuracy    |Recall      |Initialization |
+|-----------|---------------|-----------|------------|------------|---------------|
+|VGG-16.02  |    Multi-class|          6|.8423       |.3621       |Scratch        |
+|VGG-16.02  |         Binary|          6|       |       |Scratch        |
+|1.0.0.29n  |    Multi-class|          6|.9142       |.9353       |Scratch        |
+|1.0.0.29n  |         Binary|          6|.8299       |.0477       |Scratch        |    
+|1.0.0.41b  |         Binary|          6|       |       |Scratch        |
+|1.0.0.41l  |    Multi-class|          6|       |       |Scratch        |
+|1.0.0.29n  |         Binary|          8|.9930       |1.0         |Scratch        |
+|1.0.0.29n  |    Multi-class|          8|.8890       |.9092       |Scratch        |        
+|1.0.0.41b  |         Binary|          8|       |1.0         |Scratch        |
+|1.0.0.41l  |    Multi-class|          8|       |.9092       |Scratch        |        
+|1.0.0.41b  |         Binary|          9|.7721       |.7852       |Scratch        |
+|1.0.0.41l  |    Multi-class|          9|.8261       |.0135       |1.0.0.41b      |              
 
 <div style="text-align:center;"><i>Table 1: Performance on Test Set</i></div>
 
-Model 1.0.0.29 performed excellent on both the training and validation data, as seen in Figure 1. 
+Model 1.0.0.29 performed excellent on both the training and validation data, as seen in Figures 1 and 2.
 
 <img src="accuracy_1.0.0.29b.png" alt="Binary Accuracy and Recall of Model 1.0.0.29">
-
 <div style="text-align:center"><i>Figure 1 - Binary Accuracy and Recall for Model 1.0.0.29</i></div>
+
+<img src="accuracy_1.0.0.29l.6.png" alt="Multi-class Accuracy and Recall of Model 1.0.0.29">
+<div style="text-align:center"><i>Figure 2 - Multi-class Accuracy and Recall for Model 1.0.0.29</i></div>
 
 Many of the models appeared to be unstable in that training the same model on the same dataset could produce drastically different results. We assume that this is due to the model learning to recognize features which did not generalize to the test data and attempted to combat this by keeping the size of the models small.
 
