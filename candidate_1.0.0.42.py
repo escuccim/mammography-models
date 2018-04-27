@@ -42,7 +42,7 @@ train_files, total_records = get_training_data(what=dataset)
 epsilon = 1e-8
 
 # learning rate
-epochs_per_decay = 10
+epochs_per_decay = 5
 starting_rate = 0.001
 decay_factor = 0.80
 staircase = True
@@ -112,6 +112,7 @@ model_name = "model_s1.0.0.42b.8"
 # 1.0.0.40 - casting input to float64, maybe that will resolve the issues?
 # 1.0.0.41 - float64 isn't accepted as input type, going back to just centering the data by the mean
 # 1.0.0.42 - going back to weighted x-entropy, otherwise the recall is really volatile
+# 1.0.0.43 - sped up learning rate decay
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")

@@ -206,7 +206,11 @@ If there is something missing from this repository, it may be in located in one 
 - Decompressing-For-LJPEG-image - code used to convert the DDSM images from LJPEG to usable images
 - model_notes.xlsx - notes kept during training of models, only includes results relevant to this overview
 
+### Models
+The following pre-trained models are available for download. Each zip file contains the checkpoint for the model:
 
+- model_s1.0.0.29l.8.2 - trained on dataset 8 for binary classification - https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/model_s1.0.0.29l.8.2.zip
+- model_s1.0.0.29l.14 - trained on dataset 6 for multi-class classification - http://foo.com
 
 ## References
 [1]	D. Levy, A. Jain, Breast Mass Classification from Mammograms using Deep Convolutional Neural Networks, arXiv:1612.00542v1, 2016
