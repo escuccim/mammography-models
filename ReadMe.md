@@ -144,11 +144,12 @@ The time required to train a model from scratch made it impossible to train each
 
 <div style="margin: auto;">
 <img src="accuracy_1.0.0.29b.png" alt="Binary Accuracy and Recall of Model 1.0.0.29">
-<div style="text-align:center;"><i>Figure 1 - Binary Accuracy and Recall for Model 1.0.0.29</i></div>
+<i>Figure 1 - Binary Accuracy and Recall for Model 1.0.0.29</i></div>
 
 <img src="accuracy_1.0.0.29l.6.png" alt="Multi-class Accuracy and Recall of Model 1.0.0.29">
 <div style="text-align:center"><i>Figure 2 - Multi-class Accuracy and Recall for Model 1.0.0.29</i></div>
 </div>
+
 
 <p>Many of the models appeared to be unstable in that training the same model on the same dataset could produce drastically different results. We assume that this is due to the model learning to recognize features which did not generalize to the test data and attempted to combat this by keeping the size of the models small.
 
