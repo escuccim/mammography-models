@@ -75,11 +75,12 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "vgg_16.2.04b.6"
+model_name = "vgg_16.3.01l.6"
 # vgg_19.01 - attempting to recreate vgg 19 architecture
 # vgg_16.02 - went to vgg 16 architecture, reducing units in fc layers
 # vgg_16.2.01 - changing first conv layers to stride 2 to get dimensions down to reasonable size
 # vgg_16.2.02 - using normal x-entropy instead of weighted
+# vgg_16.3.01 - reducing numbers of filters
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -129,9 +130,9 @@ with graph.as_default():
             pool1 = tf.layers.dropout(pool1, rate=pooldropout_rate, seed=103, training=training)
 
     # Layer 2
-    conv2 = _conv2d_batch_norm(pool1, 128, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=None, lambd=lamC, name="2.1")
+    conv2 = _conv2d_batch_norm(pool1, 96, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=None, lambd=lamC, name="2.1")
 
-    conv2 = _conv2d_batch_norm(conv2, 128, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=None, lambd=lamC, name="2.2")
+    conv2 = _conv2d_batch_norm(conv2, 96, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=None, lambd=lamC, name="2.2")
 
     # Max pooling layer 1
     with tf.name_scope('pool2') as scope:
@@ -148,9 +149,9 @@ with graph.as_default():
             pool2 = tf.layers.dropout(pool2, rate=pooldropout_rate, seed=103, training=training)
 
     # Convolutional layer 3
-    conv3 = _conv2d_batch_norm(pool2, 256, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=None, lambd=lamC, name="3.1")
+    conv3 = _conv2d_batch_norm(pool2, 128, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=None, lambd=lamC, name="3.1")
 
-    conv3 = _conv2d_batch_norm(conv3, 256, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=None, lambd=lamC, name="3.2")
+    conv3 = _conv2d_batch_norm(conv3, 128, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=None, lambd=lamC, name="3.2")
 
     # Max pooling layer 3
     with tf.name_scope('pool3') as scope:
@@ -165,11 +166,11 @@ with graph.as_default():
         if dropout:
             pool3 = tf.layers.dropout(pool3, rate=pooldropout_rate, seed=115, training=training)
 
-    conv4 = _conv2d_batch_norm(pool3, 512, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=None, lambd=lamC, name="4.1")
+    conv4 = _conv2d_batch_norm(pool3, 256, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=None, lambd=lamC, name="4.1")
 
-    conv4 = _conv2d_batch_norm(conv4, 512, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=None, lambd=lamC, name="4.2")
+    conv4 = _conv2d_batch_norm(conv4, 256, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=None, lambd=lamC, name="4.2")
 
-    conv4 = _conv2d_batch_norm(conv4, 512, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=None, lambd=lamC, name="4.3")
+    conv4 = _conv2d_batch_norm(conv4, 256, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=None, lambd=lamC, name="4.3")
 
     # Max pooling layer 4
     with tf.name_scope('pool4') as scope:
@@ -184,11 +185,11 @@ with graph.as_default():
         if dropout:
             pool4 = tf.layers.dropout(pool4, rate=pooldropout_rate, seed=115, training=training)
 
-    conv5 = _conv2d_batch_norm(pool4, 512, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=None, lambd=lamC, name="5.1")
+    conv5 = _conv2d_batch_norm(pool4, 384, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=None, lambd=lamC, name="5.1")
 
-    conv5 = _conv2d_batch_norm(conv5, 512, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=None, lambd=lamC, name="5.2")
+    conv5 = _conv2d_batch_norm(conv5, 384, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=None, lambd=lamC, name="5.2")
 
-    conv5 = _conv2d_batch_norm(conv5, 512, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=None, lambd=lamC, name="5.3")
+    conv5 = _conv2d_batch_norm(conv5, 384, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=None, lambd=lamC, name="5.3")
 
     # Max pooling layer 5
     with tf.name_scope('pool5') as scope:
@@ -214,7 +215,7 @@ with graph.as_default():
     with tf.name_scope('fc1') as scope:
         fc1 = tf.layers.dense(
             flat_output,
-            2048,
+            1024,
             activation=None,
             kernel_initializer=tf.variance_scaling_initializer(scale=2, seed=117),
             bias_initializer=tf.zeros_initializer(),
@@ -246,7 +247,7 @@ with graph.as_default():
     with tf.name_scope('fc2') as scope:
         fc2 = tf.layers.dense(
             fc1,  # input
-            2048,  # 1024 hidden units
+            512,  # 1024 hidden units
             activation=None,  # None
             kernel_initializer=tf.variance_scaling_initializer(scale=2, seed=119),
             bias_initializer=tf.zeros_initializer(),
