@@ -123,20 +123,22 @@ The performance of the models turned out to be highly dependent on the dataset u
 
 The time required to train a model from scratch made it impossible to train each model on each dataset with each classification method, but the results in Table 1 below cover a decent number of combinations.
 
-|Model      |Classification |Dataset    |Accuracy    |Recall      |Initialization |
-|-----------|---------------|-----------|------------|------------|---------------|
-|VGG-16.02  |    Multi-class|          6|.8423       |.3621       |Scratch        |
-|VGG-16.02  |         Binary|          6|       |       |Scratch        |
-|1.0.0.29n  |    Multi-class|          6|.9142       |.9353       |Scratch        |
-|1.0.0.29n  |         Binary|          6|.8299       |.0477       |Scratch        |    
-|1.0.0.41b  |         Binary|          6|       |       |Scratch        |
-|1.0.0.41l  |    Multi-class|          6|       |       |Scratch        |
-|1.0.0.29n  |         Binary|          8|.9930       |1.0         |Scratch        |
-|1.0.0.29n  |    Multi-class|          8|.8890       |.9092       |Scratch        |        
-|1.0.0.41b  |         Binary|          8|       |         |Scratch        |
-|1.0.0.41l  |    Multi-class|          8|       |       |Scratch        |        
-|1.0.0.41b  |         Binary|          9|.7721       |.7852       |Scratch        |
-|1.0.0.41l  |    Multi-class|          9|.8261       |.0135       |1.0.0.41b      |              
+|Model      |Classification |Dataset    |Epochs |Accuracy    |Recall      |Initialization |
+|-----------|---------------|-----------|-------|------------|------------|---------------|
+|VGG-16.02  |    Multi-class|          6|30     |.8423       |.3621       |Scratch        |
+|VGG-16.03  |    Multi-class|          6|       |        |       |Scratch        |
+|1.0.0.29n  |    Multi-class|          6|40     |.9142       |.9353       |Scratch        |
+|1.0.0.29n  |         Binary|          6|35     |.8299       |.0477       |Scratch        |    
+|1.0.0.41l  |    Multi-class|          6|30     |.0665       |.9721       |Scratch        |
+|1.0.0.41b  |         Binary|          6|       |       |                 |1.0.0.41l      |
+|1.0.0.29n  |    Multi-class|          8|35     |.8890       |.9092       |Scratch        |
+|1.0.0.29n  |         Binary|          8|30     |.9930       |1.0         |Scratch        |
+|1.0.0.41l  |    Multi-class|          8|       |       |Scratch        |                
+|1.0.0.41b  |         Binary|          8|       |       |Scratch        |
+|1.0.0.41b  |         Binary|          9|30     |.7721       |.7852       |Scratch        |
+|1.0.0.41l  |    Multi-class|          9|10     |.8261       |.0135       |1.0.0.41b*     |
+
+<small>\* only fully connected layers re-trained</small>              
 
 <div style="text-align:center;"><i>Table 1: Performance on Test Set</i></div>
 
