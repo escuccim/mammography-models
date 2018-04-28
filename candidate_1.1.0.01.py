@@ -114,6 +114,7 @@ model_name = "model_s1.1.0.02b.6"
 # 1.0.0.42 - going back to weighted x-entropy, otherwise the recall is really volatile
 # 1.1.0.01 - reducing numbers of filters and adding a couple conv layers, trying to reduce overfitting by shrinking model, sped up learning rate decay
 # 1.1.0.02 - training with normal cross entropy
+# 1.1.0.03 - changing number of conv filters again
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -168,10 +169,10 @@ with graph.as_default():
     conv2 = _conv2d_batch_norm(pool1, 48, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8,
                                padding="SAME", seed=104, lambd=lamC, name="2.1")
 
-    conv2 = _conv2d_batch_norm(conv2, 48, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8,
+    conv2 = _conv2d_batch_norm(conv2, 64, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8,
                                padding="SAME", seed=105, lambd=lamC, name="2.2")
 
-    conv2 = _conv2d_batch_norm(conv2, 48, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8,
+    conv2 = _conv2d_batch_norm(conv2, 64, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8,
                                padding="SAME", seed=106, lambd=lamC, name="2.3")
 
     # Max pooling layer 2
@@ -256,7 +257,7 @@ with graph.as_default():
     with tf.name_scope('fc1') as scope:
         fc1 = tf.layers.dense(
             flat_output,
-            1024,
+            2048,
             activation=None,
             kernel_initializer=tf.variance_scaling_initializer(scale=2, seed=118),
             bias_initializer=tf.zeros_initializer(),
@@ -288,7 +289,7 @@ with graph.as_default():
     with tf.name_scope('fc2') as scope:
         fc2 = tf.layers.dense(
             fc1,  # input
-            512,  # 512 hidden units
+            1024,  # 512 hidden units
             activation=None,  # None
             kernel_initializer=tf.variance_scaling_initializer(scale=2, seed=120),
             bias_initializer=tf.zeros_initializer(),
