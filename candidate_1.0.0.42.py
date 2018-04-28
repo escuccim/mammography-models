@@ -137,16 +137,16 @@ with graph.as_default():
         X = tf.placeholder_with_default(X_def, shape=[None, 299, 299, 1])
         y = tf.placeholder_with_default(y_def, shape=[None])
 
+        # increase the contrast and cast to float
+        X = tf.image.adjust_contrast(X, 2.0)
         X = tf.cast(X, dtype=tf.float32)
-
-        X= tf.image.adjust_contrast(X, 2.0)
 
         # center the pixel data
         mu = tf.constant(mu, name="pixel_mean", dtype=tf.float32)
         X_adj = tf.subtract(X, mu, name="centered_input")
 
         # scale the data
-        # X = tf.divide(X, sigma)
+        X_adj = tf.divide(X_adj, 255.0)
 
     # Convolutional layer 1
     with tf.name_scope('conv1') as scope:
