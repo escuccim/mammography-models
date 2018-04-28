@@ -75,7 +75,7 @@ print("Number of classes:", num_classes)
 ## Build the graph
 graph = tf.Graph()
 
-model_name = "model_s1.1.0.02b.6"
+model_name = "model_s1.1.0.03b.6"
 ## Change Log
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
@@ -115,6 +115,7 @@ model_name = "model_s1.1.0.02b.6"
 # 1.1.0.01 - reducing numbers of filters and adding a couple conv layers, trying to reduce overfitting by shrinking model, sped up learning rate decay
 # 1.1.0.02 - training with normal cross entropy
 # 1.1.0.03 - changing number of conv filters again
+# 1.1.0.04 - fixed problems where tfrecords and feed_dict images were coming out very differently
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -139,16 +140,19 @@ with graph.as_default():
         X = tf.placeholder_with_default(X_def, shape=[None, 299, 299, 1])
         y = tf.placeholder_with_default(y_def, shape=[None])
 
+        # increase the contrast and cast to float
+        X = tf.image.adjust_contrast(X, 2.0)
         X = tf.cast(X, dtype=tf.float32)
 
         # center the pixel data
         mu = tf.constant(mu, name="pixel_mean", dtype=tf.float32)
-        X = tf.subtract(X, mu, name="centered_input")
+        X_adj = tf.subtract(X, mu, name="centered_input")
 
         # scale the data
+        X_adj = tf.divide(X_adj, 255.0)
         # X = tf.divide(X, sigma)
 
-    conv1 = _conv2d_batch_norm(X, 32, kernel_size=(3, 3), stride=(2, 2), training=training, epsilon=1e-8, padding="VALID", seed=100, lambd=lamC, name="1.1")
+    conv1 = _conv2d_batch_norm(X_adj, 32, kernel_size=(3, 3), stride=(2, 2), training=training, epsilon=1e-8, padding="VALID", seed=100, lambd=lamC, name="1.1")
     conv1 = _conv2d_batch_norm(conv1, 32, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="VALID", seed=101, lambd=lamC, name="1.2")
     conv1 = _conv2d_batch_norm(conv1, 32, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=102, lambd=lamC, name="1.3")
 
