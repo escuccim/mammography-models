@@ -15,7 +15,8 @@ parser.add_argument("-d", "--data", help="which dataset to use", default=8, type
 parser.add_argument("-m", "--model", help="model to initialize with", default=None)
 parser.add_argument("-l", "--label", help="how to classify data", default="label")
 parser.add_argument("-a", "--action", help="action to perform", default="train")
-parser.add_argument("-t", "--threshold", help="decision threshold", default=0.5, type=int)
+parser.add_argument("-f", "--freeze", help="whether to freeze convolutional layers", nargs='?', const=True, default=False)
+parser.add_argument("-t", "--threshold", help="decision threshold", default=0.4, type=int)
 args = parser.parse_args()
 
 epochs = args.epochs
@@ -24,6 +25,10 @@ init_model = args.model
 how = args.label
 action = args.action
 threshold = args.threshold
+freeze = args.freeze
+
+# precalculated pixel mean of images
+mu = 104.1353
 
 # download the data
 download_data(what=dataset)
@@ -128,7 +133,10 @@ with graph.as_default():
 
         X = tf.cast(X, dtype=tf.float32)
 
-    # Convolutional layer 1
+    
+        mu = tf.constant(mu, name="pixel_mean", dtype=tf.float32)
+        X = tf.subtract(X, mu, name="centered_input")
+	# Convolutional layer 1
     conv1 = _conv2d_batch_norm(X, 32, kernel_size=(3,3), stride=(2,2), training=training, epsilon=1e-8, padding="VALID", seed=100, lambd=lamC, name="1.1")
 
     conv1 = _conv2d_batch_norm(conv1, 32, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="SAME", seed=None, lambd=lamC, name="1.2")

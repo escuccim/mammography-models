@@ -78,10 +78,11 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "inception_v4.03l.6"
+model_name = "inception_v4.04l.6"
 # 4.01 - attempt to make a copy of inception
 # 4.02 - removing some layers so training doesn't take forever
 # 4.03 - putting some things back in I had taken out when testing, removing a few more layers
+# 4.04 - decreasing numbers of filters
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -122,7 +123,7 @@ with graph.as_default():
     # blocka = _block_a(blocka, name="a_1.4", lamC=lamC, training=training)
 
     # Reduction A
-    reducea = _reduce_a(blocka, "a_reduce_1", k=192, l=224, m=256, n=384, training=training)
+    reducea = _reduce_a(blocka, "a_reduce_1", k=96, l=128, m=128, n=192, training=training)
 
     # 7 Block Bs
     blockb = _block_b(reducea, "b_1.1", lamC=lamC, training=training)
