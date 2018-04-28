@@ -75,7 +75,7 @@ print("Number of classes:", num_classes)
 ## Build the graph
 graph = tf.Graph()
 
-model_name = "model_s1.0.0.43b.8.1"
+model_name = "model_s1.0.0.44b.8.1"
 ## Change Log
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
@@ -113,6 +113,7 @@ model_name = "model_s1.0.0.43b.8.1"
 # 1.0.0.41 - float64 isn't accepted as input type, going back to just centering the data by the mean
 # 1.0.0.42 - going back to weighted x-entropy, otherwise the recall is really volatile
 # 1.0.0.43 - sped up learning rate decay, adding contrast adjustment
+# 1.0.0.44 - fixed some issues with centering and contrast and scaling
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
