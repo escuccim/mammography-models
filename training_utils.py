@@ -272,23 +272,6 @@ def download_data(what=4):
             _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/cv9_filenames.npy',
                               'cv9_filenames.npy')
 
-    elif what == 1:
-        # download main training tfrecords files
-        if not os.path.exists(os.path.join("data", "training_0.tfrecords")):
-            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training_0.tfrecords',
-                              'training_0.tfrecords')
-
-        if not os.path.exists(os.path.join("data", "training_1.tfrecords")):
-            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training_1.tfrecords',
-                              'training_1.tfrecords')
-
-        if not os.path.exists(os.path.join("data", "training_2.tfrecords")):
-            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training_2.tfrecords',
-                              'training_2.tfrecords')
-
-        if not os.path.exists(os.path.join("data", "training_3.tfrecords")):
-            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training_3.tfrecords',
-                              'training_3.tfrecords')
     elif what == 0:
         # download MIAS test data
         if not os.path.exists(os.path.join("data", "mias_test_images.npy")):

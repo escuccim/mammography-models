@@ -143,7 +143,7 @@ with graph.as_default():
 
         # center the pixel data
         mu = tf.constant(mu, name="pixel_mean", dtype=tf.float32)
-        X = tf.subtract(X, mu, name="centered_input")
+        X_adj = tf.subtract(X, mu, name="centered_input")
 
         # scale the data
         # X = tf.divide(X, sigma)
@@ -151,7 +151,7 @@ with graph.as_default():
     # Convolutional layer 1
     with tf.name_scope('conv1') as scope:
         conv1 = tf.layers.conv2d(
-            X,  # Input data
+            X_adj,  # Input data
             filters=32,
             kernel_size=(3, 3),
             strides=(2, 2),
