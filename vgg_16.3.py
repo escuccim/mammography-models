@@ -25,6 +25,7 @@ init_model = args.model
 how = args.label
 action = args.action
 threshold = args.threshold
+freeze = args.freeze
 
 # precalculated pixel mean of images
 mu = 104.1353
@@ -76,13 +77,14 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "vgg_16.3.02l.6"
+model_name = "vgg_16.3.03l.6"
 # vgg_19.01 - attempting to recreate vgg 19 architecture
 # vgg_16.02 - went to vgg 16 architecture, reducing units in fc layers
 # vgg_16.2.01 - changing first conv layers to stride 2 to get dimensions down to reasonable size
 # vgg_16.2.02 - using normal x-entropy instead of weighted
 # vgg_16.3.01 - reducing numbers of filters
 # vgg_16.3.02 - fixed some problems with input data
+# vgg_16.3.03 - tweaks to inputs
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -108,12 +110,12 @@ with graph.as_default():
         y = tf.placeholder_with_default(y_def, shape=[None])
 
         # increase the contrast and cast to float
-        X = tf.image.adjust_contrast(X, 2.0)
-        X = tf.cast(X, dtype=tf.float32)
+        X_adj = tf.image.adjust_contrast(X, 2.0)
+        X_adj = tf.cast(X_adj, dtype=tf.float32)
 
         # center the pixel data
         mu = tf.constant(mu, name="pixel_mean", dtype=tf.float32)
-        X_adj = tf.subtract(X, mu, name="centered_input")
+        X_adj = tf.subtract(X_adj, mu, name="centered_input")
 
         # scale the data
         X_adj = tf.divide(X_adj, 255.0)

@@ -75,7 +75,7 @@ print("Number of classes:", num_classes)
 ## Build the graph
 graph = tf.Graph()
 
-model_name = "model_s1.0.0.44b.8.1"
+model_name = "model_s1.0.0.45b.8.1"
 ## Change Log
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
@@ -114,6 +114,7 @@ model_name = "model_s1.0.0.44b.8.1"
 # 1.0.0.42 - going back to weighted x-entropy, otherwise the recall is really volatile
 # 1.0.0.43 - sped up learning rate decay, adding contrast adjustment
 # 1.0.0.44 - fixed some issues with centering and contrast and scaling
+# 1.0.0.45 - tweaks to inputs
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -139,12 +140,12 @@ with graph.as_default():
         y = tf.placeholder_with_default(y_def, shape=[None])
 
         # increase the contrast and cast to float
-        X = tf.image.adjust_contrast(X, 2.0)
-        X = tf.cast(X, dtype=tf.float32)
+        X_adj = tf.image.adjust_contrast(X, 2.0)
+        X_adj = tf.cast(X_adj, dtype=tf.float32)
 
         # center the pixel data
         mu = tf.constant(mu, name="pixel_mean", dtype=tf.float32)
-        X_adj = tf.subtract(X, mu, name="centered_input")
+        X_adj = tf.subtract(X_adj, mu, name="centered_input")
 
         # scale the data
         X_adj = tf.divide(X_adj, 255.0)

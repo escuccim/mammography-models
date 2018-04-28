@@ -75,7 +75,7 @@ print("Number of classes:", num_classes)
 ## Build the graph
 graph = tf.Graph()
 
-model_name = "model_s1.1.0.03b.6"
+model_name = "model_s1.1.0.05b.6"
 ## Change Log
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
@@ -116,6 +116,7 @@ model_name = "model_s1.1.0.03b.6"
 # 1.1.0.02 - training with normal cross entropy
 # 1.1.0.03 - changing number of conv filters again
 # 1.1.0.04 - fixed problems where tfrecords and feed_dict images were coming out very differently
+# 1.1.0.05 - tweaks to inputs
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -141,16 +142,15 @@ with graph.as_default():
         y = tf.placeholder_with_default(y_def, shape=[None])
 
         # increase the contrast and cast to float
-        X = tf.image.adjust_contrast(X, 2.0)
-        X = tf.cast(X, dtype=tf.float32)
+        X_adj = tf.image.adjust_contrast(X, 2.0)
+        X_adj = tf.cast(X_adj, dtype=tf.float32)
 
         # center the pixel data
         mu = tf.constant(mu, name="pixel_mean", dtype=tf.float32)
-        X_adj = tf.subtract(X, mu, name="centered_input")
+        X_adj = tf.subtract(X_adj, mu, name="centered_input")
 
         # scale the data
         X_adj = tf.divide(X_adj, 255.0)
-        # X = tf.divide(X, sigma)
 
     conv1 = _conv2d_batch_norm(X_adj, 32, kernel_size=(3, 3), stride=(2, 2), training=training, epsilon=1e-8, padding="VALID", seed=100, lambd=lamC, name="1.1")
     conv1 = _conv2d_batch_norm(conv1, 32, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8, padding="VALID", seed=101, lambd=lamC, name="1.2")
