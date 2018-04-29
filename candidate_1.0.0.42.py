@@ -634,7 +634,7 @@ with graph.as_default():
     else:
         # predictions = tf.cast(tf.greater(abnormal_probability, threshold), tf.int32)
         predictions = tf.argmax(probabilities, axis=1, output_type=tf.int64)
-        
+
     # get the accuracy
     accuracy, acc_op = tf.metrics.accuracy(
         labels=y,
@@ -648,7 +648,7 @@ with graph.as_default():
         # collapse the predictions down to normal or not for our pr metrics
         zero = tf.constant(0, dtype=tf.int64)
         collapsed_predictions = tf.cast(tf.greater(abnormal_probability, threshold), tf.int32)
-        collapsed_labels = tf.greater(y, 0.0)
+        collapsed_labels = tf.greater(y, 0)
 
         recall, rec_op = tf.metrics.recall(labels=collapsed_labels, predictions=collapsed_predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="recall")
         precision, prec_op = tf.metrics.precision(labels=collapsed_labels, predictions=collapsed_predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="precision")
