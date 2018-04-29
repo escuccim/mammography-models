@@ -4,7 +4,7 @@ import wget
 from sklearn.model_selection import train_test_split
 import tensorflow as tf
 from training_utils import download_file, get_batches, read_and_decode_single_example, load_validation_data, \
-    download_data, evaluate_model, get_training_data, load_weights, flatten
+    download_data, evaluate_model, get_training_data, load_weights, flatten, _scale_input_data
 import argparse
 from tensorboard import summary as summary_lib
 
@@ -75,7 +75,7 @@ print("Number of classes:", num_classes)
 ## Build the graph
 graph = tf.Graph()
 
-model_name = "model_s1.0.0.45b.9.1"
+model_name = "model_s1.0.0.45l.6.1"
 ## Change Log
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
@@ -140,15 +140,7 @@ with graph.as_default():
         y = tf.placeholder_with_default(y_def, shape=[None])
 
         # increase the contrast and cast to float
-        X_adj = tf.image.adjust_contrast(X, 2.0)
-        X_adj = tf.cast(X_adj, dtype=tf.float32)
-
-        # center the pixel data
-        mu = tf.constant(mu, name="pixel_mean", dtype=tf.float32)
-        X_adj = tf.subtract(X_adj, mu, name="centered_input")
-
-        # scale the data
-        X_adj = tf.divide(X_adj, 255.0)
+        X_adj = _scale_input_data(X, contrast=2.0, mu=mu)
 
     # Convolutional layer 1
     with tf.name_scope('conv1') as scope:

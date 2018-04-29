@@ -4,7 +4,7 @@ import wget
 from sklearn.model_selection import train_test_split
 import tensorflow as tf
 from training_utils import download_file, get_batches, read_and_decode_single_example, load_validation_data, \
-    download_data, evaluate_model, get_training_data, load_weights, flatten, _conv2d_batch_norm
+    download_data, evaluate_model, get_training_data, load_weights, flatten, _conv2d_batch_norm, _scale_input_data
 import argparse
 from tensorboard import summary as summary_lib
 
@@ -110,15 +110,7 @@ with graph.as_default():
         y = tf.placeholder_with_default(y_def, shape=[None])
 
         # increase the contrast and cast to float
-        X_adj = tf.image.adjust_contrast(X, 2.0)
-        X_adj = tf.cast(X_adj, dtype=tf.float32)
-
-        # center the pixel data
-        mu = tf.constant(mu, name="pixel_mean", dtype=tf.float32)
-        X_adj = tf.subtract(X_adj, mu, name="centered_input")
-
-        # scale the data
-        X_adj = tf.divide(X_adj, 255.0)
+        X_adj = _scale_input_data(X, contrast=2.0, mu=mu)
 
     # Convolutional layer 1
     conv1 = _conv2d_batch_norm(X_adj, 64, kernel_size=(3,3), stride=(2,2), training=training, epsilon=1e-8, padding="SAME", seed=100, lambd=lamC, name="1.1")

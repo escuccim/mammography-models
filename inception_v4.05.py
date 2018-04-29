@@ -4,7 +4,7 @@ import wget
 from sklearn.model_selection import train_test_split
 import tensorflow as tf
 from training_utils import download_file, get_batches, read_and_decode_single_example, load_validation_data, \
-    download_data, evaluate_model, get_training_data, load_weights, flatten, _conv2d_batch_norm
+    download_data, evaluate_model, get_training_data, load_weights, flatten, _conv2d_batch_norm, _scale_input_data
 from inception_utils import _stem, _block_a, _block_b, _block_c, _reduce_a, _reduce_b
 import argparse
 from tensorboard import summary as summary_lib
@@ -16,6 +16,7 @@ parser.add_argument("-d", "--data", help="which dataset to use", default=9, type
 parser.add_argument("-m", "--model", help="model to initialize with", default=None)
 parser.add_argument("-l", "--label", help="how to classify data", default="normal")
 parser.add_argument("-a", "--action", help="action to perform", default="train")
+parser.add_argument("-f", "--freeze", help="whether to freeze convolutional layers", nargs='?', const=True, default=False)
 parser.add_argument("-t", "--threshold", help="decision threshold", default=0.4, type=float)
 args = parser.parse_args()
 
@@ -25,6 +26,7 @@ init_model = args.model
 how = args.label
 action = args.action
 threshold = args.threshold
+freeze = args.freeze
 
 # precalculated pixel mean of images
 mu = 104.1353
@@ -42,7 +44,7 @@ train_files, total_records = get_training_data(what=dataset)
 epsilon = 1e-8
 
 # learning rate
-epochs_per_decay = 10
+epochs_per_decay = 5
 starting_rate = 0.001
 decay_factor = 0.80
 staircase = True
@@ -78,11 +80,12 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "inception_v4.04l.6"
+model_name = "inception_v4.05l.6"
 # 4.01 - attempt to make a copy of inception
 # 4.02 - removing some layers so training doesn't take forever
 # 4.03 - putting some things back in I had taken out when testing, removing a few more layers
 # 4.04 - decreasing numbers of filters
+# 4.05 - fixed input issues with placeholders
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -107,14 +110,10 @@ with graph.as_default():
         X = tf.placeholder_with_default(X_def, shape=[None, 299, 299, 1])
         y = tf.placeholder_with_default(y_def, shape=[None])
 
-        X = tf.cast(X, dtype=tf.float32)
+        # increase the contrast and cast to float
+        X_adj = _scale_input_data(X, contrast=2.0, mu=mu)
 
-        # center the pixel data
-        mu = tf.constant(mu, name="pixel_mean", dtype=tf.float32)
-        X = tf.subtract(X, mu, name="centered_input")
-
-    # input stem
-    stem = _stem(X, lamC, training)
+    stem = _stem(X_adj, lamC, training)
 
     # 4 Block As
     blocka = _block_a(stem, name="a_1.1", lamC=lamC, training=training)
