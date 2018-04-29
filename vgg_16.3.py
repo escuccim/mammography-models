@@ -77,7 +77,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "vgg_16.3.03b.9"
+model_name = "vgg_16.3.04b.9"
 # vgg_19.01 - attempting to recreate vgg 19 architecture
 # vgg_16.02 - went to vgg 16 architecture, reducing units in fc layers
 # vgg_16.2.01 - changing first conv layers to stride 2 to get dimensions down to reasonable size
@@ -85,6 +85,7 @@ model_name = "vgg_16.3.03b.9"
 # vgg_16.3.01 - reducing numbers of filters
 # vgg_16.3.02 - fixed some problems with input data
 # vgg_16.3.03 - tweaks to inputs
+# vgg_16.3.04 - increased x-entropy weighting
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -328,7 +329,7 @@ with graph.as_default():
     #########################################################
     ## Weight the positive examples higher
     # This will weight the positive examples higher so as to improve recall
-    weights = tf.multiply(1, tf.cast(tf.greater(y, 0), tf.int32)) + 1
+    weights = tf.multiply(2, tf.cast(tf.greater(y, 0), tf.int32)) + 1
     mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=logits, weights=weights))
 
     # Add in l2 loss
