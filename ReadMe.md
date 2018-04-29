@@ -135,7 +135,7 @@ The time required to train a model from scratch made it impossible to train each
 |1.0.0.29n  |         Binary|          8|30     |.9930       |1.0         |Scratch        |
 |1.0.0.45l  |    Multi-class|          8|       |       |Scratch        |                
 |1.0.0.45b  |         Binary|          8|30     |.5434       |.7549       |Scratch        |
-|1.0.0.45b  |         Binary|          9|35     |.9194       |.9042       |Scratch        |
+|1.0.0.45b  |         Binary|          9|30     |.8370       |.0392       |Scratch        |
 |1.0.0.45l  |    Multi-class|          9|     |       |       |     |
 
 <small>\* only fully connected layers re-trained</small>              
