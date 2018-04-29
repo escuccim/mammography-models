@@ -16,7 +16,7 @@ parser.add_argument("-m", "--model", help="model to initialize with", default=No
 parser.add_argument("-l", "--label", help="how to classify data", default="normal")
 parser.add_argument("-a", "--action", help="action to perform", default="train")
 parser.add_argument("-f", "--freeze", help="whether to freeze convolutional layers", nargs='?', const=True, default=False)
-parser.add_argument("-t", "--threshold", help="decision threshold", default=0.4, type=int)
+parser.add_argument("-t", "--threshold", help="decision threshold", default=0.4, type=float)
 args = parser.parse_args()
 
 epochs = args.epochs
@@ -75,7 +75,7 @@ print("Number of classes:", num_classes)
 ## Build the graph
 graph = tf.Graph()
 
-model_name = "model_s1.0.0.45l.6.1"
+model_name = "model_s1.0.0.45b.9.1"
 ## Change Log
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
