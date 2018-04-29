@@ -622,6 +622,7 @@ with graph.as_default():
 
     # get the probabilites for the classes
     probabilities = tf.nn.softmax(logits, name="probabilities")
+    abnormal_probability = 1 - probabilities[:,0]
 
     #################################################
     ## Compute predictions from the probabilities
@@ -631,7 +632,7 @@ with graph.as_default():
 
     # else if we have binary, use the threshold
     else:
-        predictions = tf.cast(tf.greater(probabilities[:,1], threshold), tf.int32)
+        predictions = tf.cast(tf.greater(abnormal_probability, threshold), tf.int32)
 
     # get the accuracy
     accuracy, acc_op = tf.metrics.accuracy(
@@ -645,7 +646,7 @@ with graph.as_default():
     if num_classes > 2:
         # collapse the predictions down to normal or not for our pr metrics
         zero = tf.constant(0, dtype=tf.int64)
-        collapsed_predictions = tf.cast(tf.greater(predictions, zero), tf.int64)
+        collapsed_predictions = tf.cast(tf.greater(abnormal_probability, threshold), tf.int32)
         collapsed_labels = tf.greater(y, zero)
 
         recall, rec_op = tf.metrics.recall(labels=collapsed_labels, predictions=collapsed_predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="recall")
@@ -657,7 +658,7 @@ with graph.as_default():
 
     f1_score = 2 * ((precision * recall) / (precision + recall))
     _, update_op = summary_lib.pr_curve_streaming_op(name='pr_curve',
-                                                     predictions=(1 - probabilities[:, 0]),
+                                                     predictions=abnormal_probability,
                                                      labels=y,
                                                      updates_collections=tf.GraphKeys.UPDATE_OPS,
                                                      num_thresholds=20)
