@@ -75,7 +75,7 @@ print("Number of classes:", num_classes)
 ## Build the graph
 graph = tf.Graph()
 
-model_name = "model_s1.0.0.45l.9.1"
+model_name = "model_s1.0.0.45b.9.1"
 ## Change Log
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
@@ -605,7 +605,7 @@ with graph.as_default():
 
     ## Weight the positive examples higher
     # This will weight the positive examples higher so as to improve recall
-    weights = tf.multiply(1, tf.cast(tf.greater(y, 0), tf.int32)) + 1
+    weights = tf.multiply(2, tf.cast(tf.greater(y, 0), tf.int32)) + 1
     mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=logits, weights=weights))
 
     # Add in l2 loss
@@ -632,8 +632,7 @@ with graph.as_default():
 
     # else if we have binary, use the threshold
     else:
-        # predictions = tf.cast(tf.greater(abnormal_probability, threshold), tf.int32)
-        predictions = tf.argmax(probabilities, axis=1, output_type=tf.int64)
+        predictions = tf.cast(tf.greater(abnormal_probability, threshold), tf.int32)
 
     # get the accuracy
     accuracy, acc_op = tf.metrics.accuracy(
