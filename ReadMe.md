@@ -157,18 +157,18 @@ Table 1 below shows the accuracy and recall on the test dataset for selected mod
 In general, most models evaluated seemed to overfit the training data very quickly. Once the model started to overfit, while the training accuracy would improve, it would begin to predict all of the test examples as either all positive or all negative. 
 
 ### Decision Thresholds
-These results were obtained using a threshold of 0.50. The precision and recall could be drastically altered by changing the decision threshold. It was suprisingly easy to achieve a precision of close to 1.0, however we were focused on improving recall. Adjusting the threshold from between 0.20 to 0.50 allowed us to improve recall by a few percentage points while decreasing precision dramatically. 
+These results were obtained using a probability threshold of 0.50. Recall or precision could be drastically increased, at the cost of the other metric, by adjusting the threshold. We used a pr curve to evaluate the effect of altering the threshold, and altering the threshold from 0.05 to 0.95 allowed us to achieve either precision or recall of close to 1.0. 
 
-The ability to adjust the threshold could be very useful for radiologists, allowing them to screen out scans which are either definitely negative or definitely positive and allowing them to focus on the more ambiguous scans.
+This could prove very useful to radiologists, allowing them to screen out scans which have high probabilities of being either normal or abnormal and focus on more ambiguous scans. 
 
 ## Conclusion
-While we have been able to achieve high accuracy on both classifying to normal/abnormal as well as classifying the type and pathology of abnormalities, the training datasets used were artificially constructed, making the ability of the models to generalize questionable. While a model trained on Dataset 6 or 8 scored well when evaluated on the dataset it was not trained on, when the models were evaluated on the MIAS data, which was from a completely different distribution, the results were rather poor. 
+While we have been able to achieve high accuracy on both classifying to normal/abnormal as well as classifying the type and pathology of abnormalities, training dataset 6 and 8 were constructed in an artificial fashion which may not generalize to raw scans. Dataset 9 did not use any zooms on the ROIs, so models trained on this dataset should be more applicable to classifying raw images.  
 
-This difficulty generalizing, along with the unstable and volatile validation results, make it unclear whether the models are actually learning useful features or if the accuracy on the test data is mostly due to chance.
+In addition, we found that the validation results of the models tended to be rather volatile. This may be due to the relatively small size of the test and validation datasets compared to the training data, or it may be that the networks are not learning features relevant to the test datasets. The fact that the validation accuracy often did not seem tied to the training accuracy concerns us as to the ability of the models to generalize.
 
-Despite these problems with our results, we feel that we have demonstrated the Convolutional Neural Networks can be trained to recognize abnormalities in mammograms, with recall close to 99%, substantially above human performance. Adjusting the decision threshold would further improve the recall. These methods could be used to pre-screen mammograms allowing radiologists to focus on scans which are likely to contain abnormalities.  
+Despite these problems with our results, we feel that we have demonstrated the Convolutional Neural Networks can be trained to recognize abnormalities in mammograms, with recall over 90%, substantially above human performance. Adjusting the decision threshold would further improve the recall, which could be a useful tool for radiologists.
 
-Once a model is created which can generalize better, future work would include combining other techniques with those we have used to create a system which could analyse entire mammograms. Possibilities include using a sliding window, YOLO or attention based models.
+Future work would include creating a system which could take an entire, unaltered scan as input and determine if it contains abnormalities and if so, where. This could be accomplished using methods such as YOLO, a sliding window, or an attention model. Unfortunately future work is constrained by the lack of available training data.
 
 ## Supplementary Files
 Two personal GitHub repositories were used for this work:
