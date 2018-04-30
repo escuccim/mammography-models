@@ -18,6 +18,8 @@ parser.add_argument("-l", "--label", help="how to classify data", default="norma
 parser.add_argument("-a", "--action", help="action to perform", default="train")
 parser.add_argument("-f", "--freeze", help="whether to freeze convolutional layers", nargs='?', const=True, default=False)
 parser.add_argument("-t", "--threshold", help="decision threshold", default=0.4, type=float)
+parser.add_argument("-c", "--contrast", help="contrast adjustment, if any", default=0.0, type=float)
+parser.add_argument("-w", "--weight", help="weight to give to positive examples in cross-entropy", default=2, type=int)
 args = parser.parse_args()
 
 epochs = args.epochs
@@ -27,6 +29,8 @@ how = args.label
 action = args.action
 threshold = args.threshold
 freeze = args.freeze
+contrast = args.contrast
+weight = args.weight - 1
 
 # precalculated pixel mean of images
 mu = 104.1353
@@ -111,7 +115,7 @@ with graph.as_default():
         y = tf.placeholder_with_default(y_def, shape=[None])
 
         # increase the contrast and cast to float
-        X_adj = _scale_input_data(X, contrast=2.0, mu=mu)
+        X_adj = _scale_input_data(X, contrast=contrast, mu=mu)
 
     stem = _stem(X_adj, lamC, training)
 
@@ -175,6 +179,11 @@ with graph.as_default():
     with tf.variable_scope('visualization'):
         tf.summary.image('conv_stem_1.1/filters', kernel_transposed, max_outputs=32, collections=["kernels"])
 
+    # Minimize cross-entropy - freeze certain layers depending on input
+    if freeze:
+        train_op = optimizer.minimize(loss, global_step=global_step, var_list=fc_vars)
+    else:
+        train_op = optimizer.minimize(loss, global_step=global_step)
     # get the probabilites for the classes
     probabilities = tf.nn.softmax(logits, name="probabilities")
 
@@ -203,13 +212,13 @@ with graph.as_default():
     #########################################################
     ## Loss function options
     # Regular mean cross entropy
-    mean_ce = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits))
+    # mean_ce = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits))
 
     #########################################################
     ## Weight the positive examples higher
     # This will weight the positive examples higher so as to improve recall
-    # weights = tf.multiply(1, tf.cast(tf.greater(y, 0), tf.int32)) + 1
-    # mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=logits, weights=weights))
+    weights = tf.multiply(weight, tf.cast(tf.greater(y, 0), tf.int32)) + 1
+    mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=logits, weights=weights))
 
     # Add in l2 loss
     loss = mean_ce + tf.losses.get_regularization_loss()
@@ -224,8 +233,8 @@ with graph.as_default():
     if num_classes > 2:
         # collapse the predictions down to normal or not for our pr metrics
         zero = tf.constant(0, dtype=tf.int64)
-        collapsed_predictions = tf.cast(tf.greater(predictions, zero), tf.int64)
-        collapsed_labels = tf.greater(y, zero)
+        collapsed_predictions = tf.cast(tf.greater(abnormal_probability, threshold), tf.int32)
+        collapsed_labels = tf.greater(y, 0)
 
         recall, rec_op = tf.metrics.recall(labels=collapsed_labels, predictions=collapsed_predictions,
                                            updates_collections=tf.GraphKeys.UPDATE_OPS, name="recall")
@@ -240,7 +249,7 @@ with graph.as_default():
 
     f1_score = 2 * ((precision * recall) / (precision + recall))
     _, update_op = summary_lib.pr_curve_streaming_op(name='pr_curve',
-                                                     predictions=(1 - probabilities[:, 0]),
+                                                     predictions=abnormal_probability,
                                                      labels=y,
                                                      updates_collections=tf.GraphKeys.UPDATE_OPS,
                                                      num_thresholds=20)
