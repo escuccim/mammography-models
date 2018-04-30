@@ -18,7 +18,7 @@ parser.add_argument("-a", "--action", help="action to perform", default="train")
 parser.add_argument("-f", "--freeze", help="whether to freeze convolutional layers", nargs='?', const=True, default=False)
 parser.add_argument("-t", "--threshold", help="decision threshold", default=0.4, type=float)
 parser.add_argument("-c", "--contrast", help="contrast adjustment, if any", default=0.0, type=float)
-parser.add_argument("-w", "--weight", help="weight to give to positive examples in cross-entropy", default=2, type=float)
+parser.add_argument("-w", "--weight", help="weight to give to positive examples in cross-entropy", default=2, type=int)
 args = parser.parse_args()
 
 epochs = args.epochs
