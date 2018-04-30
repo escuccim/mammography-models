@@ -122,22 +122,24 @@ The performance of the models turned out to be highly dependent on the dataset u
 
 Table 1 below shows the accuracy and recall on the test dataset for selected models.
 
-|Model       |Classification |Dataset    |Epochs |Accuracy    |Recall      |Initialization |
-|------------|---------------|-----------|-------|------------|------------|---------------|
-|VGG-16.03.04|         Binary|          9|30     |.8881       |.3589       |Scratch        |
-|VGG-16.03.04|    Multi-class|          6|20     |.8333       |.0288       |Scratch        |
-|1.0.0.29n   |    Multi-class|          6|40     |.9142       |.9353       |Scratch        |
-|1.0.0.29n   |         Binary|          6|35     |.8299       |.0477       |Scratch        |    
-|1.0.0.46l   |    Multi-class|          6|20     |.8187       |0.0         |Scratch        |
-|1.0.0.46b   |         Binary|          6|5      |.8338       |0.0         |1.0.0.45l      |
-|1.0.0.46b   |         Binary|          6|20     |.1810       |1.0         |Scratch        |
-|1.0.0.29n   |    Multi-class|          8|35     |.8890       |.9092       |Scratch        |
-|1.0.0.29n   |         Binary|          8|30     |.9930       |1.0         |Scratch        |
-|1.0.0.46l   |    Multi-class|          8|20     |.1139       |1.0         |Scratch        |
-|1.0.0.46b   |         Binary|          8|5      |.8711       |.9434       |1.0.0.45l*     |                
-|1.0.0.46b   |         Binary|          8|30     |.5434       |.7549       |Scratch        |
-|1.0.0.46l   |    Multi-class|          9|     |       |       |     |
-|1.0.0.46b   |         Binary|          9|30     |.8370       |.0392       |Scratch        |
+|Model          |Classification |Dataset    |Epochs |Accuracy    |Recall      |Initialization |
+|---------------|---------------|-----------|-------|------------|------------|---------------|
+|VGG-16.03.04b.9|         Binary|          9|30     |.8881       |.3589       |Scratch        |
+|VGG-16.03.04l.6|    Multi-class|          6|20     |.8333       |.0288       |Scratch        |
+|VGG-16.03.04b.8|         Binary|          8|10     |       |       |VGG-16.03.04l6        |
+|1.0.0.29n      |    Multi-class|          6|40     |.9142       |.9353       |Scratch        |
+|1.0.0.29n      |         Binary|          6|35     |.8299       |.0477       |Scratch        |    
+|1.0.0.46l      |    Multi-class|          6|20     |.8187       |0.0         |Scratch        |
+|1.0.0.46b      |         Binary|          6|5      |.8338       |0.0         |1.0.0.45l      |
+|1.0.0.46b      |         Binary|          6|20     |.1810       |1.0         |Scratch        |
+|1.0.0.29n      |    Multi-class|          8|35     |.8890       |.9092       |Scratch        |
+|1.0.0.29n      |         Binary|          8|30     |.9930       |1.0         |Scratch        |
+|1.0.0.46l      |    Multi-class|          8|20     |.1139       |1.0         |Scratch        |
+|1.0.0.46b      |         Binary|          8|10     |.9896       |.9776       |1.0.0.46l.6    |
+|1.0.0.46b      |         Binary|          8|5      |.8711       |.9434       |1.0.0.45l.8*   |
+|1.0.0.46b      |         Binary|          8|30     |.5434       |.7549       |Scratch        |
+|1.0.0.46l      |    Multi-class|          9|     |       |       |     |
+|1.0.0.46b      |         Binary|          9|30     |.8370       |.0392       |Scratch        |
 
 
 <small>\* only fully connected layers re-trained</small>              
