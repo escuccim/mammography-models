@@ -118,9 +118,9 @@ Finally we attempted to train a customized version of Inception v4 on our datase
 
 ### Performance
 
-The performance of the models turned out to be highly dependent on the dataset used for training combined with the classification method. While we had created certain datasets specifically for certain classification methods, the performance did not correlate with our expectations. For example, Dataset 8 was created specifically for multi-class classification, but produced better results for binary classification. 
+The performance of the models turned out to be highly dependent on the dataset used for training combined with the classification method. Unsurprisingly, all models performed better on binary classification than on multi-class classification on all datasets, even dataset 8 which was created specifically for multi-class classification. 
 
-The time required to train a model from scratch made it impossible to train each model on each dataset with each classification method, but the results in Table 1 below cover a decent number of combinations.
+Table 1 below shows the accuracy and recall on the test dataset for selected models.
 
 |Model      |Classification |Dataset    |Epochs |Accuracy    |Recall      |Initialization |
 |-----------|---------------|-----------|-------|------------|------------|---------------|
@@ -128,14 +128,17 @@ The time required to train a model from scratch made it impossible to train each
 |VGG-16.03  |    Multi-class|          6|       |        |       |Scratch        |
 |1.0.0.29n  |    Multi-class|          6|40     |.9142       |.9353       |Scratch        |
 |1.0.0.29n  |         Binary|          6|35     |.8299       |.0477       |Scratch        |    
-|1.0.0.45l  |    Multi-class|          6|20     |.8187       |0.0         |Scratch        |
-|1.0.0.45b  |         Binary|          6|5      |       |                 |1.0.0.45l      |
+|1.0.0.46l  |    Multi-class|          6|20     |.8187       |0.0         |Scratch        |
+|1.0.0.46b  |         Binary|          6|5      |.8338       |0.0         |1.0.0.45l      |
+|1.0.0.46b  |         Binary|          6|20      |       |         |Scratch        |
 |1.0.0.29n  |    Multi-class|          8|35     |.8890       |.9092       |Scratch        |
 |1.0.0.29n  |         Binary|          8|30     |.9930       |1.0         |Scratch        |
-|1.0.0.45l  |    Multi-class|          8|       |       |Scratch        |                
+|1.0.0.45l  |    Multi-class|          8|20     |.1139       |1.0         |Scratch        |
+|1.0.0.45b  |         Binary|          8|5      |       |          |1.0.0.45l      |                
 |1.0.0.45b  |         Binary|          8|30     |.5434       |.7549       |Scratch        |
-|1.0.0.45b  |         Binary|          9|30     |.8370       |.0392       |Scratch        |
 |1.0.0.45l  |    Multi-class|          9|     |       |       |     |
+|1.0.0.45b  |         Binary|          9|30     |.8370       |.0392       |Scratch        |
+
 
 <small>\* only fully connected layers re-trained</small>              
 
