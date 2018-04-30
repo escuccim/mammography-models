@@ -179,11 +179,6 @@ with graph.as_default():
     with tf.variable_scope('visualization'):
         tf.summary.image('conv_stem_1.1/filters', kernel_transposed, max_outputs=32, collections=["kernels"])
 
-    # Minimize cross-entropy - freeze certain layers depending on input
-    if freeze:
-        train_op = optimizer.minimize(loss, global_step=global_step, var_list=fc_vars)
-    else:
-        train_op = optimizer.minimize(loss, global_step=global_step)
     # get the probabilites for the classes
     probabilities = tf.nn.softmax(logits, name="probabilities")
 
@@ -226,8 +221,11 @@ with graph.as_default():
     # Adam optimizer
     optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate)
 
-    # Minimize cross-entropy
-    train_op = optimizer.minimize(loss, global_step=global_step)
+    # Minimize cross-entropy - freeze certain layers depending on input
+    if freeze:
+        train_op = optimizer.minimize(loss, global_step=global_step, var_list=fc_vars)
+    else:
+        train_op = optimizer.minimize(loss, global_step=global_step)
 
     # calculate recall
     if num_classes > 2:
