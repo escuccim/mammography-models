@@ -551,6 +551,8 @@ def _scale_input_data(X, contrast=None, mu=104.1353):
     # if we are adjusting contrast do that
     if contrast:
         X_adj = tf.image.adjust_contrast(X, contrast)
+    else:
+        X_adj = X
 
     # cast to float
     X_adj = tf.cast(X_adj, dtype=tf.float32)
