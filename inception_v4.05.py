@@ -84,7 +84,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "inception_v4.05l.6"
+model_name = "inception_v4.05b.9"
 # 4.01 - attempt to make a copy of inception
 # 4.02 - removing some layers so training doesn't take forever
 # 4.03 - putting some things back in I had taken out when testing, removing a few more layers
