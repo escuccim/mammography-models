@@ -130,7 +130,7 @@ Table 1 below shows the accuracy and recall on the test dataset for selected mod
 |1.0.0.29n  |         Binary|          6|35     |.8299       |.0477       |Scratch        |    
 |1.0.0.46l  |    Multi-class|          6|20     |.8187       |0.0         |Scratch        |
 |1.0.0.46b  |         Binary|          6|5      |.8338       |0.0         |1.0.0.45l      |
-|1.0.0.46b  |         Binary|          6|20     |       |         |Scratch        |
+|1.0.0.46b  |         Binary|          6|20     |.1810       |1.0         |Scratch        |
 |1.0.0.29n  |    Multi-class|          8|35     |.8890       |.9092       |Scratch        |
 |1.0.0.29n  |         Binary|          8|30     |.9930       |1.0         |Scratch        |
 |1.0.0.46l  |    Multi-class|          8|20     |.1139       |1.0         |Scratch        |
