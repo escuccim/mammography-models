@@ -17,6 +17,7 @@ parser.add_argument("-l", "--label", help="how to classify data", default="norma
 parser.add_argument("-a", "--action", help="action to perform", default="train")
 parser.add_argument("-f", "--freeze", help="whether to freeze convolutional layers", nargs='?', const=True, default=False)
 parser.add_argument("-t", "--threshold", help="decision threshold", default=0.4, type=float)
+parser.add_argument("-c", "--contrast", help="contrast adjustment, if any", default=0.0, type=float)
 args = parser.parse_args()
 
 epochs = args.epochs
@@ -26,6 +27,7 @@ how = args.label
 action = args.action
 threshold = args.threshold
 freeze = args.freeze
+contrast = args.contrast
 
 # precalculated pixel mean of images
 mu = 104.1353
@@ -52,7 +54,7 @@ steps_per_epoch = int(total_records / batch_size)
 print("Steps per epoch:", steps_per_epoch)
 
 # lambdas
-lamC = 0.00001
+lamC = 0.00010
 lamF = 0.00250
 
 # use dropout
@@ -75,7 +77,7 @@ print("Number of classes:", num_classes)
 ## Build the graph
 graph = tf.Graph()
 
-model_name = "model_s1.0.0.45b.6.3"
+model_name = "model_s1.0.0.46l.8.1"
 ## Change Log
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
@@ -115,6 +117,7 @@ model_name = "model_s1.0.0.45b.6.3"
 # 1.0.0.43 - sped up learning rate decay, adding contrast adjustment
 # 1.0.0.44 - fixed some issues with centering and contrast and scaling
 # 1.0.0.45 - tweaks to inputs
+# 1.0.0.46 - increased lamC from 0.00001 to 0.00010 to try to prevent overfitting of conv layers
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -140,7 +143,7 @@ with graph.as_default():
         y = tf.placeholder_with_default(y_def, shape=[None])
 
         # increase the contrast and cast to float
-        X_adj = _scale_input_data(X, contrast=2.0, mu=mu)
+        X_adj = _scale_input_data(X, contrast=contrast, mu=mu)
 
     # Convolutional layer 1
     with tf.name_scope('conv1') as scope:

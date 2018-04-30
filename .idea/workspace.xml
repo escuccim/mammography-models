@@ -4,8 +4,6 @@
     <list default="true" id="98c4e5b0-4f90-4540-b87f-9bd6d2ddc583" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/ReadMe.md" afterPath="$PROJECT_DIR$/ReadMe.md" />
       <change beforePath="$PROJECT_DIR$/candidate_1.0.0.45.py" afterPath="$PROJECT_DIR$/candidate_1.0.0.45.py" />
-      <change beforePath="$PROJECT_DIR$/training_utils.py" afterPath="$PROJECT_DIR$/training_utils.py" />
-      <change beforePath="$PROJECT_DIR$/vgg_16.3.py" afterPath="$PROJECT_DIR$/vgg_16.3.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -38,7 +36,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="vgg_16.3.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="vgg_16.3.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/vgg_16.3.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="1023">
@@ -55,8 +53,8 @@
         <entry file="file://$PROJECT_DIR$/ReadMe.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="933">
-                <caret line="126" column="67" lean-forward="false" selection-start-line="126" selection-start-column="67" selection-end-line="126" selection-end-column="67" />
+              <first_editor relative-caret-position="1065">
+                <caret line="131" column="84" lean-forward="false" selection-start-line="131" selection-start-column="84" selection-end-line="131" selection-end-column="84" />
                 <folding />
               </first_editor>
               <second_editor />
@@ -76,11 +74,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="candidate_1.0.0.45.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="candidate_1.0.0.45.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/candidate_1.0.0.45.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="429">
-              <caret line="77" column="34" lean-forward="false" selection-start-line="77" selection-start-column="34" selection-end-line="77" selection-end-column="34" />
+            <state relative-caret-position="693">
+              <caret line="79" column="34" lean-forward="false" selection-start-line="79" selection-start-column="34" selection-end-line="79" selection-end-column="34" />
               <folding />
             </state>
           </provider>
@@ -174,10 +172,10 @@
         <option value="$PROJECT_DIR$/candidate_1.1.0.01.py" />
         <option value="$PROJECT_DIR$/inception_v4.01.py" />
         <option value="$PROJECT_DIR$/candidate_1.0.0.42.py" />
-        <option value="$PROJECT_DIR$/candidate_1.0.0.45.py" />
-        <option value="$PROJECT_DIR$/ReadMe.md" />
         <option value="$PROJECT_DIR$/training_utils.py" />
         <option value="$PROJECT_DIR$/vgg_16.3.py" />
+        <option value="$PROJECT_DIR$/ReadMe.md" />
+        <option value="$PROJECT_DIR$/candidate_1.0.0.45.py" />
       </list>
     </option>
   </component>
@@ -713,22 +711,14 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/candidate_1.0.0.45.py">
+    <entry file="file://$PROJECT_DIR$/vgg_16.3.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="429">
-          <caret line="77" column="34" lean-forward="false" selection-start-line="77" selection-start-column="34" selection-end-line="77" selection-end-column="34" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ReadMe.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="933">
-            <caret line="126" column="67" lean-forward="false" selection-start-line="126" selection-start-column="67" selection-end-line="126" selection-end-column="67" />
-            <folding />
-          </first_editor>
-          <second_editor />
+        <state relative-caret-position="1023">
+          <caret line="115" column="54" lean-forward="false" selection-start-line="115" selection-start-column="54" selection-end-line="115" selection-end-column="54" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+            <marker date="1525069749444" expanded="true" signature="12820:12890" ph="..." />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -742,14 +732,22 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/vgg_16.3.py">
+    <entry file="file://$PROJECT_DIR$/ReadMe.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="1065">
+            <caret line="131" column="84" lean-forward="false" selection-start-line="131" selection-start-column="84" selection-end-line="131" selection-end-column="84" />
+            <folding />
+          </first_editor>
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/candidate_1.0.0.45.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1023">
-          <caret line="115" column="54" lean-forward="false" selection-start-line="115" selection-start-column="54" selection-end-line="115" selection-end-column="54" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-            <marker date="1525069749444" expanded="true" signature="12820:12890" ph="..." />
-          </folding>
+        <state relative-caret-position="693">
+          <caret line="79" column="34" lean-forward="false" selection-start-line="79" selection-start-column="34" selection-end-line="79" selection-end-column="34" />
+          <folding />
         </state>
       </provider>
     </entry>

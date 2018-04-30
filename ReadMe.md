@@ -128,8 +128,8 @@ The time required to train a model from scratch made it impossible to train each
 |VGG-16.03  |    Multi-class|          6|       |        |       |Scratch        |
 |1.0.0.29n  |    Multi-class|          6|40     |.9142       |.9353       |Scratch        |
 |1.0.0.29n  |         Binary|          6|35     |.8299       |.0477       |Scratch        |    
-|1.0.0.45l  |    Multi-class|          6|     |       |       |Scratch        |
-|1.0.0.45b  |         Binary|          6|       |       |                 |      |
+|1.0.0.45l  |    Multi-class|          6|20     |.8187       |0.0         |Scratch        |
+|1.0.0.45b  |         Binary|          6|       |       |                 |1.0.0.45l      |
 |1.0.0.29n  |    Multi-class|          8|35     |.8890       |.9092       |Scratch        |
 |1.0.0.29n  |         Binary|          8|30     |.9930       |1.0         |Scratch        |
 |1.0.0.45l  |    Multi-class|          8|       |       |Scratch        |                
