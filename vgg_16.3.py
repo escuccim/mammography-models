@@ -18,6 +18,8 @@ parser.add_argument("-a", "--action", help="action to perform", default="train")
 parser.add_argument("-f", "--freeze", help="whether to freeze convolutional layers", nargs='?', const=True, default=False)
 parser.add_argument("-t", "--threshold", help="decision threshold", default=0.4, type=float)
 parser.add_argument("-c", "--contrast", help="contrast adjustment, if any", default=0.0, type=float)
+parser.add_argument("-w", "--weight", help="weight to give to positive examples in cross-entropy", default=2, type=int)
+parser.add_argument("--distort", help="use online data augmentation", default=False, const=True, nargs="?")
 args = parser.parse_args()
 
 epochs = args.epochs
@@ -28,6 +30,8 @@ action = args.action
 threshold = args.threshold
 freeze = args.freeze
 contrast = args.contrast
+weight = args.weight - 1
+distort = args.distort
 
 # precalculated pixel mean of images
 mu = 104.1353
@@ -79,7 +83,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "vgg_16.3.04l.6"
+model_name = "vgg_16.3.04b.8"
 # vgg_19.01 - attempting to recreate vgg 19 architecture
 # vgg_16.02 - went to vgg 16 architecture, reducing units in fc layers
 # vgg_16.2.01 - changing first conv layers to stride 2 to get dimensions down to reasonable size
@@ -103,7 +107,7 @@ with graph.as_default():
                                                staircase=staircase)
 
     with tf.name_scope('inputs') as scope:
-        image, label = read_and_decode_single_example(train_files, label_type=how, normalize=False)
+        image, label = read_and_decode_single_example(train_files, label_type=how, normalize=False, distort=distort)
 
         X_def, y_def = tf.train.shuffle_batch([image, label], batch_size=batch_size, capacity=2000,
                                               min_after_dequeue=1000)
