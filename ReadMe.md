@@ -124,7 +124,7 @@ The time required to train a model from scratch made it impossible to train each
 
 |Model      |Classification |Dataset    |Epochs |Accuracy    |Recall      |Initialization |
 |-----------|---------------|-----------|-------|------------|------------|---------------|
-|VGG-16.03  |         Binary|          9|       |        |       |Scratch        |
+|VGG-16.03  |         Binary|          9|30     |.8881       |.3589       |Scratch        |
 |VGG-16.03  |    Multi-class|          6|       |        |       |Scratch        |
 |1.0.0.29n  |    Multi-class|          6|40     |.9142       |.9353       |Scratch        |
 |1.0.0.29n  |         Binary|          6|35     |.8299       |.0477       |Scratch        |    

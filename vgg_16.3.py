@@ -17,6 +17,7 @@ parser.add_argument("-l", "--label", help="how to classify data", default="norma
 parser.add_argument("-a", "--action", help="action to perform", default="train")
 parser.add_argument("-f", "--freeze", help="whether to freeze convolutional layers", nargs='?', const=True, default=False)
 parser.add_argument("-t", "--threshold", help="decision threshold", default=0.4, type=float)
+parser.add_argument("-c", "--contrast", help="contrast adjustment, if any", default=0.0, type=float)
 args = parser.parse_args()
 
 epochs = args.epochs
@@ -26,6 +27,7 @@ how = args.label
 action = args.action
 threshold = args.threshold
 freeze = args.freeze
+contrast = args.contrast
 
 # precalculated pixel mean of images
 mu = 104.1353
@@ -77,7 +79,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "vgg_16.3.04b.9"
+model_name = "vgg_16.3.04l.6"
 # vgg_19.01 - attempting to recreate vgg 19 architecture
 # vgg_16.02 - went to vgg 16 architecture, reducing units in fc layers
 # vgg_16.2.01 - changing first conv layers to stride 2 to get dimensions down to reasonable size
@@ -111,7 +113,7 @@ with graph.as_default():
         y = tf.placeholder_with_default(y_def, shape=[None])
 
         # increase the contrast and cast to float
-        X_adj = _scale_input_data(X, contrast=2.0, mu=mu)
+        X_adj = _scale_input_data(X, contrast=contrast, mu=mu)
 
     # Convolutional layer 1
     conv1 = _conv2d_batch_norm(X_adj, 64, kernel_size=(3,3), stride=(2,2), training=training, epsilon=1e-8, padding="SAME", seed=100, lambd=lamC, name="1.1")

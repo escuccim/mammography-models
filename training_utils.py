@@ -549,7 +549,7 @@ def flatten(l):
 
 def _scale_input_data(X, contrast=None, mu=104.1353):
     # if we are adjusting contrast do that
-    if contrast is not None:
+    if contrast:
         X_adj = tf.image.adjust_contrast(X, contrast)
 
     # cast to float
