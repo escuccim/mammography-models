@@ -124,20 +124,20 @@ Table 1 below shows the accuracy and recall on the test dataset for selected mod
 
 |Model      |Classification |Dataset    |Epochs |Accuracy    |Recall      |Initialization |
 |-----------|---------------|-----------|-------|------------|------------|---------------|
-|VGG-16.03  |         Binary|          9|30     |.8881       |.3589       |Scratch        |
-|VGG-16.03  |    Multi-class|          6|       |        |       |Scratch        |
+|VGG-16.03.04|         Binary|          9|30     |.8881       |.3589       |Scratch        |
+|VGG-16.03.04|    Multi-class|          6|       |        |       |Scratch        |
 |1.0.0.29n  |    Multi-class|          6|40     |.9142       |.9353       |Scratch        |
 |1.0.0.29n  |         Binary|          6|35     |.8299       |.0477       |Scratch        |    
 |1.0.0.46l  |    Multi-class|          6|20     |.8187       |0.0         |Scratch        |
 |1.0.0.46b  |         Binary|          6|5      |.8338       |0.0         |1.0.0.45l      |
-|1.0.0.46b  |         Binary|          6|20      |       |         |Scratch        |
+|1.0.0.46b  |         Binary|          6|20     |       |         |Scratch        |
 |1.0.0.29n  |    Multi-class|          8|35     |.8890       |.9092       |Scratch        |
 |1.0.0.29n  |         Binary|          8|30     |.9930       |1.0         |Scratch        |
-|1.0.0.45l  |    Multi-class|          8|20     |.1139       |1.0         |Scratch        |
-|1.0.0.45b  |         Binary|          8|5      |       |          |1.0.0.45l      |                
-|1.0.0.45b  |         Binary|          8|30     |.5434       |.7549       |Scratch        |
-|1.0.0.45l  |    Multi-class|          9|     |       |       |     |
-|1.0.0.45b  |         Binary|          9|30     |.8370       |.0392       |Scratch        |
+|1.0.0.46l  |    Multi-class|          8|20     |.1139       |1.0         |Scratch        |
+|1.0.0.46b  |         Binary|          8|5      |.8711       |.9434       |1.0.0.45l*     |                
+|1.0.0.46b  |         Binary|          8|30     |.5434       |.7549       |Scratch        |
+|1.0.0.46l  |    Multi-class|          9|     |       |       |     |
+|1.0.0.46b  |         Binary|          9|30     |.8370       |.0392       |Scratch        |
 
 
 <small>\* only fully connected layers re-trained</small>              
@@ -166,11 +166,15 @@ While we have been able to achieve high accuracy on both classifying to normal/a
 
 In addition, we found that the validation results of the models tended to be rather volatile. This may be due to the relatively small size of the test and validation datasets compared to the training data, or it may be that the networks are not learning features relevant to the test datasets. The fact that the validation accuracy often did not seem tied to the training accuracy concerns us as to the ability of the models to generalize.
 
-Despite these problems with our results, we feel that we have demonstrated the Convolutional Neural Networks can be trained to recognize abnormalities in mammograms, with recall over 90%, substantially above human performance. Adjusting the decision threshold would further improve the recall, which could be a useful tool for radiologists.
+Despite these problems with our results, we feel that we have demonstrated the Convolutional Neural Networks can be trained to recognize abnormalities in mammograms, with recall over 90%, substantially above human performance. 
+
+At very low and very high thresholds, most of our models were able to achieve either very high recall or very precision. We feel that in order to put a system like this into actual practice, it would be more useful to output the probability of a scan being abnormal than to output the classification. This would allow the system to provide radiologists with additional information to use when reviewing scans rather than replacing them entirely.       
 
 Future work would include creating a system which could take an entire, unaltered scan as input and determine if it contains abnormalities and if so, where. This could be accomplished using methods such as YOLO, a sliding window, or an attention model. Unfortunately future work is constrained by the lack of available training data.
 
 ## Supplementary Files
+
+### GitHub Repositories
 Two personal GitHub repositories were used for this work:
 
 1. https://github.com/escuccim/mias-mammography - contained the Jupyter notebooks and code run locally.
