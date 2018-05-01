@@ -6,7 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="98c4e5b0-4f90-4540-b87f-9bd6d2ddc583" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/candidate_1.0.3.02.py" afterPath="$PROJECT_DIR$/candidate_1.0.3.02.py" />
-      <change beforePath="$PROJECT_DIR$/model_1.0.3.02.py" afterPath="$PROJECT_DIR$/model_1.0.3.02.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -76,8 +75,8 @@
       <file leaf-file-name="candidate_1.0.3.02.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/candidate_1.0.3.02.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="248">
-              <caret line="482" column="31" lean-forward="false" selection-start-line="482" selection-start-column="31" selection-end-line="482" selection-end-column="31" />
+            <state relative-caret-position="-4339">
+              <caret line="114" column="81" lean-forward="false" selection-start-line="114" selection-start-column="81" selection-end-line="114" selection-end-column="81" />
               <folding />
             </state>
           </provider>
@@ -750,8 +749,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/candidate_1.0.3.02.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="248">
-          <caret line="482" column="31" lean-forward="false" selection-start-line="482" selection-start-column="31" selection-end-line="482" selection-end-column="31" />
+        <state relative-caret-position="-4339">
+          <caret line="114" column="81" lean-forward="false" selection-start-line="114" selection-start-column="81" selection-end-line="114" selection-end-column="81" />
           <folding />
         </state>
       </provider>

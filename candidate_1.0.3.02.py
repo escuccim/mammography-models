@@ -84,7 +84,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.0.3.04"
+model_name = "model_s1.0.3.05"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -112,6 +112,7 @@ model_name = "model_s1.0.3.04"
 # 1.0.3.01 - rerouting branch
 # 1.0.3.02 - split extra branch so it also goes back into main branch
 # 1.0.3.03 - updated training code to reevaluate the model, fixed other issues with model, added 1x1 convs, increased number of filters
+# 1.0.3.05 - added extra conv layer to reduce dimensions of data before fc layers
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -762,9 +763,53 @@ with graph.as_default():
         if dropout:
             pool5 = tf.layers.dropout(pool5, rate=pooldropout_rate, seed=115, training=training)
 
+    with tf.name_scope('conv6.1') as scope:
+        conv6 = tf.layers.conv2d(
+            pool5,  # Input data
+            filters=512,  # 48 filters
+            kernel_size=(3, 3),  # Kernel size: 5x5
+            strides=(1, 1),  # Stride: 1
+            padding='SAME',  # "same" padding
+            activation=None,  # None
+            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=117),
+            kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
+            name='conv6.1'
+        )
+
+        conv6 = tf.layers.batch_normalization(
+            conv6,
+            axis=-1,
+            momentum=0.99,
+            epsilon=epsilon,
+            center=True,
+            scale=True,
+            beta_initializer=tf.zeros_initializer(),
+            gamma_initializer=tf.ones_initializer(),
+            moving_mean_initializer=tf.zeros_initializer(),
+            moving_variance_initializer=tf.ones_initializer(),
+            training=training,
+            name='bn6.1'
+        )
+
+        # apply relu
+        conv6 = tf.nn.relu(conv6, name='relu6.1')
+
+    # Max pooling layer 6
+    with tf.name_scope('pool6') as scope:
+        pool6 = tf.layers.max_pooling2d(
+            conv6,
+            pool_size=(2, 2),  # Pool size: 2x2
+            strides=(2, 2),  # Stride: 2
+            padding='SAME',
+            name='pool6'
+        )
+
+        if dropout:
+            pool6 = tf.layers.dropout(pool6, rate=pooldropout_rate, seed=116, training=training)
+
     # Flatten output
     with tf.name_scope('flatten') as scope:
-        flat_output = tf.contrib.layers.flatten(pool5)
+        flat_output = tf.contrib.layers.flatten(pool6)
 
         # dropout at fc rate
         flat_output = tf.layers.dropout(flat_output, rate=fcdropout_rate, seed=116, training=training)
