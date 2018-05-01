@@ -19,6 +19,7 @@ parser.add_argument("-f", "--freeze", help="whether to freeze convolutional laye
 parser.add_argument("-t", "--threshold", help="decision threshold", default=0.4, type=float)
 parser.add_argument("-c", "--contrast", help="contrast adjustment, if any", default=0.0, type=float)
 parser.add_argument("-w", "--weight", help="weight to give to positive examples in cross-entropy", default=2, type=int)
+parser.add_argument("-v", "--version", help="version or run number to assign to model name", default=None)
 parser.add_argument("--distort", help="use online data augmentation", default=False, const=True, nargs="?")
 args = parser.parse_args()
 
@@ -32,6 +33,15 @@ freeze = args.freeze
 contrast = args.contrast
 weight = args.weight - 1
 distort = args.distort
+version = args.version
+
+# figure out how to label the model name
+if how == "label":
+    model_label = "l"
+elif how == "normal":
+    model_label = "b"
+else:
+    model_label = "x"
 
 # precalculated pixel mean of images
 mu = 104.1353
@@ -84,7 +94,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.0.3.05b.9"
+model_name = "model_s1.0.3.05"  + model_label + "." + str(dataset) + str(version)
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -931,7 +941,8 @@ with graph.as_default():
 
     # else if we have binary, use the threshold
     else:
-        predictions = tf.cast(tf.greater(abnormal_probability, threshold), tf.int32)
+        #predictions = tf.cast(tf.greater(abnormal_probability, threshold), tf.int32)
+		predictions = tf.argmax(probabilities, axis=1, output_type=tf.int64)
 
     # get the accuracy
     accuracy, acc_op = tf.metrics.accuracy(
@@ -1273,7 +1284,7 @@ with tf.Session(graph=graph, config=config) as sess:
         test_predictions.append(yhat)
         ground_truth.append(y_batch)
 
-    print("Evaluating on test data")
+    print("Evaluating on MIAS data")
 
     # print the results
     print("Mean Test Accuracy:", np.mean(test_accuracy))
@@ -1289,8 +1300,8 @@ with tf.Session(graph=graph, config=config) as sess:
 
     sess.run(tf.local_variables_initializer())
 
-    ## evaluate on MIAS  data
-    X_te, y_te = load_validation_data(how=how, data="mias", which=dataset)
+    ## evaluate on MIAS  dataset 9 which is the closest to raw images we have
+    X_te, y_te = load_validation_data(how=how, data="mias", which=9)
 
     mias_test_accuracy = []
     mias_test_recall = []

@@ -20,6 +20,8 @@ parser.add_argument("-f", "--freeze", help="whether to freeze convolutional laye
 parser.add_argument("-t", "--threshold", help="decision threshold", default=0.4, type=float)
 parser.add_argument("-c", "--contrast", help="contrast adjustment, if any", default=0.0, type=float)
 parser.add_argument("-w", "--weight", help="weight to give to positive examples in cross-entropy", default=2, type=int)
+parser.add_argument("-v", "--version", help="version or run number to assign to model name", default=None)
+parser.add_argument("--distort", help="use online data augmentation", default=False, const=True, nargs="?")
 args = parser.parse_args()
 
 epochs = args.epochs
@@ -31,6 +33,16 @@ threshold = args.threshold
 freeze = args.freeze
 contrast = args.contrast
 weight = args.weight - 1
+distort = args.distort
+version = args.version
+
+# figure out how to label the model name
+if how == "label":
+    model_label = "l"
+elif how == "normal":
+    model_label = "b"
+else:
+    model_label = "x"
 
 # precalculated pixel mean of images
 mu = 104.1353
@@ -82,9 +94,8 @@ print("Number of classes:", num_classes)
 ## Build the graph
 graph = tf.Graph()
 
-# whether to retrain model from scratch or use saved model
-init = True
-model_name = "inception_v4.05b.9"
+
+model_name = "inception_v4.05"  + model_label + "." + str(dataset) + str(version)
 # 4.01 - attempt to make a copy of inception
 # 4.02 - removing some layers so training doesn't take forever
 # 4.03 - putting some things back in I had taken out when testing, removing a few more layers
@@ -105,7 +116,7 @@ with graph.as_default():
                                                staircase=staircase)
 
     with tf.name_scope('inputs') as scope:
-        image, label = read_and_decode_single_example(train_files, label_type=how, normalize=False)
+        image, label = read_and_decode_single_example(train_files, label_type=how, normalize=False, distort=distort)
 
         X_def, y_def = tf.train.shuffle_batch([image, label], batch_size=batch_size, capacity=2000,
                                               min_after_dequeue=1000)
@@ -179,38 +190,11 @@ with graph.as_default():
     with tf.variable_scope('visualization'):
         tf.summary.image('conv_stem_1.1/filters', kernel_transposed, max_outputs=32, collections=["kernels"])
 
-    # get the probabilites for the classes
-    probabilities = tf.nn.softmax(logits, name="probabilities")
-
-    # the probability that the scan is abnormal is 1 - probability it is normal
-    abnormal_probability = (1 - probabilities[:, 0])
-
-    if num_classes > 2:
-        # the scan is abnormal if the probability is greater than the threshold
-        is_abnormal = tf.cast(tf.greater(abnormal_probability, threshold), tf.int64)
-
-        # Compute predictions from the probabilities - if the scan is normal we ignore the other probabilities
-        predictions = is_abnormal * tf.argmax(probabilities[:,1:], axis=1, output_type=tf.int64)
-        # predictions = tf.argmax(logits, axis=1, output_type=tf.int64)
-    else:
-        predictions = tf.cast(tf.greater(abnormal_probability, threshold), tf.int32)
-
-    # get the accuracy
-    accuracy, acc_op = tf.metrics.accuracy(
-        labels=y,
-        predictions=predictions,
-        updates_collections=tf.GraphKeys.UPDATE_OPS,
-        # metrics_collections=["summaries"],
-        name="accuracy",
-    )
-
-    #########################################################
     ## Loss function options
     # Regular mean cross entropy
-    # mean_ce = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits))
+    #mean_ce = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits))
 
-    #########################################################
-    ## Weight the positive examples higher
+    # Different weighting method
     # This will weight the positive examples higher so as to improve recall
     weights = tf.multiply(weight, tf.cast(tf.greater(y, 0), tf.int32)) + 1
     mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=logits, weights=weights))
@@ -227,6 +211,21 @@ with graph.as_default():
     else:
         train_op = optimizer.minimize(loss, global_step=global_step)
 
+    # get the probabilites for the classes
+    probabilities = tf.nn.softmax(logits, name="probabilities")
+    abnormal_probability = 1 - probabilities[:,0]
+
+    # Compute predictions from the probabilities
+    predictions = tf.argmax(probabilities, axis=1, output_type=tf.int64)
+
+    # get the accuracy
+    accuracy, acc_op = tf.metrics.accuracy(
+        labels=y,
+        predictions=predictions,
+        updates_collections=tf.GraphKeys.UPDATE_OPS,
+        name="accuracy",
+    )
+
     # calculate recall
     if num_classes > 2:
         # collapse the predictions down to normal or not for our pr metrics
@@ -234,16 +233,12 @@ with graph.as_default():
         collapsed_predictions = tf.cast(tf.greater(abnormal_probability, threshold), tf.int32)
         collapsed_labels = tf.greater(y, 0)
 
-        recall, rec_op = tf.metrics.recall(labels=collapsed_labels, predictions=collapsed_predictions,
-                                           updates_collections=tf.GraphKeys.UPDATE_OPS, name="recall")
-        precision, prec_op = tf.metrics.precision(labels=collapsed_labels, predictions=collapsed_predictions,
-                                                  updates_collections=tf.GraphKeys.UPDATE_OPS, name="precision")
+        recall, rec_op = tf.metrics.recall(labels=collapsed_labels, predictions=collapsed_predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="recall")
+        precision, prec_op = tf.metrics.precision(labels=collapsed_labels, predictions=collapsed_predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="precision")
 
     else:
-        recall, rec_op = tf.metrics.recall(labels=y, predictions=predictions,
-                                           updates_collections=tf.GraphKeys.UPDATE_OPS, name="recall")
-        precision, prec_op = tf.metrics.precision(labels=y, predictions=predictions,
-                                                  updates_collections=tf.GraphKeys.UPDATE_OPS, name="precision")
+        recall, rec_op = tf.metrics.recall(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="recall")
+        precision, prec_op = tf.metrics.precision(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="precision")
 
     f1_score = 2 * ((precision * recall) / (precision + recall))
     _, update_op = summary_lib.pr_curve_streaming_op(name='pr_curve',
@@ -563,7 +558,7 @@ with tf.Session(graph=graph, config=config) as sess:
         test_predictions.append(yhat)
         ground_truth.append(y_batch)
 
-    print("Evaluating on test data")
+    print("Evaluating on MIAS data")
 
     # print the results
     print("Mean Test Accuracy:", np.mean(test_accuracy))
@@ -579,8 +574,8 @@ with tf.Session(graph=graph, config=config) as sess:
 
     sess.run(tf.local_variables_initializer())
 
-    ## evaluate on MIAS  data
-    X_te, y_te = load_validation_data(how=how, data="mias", which=dataset)
+    ## evaluate on MIAS  dataset 9 which is the closest to raw images we have
+    X_te, y_te = load_validation_data(how=how, data="mias", which=9)
 
     mias_test_accuracy = []
     mias_test_recall = []

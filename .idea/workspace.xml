@@ -6,7 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="98c4e5b0-4f90-4540-b87f-9bd6d2ddc583" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/candidate_1.0.0.28.2.py" afterPath="$PROJECT_DIR$/candidate_1.0.0.28.2.py" />
-      <change beforePath="$PROJECT_DIR$/training_utils.py" afterPath="$PROJECT_DIR$/training_utils.py" />
+      <change beforePath="$PROJECT_DIR$/candidate_1.0.0.45.py" afterPath="$PROJECT_DIR$/candidate_1.0.0.45.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -39,11 +39,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="candidate_1.0.0.28.2.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="candidate_1.0.0.28.2.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/candidate_1.0.0.28.2.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="957">
-              <caret line="136" column="73" lean-forward="false" selection-start-line="136" selection-start-column="73" selection-end-line="136" selection-end-column="73" />
+            <state relative-caret-position="-330">
+              <caret line="94" column="13" lean-forward="true" selection-start-line="94" selection-start-column="13" selection-end-line="94" selection-end-column="13" />
               <folding />
             </state>
           </provider>
@@ -96,12 +96,14 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="candidate_1.0.0.45.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="candidate_1.0.0.45.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/candidate_1.0.0.45.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-4092">
-              <caret line="8" column="35" lean-forward="false" selection-start-line="8" selection-start-column="35" selection-end-line="8" selection-end-column="35" />
-              <folding />
+            <state relative-caret-position="858">
+              <caret line="989" column="77" lean-forward="false" selection-start-line="989" selection-start-column="77" selection-end-line="989" selection-end-column="77" />
+              <folding>
+                <element signature="e#0#18#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -191,13 +193,13 @@
         <option value="$PROJECT_DIR$/candidate_1.0.0.42.py" />
         <option value="$PROJECT_DIR$/inception_v4.05.py" />
         <option value="$PROJECT_DIR$/vgg_16.py" />
-        <option value="$PROJECT_DIR$/candidate_1.0.0.45.py" />
         <option value="$PROJECT_DIR$/ReadMe.md" />
         <option value="$PROJECT_DIR$/vgg_16.3.py" />
         <option value="$PROJECT_DIR$/model_1.0.3.02.py" />
         <option value="$PROJECT_DIR$/candidate_1.0.3.02.py" />
         <option value="$PROJECT_DIR$/training_utils.py" />
         <option value="$PROJECT_DIR$/candidate_1.0.0.28.2.py" />
+        <option value="$PROJECT_DIR$/candidate_1.0.0.45.py" />
       </list>
     </option>
   </component>
@@ -691,14 +693,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/candidate_1.0.0.45.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-4092">
-          <caret line="8" column="35" lean-forward="false" selection-start-line="8" selection-start-column="35" selection-end-line="8" selection-end-column="35" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/ReadMe.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
@@ -750,9 +744,19 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/candidate_1.0.0.28.2.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="957">
-          <caret line="136" column="73" lean-forward="false" selection-start-line="136" selection-start-column="73" selection-end-line="136" selection-end-column="73" />
+        <state relative-caret-position="-330">
+          <caret line="94" column="13" lean-forward="true" selection-start-line="94" selection-start-column="13" selection-end-line="94" selection-end-column="13" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/candidate_1.0.0.45.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="858">
+          <caret line="989" column="77" lean-forward="false" selection-start-line="989" selection-start-column="77" selection-end-line="989" selection-end-column="77" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
