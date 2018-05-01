@@ -84,7 +84,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.0.3.03"
+model_name = "model_s1.0.3.04"
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -480,7 +480,7 @@ with graph.as_default():
         # apply relu
         conv23 = tf.nn.relu(conv23, name='relu2.3')
 
-    with tf.name_scope('conv2.3') as scope:
+    with tf.name_scope('conv2.4') as scope:
         conv23 = tf.layers.conv2d(
             conv23,  # Input data
             filters=96,  # 32 filters
