@@ -19,7 +19,7 @@
       <file leaf-file-name="training_utils.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/training_utils.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="16093">
+            <state relative-caret-position="842">
               <caret line="555" column="0" lean-forward="true" selection-start-line="555" selection-start-column="0" selection-end-line="555" selection-end-column="0" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
@@ -41,8 +41,8 @@
       <file leaf-file-name="candidate_1.0.0.28.2.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/candidate_1.0.0.28.2.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="99">
-              <caret line="83" column="32" lean-forward="false" selection-start-line="83" selection-start-column="32" selection-end-line="83" selection-end-column="32" />
+            <state relative-caret-position="792">
+              <caret line="104" column="55" lean-forward="true" selection-start-line="104" selection-start-column="55" selection-end-line="104" selection-end-column="55" />
               <folding />
             </state>
           </provider>
@@ -75,8 +75,8 @@
       <file leaf-file-name="candidate_1.0.3.02.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/candidate_1.0.3.02.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="875">
-              <caret line="140" column="8" lean-forward="false" selection-start-line="140" selection-start-column="8" selection-end-line="140" selection-end-column="62" />
+            <state relative-caret-position="594">
+              <caret line="143" column="41" lean-forward="true" selection-start-line="143" selection-start-column="41" selection-end-line="143" selection-end-column="41" />
               <folding />
             </state>
           </provider>
@@ -188,7 +188,6 @@
         <option value="$PROJECT_DIR$/candidate_1.1.0.01.py" />
         <option value="$PROJECT_DIR$/inception_v4.01.py" />
         <option value="$PROJECT_DIR$/candidate_1.0.0.42.py" />
-        <option value="$PROJECT_DIR$/training_utils.py" />
         <option value="$PROJECT_DIR$/inception_v4.05.py" />
         <option value="$PROJECT_DIR$/vgg_16.py" />
         <option value="$PROJECT_DIR$/candidate_1.0.0.45.py" />
@@ -196,6 +195,7 @@
         <option value="$PROJECT_DIR$/vgg_16.3.py" />
         <option value="$PROJECT_DIR$/model_1.0.3.02.py" />
         <option value="$PROJECT_DIR$/candidate_1.0.3.02.py" />
+        <option value="$PROJECT_DIR$/training_utils.py" />
         <option value="$PROJECT_DIR$/candidate_1.0.0.28.2.py" />
       </list>
     </option>
@@ -690,16 +690,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/training_utils.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="16093">
-          <caret line="555" column="0" lean-forward="true" selection-start-line="555" selection-start-column="0" selection-end-line="555" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/candidate_1.0.0.45.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-4092">
@@ -741,16 +731,26 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/candidate_1.0.3.02.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="875">
-          <caret line="140" column="8" lean-forward="false" selection-start-line="140" selection-start-column="8" selection-end-line="140" selection-end-column="62" />
+        <state relative-caret-position="594">
+          <caret line="143" column="41" lean-forward="true" selection-start-line="143" selection-start-column="41" selection-end-line="143" selection-end-column="41" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/training_utils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="842">
+          <caret line="555" column="0" lean-forward="true" selection-start-line="555" selection-start-column="0" selection-end-line="555" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/candidate_1.0.0.28.2.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="99">
-          <caret line="83" column="32" lean-forward="false" selection-start-line="83" selection-start-column="32" selection-end-line="83" selection-end-column="32" />
+        <state relative-caret-position="792">
+          <caret line="104" column="55" lean-forward="true" selection-start-line="104" selection-start-column="55" selection-end-line="104" selection-end-column="55" />
           <folding />
         </state>
       </provider>

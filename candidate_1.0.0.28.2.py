@@ -81,7 +81,7 @@ print("Number of classes:", num_classes)
 ## Build the graph
 graph = tf.Graph()
 
-model_name = "model_s1.0.0.33b.8"
+model_name = "model_s1.0.0.34b.8"
 ## Change Log
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
@@ -108,6 +108,7 @@ model_name = "model_s1.0.0.33b.8"
 # 1.0.0.30b - changed some hyperparameters
 # 1.0.0.31l - added decision threshold to predictions
 # 1.0.0.33 - scaling input data
+# 1.0.0.34 - centering data by 127, not by mean
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -133,7 +134,7 @@ with graph.as_default():
         y = tf.placeholder_with_default(y_def, shape=[None])
 
         #X = tf.cast(X, dtype=tf.float32)
-        X_adj = _scale_input_data(X, contrast=contrast, mu=mu)
+        X_adj = _scale_input_data(X, contrast=contrast, mu=127.0)
 
     # Convolutional layer 1
     with tf.name_scope('conv1') as scope:
