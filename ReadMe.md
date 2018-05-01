@@ -95,7 +95,9 @@ We had attempted to scale and center the input data when creating the datasets b
 3. Input data not centered but scaled by dividing by 255.0     
 4. Input data centered by subtracting mean and scaled by dividing by 255.0
 
-While normalizing the input data made the models train faster and improved training accuracy, it seemed to have a negative impact on the validation and test datasets. Further investigation indicated that scaling the data improved performance while centering it caused the model to perform poorly on the validation and test datasets. We do not understand how or why centering the data caused this behavior.
+While normalizing the input data made the models train faster and improved training accuracy, it seemed to have a negative impact on the validation and test datasets. Further investigation indicated that scaling the data improved performance while centering it caused the model to perform poorly on the validation and test datasets. 
+
+We do not understand how or why centering the input data caused this behavior, but we suspect it may have effected the training data differently than the test and validation data, possibly due to how the graph was constructed in TensorFlow.  
 
 ### Training
 At first, initial evaluation of models was done using Dataset 5 due to its relatively small size. Each model was trained through between 30 and 50 epochs and accuracy, precision and recall were used to evaluate performance. It is likely that Dataset 5 has different images of the same scans included in both the training and validation sets, so the validation results on this dataset were essentially useless and all models had to be retrained on other datasets.
@@ -146,11 +148,13 @@ Table 1 below shows the accuracy and recall on the test dataset for selected mod
 |1.0.0.46b      |         Binary|          6|20     |.1810       |1.0         |Scratch        |
 |1.0.0.29n      |    Multi-class|          8|35     |.8890       |.9092       |Scratch        |
 |1.0.0.29n      |         Binary|          8|30     |.9930       |1.0         |Scratch        |
+|1.0.0.35b      |         Binary|          8|20     |.9678       |.8732       |Scratch        |
 |1.0.0.46l      |    Multi-class|          8|20     |.1139       |1.0         |Scratch        |
 |1.0.0.46b      |         Binary|          8|30     |.5434       |.7549       |Scratch        |
 |1.0.0.46b      |         Binary|          8|10     |.9896       |.9776       |1.0.0.46l.6    |
-|1.0.0.46b      |         Binary|          8|5      |.8711       |.9434       |1.0.0.45l.8*   |
+|1.0.0.35b      |         Binary|          9|20     |.9346       |.8998       |Scratch        |
 |1.0.0.46b      |         Binary|          9|30     |.8370       |.0392       |Scratch        |
+
 
 
 <small>\* only fully connected layers re-trained</small>              

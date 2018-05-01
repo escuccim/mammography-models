@@ -17,6 +17,10 @@ parser.add_argument("-l", "--label", help="how to classify data", default="norma
 parser.add_argument("-a", "--action", help="action to perform", default="train")
 parser.add_argument("-f", "--freeze", help="whether to freeze convolutional layers", nargs='?', const=True, default=False)
 parser.add_argument("-t", "--threshold", help="decision threshold", default=0.4, type=float)
+parser.add_argument("-c", "--contrast", help="contrast adjustment, if any", default=0.0, type=float)
+parser.add_argument("-w", "--weight", help="weight to give to positive examples in cross-entropy", default=2, type=int)
+parser.add_argument("-v", "--version", help="version or run number to assign to model name", default="")
+parser.add_argument("--distort", help="use online data augmentation", default=False, const=True, nargs="?")
 args = parser.parse_args()
 
 epochs = args.epochs
@@ -26,6 +30,18 @@ how = args.label
 action = args.action
 threshold = args.threshold
 freeze = args.freeze
+contrast = args.contrast
+weight = args.weight - 1
+distort = args.distort
+version = args.version
+
+# figure out how to label the model name
+if how == "label":
+    model_label = "l"
+elif how == "normal":
+    model_label = "b"
+else:
+    model_label = "x"
 
 # precalculated pixel mean of images
 mu = 104.1353
@@ -52,7 +68,7 @@ steps_per_epoch = int(total_records / batch_size)
 print("Steps per epoch:", steps_per_epoch)
 
 # lambdas
-lamC = 0.00001
+lamC = 0.00010
 lamF = 0.00250
 
 # use dropout
@@ -75,7 +91,7 @@ print("Number of classes:", num_classes)
 ## Build the graph
 graph = tf.Graph()
 
-model_name = "model_s1.0.0.45l.6.1"
+model_name = "model_s1.0.0.46" + model_label + "." + str(dataset) + str(version)
 ## Change Log
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
@@ -115,6 +131,7 @@ model_name = "model_s1.0.0.45l.6.1"
 # 1.0.0.43 - sped up learning rate decay, adding contrast adjustment
 # 1.0.0.44 - fixed some issues with centering and contrast and scaling
 # 1.0.0.45 - tweaks to inputs
+# 1.0.0.46 - increased lamC from 0.00001 to 0.00010 to try to prevent overfitting of conv layers
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -130,7 +147,7 @@ with graph.as_default():
                                                staircase=staircase)
 
     with tf.name_scope('inputs') as scope:
-        image, label = read_and_decode_single_example(train_files, label_type=how, normalize=False)
+        image, label = read_and_decode_single_example(train_files, label_type=how, normalize=False, distort=distort)
 
         X_def, y_def = tf.train.shuffle_batch([image, label], batch_size=batch_size, capacity=2000,
                                               min_after_dequeue=1000)
@@ -140,7 +157,7 @@ with graph.as_default():
         y = tf.placeholder_with_default(y_def, shape=[None])
 
         # increase the contrast and cast to float
-        X_adj = _scale_input_data(X, contrast=2.0, mu=mu)
+        X_adj = _scale_input_data(X, contrast=contrast, mu=mu)
 
     # Convolutional layer 1
     with tf.name_scope('conv1') as scope:
@@ -595,9 +612,8 @@ with graph.as_default():
     # Regular mean cross entropy
     # mean_ce = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits))
 
-    ## Weight the positive examples higher
-    # This will weight the positive examples higher so as to improve recall
-    weights = tf.multiply(2, tf.cast(tf.greater(y, 0), tf.int32)) + 1
+    # This will weight the positive examples higher so as to improve recall and account for the unbalanced training data
+    weights = tf.multiply(weight, tf.cast(tf.greater(y, 0), tf.int32)) + 1
     mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=logits, weights=weights))
 
     # Add in l2 loss
@@ -624,7 +640,8 @@ with graph.as_default():
 
     # else if we have binary, use the threshold
     else:
-        predictions = tf.cast(tf.greater(abnormal_probability, threshold), tf.int32)
+        #predictions = tf.cast(tf.greater(abnormal_probability, threshold), tf.int32)
+		predictions = tf.argmax(probabilities, axis=1, output_type=tf.int64)
 
     # get the accuracy
     accuracy, acc_op = tf.metrics.accuracy(
@@ -964,7 +981,7 @@ with tf.Session(graph=graph, config=config) as sess:
         test_predictions.append(yhat)
         ground_truth.append(y_batch)
 
-    print("Evaluating on test data")
+    print("Evaluating on MIAS data")
 
     # print the results
     print("Mean Test Accuracy:", np.mean(test_accuracy))
@@ -980,8 +997,8 @@ with tf.Session(graph=graph, config=config) as sess:
 
     sess.run(tf.local_variables_initializer())
 
-    ## evaluate on MIAS  data
-    X_te, y_te = load_validation_data(how=how, data="mias", which=dataset)
+    ## evaluate on MIAS  dataset 9 which is the closest to raw images we have
+    X_te, y_te = load_validation_data(how=how, data="mias", which=9)
 
     mias_test_accuracy = []
     mias_test_recall = []
