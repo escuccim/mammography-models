@@ -148,7 +148,7 @@ with graph.as_default():
         y = tf.placeholder_with_default(y_def, shape=[None])
 
         # increase the contrast and cast to float
-        X_adj = _scale_input_data(X, contrast=contrast, mu=mu)
+        X_adj = _scale_input_data(X, contrast=contrast, mu=0, scale=255.0)
 
     # Convolutional layer 1
     with tf.name_scope('conv1') as scope:
