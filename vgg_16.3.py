@@ -93,7 +93,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "vgg_16.3.04" + model_label + "." + str(dataset) + str(version)
+model_name = "vgg_16.3.05" + model_label + "." + str(dataset) + str(version)
 # vgg_19.01 - attempting to recreate vgg 19 architecture
 # vgg_16.02 - went to vgg 16 architecture, reducing units in fc layers
 # vgg_16.2.01 - changing first conv layers to stride 2 to get dimensions down to reasonable size
@@ -102,6 +102,7 @@ model_name = "vgg_16.3.04" + model_label + "." + str(dataset) + str(version)
 # vgg_16.3.02 - fixed some problems with input data
 # vgg_16.3.03 - tweaks to inputs
 # vgg_16.3.04 - increased x-entropy weighting
+# vgg_16.3.05 - not centering input data, just scaling it
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")

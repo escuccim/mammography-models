@@ -95,12 +95,13 @@ print("Number of classes:", num_classes)
 graph = tf.Graph()
 
 
-model_name = "inception_v4.05"  + model_label + "." + str(dataset) + str(version)
+model_name = "inception_v4.06"  + model_label + "." + str(dataset) + str(version)
 # 4.01 - attempt to make a copy of inception
 # 4.02 - removing some layers so training doesn't take forever
 # 4.03 - putting some things back in I had taken out when testing, removing a few more layers
 # 4.04 - decreasing numbers of filters
 # 4.05 - fixed input issues with placeholders
+# 4.06 - just scaling input data, not centering it
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -126,7 +127,7 @@ with graph.as_default():
         y = tf.placeholder_with_default(y_def, shape=[None])
 
         # increase the contrast and cast to float
-        X_adj = _scale_input_data(X, contrast=contrast, mu=mu)
+        X_adj = _scale_input_data(X, contrast=contrast, mu=0)
 
     stem = _stem(X_adj, lamC, training)
 

@@ -558,8 +558,8 @@ def _scale_input_data(X, contrast=None, mu=104.1353, scale=255.0):
     X_adj = tf.cast(X_adj, dtype=tf.float32)
 
     # center the pixel data
-    mu_tf = tf.constant(mu, name="pixel_mean", dtype=tf.float32)
-    X_adj = tf.subtract(X_adj, mu_tf, name="centered_input")
+    # mu_tf = tf.constant(mu, name="pixel_mean", dtype=tf.float32)
+    X_adj = tf.subtract(X_adj, mu, name="centered_input")
 
     # scale the data
     X_adj = tf.divide(X_adj, scale)

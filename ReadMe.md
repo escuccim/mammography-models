@@ -87,6 +87,16 @@ The models were constructed using TensorFlow and metrics were logged to TensorBo
 
 The best performing architecture will be detailed below.
 
+### Input Data Scaling
+We had attempted to scale and center the input data when creating the datasets but the size of the data made this impossible. As a result our first models, including 1.0.0.29 took raw pixel data, between 0 and 255 as input. Models 1.0.0.4x were the same architecture as 1.0.0.29 but with the data centered online by subtracting the pre-calculated mean. This improved the training results but the validation results became much more volatile. To investigate this we removed the online data centering and scaling and retrained the model. We were surprised to see the validation performance become more stable so we then retrained the model on the same dataset with the following permutations:
+
+1. Raw input data
+2. Input data centered by subtracting 127.0, not the mean
+3. Input data not centered but scaled by dividing by 255.0     
+4. Input data centered by subtracting mean and scaled by dividing by 255.0
+
+While normalizing the input data made the models train faster and improved training accuracy, it seemed to have a negative impact on the validation and test datasets. Further investigation indicated that scaling the data improved performance while centering it caused the model to perform poorly on the validation and test datasets. We do not understand how or why centering the data caused this behavior.
+
 ### Training
 At first, initial evaluation of models was done using Dataset 5 due to its relatively small size. Each model was trained through between 30 and 50 epochs and accuracy, precision and recall were used to evaluate performance. It is likely that Dataset 5 has different images of the same scans included in both the training and validation sets, so the validation results on this dataset were essentially useless and all models had to be retrained on other datasets.
 
@@ -99,7 +109,9 @@ Transfer learning did, however, proof very useful in training our own networks, 
 ### Architecture
 The custom model which performed the best was 1.0.0.29, which was based on VGG. Model 1.0.0.29 consists of stacked 3x3 convolutions alternating with max pools followed by two fully connected layers with 2048 units each. 
 
-Model 1.0.0.45 was almost identical to 1.0.0.29, but the input data was centered and scaled, and there was an optional online contrast enhancement. 
+Model 1.0.0.35 was identical to 1.0.0.29 but with the input data scaled to be between 0 and 1. Model 1.0.0.45 was scaled and centered to the mean.
+
+In models 1.0.0.35 and 1.0.0.45 we also added optional online contrast adjustment. 
 
 <img src="model_s1.0.0.29.png" alt="Model 1.0.0.29" align="right" style="max-width: 50%;">
 
@@ -114,31 +126,30 @@ A slightly modified version of VGG-16 was also trained as a benchmark. A full ve
 
 These changes brought the memory requirements down to acceptable levels and doubled the training speed. While changing the stride of convolutional layer 1 decreased the training accuracy, we felt that it might allow the model to generalize a bit better.
 
-Finally we attempted to train a customized version of Inception v4 on our datasets, however the training was so slow it was abandoned.
+Finally we attempted to train a customized version of Inception v4 on our datasets. Our version had the number of filters in each convolutional layer cut in half but the training speed was still slow enough that we did not attempt to retrain it. 
 
 ### Performance
 
 The performance of the models turned out to be highly dependent on the dataset used for training combined with the classification method. Unsurprisingly, all models performed better on binary classification than on multi-class classification on all datasets, even dataset 8 which was created specifically for multi-class classification. 
 
-Table 1 below shows the accuracy and recall on the test dataset for selected models.
+Table 1 below shows the accuracy and recall on the test dataset for selected models. The most-frequent baseline accuracy for the datasets was .83.
 
 |Model          |Classification |Dataset    |Epochs |Accuracy    |Recall      |Initialization |
 |---------------|---------------|-----------|-------|------------|------------|---------------|
-|VGG-16.03.04b.9|         Binary|          9|30     |.8881       |.3589       |Scratch        |
 |VGG-16.03.04l.6|    Multi-class|          6|20     |.8333       |.0288       |Scratch        |
-|VGG-16.03.04b.8|         Binary|          8|10     |       |       |VGG-16.03.04l6        |
+|VGG-16.03.04b.8|         Binary|          8|10     |.8747       |.2951       |VGG-16.03.04l6 |
+|VGG-16.03.04b.9|         Binary|          9|30     |.8881       |.3589       |Scratch        |
+|inc_v4.05b.9   |         Binary|          9|20     |.1828       |1.0         |Scratch        |
 |1.0.0.29n      |    Multi-class|          6|40     |.9142       |.9353       |Scratch        |
 |1.0.0.29n      |         Binary|          6|35     |.8299       |.0477       |Scratch        |    
 |1.0.0.46l      |    Multi-class|          6|20     |.8187       |0.0         |Scratch        |
-|1.0.0.46b      |         Binary|          6|5      |.8338       |0.0         |1.0.0.45l      |
 |1.0.0.46b      |         Binary|          6|20     |.1810       |1.0         |Scratch        |
 |1.0.0.29n      |    Multi-class|          8|35     |.8890       |.9092       |Scratch        |
 |1.0.0.29n      |         Binary|          8|30     |.9930       |1.0         |Scratch        |
 |1.0.0.46l      |    Multi-class|          8|20     |.1139       |1.0         |Scratch        |
+|1.0.0.46b      |         Binary|          8|30     |.5434       |.7549       |Scratch        |
 |1.0.0.46b      |         Binary|          8|10     |.9896       |.9776       |1.0.0.46l.6    |
 |1.0.0.46b      |         Binary|          8|5      |.8711       |.9434       |1.0.0.45l.8*   |
-|1.0.0.46b      |         Binary|          8|30     |.5434       |.7549       |Scratch        |
-|1.0.0.46l      |    Multi-class|          9|     |       |       |     |
 |1.0.0.46b      |         Binary|          9|30     |.8370       |.0392       |Scratch        |
 
 
