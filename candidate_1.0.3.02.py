@@ -94,7 +94,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.0.3.05"  + model_label + "." + str(dataset) + str(version)
+model_name = "model_s1.0.3.06"  + model_label + "." + str(dataset) + str(version)
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -123,6 +123,7 @@ model_name = "model_s1.0.3.05"  + model_label + "." + str(dataset) + str(version
 # 1.0.3.02 - split extra branch so it also goes back into main branch
 # 1.0.3.03 - updated training code to reevaluate the model, fixed other issues with model, added 1x1 convs, increased number of filters
 # 1.0.3.05 - added extra conv layer to reduce dimensions of data before fc layers
+# 1.0.3.06 - not centering input, just scaling it
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
