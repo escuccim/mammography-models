@@ -547,7 +547,7 @@ def flatten(l):
             out.append(item)
     return out
 
-def _scale_input_data(X, contrast=None, mu=104.1353):
+def _scale_input_data(X, contrast=None, mu=104.1353, scale=255.0):
     # if we are adjusting contrast do that
     if contrast:
         X_adj = tf.image.adjust_contrast(X, contrast)
@@ -562,6 +562,6 @@ def _scale_input_data(X, contrast=None, mu=104.1353):
     X_adj = tf.subtract(X_adj, mu_tf, name="centered_input")
 
     # scale the data
-    X_adj = tf.divide(X_adj, 255.0)
+    X_adj = tf.divide(X_adj, scale)
 
     return X_adj
