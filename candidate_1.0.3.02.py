@@ -943,7 +943,7 @@ with graph.as_default():
     # else if we have binary, use the threshold
     else:
         #predictions = tf.cast(tf.greater(abnormal_probability, threshold), tf.int32)
-		predictions = tf.argmax(probabilities, axis=1, output_type=tf.int64)
+        predictions = tf.argmax(probabilities, axis=1, output_type=tf.int64)
 
     # get the accuracy
     accuracy, acc_op = tf.metrics.accuracy(
