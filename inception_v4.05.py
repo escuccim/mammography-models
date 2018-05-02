@@ -20,7 +20,7 @@ parser.add_argument("-f", "--freeze", help="whether to freeze convolutional laye
 parser.add_argument("-t", "--threshold", help="decision threshold", default=0.4, type=float)
 parser.add_argument("-c", "--contrast", help="contrast adjustment, if any", default=0.0, type=float)
 parser.add_argument("-w", "--weight", help="weight to give to positive examples in cross-entropy", default=2, type=int)
-parser.add_argument("-v", "--version", help="version or run number to assign to model name", default=None)
+parser.add_argument("-v", "--version", help="version or run number to assign to model name", default="")
 parser.add_argument("--distort", help="use online data augmentation", default=False, const=True, nargs="?")
 args = parser.parse_args()
 
