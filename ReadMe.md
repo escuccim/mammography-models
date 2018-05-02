@@ -158,7 +158,7 @@ Figure 2 shows the training metrics for model 1.0.0.45 trained on dataset 9 for 
 
 Figure three shows the training metrics for model 1.0.0.35 trained on dataset 9 for binary classification. The validation accuracy tracks the training accuracy much more closely than did 1.0.0.45 although the recall is more volatile.
 
-<img src="1.0.0.45b.9.1_results.png" alt="Binary Accuracy and Recall of Model 1.0.0.35 on Dataset 9" align="center"><br>
+<img src="1.0.0.35b.9_results.png" alt="Binary Accuracy and Recall of Model 1.0.0.35 on Dataset 9" align="center"><br>
 <i>Figure 3 - Binary Accuracy and Recall for Model 1.0.0.35 on Dataset 9</i>
 
 We feel that model 1.0.0.35 offers the best combination of accuracy and recall, while performing well on the MIAS dataset. Table 2 shows the accuracy and recall of selected models on MIAS dataset 9, which should track the ability of the models to generalize to unrelated, unaugmented scans.
