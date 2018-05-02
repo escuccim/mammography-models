@@ -179,7 +179,7 @@ To investigate this we removed the online data centering and scaling and retrain
 
 We found that while normalizing the input data made the models train faster and improved training accuracy, it seemed to have a negative impact on the validation and test datasets. The optimal combination was scaling the data to between 0 and 1 while not centering it.  
 
-We do not understand how or why centering the input data caused this behavior, but we suspect it may have effected the training data differently than the test and validation data, possibly due to how the graph was constructed in TensorFlow. Another possibility is that centering and scaling the input data caused the models to learn faster and overfit the training data faster.  
+We do not understand how or why centering the input data caused this behavior, but we suspect it may have effected the training data differently than the test and validation data, possibly due to how the graph was constructed in TensorFlow. Another possibility is that centering and scaling the input data caused the models to learn faster and thus learn to overfit the training data faster.  
 
 ### Decision Thresholds
 These results were obtained using a probability threshold of 0.50. Recall or precision could be drastically increased, at the cost of the other metric, by adjusting the threshold. We used a pr curve to evaluate the effect of altering the threshold, and altering the threshold from 0.05 to 0.95 allowed us to achieve either precision or recall of close to 1.0. 
