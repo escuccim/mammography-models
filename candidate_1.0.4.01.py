@@ -96,7 +96,7 @@ graph = tf.Graph()
 
 # whether to retrain model from scratch or use saved model
 init = True
-model_name = "model_s1.0.4.01"  + model_label + "." + str(dataset) + str(version)
+model_name = "model_s1.0.4.02"  + model_label + "." + str(dataset) + str(version)
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -127,6 +127,7 @@ model_name = "model_s1.0.4.01"  + model_label + "." + str(dataset) + str(version
 # 1.0.3.05 - added extra conv layer to reduce dimensions of data before fc layers
 # 1.0.3.06 - not centering input, just scaling it
 # 1.0.4.01 - removing branch from layer 2, just leaving first branch
+# 1.0.4.02 - changed number of filters in conv layers
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -222,7 +223,7 @@ with graph.as_default():
     with tf.name_scope('conv1.1') as scope:
         conv11 = tf.layers.conv2d(
             conv11,  # Input data
-            filters=64,  # 32 filters
+            filters=48,  # 32 filters
             kernel_size=(3, 3),  # Kernel size: 5x5
             strides=(1, 1),  # Stride: 2
             padding='SAME',  # "same" padding
@@ -253,7 +254,7 @@ with graph.as_default():
     with tf.name_scope('conv1.2') as scope:
         conv12 = tf.layers.conv2d(
             conv11,  # Input data
-            filters=64,  # 32 filters
+            filters=48,  # 32 filters
             kernel_size=(3, 3),  # Kernel size: 5x5
             strides=(1, 1),  # Stride: 2
             padding='SAME',  # "same" padding
@@ -317,7 +318,7 @@ with graph.as_default():
     with tf.name_scope('conv1.4') as scope:
         conv113 = tf.layers.conv2d(
             conv113,  # Input data
-            filters=64,  # 32 filters
+            filters=48,  # 32 filters
             kernel_size=(3, 3),  # Kernel size: 5x5
             strides=(1, 1),  # Stride: 2
             padding='SAME',  # "same" padding
@@ -371,7 +372,7 @@ with graph.as_default():
     with tf.name_scope('conv2.1') as scope:
         conv2 = tf.layers.conv2d(
             pool1,  # Input data
-            filters=96,  # 32 filters
+            filters=128,  # 32 filters
             kernel_size=(3, 3),  # Kernel size: 9x9
             strides=(1, 1),  # Stride: 1
             padding='SAME',  # "same" padding
@@ -403,7 +404,7 @@ with graph.as_default():
     with tf.name_scope('conv2.2') as scope:
         conv2 = tf.layers.conv2d(
             conv2,  # Input data
-            filters=96,  # 32 filters
+            filters=128,  # 32 filters
             kernel_size=(3, 3),  # Kernel size: 9x9
             strides=(1, 1),  # Stride: 1
             padding='SAME',  # "same" padding
@@ -449,7 +450,7 @@ with graph.as_default():
     with tf.name_scope('conv3.1') as scope:
         conv3 = tf.layers.conv2d(
             pool2,  # Input data
-            filters=256,  # 48 filters
+            filters=192,  # 48 filters
             kernel_size=(3, 3),  # Kernel size: 5x5
             strides=(1, 1),  # Stride: 1
             padding='SAME',  # "same" padding
@@ -481,7 +482,7 @@ with graph.as_default():
     with tf.name_scope('conv3.2') as scope:
         conv32 = tf.layers.conv2d(
             conv3,  # Input data
-            filters=256,  # 48 filters
+            filters=192,  # 48 filters
             kernel_size=(3, 3),  # Kernel size: 5x5
             strides=(1, 1),  # Stride: 1
             padding='SAME',  # "same" padding
@@ -526,7 +527,7 @@ with graph.as_default():
     with tf.name_scope('conv4') as scope:
         conv4 = tf.layers.conv2d(
             pool3,  # Input data
-            filters=384,  # 48 filters
+            filters=256,  # 48 filters
             kernel_size=(3, 3),  # Kernel size: 5x5
             strides=(1, 1),  # Stride: 1
             padding='SAME',  # "same" padding
@@ -558,7 +559,7 @@ with graph.as_default():
     with tf.name_scope('conv4.1') as scope:
         conv4 = tf.layers.conv2d(
             conv4,  # Input data
-            filters=384,  # 48 filters
+            filters=256,  # 48 filters
             kernel_size=(3, 3),  # Kernel size: 5x5
             strides=(1, 1),  # Stride: 1
             padding='SAME',  # "same" padding
@@ -603,7 +604,7 @@ with graph.as_default():
     with tf.name_scope('conv5') as scope:
         conv5 = tf.layers.conv2d(
             pool4,  # Input data
-            filters=512,  # 48 filters
+            filters=384,  # 48 filters
             kernel_size=(3, 3),  # Kernel size: 5x5
             strides=(1, 1),  # Stride: 1
             padding='SAME',  # "same" padding
