@@ -12,7 +12,8 @@ from tensorboard import summary as summary_lib
 parser = argparse.ArgumentParser()
 parser.add_argument("-e", "--epochs", help="number of epochs to train", default=30, type=int)
 parser.add_argument("-d", "--data", help="which dataset to use", default=9, type=int)
-parser.add_argument("-m", "--model", help="model to initialize with", default=None)
+parser.add_argument("-m", "--model", help="model to initialize weights with", default=None)
+parser.add_argument("-r", "--restore", help="model to restore and continue training", default=None)
 parser.add_argument("-l", "--label", help="how to classify data", default="normal")
 parser.add_argument("-a", "--action", help="action to perform", default="train")
 parser.add_argument("-f", "--freeze", help="whether to freeze convolutional layers", nargs='?', const=True, default=False)
@@ -26,6 +27,7 @@ args = parser.parse_args()
 epochs = args.epochs
 dataset = args.data
 init_model = args.model
+restore_model = args.restore
 how = args.label
 action = args.action
 threshold = args.threshold
@@ -680,6 +682,11 @@ if init_model is not None:
         init = False
     else:
         init = True
+elif restore_model is not None:
+    if os.path.exists(os.path.join("model", restore_model + '.ckpt.index')):
+        init = False
+    else:
+        init = True
 else:
     if os.path.exists(os.path.join("model", model_name + '.ckpt.index')):
         init = False
@@ -768,6 +775,9 @@ with tf.Session(graph=graph, config=config) as sess:
 
             # reset init model so we don't do this again
             init_model = None
+        elif restore_model is not None:
+            saver.restore(sess, './model/' + restore_model + '.ckpt')
+            print("Restoring model", restore_model)
         # otherwise load this model
         else:
             saver.restore(sess, './model/' + model_name + '.ckpt')
