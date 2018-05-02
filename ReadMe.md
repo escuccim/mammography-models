@@ -148,7 +148,7 @@ Table 1 below shows the accuracy and recall on the test dataset for selected mod
 
 <p>Figure 1 shows the training metrics for model 1.0.0.29 trained on dataset 8 for binary classification.
 
-<img src="accuracy_1.0.0.29b.png" alt="Binary Accuracy and Recall of Model 1.0.0.29 on Dataset 8" align="center"><br>
+<img src="accuracy_1.0.0.29b.png" alt="Binary Accuracy and Recall of Model 1.0.0.29 on Dataset 8" align="center" style="height: 200px;"><br>
 <i>Figure 1 - Binary Accuracy and Recall for Model 1.0.0.29 on Dataset 8</i>
 
 Figure 2 shows the training metrics for model 1.0.0.45 trained on dataset 9 for binary classification. The validation performance seems tied to the training performance through epoch 15 after which both it and the recall drop to the baseline as the model learns to predict everything as negative.
