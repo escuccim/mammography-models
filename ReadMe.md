@@ -142,9 +142,9 @@ Table 1 below shows the accuracy and recall on the test dataset for selected mod
 |VGG-16.03.04b.8|         Binary|          8|10     |.8747       |.2951       |VGG-16.03.04l6 |
 |VGG-16.03.04b.9|         Binary|          9|30     |.8881       |.3589       |Scratch        |
 |inc_v4.05b.9   |         Binary|          9|20     |.1828       |1.0         |Scratch        |
-<small>\* only fully connected layers re-trained</small>              
 
-<div style="text-align:center;"><i>Table 1: Performance on Test Set</i></div>
+<small>\* only fully connected layers re-trained</small>              
+<div style="text-align:center;"><i>Table 1: Performance on Test Set</i></div><br>
 
 <p>Figure 1 shows the training metrics for model 1.0.0.29 trained on dataset 8 for binary classification.
 
@@ -160,6 +160,17 @@ Figure three shows the training metrics for model 1.0.0.35 trained on dataset 9 
 
 <img src="1.0.0.45b.9.1_results.png" alt="Binary Accuracy and Recall of Model 1.0.0.35 on Dataset 9" align="center"><br>
 <i>Figure 3 - Binary Accuracy and Recall for Model 1.0.0.35 on Dataset 9</i>
+
+We feel that model 1.0.0.35 offers the best combination of accuracy and recall, while performing well on the MIAS dataset. Table 2 shows the accuracy and recall of selected models on MIAS dataset 9, which should track the ability of the models to generalize to unrelated, unaugmented scans.
+
+|Model          |Training Dataset   |MIAS Accuracy    |MIAS Recall      |
+|---------------|-------------------|-----------------|-----------------|
+|vgg_16.3.04b.9 |9                  |.9314            |.6517            |
+|1.0.0.28.2b.9  |9                  |.9165            |.5342            |
+|1.0.0.35b.9    |9                  |.6974            |.9557            |
+
+<div style="text-align:center;"><i>Table 2: Performance on MIAS Dataset</i></div><br>
+
 
 ### Effect of Input Data Scaling
 We had attempted to scale and center the input data when creating the datasets but the size of the dataset made this impossible. As a result our first models, including 1.0.0.29 took raw pixel data, between 0 and 255 as input. Models 1.0.0.4x were the same architecture as 1.0.0.29 but with the data centered online by subtracting the pre-calculated mean. This improved the training results but the validation results became much more volatile and seemingly unrelated to the training results. 
