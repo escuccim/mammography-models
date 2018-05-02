@@ -61,6 +61,9 @@ For dataset 9, each DDSM image was cut into 598x598 tiles with the size unchange
  
 To avoid the inclusion of images which contained overlay text, white borders or artifacts, or were mostly background, each tile was then added to the dataset only if it met upper and lower thresholds on mean and variance. The thresholds were determined through random sampling of tiles and tuning of the thresholds to eliminate images which did not contain usable data. 
 
+### MIAS Images
+We also created extra test datasets from the MIAS images. As these images are from a completely different distribution than the DDSM images, we felt they would provide a good assessment of how well the models would generalize. The MIAS images were a uniform size of 1024x1024. The images were increased in size by 2.58 so that their height was the same as half the mean height of the DDSM images. The ROIs were then extract using the same methods used for the CBIS-DDSM images except the ROIs were extracted directly at 299x299 to avoid losing information by resizing the images up and down.
+
 #### Data Balance
 In reality, only about 10% of mammograms are abnormal, in order to maximize recall we weighted our training data more heavily towards abnormal scan, with a target of 85% normal. The datasets ended up being 83% normal and 17% abnormal. As each ROI was extracted to multiple images, in order to prevent different images of the same ROI appearing in both the training and test data, the existing divisions of the CBIS-DDSM data were maintained. The test data was divided evenly between test and validation data with no shuffling to avoid overlap.
 
@@ -127,46 +130,45 @@ Table 1 below shows the accuracy and recall on the test dataset for selected mod
 
 |Model          |Classification |Dataset    |Epochs |Accuracy    |Recall      |Initialization |
 |---------------|---------------|-----------|-------|------------|------------|---------------|
-|VGG-16.03.04l.6|    Multi-class|          6|20     |.8333       |.0288       |Scratch        |
-|VGG-16.03.04b.8|         Binary|          8|10     |.8747       |.2951       |VGG-16.03.04l6 |
-|VGG-16.03.04b.9|         Binary|          9|30     |.8881       |.3589       |Scratch        |
-|inc_v4.05b.9   |         Binary|          9|20     |.1828       |1.0         |Scratch        |
-|1.0.0.29n      |    Multi-class|          6|40     |.9142       |.9353       |Scratch        |
-|1.0.0.29n      |         Binary|          6|35     |.8299       |.0477       |Scratch        |    
-|1.0.0.46l      |    Multi-class|          6|20     |.8187       |0.0         |Scratch        |
+|1.0.0.29n      |    Multi-class|          6|40     |.9142       |.9353       |Scratch        |    
 |1.0.0.46b      |         Binary|          6|20     |.1810       |1.0         |Scratch        |
 |1.0.0.29n      |    Multi-class|          8|35     |.8890       |.9092       |Scratch        |
 |1.0.0.29n      |         Binary|          8|30     |.9930       |1.0         |Scratch        |
 |1.0.0.35b      |         Binary|          8|20     |.9678       |.8732       |Scratch        |
-|1.0.0.46l      |    Multi-class|          8|20     |.1139       |1.0         |Scratch        |
-|1.0.0.46b      |         Binary|          8|30     |.5434       |.7549       |Scratch        |
 |1.0.0.46b      |         Binary|          8|10     |.9896       |.9776       |1.0.0.46l.6    |
 |1.0.0.35b      |         Binary|          9|20     |.9346       |.8998       |Scratch        |
 |1.0.0.46b      |         Binary|          9|30     |.8370       |.0392       |Scratch        |
+|VGG-16.03.04l.6|    Multi-class|          6|20     |.8333       |.0288       |Scratch        |
+|VGG-16.03.04b.8|         Binary|          8|10     |.8747       |.2951       |VGG-16.03.04l6 |
+|VGG-16.03.04b.9|         Binary|          9|30     |.8881       |.3589       |Scratch        |
+|inc_v4.05b.9   |         Binary|          9|20     |.1828       |1.0         |Scratch        |
 <small>\* only fully connected layers re-trained</small>              
 
 <div style="text-align:center;"><i>Table 1: Performance on Test Set</i></div>
 
-<p>Model 1.0.0.29 performed excellent on both the training and validation data, as seen in Figures 1.
+<p>Figure 1 shows the training metrics for model 1.0.0.29 trained on dataset 8 for binary classification.
 
-<img src="accuracy_1.0.0.29b.png" alt="Binary Accuracy and Recall of Model 1.0.0.29" align="center"><br>
-<i>Figure 1 - Binary Accuracy and Recall for Model 1.0.0.29</i>
+<img src="accuracy_1.0.0.29b.png" alt="Binary Accuracy and Recall of Model 1.0.0.29 on Dataset 8" align="center"><br>
+<i>Figure 1 - Binary Accuracy and Recall for Model 1.0.0.29 on Dataset 8</i>
 
-In general, most models evaluated seemed to overfit the training data very quickly. Once the model started to overfit, while the training accuracy would improve, it would begin to predict all of the test examples as either all positive or all negative. We prevented this by early stopping training at 20 epochs, which seemed to produce the maximum accuracy and recall.
+Figure 2 shows the training metrics for model 1.0.0.45 trained on dataset 9 for binary classification. The validation performance seems tied to the training performance through epoch 15 after which both it and the recall drop to the baseline as the model learns to predict everything as negative.
 
-### Input Data Scaling
-We had attempted to scale and center the input data when creating the datasets but the size of the data made this impossible. As a result our first models, including 1.0.0.29 took raw pixel data, between 0 and 255 as input. Models 1.0.0.4x were the same architecture as 1.0.0.29 but with the data centered online by subtracting the pre-calculated mean. This improved the training results but the validation results became much more volatile and seemingly unrelated to the training results. 
+<img src="1.0.0.45b.9.1_results.png" alt="Binary Accuracy and Recall of Model 1.0.0.45 on Dataset 9" align="center"><br>
+<i>Figure 2 - Binary Accuracy and Recall for Model 1.0.0.45 on Dataset 9</i>
 
-To investigate this we removed the online data centering and scaling and retrained the model. We were surprised to see the validation performance become more stable so we then retrained the model on the same dataset with the following permutations:
+Figure three shows the training metrics for model 1.0.0.35 trained on dataset 9 for binary classification. The validation accuracy tracks the training accuracy much more closely than did 1.0.0.45 although the recall is more volatile.
 
-1. Raw input data
-2. Input data centered by subtracting 127.0
-3. Input data scaled by dividing by 255.0, but not centered
-4. Input data centered by subtracting mean and scaled by dividing by 255.0
+<img src="1.0.0.45b.9.1_results.png" alt="Binary Accuracy and Recall of Model 1.0.0.35 on Dataset 9" align="center"><br>
+<i>Figure 3 - Binary Accuracy and Recall for Model 1.0.0.35 on Dataset 9</i>
 
-While normalizing the input data made the models train faster and improved training accuracy, it seemed to have a negative impact on the validation and test datasets. Further investigation indicated that scaling the data improved performance while centering it caused the model to perform poorly on the validation and test datasets. 
+### Effect of Input Data Scaling
+We had attempted to scale and center the input data when creating the datasets but the size of the dataset made this impossible. As a result our first models, including 1.0.0.29 took raw pixel data, between 0 and 255 as input. Models 1.0.0.4x were the same architecture as 1.0.0.29 but with the data centered online by subtracting the pre-calculated mean. This improved the training results but the validation results became much more volatile and seemingly unrelated to the training results. 
 
-We do not understand how or why centering the input data caused this behavior, but we suspect it may have effected the training data differently than the test and validation data, possibly due to how the graph was constructed in TensorFlow.  
+To investigate this we removed the online data centering and scaling and retrained the model. We were surprised to see the validation performance become more stable so we then tested various permutations of centering and scaling the input data in our graph. 
+
+We found that while normalizing the input data made the models train faster and improved training accuracy, it seemed to have a negative impact on the validation and test datasets. The optimal combination was scaling the data to between 0 and 1 while not centering it.  
+
+We do not understand how or why centering the input data caused this behavior, but we suspect it may have effected the training data differently than the test and validation data, possibly due to how the graph was constructed in TensorFlow. Another possibility is that centering and scaling the input data caused the models to learn faster and overfit the training data faster.  
 
 ### Decision Thresholds
 These results were obtained using a probability threshold of 0.50. Recall or precision could be drastically increased, at the cost of the other metric, by adjusting the threshold. We used a pr curve to evaluate the effect of altering the threshold, and altering the threshold from 0.05 to 0.95 allowed us to achieve either precision or recall of close to 1.0. 
@@ -174,15 +176,15 @@ These results were obtained using a probability threshold of 0.50. Recall or pre
 This could prove very useful to radiologists, allowing them to screen out scans which have high probabilities of being either normal or abnormal and focus on more ambiguous scans. 
 
 ## Conclusion
-While we have been able to achieve high accuracy on both classifying to normal/abnormal as well as classifying the type and pathology of abnormalities, training dataset 6 and 8 were constructed in an artificial fashion which may not generalize to raw scans. Dataset 9 did not use any zooms on the ROIs, so models trained on this dataset should be more applicable to classifying raw images.  
+While we have been able to achieve higher than expected accuracy on both classifying to normal/abnormal as well as classifying the type and pathology of abnormalities, training dataset 6 and 8 were constructed in an artificial fashion which may not generalize to raw scans. Dataset 9 was constructed specifically to avoid this problem, and while the results for models trained on this dataset were not as good as for models trained on dataset 8, they were still better than we had expected.  
 
-In addition, we found that the validation results of the models tended to be rather volatile. This may be due to the relatively small size of the test and validation datasets compared to the training data, or it may be that the networks are not learning features relevant to the test datasets. The fact that the validation accuracy often did not seem tied to the training accuracy concerns us as to the ability of the models to generalize.
+The relative volatility of the validation accuracy and recall also are a cause for concern as to whether the models are learning features that will generalize to other datasets, if such datasets were available. However, models trained on Dataset 9 performed relatively well on the MIAS data, which is a very good indication that the models are learning useful features and can generalize.  
+ 
+Despite these problems with our results, we feel that, as a proof of concept, we have demonstrated the Convolutional Neural Networks can be trained to recognize abnormalities in mammograms, with recall over 90%, substantially above human performance. 
 
-Despite these problems with our results, we feel that we have demonstrated the Convolutional Neural Networks can be trained to recognize abnormalities in mammograms, with recall over 90%, substantially above human performance. 
+The life and death nature of breast cancer makes putting a system like this into practice difficult. However the fact that adjusting the thresholds makes it possible to achieve either very high precision or very high recall offers the possibility of using such systems to aid radiologists rather than replacing them. Outputting probabilities rather than predictions would provide radiologists with additional information to aid them in reading scans. 
 
-At very low and very high thresholds, most of our models were able to achieve either very high recall or very precision. We feel that in order to put a system like this into actual practice, it would be more useful to output the probability of a scan being abnormal than to output the classification. This would allow the system to provide radiologists with additional information to use when reviewing scans rather than replacing them entirely.       
-
-Future work would include creating a system which could take an entire, unaltered scan as input and determine if it contains abnormalities and if so, where. This could be accomplished using methods such as YOLO, a sliding window, or an attention model. Unfortunately future work is constrained by the lack of available training data.
+To this end, future work would include creating a system which takes an entire scan as input and analyses it for abnormalities. Algorithms such as a sliding window, YOLO or attention models could also indicate what areas of the scans should be looked at closely. Unfortunately, the lack of available training data seems to be the bottleneck for developing these ideas further.
 
 ## Supplementary Files
 
