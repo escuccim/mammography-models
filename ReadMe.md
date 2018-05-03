@@ -84,7 +84,7 @@ Our first thought was to train existing ConvNets, such as VGG or Inception, on o
 
 We started with a simple model based on VGG, consisting of stacked 3x3 convolutional layers alternating with max pools followed by three fully connected layers. Our model had fewer convolutional layers with less filters than VGG, and smaller fully connected layers. We also added batch normalization [15] after every layer. This architecture was then evaluated and adjusted iteratively, with each iteration making one and only one change and then being evaluated. We also evaluated techniques including Inception-style branches [16, 17, 18] and residual connections [19]. 
 
-We used a weighted cross-entropy loss function in order to maximize recall and compensate for the unbalanced nature of the dataset. Positive examples were weighted from 1 to 3 times more than negative examples.
+To compensate for the unbalanced nature of the dataset we used a weighted cross-entropy function, weighting positive examples higher than negative ones. The weight was a hyperparameter for which we tested values ranging from 1 to 4.
 
 The best performing architecture will be detailed below.
 
@@ -158,9 +158,9 @@ Figure 2 shows the training metrics for model 1.0.0.45 trained on dataset 9 for 
 Figure 3 shows the training metrics for model 1.0.0.35 trained on dataset 9 for binary classification. The validation accuracy tracks the training accuracy much more closely than did 1.0.0.45 although the recall remains volatile.
 
 <img src="1.0.0.35b.9_results.png" alt="Binary Accuracy and Recall of Model 1.0.0.35 on Dataset 9" align="center"><br>
-<i>Figure 3 - Binary Accuracy and Recall for Model 1.0.0.35 on Dataset 9</i>
+<i>Figure 3 - Binary Accuracy and Recall for Model 1.0.0.35 on Dataset 9</i> 
 
-We feel that model 1.0.0.35 offers the best combination of accuracy and recall, while performing well on the MIAS dataset. Table 2 shows the accuracy and recall of selected models on MIAS dataset 9, which should track the ability of the models to generalize to unrelated, unaugmented scans.
+I feel that model 1.0.0.35 offers the best combination of accuracy and recall, while performing well on the MIAS dataset. Table 2 shows the accuracy and recall of selected models on MIAS dataset 9, which should track the ability of the models to generalize to unrelated, unaugmented scans.
 
 |Model          |Training Dataset   |MIAS Accuracy    |MIAS Recall      |
 |---------------|-------------------|-----------------|-----------------|
@@ -171,6 +171,8 @@ We feel that model 1.0.0.35 offers the best combination of accuracy and recall, 
 
 <div style="text-align:center;"><i>Table 2: Performance on MIAS Dataset</i></div><br>
 
+### Effect of Cross Entropy Weight
+As mentioned above, a weighted cross entropy was used to improve recall and counter the unbalanced nature of our dataset. Increasing the weight improved recall at the expense of precision. Without the weighted cross entropy our models tended to end up with a precision of 1 and a recall of 0, predicting everything in the validation set as negative. 
 
 ### Effect of Input Data Scaling
 We had attempted to scale and center the input data when creating the datasets but the size of the dataset made this impossible. As a result our first models, including 1.0.0.29 took raw pixel data, between 0 and 255 as input. Models 1.0.0.4x were the same architecture as 1.0.0.29 but with the data centered online by subtracting the pre-calculated mean. This improved the training results but the validation results became much more volatile and seemingly unrelated to the training results. 
@@ -191,6 +193,8 @@ While we have been able to achieve higher than expected accuracy on both classif
 
 The relative volatility of the validation accuracy and recall also are a cause for concern as to whether the models are learning features that will generalize to other datasets, if such datasets were available. However, models trained on Dataset 9 performed relatively well on the MIAS data, which is a very good indication that the models are learning useful features and can generalize.  
  
+Our other big concern was that the models seemed unstable, in that training the same model on the same dataset would not always produce the same results. 
+
 Despite these problems with our results, we feel that, as a proof of concept, we have demonstrated the Convolutional Neural Networks can be trained to recognize abnormalities in mammograms, with recall over 90%, substantially above human performance. 
 
 The life and death nature of breast cancer makes putting a system like this into practice difficult. However the fact that adjusting the thresholds makes it possible to achieve either very high precision or very high recall offers the possibility of using such systems to aid radiologists rather than replacing them. Outputting probabilities rather than predictions would provide radiologists with additional information to aid them in reading scans. 

@@ -140,6 +140,7 @@ with graph.as_default():
         image, label = read_and_decode_single_example(train_files, label_type=how, normalize=False, distort=distort)
 
         X_def, y_def = tf.train.shuffle_batch([image, label], batch_size=batch_size, capacity=2000,
+                                              seed=None,
                                               min_after_dequeue=1000)
 
         # Placeholders
