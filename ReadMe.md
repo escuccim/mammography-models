@@ -19,7 +19,7 @@ Data from the University of California Irvine Machine Learning Repository [5] wa
 ## Methods
 
 ### Data Preprocessing and Augmentation
-In order to create a training dataset of adequate size images from the CBIS-DDSM dataset were combined with images from the DDSM dataset. As the raw images are not of a standard size we extracted 299x299 tiles from each raw scan. For the CBIS-DDSM images the provided masks were used to extract the Region of Interest (ROI). For the DDSM images we created tiles out of each image and used them as long as they met certain basic criteria.
+In order to create a training dataset of adequate size images from the CBIS-DDSM dataset were combined with images from the DDSM dataset. As the raw images are not of a standard size we extracted 299x299 tiles from each raw scan. For the CBIS-DDSM images the provided masks were used to extract the Region of Interest (ROI). For the DDSM images tiles were created from each image and used as long as they met certain basic criteria.
 
 Data augmentation was used to increase the size of the datasets, with multiple datasets created with different techniques used to extract the ROI and different amounts of data augmentation.
 
@@ -62,10 +62,10 @@ For dataset 9, each DDSM image was cut into 598x598 tiles with the size unchange
 To avoid the inclusion of images which contained overlay text, white borders or artifacts, or were mostly background, each tile was then added to the dataset only if it met upper and lower thresholds on mean and variance. The thresholds were determined through random sampling of tiles and tuning of the thresholds to eliminate images which did not contain usable data. 
 
 ### MIAS Images
-We also created extra test datasets from the MIAS images. As these images are from a completely different distribution than the DDSM images, we felt they would provide a good assessment of how well the models would generalize. The MIAS images were a uniform size of 1024x1024. The images were increased in size by 2.58 so that their height was the same as half the mean height of the DDSM images. The ROIs were then extract using the same methods used for the CBIS-DDSM images except the ROIs were extracted directly at 299x299 to avoid losing information by resizing the images up and down.
+Supplementary test datasets were also created from the MIAS images. As these images are from a completely different distribution than the DDSM images, we felt they would provide a good assessment of how well the models would generalize. The MIAS images were a uniform size of 1024x1024. The images were increased in size by 2.58 so that their height was the same as half the mean height of the DDSM images. The ROIs were then extract using the same methods used for the CBIS-DDSM images except the ROIs were extracted directly at 299x299 to avoid losing information by resizing the images up and down.
 
 #### Data Balance
-In reality, only about 10% of mammograms are abnormal, in order to maximize recall we weighted our training data more heavily towards abnormal scan, with a target of 85% normal. The datasets ended up being 83% normal and 17% abnormal. As each ROI was extracted to multiple images, in order to prevent different images of the same ROI appearing in both the training and test data, the existing divisions of the CBIS-DDSM data were maintained. The test data was divided evenly between test and validation data with no shuffling to avoid overlap.
+In reality, only about 10% of mammograms are abnormal, in order to maximize recall our datasets were weighted more heavily towards abnormal scans, with a final distribution of 83% normal and 17% abnormal. As each ROI was extracted to multiple images, in order to prevent different images of the same ROI appearing in both the training and test data, the existing divisions of the CBIS-DDSM data were maintained. The test data was divided evenly between test and validation data with no shuffling to avoid overlap.
 
 The normal images had no overlap, so were shuffled and divided among the training, test and validation data. The final divisions were 80% training, 10% test and 10% validation. We would have liked to have larger test and validation datasets, but we found it easier to use the existing train/test divisions in the CBIS-DDSM data.
 
@@ -84,14 +84,16 @@ Our first thought was to train existing ConvNets, such as VGG or Inception, on o
 
 We started with a simple model based on VGG, consisting of stacked 3x3 convolutional layers alternating with max pools followed by three fully connected layers. Our model had fewer convolutional layers with less filters than VGG, and smaller fully connected layers. We also added batch normalization [15] after every layer. This architecture was then evaluated and adjusted iteratively, with each iteration making one and only one change and then being evaluated. We also evaluated techniques including Inception-style branches [16, 17, 18] and residual connections [19]. 
 
-To compensate for the unbalanced nature of the dataset we used a weighted cross-entropy function, weighting positive examples higher than negative ones. The weight was a hyperparameter for which we tested values ranging from 1 to 4.
+To compensate for the unbalanced nature of the dataset a weighted cross-entropy function was used, weighting positive examples higher than negative ones. The weight was a hyperparameter for which we tested values ranging from 1 to 4.
 
 The best performing architecture will be detailed below.
 
 ### Training
 At first, initial evaluation of models was done using Dataset 5 due to its relatively small size. Each model was trained through between 30 and 50 epochs and accuracy, accuracy, precision, recall and f1 score were used to evaluate performance. 
 
-Due to the fact that Dataset 5 was created without proper separation of the training and test datasets, it is likely that variations of the same images were including in both the training and validation datasets, making the validation dataset essentially useless. Once we realized this we stopped using Dataset 5 and started evaluating with Dataset 8.
+Due to the fact that Dataset 5 was created without proper separation of the training and test datasets, it is likely that variations of the same images were including in both the training and validation datasets, making the validation dataset essentially useless. Once we realized this we stopped using Dataset 5 and started evaluating with Datasets 8 and 9.
+
+As Dataset 9 best represented our goals for this work, for the final phases we trained and evaluated models exclusively on this dataset.
 
 ### Transfer Learning
 We had considered using transfer learning from VGG or Inception, but felt that the features of the ImageNet data were different enough from those of radiological scans that it made more sense to learn the features from scratch on this dataset. To evaluate the usefulness of transfer learning from pre-trained networks, VGG-19 and Inception v3, the features were extracted from our datasets using pre-trained versions of these models. The final layers of the networks were then retrained to classify to our classes while the convolutional weights were frozen. Our hypothesis that the features extracted by these networks would not be applicable to classifying medical scans seemed to be confirmed by the results of this experiment, which were significantly below the accuracy of the most-frequent baseline.
@@ -126,24 +128,31 @@ Finally we attempted to train a customized version of Inception v4 on our datase
 ### Performance
 Different models performed differently on different datasets with different classification methods. Unsurprisingly, all models on all datasets performed better at binary classification than on multi-class classification. The complete results for all of our models evaluated are in the Excel spreadsheet "model notes.xlsx." 
 
-Table 1 below shows the accuracy and recall on the test dataset for selected models. The most-frequent baseline accuracy for the datasets was .83.
+Table 1 below shows the accuracy and recall on the test dataset for selected models trained for binary classification. The most-frequent baseline accuracy for the datasets was .83. We should note that, with the exception of 1.0.0.29, the models that achieve perfect recall have accuracies which indicate they are predicting everything as positive, and the models that have very low recall are predicting everything as negative.
 
 |Model          |Classification |Dataset    |Epochs |Accuracy    |Recall      |Initialization |
 |---------------|---------------|-----------|-------|------------|------------|---------------|
-|1.0.0.29n      |    Multi-class|          6|40     |.9142       |.9353       |Scratch        |    
 |1.0.0.46b      |         Binary|          6|20     |.1810       |1.0         |Scratch        |
-|1.0.0.29n      |    Multi-class|          8|35     |.8890       |.9092       |Scratch        |
 |1.0.0.29n      |         Binary|          8|30     |.9930       |1.0         |Scratch        |
 |1.0.0.35b      |         Binary|          8|20     |.9678       |.8732       |Scratch        |
 |1.0.0.46b      |         Binary|          8|10     |.9896       |.9776       |1.0.0.46l.6    |
 |1.0.0.35b      |         Binary|          9|20     |.9346       |.8998       |Scratch        |
 |1.0.0.46b      |         Binary|          9|30     |.8370       |.0392       |Scratch        |
-|VGG-16.03.04l.6|    Multi-class|          6|20     |.8333       |.0288       |Scratch        |
 |VGG-16.03.04b.8|         Binary|          8|10     |.8747       |.2951       |VGG-16.03.04l6 |
 |VGG-16.03.04b.9|         Binary|          9|30     |.8881       |.3589       |Scratch        |
 |inception_v4.05b.9|      Binary|          9|20     |.1828       |1.0         |Scratch        |
 <small>\* only fully connected layers re-trained</small>              
-<div style="text-align:center;"><i>Table 1: Performance on Test Set</i></div><br>
+<div style="text-align:center;"><i>Table 1: Binary Performance on Test Set</i></div><br>
+
+Table 2 below shows the accuracy and recall of the test dataset for selected training runs for multi-class classification. We again see that, with the exception of 1.0.0.29n, all of the models tend to predict everything as either positive or negative, resulting in a recall close to 1 or close to 0 and accuracy close to the baseline.
+
+|Model          |Classification |Dataset    |Epochs |Accuracy    |Recall      |Initialization |
+|---------------|---------------|-----------|-------|------------|------------|---------------|
+|1.0.0.29n      |    Multi-class|          6|40     |.9142       |.9353       |Scratch        |  
+|1.0.0.46l.8    |    Multi-class|          8|20     |.1139       |1.0         |Scratch        |
+|1.0.0.46l.6    |    Multi-class|          6|20     |.8187       |0           |Scratch        |
+|VGG-16.03.04l.6|    Multi-class|          6|20     |.8333       |.0288       |Scratch        | 
+<div style="text-align:center;"><i>Table 2: Multi-class Performance on Test Set</i></div><br>
 
 <p>Figure 1 shows the training metrics for model 1.0.0.29 trained on dataset 8 for binary classification.
 
@@ -160,7 +169,7 @@ Figure 3 shows the training metrics for model 1.0.0.35 trained on dataset 9 for 
 <img src="1.0.0.35b.9_results.png" alt="Binary Accuracy and Recall of Model 1.0.0.35 on Dataset 9" align="center"><br>
 <i>Figure 3 - Binary Accuracy and Recall for Model 1.0.0.35 on Dataset 9</i> 
 
-I feel that model 1.0.0.35 offers the best combination of accuracy and recall, while performing well on the MIAS dataset. Table 2 shows the accuracy and recall of selected models on MIAS dataset 9, which should track the ability of the models to generalize to unrelated, unaugmented scans.
+I feel that model 1.0.0.35 offers the best combination of accuracy and recall, while performing well on the MIAS dataset. Table 3 below shows the accuracy and recall of selected models on MIAS dataset 9, which should track the ability of the models to generalize to unrelated, unaugmented scans.
 
 |Model          |Training Dataset   |MIAS Accuracy    |MIAS Recall      |
 |---------------|-------------------|-----------------|-----------------|
@@ -169,7 +178,7 @@ I feel that model 1.0.0.35 offers the best combination of accuracy and recall, w
 |1.0.0.28.2b.9  |9                  |.9165            |.5342            |
 |1.0.0.46b.8.4  |8                  |.2746            |.9811            |
 
-<div style="text-align:center;"><i>Table 2: Performance on MIAS Dataset</i></div><br>
+<div style="text-align:center;"><i>Table 3: Performance on MIAS Dataset</i></div><br>
 
 ### Effect of Cross Entropy Weight
 As mentioned above, a weighted cross entropy was used to improve recall and counter the unbalanced nature of our dataset. Increasing the weight improved recall at the expense of precision. Without the weighted cross entropy our models tended to end up with a precision of 1 and a recall of 0, predicting everything in the validation set as negative. 
