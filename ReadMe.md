@@ -202,7 +202,7 @@ While we have been able to achieve higher than expected accuracy on both classif
 
 The relative volatility of the validation accuracy and recall also are a cause for concern as to whether the models are learning features that will generalize to other datasets, if such datasets were available. However, models trained on Dataset 9 performed relatively well on the MIAS data, which is a very good indication that the models are learning useful features and can generalize.  
  
-Our other big concern was that the models seemed unstable, in that training the same model on the same dataset would not always produce the same results. 
+Our other big concern was that the models seemed unstable, in that training the same model on the same dataset would not always produce the same results. We found the increasing the cross entropy weighting tended to stabilize this to a degree.
 
 Despite these problems with our results, we feel that, as a proof of concept, we have demonstrated the Convolutional Neural Networks can be trained to recognize abnormalities in mammograms, with recall over 90%, substantially above human performance. 
 
