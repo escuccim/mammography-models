@@ -95,6 +95,10 @@ Due to the fact that Dataset 5 was created without proper separation of the trai
 
 As Dataset 9 best represented our goals for this work, for the final phases we trained and evaluated models exclusively on this dataset.
 
+### Online Data Augmentation
+
+We had built in optional online data augmentation to our graphs, but enabling it slowed down training significantly as it ran on the CPU rather than the GPU and thus became a bottleneck. We found code online [22] which enabled the GPU to handle the data augmentation and eliminated the bottleneck. Enabling this applied random horizontal and vertical flips to the images, which improved performance and allowed the models to be trained for longer by reducing overfitting. As enabling this did slow down the training speed typically we only used it for the last few epochs of training.  
+
 ### Transfer Learning
 We had considered using transfer learning from VGG or Inception, but felt that the features of the ImageNet data were different enough from those of radiological scans that it made more sense to learn the features from scratch on this dataset. To evaluate the usefulness of transfer learning from pre-trained networks, VGG-19 and Inception v3, the features were extracted from our datasets using pre-trained versions of these models. The final layers of the networks were then retrained to classify to our classes while the convolutional weights were frozen. Our hypothesis that the features extracted by these networks would not be applicable to classifying medical scans seemed to be confirmed by the results of this experiment, which were significantly below the accuracy of the most-frequent baseline.
 
@@ -169,11 +173,11 @@ Figure 3 shows the training metrics for model 1.0.0.35 trained on dataset 9 for 
 <img src="1.0.0.35b.9_results.png" alt="Binary Accuracy and Recall of Model 1.0.0.35 on Dataset 9" align="center"><br>
 <i>Figure 3 - Binary Accuracy and Recall for Model 1.0.0.35 on Dataset 9</i> 
 
-I feel that model 1.0.0.35 offers the best combination of accuracy and recall, while performing well on the MIAS dataset. Table 3 below shows the accuracy and recall of selected models on MIAS dataset 9, which should track the ability of the models to generalize to unrelated, unaugmented scans.
+While model 1.0.0.29 achieved the best results, we were unable to replicate this performance when retraining the model on the same dataset. We feel that model 1.0.0.35 was the best performing model in achieving a combination of accurracy and recall that we were able to duplicate. Model 1.0.0.35 also achieved good performance on the MIAS datasets, which indicates that the model can generalize to unrelated scans. Table 3 below shows the accuracy and recall of selected models on MIAS dataset 9, which should track the ability of the models to generalize to unrelated, unaugmented scans.
 
 |Model          |Training Dataset   |MIAS Accuracy    |MIAS Recall      |
 |---------------|-------------------|-----------------|-----------------|
-|1.0.0.35b.9    |9                  |.6974            |.9557            |
+|1.0.0.35b.96   |9                  |.7156            |.8905            |
 |vgg_16.3.04b.9 |9                  |.9314            |.6517            |
 |1.0.0.28.2b.9  |9                  |.9165            |.5342            |
 |1.0.0.46b.8.4  |8                  |.2746            |.9811            |
@@ -181,7 +185,9 @@ I feel that model 1.0.0.35 offers the best combination of accuracy and recall, w
 <div style="text-align:center;"><i>Table 3: Performance on MIAS Dataset</i></div><br>
 
 ### Effect of Cross Entropy Weight
-As mentioned above, a weighted cross entropy was used to improve recall and counter the unbalanced nature of our dataset. Increasing the weight improved recall at the expense of precision. Without the weighted cross entropy our models tended to end up with a precision of 1 and a recall of 0, predicting everything in the validation set as negative. 
+As mentioned above, a weighted cross entropy was used to improve recall and counter the unbalanced nature of our dataset. Increasing the weight improved recall at the expense of precision. Without the weighted cross entropy our models tended to end up with a precision of 1 and a recall of 0, predicting everything in the validation set as negative.
+
+The weighted cross entropy also helped with the issue of overfitting the training data. With our unbalanced dataset it was easier to minimize the unweighted cross entropy by predicting everything as normal than to learn to identify the abnormal examples. By weighting abnormal examples higher the model was forced to learn to recognize them.    
 
 ### Effect of Input Data Scaling
 We had attempted to scale and center the input data when creating the datasets but the size of the dataset made this impossible. As a result our first models, including 1.0.0.29 took raw pixel data, between 0 and 255 as input. Models 1.0.0.4x were the same architecture as 1.0.0.29 but with the data centered online by subtracting the pre-calculated mean. This improved the training results but the validation results became much more volatile and seemingly unrelated to the training results. 
@@ -192,17 +198,21 @@ We found that while normalizing the input data made the models train faster and 
 
 We do not understand how or why centering the input data caused this behavior, but we suspect it may have effected the training data differently than the test and validation data, possibly due to how the graph was constructed in TensorFlow. Another possibility is that centering and scaling the input data caused the models to learn faster and thus learn to overfit the training data faster.  
 
+### Effect of Contrast Enhancement
+We found that increasing the contrast of the scans could make subtle features more prominent and allowed the contrast to be adjusted via a command line parameter to the scripts. We evaluated several combinations of settings for adjusting the contrast and found that the best results were achieved by using a contrast setting of 1.1 for training and 1.5 to 1.8 at test time. We found that increasing the contrast at test time could improve the recall by up to 10%, but at the cost of lowering the precision.   
+
 ### Decision Thresholds
 These results were obtained using a probability threshold of 0.50. Recall or precision could be drastically increased, at the cost of the other metric, by adjusting the threshold. We used a pr curve to evaluate the effect of altering the threshold, and altering the threshold from 0.05 to 0.95 allowed us to achieve either precision or recall of close to 1.0. 
 
 This could prove very useful to radiologists, allowing them to screen out scans which have high probabilities of being either normal or abnormal and focus on more ambiguous scans. 
+
 
 ## Conclusion
 While we have been able to achieve higher than expected accuracy on both classifying to normal/abnormal as well as classifying the type and pathology of abnormalities, training dataset 6 and 8 were constructed in an artificial fashion which may not generalize to raw scans. Dataset 9 was constructed specifically to avoid this problem, and while the results for models trained on this dataset were not as good as for models trained on dataset 8, they were still better than we had expected.  
 
 The relative volatility of the validation accuracy and recall also are a cause for concern as to whether the models are learning features that will generalize to other datasets, if such datasets were available. However, models trained on Dataset 9 performed relatively well on the MIAS data, which is a very good indication that the models are learning useful features and can generalize.  
  
-Our other big concern was that the models seemed unstable, in that training the same model on the same dataset would not always produce the same results. We found the increasing the cross entropy weighting tended to stabilize this to a degree.
+Our other big concern was that the models seemed unstable, in that training the same model on the same dataset would not always produce the same results. We found the increasing the cross entropy weighting tended to stabilize this to a degree, as did using online data augmentation.
 
 Despite these problems with our results, we feel that, as a proof of concept, we have demonstrated the Convolutional Neural Networks can be trained to recognize abnormalities in mammograms, with recall over 90%, substantially above human performance. 
 
@@ -304,3 +314,5 @@ The following pre-trained models are available for download. Each zip file conta
 [20]  J. Redmon, S. Divvala, R. Girshick, A. Farhadi, You Only Look One: Unified, Real-Time Object Detection, arXiv:1506.02640, 2015
 
 [21] R. Girshick, J. Donahue, T. Darrell, J. Malik, Rich feature hierarchies for accurate object detection and semantic segmentation, arXiv:1311.2524, 2013
+
+[22] S. Arkhangelskiy, Data Augmentation on GPU in TensorFlow, https://becominghuman.ai/data-augmentation-on-gpu-in-tensorflow-13d14ecf2b19 

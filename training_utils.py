@@ -572,15 +572,11 @@ def _scale_input_data(X, contrast=None, mu=104.1353, scale=255.0):
 def augment(images, labels,
             horizontal_flip=False,
             vertical_flip=False,
-            #rotate=0,  # Maximum 90 degrees rotations
             mixup=0):  # Mixup coeffecient, see https://arxiv.org/abs/1710.09412.pdf
 
     # My experiments showed that casting on GPU improves training performance
     if images.dtype != tf.float32:
         images = tf.image.convert_image_dtype(images, dtype=tf.float32)
-        images = tf.subtract(images, 0.5)
-        images = tf.multiply(images, 2.0)
-    #labels = tf.to_float(labels)
 
     with tf.name_scope('augmentation'):
         shp = tf.shape(images)
