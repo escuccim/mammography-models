@@ -567,7 +567,8 @@ def _scale_input_data(X, contrast=None, mu=104.1353, scale=255.0):
 
     return X_adj
 
-
+# Function to do the data augmentation on the GPU instead of the CPU, doing it on the CPU significantly slowed down training
+# Taken from https://becominghuman.ai/data-augmentation-on-gpu-in-tensorflow-13d14ecf2b19
 def augment(images, labels,
             horizontal_flip=False,
             vertical_flip=False,
@@ -579,7 +580,7 @@ def augment(images, labels,
         images = tf.image.convert_image_dtype(images, dtype=tf.float32)
         images = tf.subtract(images, 0.5)
         images = tf.multiply(images, 2.0)
-    labels = tf.to_float(labels)
+    #labels = tf.to_float(labels)
 
     with tf.name_scope('augmentation'):
         shp = tf.shape(images)
