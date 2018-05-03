@@ -141,8 +141,7 @@ Table 1 below shows the accuracy and recall on the test dataset for selected mod
 |VGG-16.03.04l.6|    Multi-class|          6|20     |.8333       |.0288       |Scratch        |
 |VGG-16.03.04b.8|         Binary|          8|10     |.8747       |.2951       |VGG-16.03.04l6 |
 |VGG-16.03.04b.9|         Binary|          9|30     |.8881       |.3589       |Scratch        |
-|inc_v4.05b.9   |         Binary|          9|20     |.1828       |1.0         |Scratch        |
-
+|inception_v4.05b.9|      Binary|          9|20     |.1828       |1.0         |Scratch        |
 <small>\* only fully connected layers re-trained</small>              
 <div style="text-align:center;"><i>Table 1: Performance on Test Set</i></div><br>
 
@@ -156,7 +155,7 @@ Figure 2 shows the training metrics for model 1.0.0.45 trained on dataset 9 for 
 <img src="1.0.0.45b.9.1_results.png" alt="Binary Accuracy and Recall of Model 1.0.0.45 on Dataset 9" align="center"><br>
 <i>Figure 2 - Binary Accuracy and Recall for Model 1.0.0.45 on Dataset 9</i>
 
-Figure three shows the training metrics for model 1.0.0.35 trained on dataset 9 for binary classification. The validation accuracy tracks the training accuracy much more closely than did 1.0.0.45 although the recall is more volatile.
+Figure 3 shows the training metrics for model 1.0.0.35 trained on dataset 9 for binary classification. The validation accuracy tracks the training accuracy much more closely than did 1.0.0.45 although the recall remains volatile.
 
 <img src="1.0.0.35b.9_results.png" alt="Binary Accuracy and Recall of Model 1.0.0.35 on Dataset 9" align="center"><br>
 <i>Figure 3 - Binary Accuracy and Recall for Model 1.0.0.35 on Dataset 9</i>
@@ -165,9 +164,10 @@ We feel that model 1.0.0.35 offers the best combination of accuracy and recall, 
 
 |Model          |Training Dataset   |MIAS Accuracy    |MIAS Recall      |
 |---------------|-------------------|-----------------|-----------------|
+|1.0.0.35b.9    |9                  |.6974            |.9557            |
 |vgg_16.3.04b.9 |9                  |.9314            |.6517            |
 |1.0.0.28.2b.9  |9                  |.9165            |.5342            |
-|1.0.0.35b.9    |9                  |.6974            |.9557            |
+|1.0.0.46b.8.4  |8                  |.2746            |.9811            |
 
 <div style="text-align:center;"><i>Table 2: Performance on MIAS Dataset</i></div><br>
 
@@ -239,11 +239,15 @@ If there is something missing from this repository, it may be in located in one 
 - Decompressing-For-LJPEG-image - code used to convert the DDSM images from LJPEG to usable images
 - model_notes.xlsx - notes kept during training of models, only includes results relevant to this overview
 
+### Training Logs
+The TensorBoard training logs are also provided for selected models in the /logs/ directory. The logs include scalar metrics taken every 50 steps, image summaries of the kernels taken every epoch, and pr curves used to evaluate the effect of the decision threshold.
+
 ### Models
 The following pre-trained models are available for download. Each zip file contains the checkpoint for the model:
 
 - model_s1.0.0.29l.8.2 - trained on dataset 8 for binary classification - https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/model_s1.0.0.29l.8.2.zip
-- model_s1.0.0.29l.14 - trained on dataset 6 for multi-class classification - http://foo.com
+- model_s1.0.0.35b.9 - trained on dataset 9 for binary classification - https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/model_s1.0.0.35b.9.zip
+
 
 ## References
 [1]	D. Levy, A. Jain, Breast Mass Classification from Mammograms using Deep Convolutional Neural Networks, arXiv:1612.00542v1, 2016

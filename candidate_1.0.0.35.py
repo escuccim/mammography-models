@@ -158,7 +158,7 @@ with graph.as_default():
             strides=(2, 2),  # Stride: 2
             padding='SAME',  # "same" padding
             activation=None,  # None
-            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=100),
+            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=None),
             kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
             name='conv1'
         )
@@ -189,7 +189,7 @@ with graph.as_default():
             strides=(1, 1),  # Stride: 2
             padding='SAME',  # "same" padding
             activation=None,  # None
-            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=101),
+            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=None),
             kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
             name='conv1.1'
         )
@@ -221,7 +221,7 @@ with graph.as_default():
             strides=(1, 1),  # Stride: 2
             padding='SAME',  # "same" padding
             activation=None,  # None
-            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=1101),
+            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=None),
             kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
             name='conv1.2'
         )
