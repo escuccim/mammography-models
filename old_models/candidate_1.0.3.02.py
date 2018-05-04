@@ -1302,7 +1302,7 @@ with tf.Session(graph=graph, config=config) as sess:
     sess.run(tf.local_variables_initializer())
 
     ## evaluate on MIAS  dataset 9 which is the closest to raw images we have
-    X_te, y_te = load_validation_data(how=how, data="mias", which=dataset)
+    X_te, y_te = load_validation_data(how=how, data="mias", which=9)
 
     mias_test_accuracy = []
     mias_test_recall = []

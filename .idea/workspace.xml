@@ -6,8 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="98c4e5b0-4f90-4540-b87f-9bd6d2ddc583" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/1.0.0.35b.9_results.png" afterPath="$PROJECT_DIR$/1.0.0.35b.9_results.png" />
-      <change beforePath="$PROJECT_DIR$/ReadMe.md" afterPath="$PROJECT_DIR$/ReadMe.md" />
+      <change beforePath="$PROJECT_DIR$/candidate_1.0.4.01.py" afterPath="$PROJECT_DIR$/old_models/candidate_1.0.4.01.py" />
+      <change beforePath="$PROJECT_DIR$/model_1.0.0.35.py" afterPath="$PROJECT_DIR$/model_1.0.0.35.py" />
+      <change beforePath="$PROJECT_DIR$/old_models/candidate_1.0.3.02.py" afterPath="$PROJECT_DIR$/old_models/candidate_1.0.3.02.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -33,7 +34,7 @@
       <file leaf-file-name="candidate_1.0.0.35.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/candidate_1.0.0.35.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="7282">
+            <state relative-caret-position="10846">
               <caret line="746" column="0" lean-forward="false" selection-start-line="746" selection-start-column="0" selection-end-line="746" selection-end-column="0" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
@@ -42,21 +43,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="candidate_1.0.0.46.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/candidate_1.0.0.46.py">
+      <file leaf-file-name="candidate_1.0.5.01.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/candidate_1.0.5.01.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="inception_v4.05.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/inception_v4.05.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="396">
-              <caret line="12" column="34" lean-forward="true" selection-start-line="12" selection-start-column="34" selection-end-line="12" selection-end-column="34" />
+            <state relative-caret-position="1584">
+              <caret line="331" column="21" lean-forward="false" selection-start-line="331" selection-start-column="21" selection-end-line="331" selection-end-column="21" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -64,34 +55,12 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="vgg_16.3.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/vgg_16.3.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1221">
-              <caret line="107" column="69" lean-forward="false" selection-start-line="107" selection-start-column="69" selection-end-line="107" selection-end-column="69" />
-              <folding>
-                <element signature="e#0#18#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="candidate_1.0.4.01.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/candidate_1.0.4.01.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="561">
-              <caret line="853" column="0" lean-forward="true" selection-start-line="853" selection-start-column="0" selection-end-line="853" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ReadMe.md" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/ReadMe.md">
+      <file leaf-file-name="Report.md" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Report.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="1287">
-                <caret line="214" column="32" lean-forward="true" selection-start-line="214" selection-start-column="32" selection-end-line="214" selection-end-column="32" />
+              <first_editor relative-caret-position="792">
+                <caret line="159" column="71" lean-forward="false" selection-start-line="159" selection-start-column="71" selection-end-line="159" selection-end-column="71" />
                 <folding />
               </first_editor>
               <second_editor />
@@ -102,9 +71,11 @@
       <file leaf-file-name="vgg_16.2.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/vgg_16.2.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-3960">
-              <caret line="100" column="61" lean-forward="false" selection-start-line="100" selection-start-column="61" selection-end-line="100" selection-end-column="61" />
-              <folding />
+            <state relative-caret-position="858">
+              <caret line="134" column="153" lean-forward="true" selection-start-line="134" selection-start-column="4" selection-end-line="134" selection-end-column="153" />
+              <folding>
+                <element signature="e#0#18#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -140,6 +111,7 @@
       <find>[0:2]</find>
       <find>concat</find>
       <find>overfit</find>
+      <find>png</find>
       <find>width</find>
     </findStrings>
     <dirStrings>
@@ -152,8 +124,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/model_1.0.0.24.py" />
-        <option value="$PROJECT_DIR$/model_1.0.0.30.py" />
         <option value="$PROJECT_DIR$/model_1.0.1.32.py" />
         <option value="$PROJECT_DIR$/model_1.0.1.39n.py" />
         <option value="$PROJECT_DIR$/model_1.0.2.02.py" />
@@ -203,6 +173,8 @@
         <option value="$PROJECT_DIR$/vgg_16.2.py" />
         <option value="$PROJECT_DIR$/candidate_1.0.4.01.py" />
         <option value="$PROJECT_DIR$/ReadMe.md" />
+        <option value="$PROJECT_DIR$/Report.md" />
+        <option value="$PROJECT_DIR$/candidate_1.0.5.01.py" />
       </list>
     </option>
   </component>
@@ -327,24 +299,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/old_models/candidate_1.0.0.28-bu.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="31676">
-          <caret line="995" column="0" lean-forward="true" selection-start-line="995" selection-start-column="0" selection-end-line="995" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/candidate_1.0.0.28.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="693">
-          <caret line="72" column="30" lean-forward="false" selection-start-line="72" selection-start-column="30" selection-end-line="72" selection-end-column="30" />
-          <folding>
-            <element signature="e#0#18#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/old_models/candidate_1.2.0.01.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="924">
@@ -613,14 +567,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/model_1.0.0.35.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/candidate_1.1.0.01.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1238">
@@ -666,16 +612,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/inception_v4.05.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="396">
-          <caret line="12" column="34" lean-forward="true" selection-start-line="12" selection-start-column="34" selection-end-line="12" selection-end-column="34" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/candidate_1.0.0.28-bu2.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-18612">
@@ -692,10 +628,50 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/candidate_1.0.0.46.py">
+    <entry file="file://$PROJECT_DIR$/training_utils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="419">
+          <caret line="101" column="47" lean-forward="false" selection-start-line="101" selection-start-column="16" selection-end-line="101" selection-end-column="47" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/model_1.0.0.35.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ReadMe.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="439">
+            <caret line="255" column="3" lean-forward="true" selection-start-line="255" selection-start-column="3" selection-end-line="255" selection-end-column="49" />
+            <folding />
+          </first_editor>
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Report.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="792">
+            <caret line="159" column="71" lean-forward="false" selection-start-line="159" selection-start-column="71" selection-end-line="159" selection-end-column="71" />
+            <folding />
+          </first_editor>
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/old_models/candidate_1.0.4.01.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="18975">
+          <caret line="853" column="0" lean-forward="true" selection-start-line="853" selection-start-column="0" selection-end-line="853" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -710,35 +686,27 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/vgg_16.2.py">
+    <entry file="file://$PROJECT_DIR$/inception_v4.05.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-3960">
-          <caret line="100" column="61" lean-forward="false" selection-start-line="100" selection-start-column="61" selection-end-line="100" selection-end-column="61" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/candidate_1.0.4.01.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="561">
-          <caret line="853" column="0" lean-forward="true" selection-start-line="853" selection-start-column="0" selection-end-line="853" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/training_utils.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="419">
-          <caret line="101" column="47" lean-forward="false" selection-start-line="101" selection-start-column="16" selection-end-line="101" selection-end-column="47" />
+        <state relative-caret-position="396">
+          <caret line="12" column="34" lean-forward="true" selection-start-line="12" selection-start-column="34" selection-end-line="12" selection-end-column="34" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/candidate_1.0.0.46.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/candidate_1.0.0.35.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="7282">
+        <state relative-caret-position="10846">
           <caret line="746" column="0" lean-forward="false" selection-start-line="746" selection-start-column="0" selection-end-line="746" selection-end-column="0" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
@@ -746,14 +714,23 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ReadMe.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="1287">
-            <caret line="214" column="32" lean-forward="true" selection-start-line="214" selection-start-column="32" selection-end-line="214" selection-end-column="32" />
-            <folding />
-          </first_editor>
-          <second_editor />
+    <entry file="file://$PROJECT_DIR$/vgg_16.2.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="858">
+          <caret line="134" column="153" lean-forward="true" selection-start-line="134" selection-start-column="4" selection-end-line="134" selection-end-column="153" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/candidate_1.0.5.01.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1584">
+          <caret line="331" column="21" lean-forward="false" selection-start-line="331" selection-start-column="21" selection-end-line="331" selection-end-column="21" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
