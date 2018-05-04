@@ -4,7 +4,7 @@ import wget
 from sklearn.model_selection import train_test_split
 import tensorflow as tf
 from training_utils import download_file, get_batches, read_and_decode_single_example, load_validation_data, \
-    download_data, evaluate_model, get_training_data, load_weights, flatten, _scale_input_data
+    download_data, evaluate_model, get_training_data, load_weights, flatten, _scale_input_data, augment
 import argparse
 from tensorboard import summary as summary_lib
 
@@ -17,7 +17,7 @@ parser.add_argument("-r", "--restore", help="model to restore and continue train
 parser.add_argument("-l", "--label", help="how to classify data", default="normal")
 parser.add_argument("-a", "--action", help="action to perform", default="train")
 parser.add_argument("-f", "--freeze", help="whether to freeze convolutional layers", nargs='?', const=True, default=False)
-parser.add_argument("-t", "--threshold", help="decision threshold", default=0.4, type=float)
+parser.add_argument("-t", "--threshold", help="decision threshold", default=0.5, type=float)
 parser.add_argument("-c", "--contrast", help="contrast adjustment, if any", default=0.0, type=float)
 parser.add_argument("-w", "--weight", help="weight to give to positive examples in cross-entropy", default=2, type=int)
 parser.add_argument("-v", "--version", help="version or run number to assign to model name", default="")
@@ -77,8 +77,8 @@ lamF = 0.00200
 # use dropout
 dropout = True
 fcdropout_rate = 0.5
-convdropout_rate = 0.01
-pooldropout_rate = 0.2
+convdropout_rate = 0.001
+pooldropout_rate = 0.1
 
 if how == "label":
     num_classes = 5
@@ -94,9 +94,8 @@ print("Number of classes:", num_classes)
 ## Build the graph
 graph = tf.Graph()
 
-# whether to retrain model from scratch or use saved model
-init = True
-model_name = "model_s1.0.4.02"  + model_label + "." + str(dataset) + str(version)
+
+model_name = "model_s1.0.4.03"  + model_label + "." + str(dataset) + str(version)
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -128,6 +127,7 @@ model_name = "model_s1.0.4.02"  + model_label + "." + str(dataset) + str(version
 # 1.0.3.06 - not centering input, just scaling it
 # 1.0.4.01 - removing branch from layer 2, just leaving first branch
 # 1.0.4.02 - changed number of filters in conv layers
+# 1.0.4.03 - added data augmentation, updated training code
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -143,17 +143,22 @@ with graph.as_default():
                                                staircase=staircase)
 
     with tf.name_scope('inputs') as scope:
-        image, label = read_and_decode_single_example(train_files, label_type=how, normalize=False, distort=distort)
+        image, label = read_and_decode_single_example(train_files, label_type=how, normalize=False, distort=False)
 
         X_def, y_def = tf.train.shuffle_batch([image, label], batch_size=batch_size, capacity=2000,
+                                              seed=None,
                                               min_after_dequeue=1000)
 
         # Placeholders
         X = tf.placeholder_with_default(X_def, shape=[None, 299, 299, 1])
         y = tf.placeholder_with_default(y_def, shape=[None])
 
-        # increase the contrast and cast to float
+        #X = tf.cast(X, dtype=tf.float32)
         X_adj = _scale_input_data(X, contrast=contrast, mu=0, scale=255.0)
+
+        # data augmentation
+        if distort:
+            X_adj, y = augment(X_adj, y, horizontal_flip=True, vertical_flip=True, mixup=0)
 
     # Convolutional layer 1
     with tf.name_scope('conv1') as scope:
@@ -844,8 +849,8 @@ with graph.as_default():
 
     # else if we have binary, use the threshold
     else:
-        #predictions = tf.cast(tf.greater(abnormal_probability, threshold), tf.int32)
-        predictions = tf.argmax(probabilities, axis=1, output_type=tf.int64)
+        predictions = tf.cast(tf.greater(abnormal_probability, threshold), tf.int32)
+        # predictions = tf.argmax(probabilities, axis=1, output_type=tf.int64)
 
     # get the accuracy
     accuracy, acc_op = tf.metrics.accuracy(

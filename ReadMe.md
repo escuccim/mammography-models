@@ -183,7 +183,7 @@ We feel that model 1.0.0.35 was the best performing model in achieving a combina
 
 |Model          |Training Dataset   |MIAS Accuracy    |MIAS Recall      |
 |---------------|-------------------|-----------------|-----------------|
-|1.0.0.35b.98   |9                  |.7585            |.8921            |
+|1.0.0.35b.98   |9                  |.8883            |.8081            |
 |vgg_16.3.04b.9 |9                  |.9314            |.6517            |
 |1.0.0.28.2b.9  |9                  |.9165            |.5342            |
 |1.0.0.46b.8.4  |8                  |.2746            |.9811            |
