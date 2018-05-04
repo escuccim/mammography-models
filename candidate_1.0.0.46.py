@@ -4,7 +4,7 @@ import wget
 from sklearn.model_selection import train_test_split
 import tensorflow as tf
 from training_utils import download_file, get_batches, read_and_decode_single_example, load_validation_data, \
-    download_data, evaluate_model, get_training_data, load_weights, flatten, _scale_input_data
+    download_data, evaluate_model, get_training_data, load_weights, flatten, _scale_input_data, augment
 import argparse
 from tensorboard import summary as summary_lib
 
@@ -12,7 +12,8 @@ from tensorboard import summary as summary_lib
 parser = argparse.ArgumentParser()
 parser.add_argument("-e", "--epochs", help="number of epochs to train", default=30, type=int)
 parser.add_argument("-d", "--data", help="which dataset to use", default=9, type=int)
-parser.add_argument("-m", "--model", help="model to initialize with", default=None)
+parser.add_argument("-m", "--model", help="model to initialize weights with", default=None)
+parser.add_argument("-r", "--restore", help="model to restore and continue training", default=None)
 parser.add_argument("-l", "--label", help="how to classify data", default="normal")
 parser.add_argument("-a", "--action", help="action to perform", default="train")
 parser.add_argument("-f", "--freeze", help="whether to freeze convolutional layers", nargs='?', const=True, default=False)
@@ -26,6 +27,7 @@ args = parser.parse_args()
 epochs = args.epochs
 dataset = args.data
 init_model = args.model
+restore_model = args.restore
 how = args.label
 action = args.action
 threshold = args.threshold
@@ -147,17 +149,22 @@ with graph.as_default():
                                                staircase=staircase)
 
     with tf.name_scope('inputs') as scope:
-        image, label = read_and_decode_single_example(train_files, label_type=how, normalize=False, distort=distort)
+        image, label = read_and_decode_single_example(train_files, label_type=how, normalize=False, distort=False)
 
         X_def, y_def = tf.train.shuffle_batch([image, label], batch_size=batch_size, capacity=2000,
+                                              seed=None,
                                               min_after_dequeue=1000)
 
         # Placeholders
         X = tf.placeholder_with_default(X_def, shape=[None, 299, 299, 1])
         y = tf.placeholder_with_default(y_def, shape=[None])
 
-        # increase the contrast and cast to float
-        X_adj = _scale_input_data(X, contrast=contrast, mu=mu)
+        #X = tf.cast(X, dtype=tf.float32)
+        X_adj = _scale_input_data(X, contrast=contrast, mu=mu, scale=255.0)
+
+        # data augmentation
+        if distort:
+            X_adj, y = augment(X_adj, y, horizontal_flip=True, vertical_flip=True, mixup=0)
 
     # Convolutional layer 1
     with tf.name_scope('conv1') as scope:
@@ -638,7 +645,7 @@ with graph.as_default():
     if num_classes != 2:
         predictions = tf.argmax(probabilities, axis=1, output_type=tf.int64)
 
-    # else if we have binary, use the threshold
+    # else if we have binary, use the thresholds
     else:
         #predictions = tf.cast(tf.greater(abnormal_probability, threshold), tf.int32)
 		predictions = tf.argmax(probabilities, axis=1, output_type=tf.int64)
@@ -694,6 +701,11 @@ with graph.as_default():
 ## CONFIGURE OPTIONS
 if init_model is not None:
     if os.path.exists(os.path.join("model", init_model + '.ckpt.index')):
+        init = False
+    else:
+        init = True
+elif restore_model is not None:
+    if os.path.exists(os.path.join("model", restore_model + '.ckpt.index')):
         init = False
     else:
         init = True
@@ -785,6 +797,9 @@ with tf.Session(graph=graph, config=config) as sess:
 
             # reset init model so we don't do this again
             init_model = None
+        elif restore_model is not None:
+            saver.restore(sess, './model/' + restore_model + '.ckpt')
+            print("Restoring model", restore_model)
         # otherwise load this model
         else:
             saver.restore(sess, './model/' + model_name + '.ckpt')

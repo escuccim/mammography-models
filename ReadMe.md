@@ -30,6 +30,8 @@ Multiple datasets were created using different techniques and amounts of data au
 2. Dataset 8 consisted of 40,559 images. This dataset used the extraction method 1 described below to provide greater context for each ROI. This dataset was created for the purpose of classifying the ROIs by their type and pathology.
 3. Dataset 9 consisted of 43,739 images. The previous datasets had used zoomed images of the ROIs, which was problematic as it required the ROI to be pre-identified and isolated. This dataset was created using extraction method 2 described below.
 
+As Dataset 9 was the only dataset that did not resize the ROIs based on their size, once it was created we focused on training with this dataset. 
+
 ### ROI Extraction Methods for CBIS-DDSM Images
 The CBIS-DDSM scans were of relatively large size, with a mean height of 5295 pixels and a mean width of 3131 pixels. Masks highlighting the ROIs were provided. The masks were used to extract the ROI by creating a square around the white areas of the mask. 
 
@@ -62,7 +64,9 @@ For dataset 9, each DDSM image was cut into 598x598 tiles with the size unchange
 To avoid the inclusion of images which contained overlay text, white borders or artifacts, or were mostly background, each tile was then added to the dataset only if it met upper and lower thresholds on mean and variance. The thresholds were determined through random sampling of tiles and tuning of the thresholds to eliminate images which did not contain usable data. 
 
 ### MIAS Images
-Supplementary test datasets were also created from the MIAS images. As these images are from a completely different distribution than the DDSM images, we felt they would provide a good assessment of how well the models would generalize. The MIAS images were a uniform size of 1024x1024. The images were increased in size by 2.58 so that their height was the same as half the mean height of the DDSM images. The ROIs were then extract using the same methods used for the CBIS-DDSM images except the ROIs were extracted directly at 299x299 to avoid losing information by resizing the images up and down.
+Supplementary test datasets were also created from the MIAS images. As these images are from a completely different distribution than the DDSM images, we felt they would provide a good assessment of how well the models would generalize. The MIAS images were a uniform size of 1024x1024. The images were increased in size by 2.58 so that their height was the same as half the mean height of the DDSM images. The ROIs were then extract using the same methods used for the CBIS-DDSM images except the ROIs were extracted directly at 299x299 to avoid losing information by resizing the images up and down. 
+
+
 
 #### Data Balance
 In reality, only about 10% of mammograms are abnormal, in order to maximize recall our datasets were weighted more heavily towards abnormal scans, with a final distribution of 83% normal and 17% abnormal. As each ROI was extracted to multiple images, in order to prevent different images of the same ROI appearing in both the training and test data, the existing divisions of the CBIS-DDSM data were maintained. The test data was divided evenly between test and validation data with no shuffling to avoid overlap.
@@ -136,15 +140,15 @@ Table 1 below shows the accuracy and recall on the test dataset for selected mod
 
 |Model          |Classification |Dataset    |Epochs |Accuracy    |Recall      |Initialization |
 |---------------|---------------|-----------|-------|------------|------------|---------------|
-|1.0.0.46b      |         Binary|          6|20     |.1810       |1.0         |Scratch        |
+|1.0.0.35b.98   |         Binary|          9|35     |.9642       |.8745       |Scratch        |
+|1.0.0.46b      |         Binary|          9|30     |.8370       |.0392       |Scratch        |
 |1.0.0.29n      |         Binary|          8|30     |.9930       |1.0         |Scratch        |
 |1.0.0.35b      |         Binary|          8|20     |.9678       |.8732       |Scratch        |
 |1.0.0.46b      |         Binary|          8|10     |.9896       |.9776       |1.0.0.46l.6    |
-|1.0.0.35b      |         Binary|          9|20     |.9346       |.8998       |Scratch        |
-|1.0.0.46b      |         Binary|          9|30     |.8370       |.0392       |Scratch        |
-|VGG-16.03.04b.8|         Binary|          8|10     |.8747       |.2951       |VGG-16.03.04l6 |
+|1.0.0.46b      |         Binary|          6|20     |.1810       |1.0         |Scratch        |
 |VGG-16.03.04b.9|         Binary|          9|30     |.8881       |.3589       |Scratch        |
 |inception_v4.05b.9|      Binary|          9|20     |.1828       |1.0         |Scratch        |
+|VGG-16.03.04b.8|         Binary|          8|10     |.8747       |.2951       |VGG-16.03.04l6 |
 <small>\* only fully connected layers re-trained</small>              
 <div style="text-align:center;"><i>Table 1: Binary Performance on Test Set</i></div><br>
 
@@ -173,11 +177,13 @@ Figure 3 shows the training metrics for model 1.0.0.35 trained on dataset 9 for 
 <img src="1.0.0.35b.9_results.png" alt="Binary Accuracy and Recall of Model 1.0.0.35 on Dataset 9" align="center"><br>
 <i>Figure 3 - Binary Accuracy and Recall for Model 1.0.0.35 on Dataset 9</i> 
 
-While model 1.0.0.29 achieved the best results, we were unable to replicate this performance when retraining the model on the same dataset. We feel that model 1.0.0.35 was the best performing model in achieving a combination of accurracy and recall that we were able to duplicate. Model 1.0.0.35 also achieved good performance on the MIAS datasets, which indicates that the model can generalize to unrelated scans. Table 3 below shows the accuracy and recall of selected models on MIAS dataset 9, which should track the ability of the models to generalize to unrelated, unaugmented scans.
+While model 1.0.0.29 achieved the best results, we were unable to replicate this performance when retraining the model on the same dataset. This model also did not generalize well to the MIAS data. 
+
+We feel that model 1.0.0.35 was the best performing model in achieving a combination of accurracy and recall that we were able to duplicate. Model 1.0.0.35 also achieved good performance on the MIAS datasets, which indicates that the model can generalize to unrelated scans. Table 3 below shows the accuracy and recall of selected models on MIAS dataset 9, which should track the ability of the models to generalize to unrelated, unaugmented scans.
 
 |Model          |Training Dataset   |MIAS Accuracy    |MIAS Recall      |
 |---------------|-------------------|-----------------|-----------------|
-|1.0.0.35b.96   |9                  |.7156            |.8905            |
+|1.0.0.35b.98   |9                  |.7585            |.8921            |
 |vgg_16.3.04b.9 |9                  |.9314            |.6517            |
 |1.0.0.28.2b.9  |9                  |.9165            |.5342            |
 |1.0.0.46b.8.4  |8                  |.2746            |.9811            |
@@ -269,7 +275,7 @@ The TensorBoard training logs are also provided for selected models in the /logs
 The following pre-trained models are available for download. Each zip file contains the checkpoint for the model:
 
 - model_s1.0.0.29l.8.2 - trained on dataset 8 for binary classification - https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/model_s1.0.0.29l.8.2.zip
-- model_s1.0.0.35b.9 - trained on dataset 9 for binary classification - https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/model_s1.0.0.35b.9.zip
+- model_s1.0.0.35b.96 - trained on dataset 9 for binary classification - https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/model_s1.0.0.35b.96.bu30.zip
 
 
 ## References
