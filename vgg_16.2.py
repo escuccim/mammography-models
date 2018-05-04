@@ -4,7 +4,7 @@ import wget
 from sklearn.model_selection import train_test_split
 import tensorflow as tf
 from training_utils import download_file, get_batches, read_and_decode_single_example, load_validation_data, \
-    download_data, evaluate_model, get_training_data, load_weights, flatten, _conv2d_batch_norm
+    download_data, evaluate_model, get_training_data, load_weights, flatten, _conv2d_batch_norm, _scale_input_data, augment
 import argparse
 from tensorboard import summary as summary_lib
 
@@ -12,18 +12,38 @@ from tensorboard import summary as summary_lib
 parser = argparse.ArgumentParser()
 parser.add_argument("-e", "--epochs", help="number of epochs to train", default=30, type=int)
 parser.add_argument("-d", "--data", help="which dataset to use", default=9, type=int)
-parser.add_argument("-m", "--model", help="model to initialize with", default=None)
+parser.add_argument("-m", "--model", help="model to initialize weights with", default=None)
+parser.add_argument("-r", "--restore", help="model to restore and continue training", default=None)
 parser.add_argument("-l", "--label", help="how to classify data", default="normal")
 parser.add_argument("-a", "--action", help="action to perform", default="train")
-parser.add_argument("-t", "--threshold", help="decision threshold", default=0.4, type=float)
+parser.add_argument("-f", "--freeze", help="whether to freeze convolutional layers", nargs='?', const=True, default=False)
+parser.add_argument("-t", "--threshold", help="decision threshold", default=0.5, type=float)
+parser.add_argument("-c", "--contrast", help="contrast adjustment, if any", default=0.0, type=float)
+parser.add_argument("-w", "--weight", help="weight to give to positive examples in cross-entropy", default=2, type=int)
+parser.add_argument("-v", "--version", help="version or run number to assign to model name", default="")
+parser.add_argument("--distort", help="use online data augmentation", default=False, const=True, nargs="?")
 args = parser.parse_args()
 
 epochs = args.epochs
 dataset = args.data
 init_model = args.model
+restore_model = args.restore
 how = args.label
 action = args.action
 threshold = args.threshold
+freeze = args.freeze
+contrast = args.contrast
+weight = args.weight - 1
+distort = args.distort
+version = args.version
+
+# figure out how to label the model name
+if how == "label":
+    model_label = "l"
+elif how == "normal":
+    model_label = "b"
+else:
+    model_label = "x"
 
 # precalculated pixel mean of images
 mu = 104.1353
@@ -73,13 +93,12 @@ print("Number of classes:", num_classes)
 ## Build the graph
 graph = tf.Graph()
 
-# whether to retrain model from scratch or use saved model
-init = True
-model_name = "vgg_16.2.04b.6"
+model_name = "vgg_16.2.06" + model_label + "." + str(dataset) + str(version)
 # vgg_19.01 - attempting to recreate vgg 19 architecture
 # vgg_16.02 - went to vgg 16 architecture, reducing units in fc layers
 # vgg_16.2.01 - changing first conv layers to stride 2 to get dimensions down to reasonable size
 # vgg_16.2.02 - using normal x-entropy instead of weighted
+# vgg_16.2.06 - updated training code, added online data aug,
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -95,20 +114,22 @@ with graph.as_default():
                                                staircase=staircase)
 
     with tf.name_scope('inputs') as scope:
-        image, label = read_and_decode_single_example(train_files, label_type=how, normalize=False)
+        image, label = read_and_decode_single_example(train_files, label_type=how, normalize=False, distort=False)
 
         X_def, y_def = tf.train.shuffle_batch([image, label], batch_size=batch_size, capacity=2000,
+                                              seed=None,
                                               min_after_dequeue=1000)
 
         # Placeholders
         X = tf.placeholder_with_default(X_def, shape=[None, 299, 299, 1])
         y = tf.placeholder_with_default(y_def, shape=[None])
 
-        X = tf.cast(X, dtype=tf.float32)
+        #X = tf.cast(X, dtype=tf.float32)
+        X_adj = _scale_input_data(X, contrast=contrast, mu=mu, scale=255.0)
 
-        # center the pixel data
-        mu = tf.constant(mu, name="pixel_mean", dtype=tf.float32)
-        X = tf.subtract(X, mu, name="centered_input")
+        # data augmentation
+        if distort:
+            X_adj, y = augment(X_adj, y, horizontal_flip=True, vertical_flip=True, mixup=0)
 
     # Convolutional layer 1
     conv1 = _conv2d_batch_norm(X, 64, kernel_size=(3,3), stride=(2,2), training=training, epsilon=1e-8, padding="SAME", seed=100, lambd=lamC, name="1.1")
@@ -294,20 +315,33 @@ with graph.as_default():
     with tf.variable_scope('visualization'):
         tf.summary.image('conv_1.1/filters', kernel_transposed, max_outputs=32, collections=["kernels"])
 
+    ## Loss function options
+    # Regular mean cross entropy
+    #mean_ce = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits))
+
+    # Different weighting method
+    # This will weight the positive examples higher so as to improve recall
+    weights = tf.multiply(weight, tf.cast(tf.greater(y, 0), tf.int32)) + 1
+    mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=logits, weights=weights))
+
+    # Add in l2 loss
+    loss = mean_ce + tf.losses.get_regularization_loss()
+
+    # Adam optimizer
+    optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate)
+
+    # Minimize cross-entropy - freeze certain layers depending on input
+    if freeze:
+        train_op = optimizer.minimize(loss, global_step=global_step, var_list=fc_vars)
+    else:
+        train_op = optimizer.minimize(loss, global_step=global_step)
+
     # get the probabilites for the classes
     probabilities = tf.nn.softmax(logits, name="probabilities")
+    abnormal_probability = 1 - probabilities[:,0]
 
-    # the probability that the scan is abnormal is 1 - probability it is normal
-    abnormal_probability = (1 - probabilities[:, 0])
-
-    if num_classes > 2:
-        # the scan is abnormal if the probability is greater than the threshold
-        is_abnormal = tf.cast(tf.greater(abnormal_probability, threshold), tf.int64)
-
-        # Compute predictions from the probabilities - if the scan is normal we ignore the other probabilities
-        predictions = is_abnormal * tf.argmax(probabilities[:,1:], axis=1, output_type=tf.int64)
-    else:
-        predictions = tf.cast(tf.greater(abnormal_probability, threshold), tf.int32)
+    # Compute predictions from the probabilities
+    predictions = tf.argmax(probabilities, axis=1, output_type=tf.int64)
 
     # get the accuracy
     accuracy, acc_op = tf.metrics.accuracy(
@@ -318,32 +352,12 @@ with graph.as_default():
         name="accuracy",
     )
 
-    #########################################################
-    ## Loss function options
-    # Regular mean cross entropy
-    mean_ce = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits))
-
-    #########################################################
-    ## Weight the positive examples higher
-    # This will weight the positive examples higher so as to improve recall
-    #weights = tf.multiply(1, tf.cast(tf.greater(y, 0), tf.int32)) + 1
-    #mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=logits, weights=weights))
-
-    # Add in l2 loss
-    loss = mean_ce + tf.losses.get_regularization_loss()
-
-    # Adam optimizer
-    optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate)
-
-    # Minimize cross-entropy
-    train_op = optimizer.minimize(loss, global_step=global_step)
-
     # calculate recall
     if num_classes > 2:
         # collapse the predictions down to normal or not for our pr metrics
         zero = tf.constant(0, dtype=tf.int64)
-        collapsed_predictions = tf.cast(tf.greater(predictions, zero), tf.int64)
-        collapsed_labels = tf.greater(y, zero)
+        collapsed_predictions = tf.cast(tf.greater(abnormal_probability, threshold), tf.int32)
+        collapsed_labels = tf.greater(y, 0)
 
         recall, rec_op = tf.metrics.recall(labels=collapsed_labels, predictions=collapsed_predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="recall")
         precision, prec_op = tf.metrics.precision(labels=collapsed_labels, predictions=collapsed_predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="precision")
@@ -354,7 +368,7 @@ with graph.as_default():
 
     f1_score = 2 * ((precision * recall) / (precision + recall))
     _, update_op = summary_lib.pr_curve_streaming_op(name='pr_curve',
-                                                     predictions=(1 - probabilities[:, 0]),
+                                                     predictions=abnormal_probability,
                                                      labels=y,
                                                      updates_collections=tf.GraphKeys.UPDATE_OPS,
                                                      num_thresholds=20)
@@ -381,6 +395,11 @@ with graph.as_default():
 ## CONFIGURE OPTIONS
 if init_model is not None:
     if os.path.exists(os.path.join("model", init_model + '.ckpt.index')):
+        init = False
+    else:
+        init = True
+elif restore_model is not None:
+    if os.path.exists(os.path.join("model", restore_model + '.ckpt.index')):
         init = False
     else:
         init = True
@@ -472,6 +491,9 @@ with tf.Session(graph=graph, config=config) as sess:
 
             # reset init model so we don't do this again
             init_model = None
+        elif restore_model is not None:
+            saver.restore(sess, './model/' + restore_model + '.ckpt')
+            print("Restoring model", restore_model)
         # otherwise load this model
         else:
             saver.restore(sess, './model/' + model_name + '.ckpt')
@@ -668,7 +690,7 @@ with tf.Session(graph=graph, config=config) as sess:
         test_predictions.append(yhat)
         ground_truth.append(y_batch)
 
-    print("Evaluating on test data")
+    print("Evaluating on MIAS data")
 
     # print the results
     print("Mean Test Accuracy:", np.mean(test_accuracy))
