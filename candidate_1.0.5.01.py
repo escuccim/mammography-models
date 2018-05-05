@@ -306,8 +306,16 @@ with graph.as_default():
     fc2 = _conv2d_batch_norm(fc1, 512, kernel_size=(1, 1), stride=(1, 1), training=training, epsilon=1e-8,
                              padding="SAME", seed=1014, lambd=lamC, name="fc_2")
 
-    logits = _conv2d_batch_norm(fc2, num_classes, kernel_size=(1, 1), stride=(1, 1), training=training, epsilon=1e-8,
-                             padding="SAME", seed=1015, lambd=lamC, name="fc_logits")
+    flat_output = tf.contrib.layers.flatten(fc2)
+
+    logits = tf.layers.dense(
+        flat_output,
+        num_classes,  # One output unit per category
+        activation=None,  # No activation function
+        kernel_initializer=tf.variance_scaling_initializer(scale=1, seed=121),
+        bias_initializer=tf.zeros_initializer(),
+        name="fc_logits"
+    )
 
     print("Logits:", logits.shape)
 

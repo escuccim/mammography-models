@@ -44,7 +44,7 @@
         <entry file="file://$PROJECT_DIR$/candidate_1.0.5.01.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="1005">
-              <caret line="311" column="34" lean-forward="true" selection-start-line="311" selection-start-column="34" selection-end-line="311" selection-end-column="34" />
+              <caret line="311" column="19" lean-forward="false" selection-start-line="311" selection-start-column="19" selection-end-line="311" selection-end-column="19" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -68,8 +68,8 @@
       <file leaf-file-name="vgg_16.2.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/vgg_16.2.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-429">
-              <caret line="134" column="153" lean-forward="true" selection-start-line="134" selection-start-column="4" selection-end-line="134" selection-end-column="153" />
+            <state relative-caret-position="957">
+              <caret line="305" column="5" lean-forward="true" selection-start-line="298" selection-start-column="4" selection-end-line="305" selection-end-column="5" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -713,8 +713,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/vgg_16.2.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-429">
-          <caret line="134" column="153" lean-forward="true" selection-start-line="134" selection-start-column="4" selection-end-line="134" selection-end-column="153" />
+        <state relative-caret-position="957">
+          <caret line="305" column="5" lean-forward="true" selection-start-line="298" selection-start-column="4" selection-end-line="305" selection-end-column="5" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
@@ -724,7 +724,7 @@
     <entry file="file://$PROJECT_DIR$/candidate_1.0.5.01.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1005">
-          <caret line="311" column="34" lean-forward="true" selection-start-line="311" selection-start-column="34" selection-end-line="311" selection-end-column="34" />
+          <caret line="311" column="19" lean-forward="false" selection-start-line="311" selection-start-column="19" selection-end-line="311" selection-end-column="19" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
