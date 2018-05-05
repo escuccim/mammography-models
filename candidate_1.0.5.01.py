@@ -307,7 +307,7 @@ with graph.as_default():
                              padding="VALID", seed=1014, lambd=lamC, name="fc_2")
 
     logits = tf.layers.dense(
-        flat_output,
+        fc2,
         num_classes,  # One output unit per category
         activation=None,  # No activation function
         kernel_initializer=tf.variance_scaling_initializer(scale=1, seed=121),
