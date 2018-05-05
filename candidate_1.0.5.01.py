@@ -95,7 +95,7 @@ print("Number of classes:", num_classes)
 graph = tf.Graph()
 
 
-model_name = "model_s1.0.5.01"  + model_label + "." + str(dataset) + str(version)
+model_name = "model_s1.0.5.02"  + model_label + "." + str(dataset) + str(version)
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
 # 0.0.0.7 - reduce lambda for l2 reg
@@ -129,6 +129,7 @@ model_name = "model_s1.0.5.01"  + model_label + "." + str(dataset) + str(version
 # 1.0.4.02 - changed number of filters in conv layers
 # 1.0.4.03 - added data augmentation, updated training code
 # 1.0.5.01 - removing some layers and shrinking model
+# 1.0.5.02 - turned into fcn
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
