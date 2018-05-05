@@ -161,7 +161,7 @@ with graph.as_default():
         if distort:
             X_adj, y = augment(X_adj, y, horizontal_flip=True, vertical_flip=True, mixup=0)
 
-    conv1 = _conv2d_batch_norm(X_adj, 64, kernel_size=(3, 3), stride=(2, 2), training=training, epsilon=1e-8, padding="SAME", seed=1000, lambd=lamC, name="1.0")
+    conv1 = _conv2d_batch_norm(X_adj, 64, kernel_size=(3, 3), stride=(2, 2), training=training, epsilon=1e-8, padding="VALID", seed=1000, lambd=lamC, name="1.0")
 
     ############################################################
     ## Branch 1
@@ -285,9 +285,9 @@ with graph.as_default():
     conv6 = _conv2d_batch_norm(pool5, 512, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8,
                                padding="SAME", seed=1012, lambd=lamC, name="6.1")
 
-    # Max pooling layer 6
+    # Average pool?
     with tf.name_scope('pool6') as scope:
-        pool6 = tf.layers.max_pooling2d(
+        pool6 = tf.layers.average_pooling2d(
             conv6,
             pool_size=(2, 2),  # Pool size: 2x2
             strides=(2, 2),  # Stride: 2
@@ -298,86 +298,16 @@ with graph.as_default():
         if dropout:
             pool6 = tf.layers.dropout(pool6, rate=pooldropout_rate, seed=116, training=training)
 
-    # Flatten output
-    with tf.name_scope('flatten') as scope:
-        flat_output = tf.contrib.layers.flatten(pool6)
+    #########################################################################
+    ## Replace FC layers with 1x1 convs
+    fc1 = _conv2d_batch_norm(pool6, 1024, kernel_size=(1, 1), stride=(1, 1), training=training, epsilon=1e-8,
+                               padding="SAME", seed=1013, lambd=lamC, name="fc_1")
 
-        # dropout at fc rate
-        flat_output = tf.layers.dropout(flat_output, rate=fcdropout_rate, seed=116, training=training)
+    fc2 = _conv2d_batch_norm(fc1, 512, kernel_size=(1, 1), stride=(1, 1), training=training, epsilon=1e-8,
+                             padding="SAME", seed=1014, lambd=lamC, name="fc_2")
 
-    # Fully connected layer 1
-    with tf.name_scope('fc1') as scope:
-        fc1 = tf.layers.dense(
-            flat_output,
-            1024,
-            activation=None,
-            kernel_initializer=tf.variance_scaling_initializer(scale=2, seed=117),
-            bias_initializer=tf.zeros_initializer(),
-            kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamF),
-            name="fc1"
-        )
-
-        bn_fc1 = tf.layers.batch_normalization(
-            fc1,
-            axis=-1,
-            momentum=0.9,
-            epsilon=epsilon,
-            center=True,
-            scale=True,
-            beta_initializer=tf.zeros_initializer(),
-            gamma_initializer=tf.ones_initializer(),
-            moving_mean_initializer=tf.zeros_initializer(),
-            moving_variance_initializer=tf.ones_initializer(),
-            training=training,
-            name='fc1_bn'
-        )
-
-        fc1_relu = tf.nn.relu(bn_fc1, name='fc1_relu')
-
-        # dropout
-        fc1_relu = tf.layers.dropout(fc1_relu, rate=fcdropout_rate, seed=118, training=training)
-
-    # Fully connected layer 2
-    with tf.name_scope('fc2') as scope:
-        fc2 = tf.layers.dense(
-            fc1_relu,  # input
-            512,  # 1024 hidden units
-            activation=None,  # None
-            kernel_initializer=tf.variance_scaling_initializer(scale=2, seed=119),
-            bias_initializer=tf.zeros_initializer(),
-            kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamF),
-            name="fc2"
-        )
-
-        bn_fc2 = tf.layers.batch_normalization(
-            fc2,
-            axis=-1,
-            momentum=0.9,
-            epsilon=epsilon,
-            center=True,
-            scale=True,
-            beta_initializer=tf.zeros_initializer(),
-            gamma_initializer=tf.ones_initializer(),
-            moving_mean_initializer=tf.zeros_initializer(),
-            moving_variance_initializer=tf.ones_initializer(),
-            training=training,
-            name='fc2_bn'
-        )
-
-        fc2_relu = tf.nn.relu(bn_fc2, name='fc2_relu')
-
-        # dropout
-        fc2_relu = tf.layers.dropout(fc2_relu, rate=fcdropout_rate, seed=120, training=training)
-
-    # Output layer
-    logits = tf.layers.dense(
-        fc2_relu,
-        num_classes,  # One output unit per category
-        activation=None,  # No activation function
-        kernel_initializer=tf.variance_scaling_initializer(scale=1, seed=121),
-        bias_initializer=tf.zeros_initializer(),
-        name="fc_logits"
-    )
+    logits = _conv2d_batch_norm(fc2, num_classes, kernel_size=(1, 1), stride=(1, 1), training=training, epsilon=1e-8,
+                             padding="SAME", seed=1015, lambd=lamC, name="fc_logits")
 
     # get the fully connected variables so we can only train them when retraining the network
     fc_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "fc")
