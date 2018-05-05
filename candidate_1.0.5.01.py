@@ -306,7 +306,7 @@ with graph.as_default():
     fc2 = _conv2d_batch_norm(fc1, 512, kernel_size=(1, 1), stride=(1, 1), training=training, epsilon=1e-8,
                              padding="VALID", seed=1014, lambd=lamC, name="fc_2")
 
-    logits = tf.layers.dense(
+    fc3 = tf.layers.dense(
         fc2,
         num_classes,  # One output unit per category
         activation=None,  # No activation function
@@ -314,6 +314,8 @@ with graph.as_default():
         bias_initializer=tf.zeros_initializer(),
         name="fc_logits"
     )
+
+    logits = tf.squeeze(fc3, name="fc_flat_logits")
 
     print("Logits:", logits.shape)
 
