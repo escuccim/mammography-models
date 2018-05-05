@@ -289,9 +289,9 @@ with graph.as_default():
     with tf.name_scope('pool6') as scope:
         pool6 = tf.layers.average_pooling2d(
             conv6,
-            pool_size=(5, 5),  # Pool size: 2x2
-            strides=(5, 5),  # Stride: 2
-            padding='SAME',
+            pool_size=(5, 5),
+            strides=(5, 5),
+            padding='VALID',
             name='pool6'
         )
 
