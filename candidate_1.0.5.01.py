@@ -309,6 +309,8 @@ with graph.as_default():
     logits = _conv2d_batch_norm(fc2, num_classes, kernel_size=(1, 1), stride=(1, 1), training=training, epsilon=1e-8,
                              padding="SAME", seed=1015, lambd=lamC, name="fc_logits")
 
+    print("Logits:", logits.shape)
+    
     # get the fully connected variables so we can only train them when retraining the network
     fc_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "fc")
 
