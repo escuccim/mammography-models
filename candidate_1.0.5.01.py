@@ -301,7 +301,7 @@ with graph.as_default():
     #########################################################################
     ## Replace FC layers with 1x1 convs
     fc1 = _conv2d_batch_norm(pool6, 1024, kernel_size=(3, 3), stride=(1, 1), training=training, epsilon=1e-8,
-                               padding="SAME", seed=1013, lambd=lamC, name="fc_1")
+                               padding="VALID", seed=1013, lambd=lamC, name="fc_1")
 
     fc2 = _conv2d_batch_norm(fc1, 512, kernel_size=(1, 1), stride=(1, 1), training=training, epsilon=1e-8,
                              padding="SAME", seed=1014, lambd=lamC, name="fc_2")
