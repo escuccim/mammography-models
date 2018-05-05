@@ -43,8 +43,8 @@
       <file leaf-file-name="candidate_1.0.5.01.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/candidate_1.0.5.01.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="675">
-              <caret line="319" column="34" lean-forward="false" selection-start-line="319" selection-start-column="34" selection-end-line="319" selection-end-column="34" />
+            <state relative-caret-position="576">
+              <caret line="163" column="123" lean-forward="false" selection-start-line="163" selection-start-column="123" selection-end-line="163" selection-end-column="123" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -68,7 +68,7 @@
       <file leaf-file-name="vgg_16.2.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/vgg_16.2.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="858">
+            <state relative-caret-position="-429">
               <caret line="134" column="153" lean-forward="true" selection-start-line="134" selection-start-column="4" selection-end-line="134" selection-end-column="153" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
@@ -713,7 +713,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/vgg_16.2.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="858">
+        <state relative-caret-position="-429">
           <caret line="134" column="153" lean-forward="true" selection-start-line="134" selection-start-column="4" selection-end-line="134" selection-end-column="153" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
@@ -723,8 +723,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/candidate_1.0.5.01.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="675">
-          <caret line="319" column="34" lean-forward="false" selection-start-line="319" selection-start-column="34" selection-end-line="319" selection-end-column="34" />
+        <state relative-caret-position="576">
+          <caret line="163" column="123" lean-forward="false" selection-start-line="163" selection-start-column="123" selection-end-line="163" selection-end-column="123" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>

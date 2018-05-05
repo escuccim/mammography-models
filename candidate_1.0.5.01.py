@@ -161,7 +161,7 @@ with graph.as_default():
         if distort:
             X_adj, y = augment(X_adj, y, horizontal_flip=True, vertical_flip=True, mixup=0)
 
-    conv1 = _conv2d_batch_norm(X_adj, 64, kernel_size=(3, 3), stride=(2, 2), training=training, epsilon=1e-8, padding="VALID", seed=1000, lambd=lamC, name="1.0")
+    conv1 = _conv2d_batch_norm(X_adj, 64, kernel_size=(3, 3), stride=(2, 2), training=training, epsilon=1e-8, padding="SAME", seed=1000, lambd=lamC, name="1.0")
 
     ############################################################
     ## Branch 1
@@ -289,8 +289,8 @@ with graph.as_default():
     with tf.name_scope('pool6') as scope:
         pool6 = tf.layers.average_pooling2d(
             conv6,
-            pool_size=(2, 2),  # Pool size: 2x2
-            strides=(2, 2),  # Stride: 2
+            pool_size=(5, 5),  # Pool size: 2x2
+            strides=(5, 5),  # Stride: 2
             padding='SAME',
             name='pool6'
         )
