@@ -312,12 +312,12 @@ with graph.as_default():
     # get the fully connected variables so we can only train them when retraining the network
     fc_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "fc")
 
-    with tf.variable_scope('conv1', reuse=True):
+    with tf.variable_scope('conv_1.0', reuse=True):
         conv_kernels1 = tf.get_variable('kernel')
         kernel_transposed = tf.transpose(conv_kernels1, [3, 0, 1, 2])
 
     with tf.variable_scope('visualization'):
-        tf.summary.image('conv1/filters', kernel_transposed, max_outputs=32, collections=["kernels"])
+        tf.summary.image('conv_1.0/filters', kernel_transposed, max_outputs=32, collections=["kernels"])
 
     #########################################################
     ## Loss function options
