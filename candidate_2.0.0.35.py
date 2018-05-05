@@ -17,7 +17,7 @@ parser.add_argument("-r", "--restore", help="model to restore and continue train
 parser.add_argument("-l", "--label", help="how to classify data", default="normal")
 parser.add_argument("-a", "--action", help="action to perform", default="train")
 parser.add_argument("-f", "--freeze", help="whether to freeze convolutional layers", nargs='?', const=True, default=False)
-parser.add_argument("-t", "--threshold", help="decision threshold", default=0.4, type=float)
+parser.add_argument("-t", "--threshold", help="decision threshold", default=0.5, type=float)
 parser.add_argument("-c", "--contrast", help="contrast adjustment, if any", default=0.0, type=float)
 parser.add_argument("-w", "--weight", help="weight to give to positive examples in cross-entropy", default=2, type=int)
 parser.add_argument("-v", "--version", help="version or run number to assign to model name", default="")
@@ -512,7 +512,7 @@ with graph.as_default():
         if dropout:
             pool5 = tf.layers.dropout(pool5, rate=pooldropout_rate, seed=115, training=training)
 
-    fc1 = _conv2d_batch_norm(pool5, 2048, kernel_size=(5, 5), stride=(1, 1), training=training, epsilon=1e-8,
+    fc1 = _conv2d_batch_norm(pool5, 2048, kernel_size=(5, 5), stride=(5, 5), training=training, epsilon=1e-8,
                              padding="VALID", seed=1013, lambd=lamC, name="fc_1")
 
     fc2 = _conv2d_batch_norm(fc1, 2048, kernel_size=(1, 1), stride=(1, 1), training=training, epsilon=1e-8,
