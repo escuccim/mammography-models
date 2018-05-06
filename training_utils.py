@@ -316,7 +316,7 @@ def download_data(what=4):
 
         # download and unzip validation data
         if not os.path.exists(os.path.join("data", "cv9.5_data.npy")):
-            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/cv9_data.zip', 'cv9.5_data.zip')
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/cv9.5_data.zip', 'cv9.5_data.zip')
 
         # download validation labels
         if not os.path.exists(os.path.join("data", "cv9.5_labels.npy")):
