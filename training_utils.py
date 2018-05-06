@@ -305,7 +305,7 @@ def download_data(what=4):
                               'training9.5_0.zip')
 
         # download and unzip test data
-        if not os.path.exists(os.path.join("data", "test9.5_data.npy")):
+        if not os.path.exists(os.path.join("data", "test9.5_data.tfrecords")):
             _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/test9.5_data.zip',
                               'test9.5_data.zip')
 
