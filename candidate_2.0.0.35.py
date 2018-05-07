@@ -512,6 +512,9 @@ with graph.as_default():
         if dropout:
             pool5 = tf.layers.dropout(pool5, rate=pooldropout_rate, seed=115, training=training)
 
+    if freeze:
+        pool5 = tf.stop_gradient(pool5, name="pool5_freeze")
+
     fc1 = _conv2d_batch_norm(pool5, 2048, kernel_size=(5, 5), stride=(5, 5), training=training, epsilon=1e-8,
                              padding="VALID", seed=1013, lambd=lamC, name="fc_1")
 
@@ -555,7 +558,7 @@ with graph.as_default():
     optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate)
 
     # Minimize cross-entropy - freeze certain layers depending on input
-    if freeze:
+    if False: #freeze:
         train_op = optimizer.minimize(loss, global_step=global_step, var_list=fc_vars)
     else:
         train_op = optimizer.minimize(loss, global_step=global_step)
