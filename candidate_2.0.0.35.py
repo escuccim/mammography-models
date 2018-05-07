@@ -572,7 +572,10 @@ with graph.as_default():
     abnormal_probability = 1 - probabilities[:,0]
 
     # Compute predictions from the probabilities
-    predictions = tf.argmax(probabilities, axis=1, output_type=tf.int64)
+    if threshold == 0.5:
+        predictions = tf.argmax(probabilities, axis=1, output_type=tf.int64)
+    else:
+        predictions = tf.cast(tf.greater(abnormal_probability, threshold), tf.int32)
 
     # get the accuracy
     accuracy, acc_op = tf.metrics.accuracy(
