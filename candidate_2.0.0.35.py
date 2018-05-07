@@ -17,6 +17,7 @@ parser.add_argument("-r", "--restore", help="model to restore and continue train
 parser.add_argument("-l", "--label", help="how to classify data", default="normal")
 parser.add_argument("-a", "--action", help="action to perform", default="train")
 parser.add_argument("-f", "--freeze", help="whether to freeze convolutional layers", nargs='?', const=True, default=False)
+parser.add_argument("-s", "--stop", help="stop gradient at pool5", nargs='?', const=True, default=False)
 parser.add_argument("-t", "--threshold", help="decision threshold", default=0.5, type=float)
 parser.add_argument("-c", "--contrast", help="contrast adjustment, if any", default=0.0, type=float)
 parser.add_argument("-w", "--weight", help="weight to give to positive examples in cross-entropy", default=2, type=int)
@@ -32,6 +33,7 @@ how = args.label
 action = args.action
 threshold = args.threshold
 freeze = args.freeze
+stop = args.stop
 contrast = args.contrast
 weight = args.weight - 1
 distort = args.distort
@@ -512,7 +514,7 @@ with graph.as_default():
         if dropout:
             pool5 = tf.layers.dropout(pool5, rate=pooldropout_rate, seed=115, training=training)
 
-    if freeze:
+    if stop:
         pool5 = tf.stop_gradient(pool5, name="pool5_freeze")
 
     fc1 = _conv2d_batch_norm(pool5, 2048, kernel_size=(5, 5), stride=(5, 5), training=training, epsilon=1e-8,
@@ -558,7 +560,7 @@ with graph.as_default():
     optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate)
 
     # Minimize cross-entropy - freeze certain layers depending on input
-    if False: #freeze:
+    if freeze:
         train_op = optimizer.minimize(loss, global_step=global_step, var_list=fc_vars)
     else:
         train_op = optimizer.minimize(loss, global_step=global_step)
