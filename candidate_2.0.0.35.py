@@ -20,6 +20,7 @@ parser.add_argument("-f", "--freeze", help="whether to freeze convolutional laye
 parser.add_argument("-s", "--stop", help="stop gradient at pool5", nargs='?', const=True, default=False)
 parser.add_argument("-t", "--threshold", help="decision threshold", default=0.5, type=float)
 parser.add_argument("-c", "--contrast", help="contrast adjustment, if any", default=0.0, type=float)
+parser.add_argument("-n", "--normalize", help="apply per image normalization", nargs='?', const=True, default=False)
 parser.add_argument("-w", "--weight", help="weight to give to positive examples in cross-entropy", default=2, type=int)
 parser.add_argument("-v", "--version", help="version or run number to assign to model name", default="")
 parser.add_argument("--distort", help="use online data augmentation", default=False, const=True, nargs="?")
@@ -35,6 +36,7 @@ threshold = args.threshold
 freeze = args.freeze
 stop = args.stop
 contrast = args.contrast
+normalize = args.normalize
 weight = args.weight - 1
 distort = args.distort
 version = args.version
@@ -140,7 +142,7 @@ with graph.as_default():
                                                staircase=staircase)
 
     with tf.name_scope('inputs') as scope:
-        image, label = read_and_decode_single_example(train_files, label_type=how, normalize=False, distort=False)
+        image, label = read_and_decode_single_example(train_files, label_type=how, normalize=normalize, distort=False)
 
         X_def, y_def = tf.train.shuffle_batch([image, label], batch_size=batch_size, capacity=2000,
                                               seed=None,
