@@ -686,7 +686,7 @@ def augment(images, labels,
 
 def standardize(tensor):
     # cast to float 32
-    tensor = tf.cast(tensor, tf.float32)
+    tensor = tf.image.convert_image_dtype(tensor, dtype=tf.float32)
 
     # get mean and variance
     mean, variance = tf.nn.moments(tensor, axes=[0], name="moments")

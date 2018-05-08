@@ -152,11 +152,11 @@ with graph.as_default():
         X = tf.placeholder_with_default(X_def, shape=[None, 299, 299, 1])
         y = tf.placeholder_with_default(y_def, shape=[None])
 
-        #X = tf.cast(X, dtype=tf.float32)
-        if not normalize:
-            X_adj = _scale_input_data(X, contrast=contrast, mu=0, scale=255.0)
+        X_adj = tf.cast(X, dtype=tf.float32)
+        if normalize:
+            X_adj = standardize(X_adj)
         else:
-            X_adj = standardize(X)
+            X_adj = _scale_input_data(X_adj, contrast=contrast, mu=0, scale=255.0)
 
         # data augmentation
         if distort:
