@@ -683,3 +683,19 @@ def augment(images, labels,
             labels = lam * labels + (1 - lam) * cshift(labels)
 
     return images, labels
+
+def standardize(tensor):
+    # cast to float 32
+    tf.cast(tensor, tf.float32)
+
+    # get mean and variance
+    mean, variance = tf.nn.moments(tensor, axes=[0], name="moments")
+
+    # get adjusted sigma from variance
+    sigma = tf.sqrt(variance, name="sigma")
+    adj_sigma = tf.maximum(sigma, 0.0033)
+
+    # standardize the tensor and return it
+    standardized_tensor = tf.divide(tf.subtract(tensor, mean), adj_sigma)
+
+    return standardized_tensor

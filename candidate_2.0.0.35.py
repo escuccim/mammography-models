@@ -4,7 +4,7 @@ import wget
 from sklearn.model_selection import train_test_split
 import tensorflow as tf
 from training_utils import download_file, get_batches, read_and_decode_single_example, load_validation_data, \
-    download_data, evaluate_model, get_training_data, load_weights, flatten, _scale_input_data, augment, _conv2d_batch_norm
+    download_data, evaluate_model, get_training_data, load_weights, flatten, _scale_input_data, augment, _conv2d_batch_norm, standardize
 import argparse
 from tensorboard import summary as summary_lib
 
@@ -142,7 +142,7 @@ with graph.as_default():
                                                staircase=staircase)
 
     with tf.name_scope('inputs') as scope:
-        image, label = read_and_decode_single_example(train_files, label_type=how, normalize=normalize, distort=False)
+        image, label = read_and_decode_single_example(train_files, label_type=how, normalize=False, distort=False)
 
         X_def, y_def = tf.train.shuffle_batch([image, label], batch_size=batch_size, capacity=2000,
                                               seed=None,
@@ -153,7 +153,10 @@ with graph.as_default():
         y = tf.placeholder_with_default(y_def, shape=[None])
 
         #X = tf.cast(X, dtype=tf.float32)
-        X_adj = _scale_input_data(X, contrast=contrast, mu=0, scale=255.0)
+        if not normalize:
+            X_adj = _scale_input_data(X, contrast=contrast, mu=0, scale=255.0)
+        else:
+            X_adj = standardize(X)
 
         # data augmentation
         if distort:
@@ -923,8 +926,6 @@ with tf.Session(graph=graph, config=config) as sess:
         test_predictions.append(yhat)
         ground_truth.append(y_batch)
 
-    print("Evaluating on MIAS data")
-
     # print the results
     print("Mean Test Accuracy:", np.mean(test_accuracy))
     print("Mean Test Recall:", np.mean(test_recall))
@@ -938,6 +939,8 @@ with tf.Session(graph=graph, config=config) as sess:
     np.save(os.path.join("data", "truth_" + model_name + ".npy"), ground_truth)
 
     sess.run(tf.local_variables_initializer())
+
+    print("Evaluating on MIAS data")
 
     ## evaluate on MIAS  dataset 9 which is the closest to raw images we have
     X_te, y_te = load_validation_data(how=how, data="mias", which=9)
