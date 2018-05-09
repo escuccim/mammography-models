@@ -65,9 +65,14 @@ epsilon = 1e-8
 
 # learning rate
 epochs_per_decay = 5
-starting_rate = 0.001
 decay_factor = 0.80
 staircase = True
+
+# if we are retraining some layers start with smaller learning rate
+if not stop and not freeze:
+    starting_rate = 0.001
+else:
+    starting_rate = 0.0001
 
 # learning rate decay variables
 steps_per_epoch = int(total_records / batch_size)
@@ -142,7 +147,7 @@ with graph.as_default():
                                                staircase=staircase)
 
     with tf.name_scope('inputs') as scope:
-        image, label = read_and_decode_single_example(train_files, label_type=how, normalize=False, distort=False)
+        image, label = read_and_decode_single_example(train_files, label_type=how, normalize=normalize, distort=False)
 
         X_def, y_def = tf.train.shuffle_batch([image, label], batch_size=batch_size, capacity=2000,
                                               seed=None,
@@ -153,10 +158,7 @@ with graph.as_default():
         y = tf.placeholder_with_default(y_def, shape=[None])
 
         X_adj = tf.cast(X, dtype=tf.float32)
-        if normalize:
-            X_adj = standardize(X_adj)
-        else:
-            X_adj = _scale_input_data(X_adj, contrast=contrast, mu=0, scale=255.0)
+        X_adj = _scale_input_data(X_adj, contrast=contrast, mu=0, scale=255.0)
 
         # data augmentation
         if distort:
