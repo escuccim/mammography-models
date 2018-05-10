@@ -306,7 +306,7 @@ def download_data(what=4):
                               'test10_data.zip')
 
         # download test labels
-        if not os.path.exists(os.path.join("data", "test9.5_labels.npy")):
+        if not os.path.exists(os.path.join("data", "test10_labels.npy")):
             _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/test10_labels.npy',
                               'test10_labels.npy')
 
