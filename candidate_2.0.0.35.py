@@ -102,7 +102,7 @@ print("Number of classes:", num_classes)
 ## Build the graph
 graph = tf.Graph()
 
-model_name = "model_s2.0.0.35" + model_label + "." + str(dataset) + str(version)
+model_name = "model_s2.0.0.36" + model_label + "." + str(dataset) + str(version)
 ## Change Log
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
@@ -132,6 +132,7 @@ model_name = "model_s2.0.0.35" + model_label + "." + str(dataset) + str(version)
 # 1.0.0.34 - centering data by 127, not by mean
 # 1.0.0.35 - not centering data, just scaling it
 # 2.0.0.35 - turning into fcn
+# 2.0.0.36 - scaling and centering data?
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -158,7 +159,7 @@ with graph.as_default():
         y = tf.placeholder_with_default(y_def, shape=[None])
 
         X_adj = tf.cast(X, dtype=tf.float32)
-        X_adj = _scale_input_data(X_adj, contrast=contrast, mu=0, scale=255.0)
+        X_adj = _scale_input_data(X_adj, contrast=contrast, mu=127.0, scale=255.0)
 
         # data augmentation
         if distort:
