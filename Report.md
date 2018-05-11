@@ -2,12 +2,12 @@
 Eric Scuccimarra (skooch@gmail.com)
 
 ## Introduction
-Breast cancer is the second most common cancer in women worldwide. About 1 in 8 U.S. women (about 12.4%) will develop invasive breast cancer over the course of her lifetime. The five year survival rates for stage 0 or stage 1 breast cancers are close to 100%, but the rates go down dramatically for later stages: 93% for stage II, 72% for stage III and 22% for stage IV. Human recall for identifying lesions is estimated to be between 0.75 and 0.92 [1], which means that as many as 25% of abnormalities may go undetected. 
+Breast cancer is the second most common cancer in women worldwide. About 1 in 8 U.S. women (about 12.4%) will develop invasive breast cancer over the course of her lifetime. The five year survival rates for stage 0 or stage 1 breast cancers are close to 100%, but the rates go down dramatically for later stages: 93% for stage II, 72% for stage III and 22% for stage IV. Human recall for identifying lesions is estimated to be between 0.75 and 0.92 [1], which means that as many as 25% of abnormalities may initially go undetected. 
 
 The DDSM is a well-known dataset of normal and abnormal scans, and one of the few publicly available datasets of mammography imaging. Unfortunately, the size of the dataset is relatively small. To increase the amount of training data we extract the Regions of Interest (ROI) from each image, perform data augmentation and then train ConvNets on the augmented data. The ConvNets were trained to predict both whether a scan was normal or abnormal, and to predict whether abnormalities were calcifications or masses and benign or malignant.
 
 ## Related Work
-There exists a great deal of research into applying deep learning to medical diagnosis, but the lack of available training data is a limiting factor, and thus there is not much research into applying ConvNets to mammography. [1, 4] use ConvNets to classify pre-detected breast masses by pathology and type, but do not attempt to detect masses from scans. [2,3] detect abnormalities using combinations of region-based CNNs and random forests. 
+There exists a great deal of research into applying deep learning to medical diagnosis, but the lack of available training data is a limiting factor.  [1, 4] use ConvNets to classify pre-detected breast masses by pathology and type, but do not attempt to detect masses from scans. [2,3] detect abnormalities using combinations of region-based CNNs and random forests. 
 
 ## Datasets
 The MIAS dataset is a very small set of mammography images, consisting of 330 scans of all classes. The scans are standardized to a size of 1024x1024 pixels. The size of the dataset made this unusable for training, but it was used for exploratory data analysis and as a supplementary test data set.
@@ -18,10 +18,35 @@ The DDSM [6] is a database of 2,620 scanned film mammography studies. It contain
 
 The CBIS-DDSM [8] collection includes a subset of the DDSM data selected and curated by a trained mammographer. The CBIS-DDSM images have been pre-processed and saved as DiCom images, and thus are better quality than the DDSM images, but this dataset only contains scans with abnormalities. In order to create a dataset which can be used to predict the presence of abnormalities, the ROIs were extracted from the CBIS-DDSM dataset and combined with normal images taken from the DDSM dataset.
 
-## Methods
+## Exploratory Data Analysis
 
-### Data Preprocessing
-In order to create a training dataset of adequate size which included both normal and abnormal scans, images from the CBIS-DDSM dataset were combined with images from the DDSM dataset. While the CBIS-DDSM dataset included cropped and zoomed images of the Regions of Interest (ROIs), in order to have greater control over the data we extracted the ROIs ourselves using the masks provided with the dataset. 
+Exploratory data analysis was performed on the Wisconsin datasets from the UCI ML Repository. These datasets contained information about the characteristics of the cell nuclei from fine-needle aspirate biopsies, as well as some information about the general characteristics of the masses. 
+
+Heatmaps were used to discover which features were correlated with the outcome or pathology. Features which were highly correlated with the class were then examined to see the distributions of those features over each class.
+
+![](C:\Users\eric\Documents\Courses\Applied ML 2\capstone-project-ads-ml-c5-s2-38\uci_eda.png)
+
+​                        <i>Figure 1 - Distribution of features highly correlated to class for WPBC dataset</i> 
+
+In the Figure 1, from the Wisconsin Prognostic Breast Cancer dataset, we see that malignant masses tend to skew larger than benign masses. It is especially notable that masses with small radii and perimeters are almost always benign. 
+
+This was confirmed by analysis of the MIAS data, seen in Figure 2. While we do not see as clear a separation between benign and malignant masses as in the UCI data, we do see that malignant masses skew larger than benign ones. 
+
+The importance of the size and edges of masses indicate that the context is important to diagnosing abnormalities. This information was critical in the creation of training datasets.
+
+![](C:\Users\eric\Documents\Courses\Applied ML 2\capstone-project-ads-ml-c5-s2-38\mias_hist.png)
+
+​                                                     <i>Figure 2 - Radii vs class for MIAS dataset</i> 
+
+Finally PCA was applied to the datasets and the top two principal components were used to generate biplots which indicated that the data was easily linearly separable. As many of the features in the Wisconsin datasets were highly correlated by design it is not surprising that the data is easily distillable into primary components.
+
+![](C:\Users\eric\Documents\Courses\Applied ML 2\capstone-project-ads-ml-c5-s2-38\wdbc_biplot.png)
+
+​                                                 <i>Figure 3 - Biplot of WDBC dataset PCA vs class</i> 
+
+## Data Preprocessing
+
+In order to create a training dataset of adequate size which included both normal and abnormal scans, images from the CBIS-DDSM dataset were combined with images from the DDSM dataset. While the CBIS-DDSM dataset included cropped and zoomed images of the Regions of Interest (ROIs), in order to have greater control over the data, we extracted the ROIs ourselves using the masks provided with the dataset. 
 
 For the CBIS-DDSM images the masks were used to isolate and extract the ROI from each image. For the DDSM images we simply created tiles of each scan and included them as long as they met certain criteria.
 
@@ -36,55 +61,55 @@ Datasets 1 through 5 did not properly separate the training and test data and th
 2. Dataset 8 consisted of 40,559 images. This dataset used the extraction method 1 described below to provide greater context for each ROI. This dataset was created for the purpose of classifying the ROIs by their type and pathology.
 3. Dataset 9 consisted of 43,739 images. The previous datasets had used zoomed images of the ROIs, which was problematic as it required the ROI to be pre-identified and isolated. This dataset was created using extraction method 2 described below.
 
-As Dataset 9 was the only dataset that did not resize the images based on the size of the ROI we felt that it would best train a network which could be used to predict unaugmented scans, and thus we focused on it for our results.
+As Dataset 9 was the only dataset that did not resize the images based on the size of the ROI we felt that it introduced the least amount of artificial manipulation into the data and after it was created we focused on training with this dataset.
 
-### ROI Extraction Methods for CBIS-DDSM Images
+#### ROI Extraction Methods for CBIS-DDSM Images
 The CBIS-DDSM scans were of relatively large size, with a mean height of 5295 pixels and a mean width of 3131 pixels. Masks highlighting the ROIs were provided. The masks were used to define a square which completely enclosed the ROI. Some padding was added to the bounding box to provide context and then the ROIs were extracted at 598x598 and then resized down to 299x299 so they could be input into the ConvNet. 
 
-The ROIs had a mean size of 450 pixels and a standard deviation of 396. As Inception v4 accepts 299x299 images as input, 598x598 was used as our target size because it was double the image size and also was just large enough that the majority of the ROIs could fit into it.
+The ROIs had a mean size of 450 pixels and a standard deviation of 396. We designed our ConvNets to accept 299x299 images as input. To simplify the creation of the images, we extracted each ROI to a 598x598 tile, which was then sized down by half on each dimension to 299x299. 598x598 was just large enough that the majority of the ROIs could fit into it.
 
 To increase the size of the training data, each ROI was extracted multiple times using the methodologies described below. The size and variety of the data was also increased by randomly horizontally flipping each tile, randomly vertically flipping each tile, randomly rotating each tile, and by randomly positioning each ROI within the tile.
 
-#### ROI Extraction Method 1
-The analysis of the UCI data indicated that the edges of an abnormality were important as to determining its pathology and type, and this was confirmed by a radiologist. Levy et al [1] also report that the inclusion of context was an important contributor to the accuracy of the classification.
+##### ROI Extraction Method 1
+The analysis of the UCI data indicated that the edges of an abnormality were important as to determining its pathology and type, and this was confirmed by a radiologist. Levy et al [1] also report that the inclusion of context was an important factor for multi-class accuracy.
 
 To provide maximum context, each ROI was extracted in multiple ways:
 
 1.	The ROI was extracted at 598x598 at its original size.
 	.	The entire ROI was resized to 598x598, with padding to provide context.
-	.	f the ROI had the size of one dimension more than 1.5 times the other dimension it was extracted as two tiles centered in the center of each half of the ROI along it's largest dimension.
+	.	If the ROI had the size of one dimension more than 1.5 times the other dimension it was extracted as two tiles centered in the center of each half of the ROI along it's largest dimension.
 
-#### ROI Extraction Method 2
-The previous datasets relied on having the ROIs pre-identified and the ROI was then zoomed to fit our target size and cropped. While this provided very good, clear images of each ROI, the fact that each image was resized based on the size of the ROI made the dataset too artificial to be used to train a model which could take raw scans as input. This method was designed to counter that by not resizing the ROIs at all.
+##### ROI Extraction Method 2
+Method 1 relied on the size of the ROI to determine how to extract it, which requires having the ROI pre-identified. While this provided very clear images of each abnormality, the use of the size of the ROI to extract it introduced an element of artificiality into the data which made it not generalize well to classifying raw scans. This method was designed to eliminate that artificiality by never resizing the images, and just extracting the ROI using its center. 
 
-For this method each ROI was extracted, at it's actual size, with padding depending on it's size, and then the resulting image was randomly cropped:
+The size of the ROI was only used to determine how much padding to add to the bounding box before extraction. If the ROI was smaller than the 598x598 target we added more padding to provide greater variety when taking the random crops. If the ROI was larger than 598x598 this was not necessary.
 
 1. If the ROI was smaller than a 598x598 tile it was extracted with 20% padding on either side. 
 2. If the ROI was larger than a 598x598 tile it was extracted with 5% padding.
 3. Each ROI was then randomly cropped three times using random flipping and rotation. 
 
 #### Normal Images
-The normal scans from the DDSM dataset did not have ROIs so were processed differently. As these images had not been pre-processed they contained artifacts such as white borders, overlay text, and white patches of pixels used to cover up identifying personal information. Each image was trimmed by 7% on each side to remove the white borders.
+The normal scans from the DDSM dataset did not have ROIs so were processed differently. As these images had not been pre-processed as had the CBIS-DDSM images they contained artifacts such as white borders, overlay text, and white patches of pixels used to cover up identifying personal information. Each image was trimmed by 7% on each side to remove the white borders.
 
 To keep the normal images as similar to the CBIS-DDSM images, different pre-processing was done for each dataset created. As datasets 6 and 8 resized the images based on the ROI size, to create the DDSM images for these datasets, each image was randomly sized down by a random factor between 1.8 and 3.2, then segmented into 299x299 tiles with a variable stride between 150 and 200. Each tile was then randomly rotated and flipped.
 
-For dataset 9, each DDSM image was cut into 598x598 tiles with the size unchanged, and then the tiles were sized down to 299x299.
+For dataset 9, each DDSM image was cut into 598x598 tiles without being resized. The tiles were then each resized down to 299x299.
 
-To avoid the inclusion of images which contained the aforementioned artifacts or which consisted largely of black background, each tile was then added to the dataset only if it met upper and lower thresholds on mean and variance. These thresholds were determined by random sampling of tiles and set to exclude tiles which contained large chunks of white pixels or were mostly black.
+To avoid the inclusion of images which contained the aforementioned artifacts or which consisted largely of black background, each tile was then added to the dataset only if it met upper and lower thresholds on mean and variance. The thresholds were selected by randomly sampling tiles and adjusted until most of the useless tiles were not included.
 
 #### MIAS Images
 As the MIAS images come from a completely different distribution than the DDSM images, we felt they could provide a good assessment of how well the models would generalize. For this reason we created a supplementary test dataset consisting of the 330 MIAS images.
 
 The MIAS images were a uniform size of 1024x1024, with each scan sized to a height of 1024 and then horizontally padded with black on both sides. To get these images to the same scale as the DDSM images we increased their size by 2.58, which brought them to half the mean height of the DDSM images. The ROIs were then extract using the same methods used for the CBIS-DDSM images except the ROIs were extracted directly at 299x299 rather than being extracted at 598x598 and then sized down by half.
 
-### Data Balance
+#### Data Balance
 In reality, only about 10% of mammograms are abnormal. In order to maximize recall, we weighted our dataset more heavily towards abnormal scans, with the balance at 83% normal and 17% abnormal. 
 
 The CBIS-DDSM dataset was already divided into training and test data, at 80% training and 20% test. As each ROI was extracted to multiple images, in order to prevent different images of the same ROIs from appearing in both the training and holdout datasets we kept this division. The test dataset was divided evenly, in order, between holdout and test data, which ensures that no more than one image of one ROI would appear in both datasets. 
 
 The normal images had no overlap, so were shuffled and divided among the training, test and validation data. The final divisions were 80% training, 10% test and 10% validation. It would have been preferable to have large validation and test datasets, but we felt that it was easier to use the existing divisions and be sure that there was no overlap.
 
-### Labels
+#### Labels
 In the CBIS-DDSM dataset the scans are grouped into the following categories:
 1.	Normal
 	.	Benign Calcification
@@ -94,8 +119,8 @@ In the CBIS-DDSM dataset the scans are grouped into the following categories:
 
 Although we did experiment with classifying images directly into all five categories, as previous work [1] has already dealt with classifying pre-identified abnormalities, we focused on classifying images as normal or abnormal.
 
-### ConvNet Architecture
-Our first thought was to train existing ConvNets, such as VGG or Inception, on our datasets. These networks were designed for and trained on ImageNet data, which contains images which are completely different from medical imaging. The ImageNet dataset contains 1,000 classes of images which have a far greater amount of detail than our scans do, and we felt that the large number of parameters in these models might cause them to quickly overfit our data and not generalize well. A lack of computational resources also made training these networks on our data impractical. For these reasons we designed our own architectures specifically for this problem.
+## Creating ConvNets
+Our first thought was to train existing ConvNets, such as VGG or Inception, on our datasets. These networks were designed for and trained on ImageNet data, which contains images which are completely different from medical imaging. The ImageNet dataset contains 1,000 classes of images which have a far greater amount of detail than our scans do, and we felt that the large number of parameters in these models might cause them to quickly overfit our data and not generalize well. A lack of computational resources also made training these networks on our data impractical. For these reasons we designed our own architectures specifically for this task.
 
 We started with a simple model based on VGG, consisting of stacked 3x3 convolutional layers alternating with max pools followed by three fully connected layers. Our model had fewer convolutional layers with less filters than VGG, and smaller fully connected layers. We also added batch normalization [15] after every layer. This architecture was then evaluated and adjusted iteratively, with each iteration making one and only one change and then being evaluated. We also evaluated techniques including Inception-style branches [16, 17, 18] and residual connections [19]. 
 
@@ -106,7 +131,7 @@ The best performing architecture will be detailed below.
 ### Training
 At first, initial evaluation of models was done using Dataset 5 due to its relatively small size. Each model was trained through between 30 and 50 epochs and recall, accuracy, precision, and f1 score were used to evaluate performance. 
 
-Due to the fact that Dataset 5 was created without proper separation of the training and test datasets, it is likely that variations of the same images were including in both the training and validation datasets, making the validation dataset essentially useless. Once we realized this we stopped using Dataset 5 and started evaluating with Datasets 8 and 9.
+Due to the fact that Dataset 5 was created without proper separation of the training and test datasets, it is likely that variations of the same images were including in both the training and validation datasets, making the validation results useless. Once we realized this we stopped using Dataset 5 and started evaluating with Datasets 8 and 9.
 
 As Dataset 9 best represented our goals for this work, for the final phases we trained and evaluated models exclusively on this dataset.
 
@@ -121,17 +146,18 @@ We also evaluated transfer learning with our own models by initializing the weig
 
 ## Results
 ### Architecture
+
 We evaluated a large number of models on our datasets, including customized versions of VGG-16 and Inception v4. The 1.0.0.x family of custom models performed the best.
 
 * Model 1.0.0.29 had nine convolutional layers and three fully connected layers. The convolutional layers used the philosophy of VGG, with 3x3 convolutions stacked and alternated with max pools.
 * Model 1.0.0.35 was identical to 1.0.0.29 but with the input data scaled to be between 0 and 1.
 * Model 1.0.0.46 had the input scaled and centered to the mean.
 
-Models 1.0.0.35 and 1.0.0.45 also included optional online contrast adjustment and online data augmentation.
+Models 1.0.0.35 and 1.0.0.46 also included optional online contrast adjustment and online data augmentation.
 
 <img src="model_1.0.0.29_architecture.png" alt="Model 1.0.0.29" style="float: right;" align="right">
 
-​                                                                *Figure 1: Architecture of model 1.0.0.35*
+​                                                                *Figure 4: Architecture of model 1.0.0.35*
 
 A variety of other architectures were evaluated which included things like residual connections and Inception-style branches. However these models in general did not perform as well as the simpler models and took a significantly longer time to train. 
 
@@ -151,40 +177,40 @@ Different models performed differently on different datasets with different clas
 
 Table 1 shows the accuracy and recall on the test dataset for selected models trained for binary classification. The most-frequent baseline accuracy for the datasets was .83. We should note that a recall of 1.0 with accuracy around .17 indicates that the model is predicting everything as positive, while an accuracy near .83 with a very low recall indicates the model is predicting everything as negative.
 
-|Model          |Classification |Dataset    |Epochs |Accuracy    |Recall      |
-|---------------|---------------|-----------|-------|------------|------------|
-|1.0.0.35b.98   |         Binary|          9|40     |.9571       |.9012       |
-|1.0.0.46b      |         Binary|          9|30     |.8370       |.0392       |
-|1.0.0.29n      |         Binary|          8|30     |.9930       |1.0         |
-|1.0.0.46b      |         Binary|          6|20     |.1810       |1.0         |
-|VGG-16.03.06b.9|         Binary|          9|30     |.8138       |.9884       |
-|inception_v4.05b.9|      Binary|          9|20     |.1828       |1.0         |
-​                 <div style="text-align:center;"><i>Table 1: Binary Performance on Test Set</i></div><br>
+|Model          |Dataset    |Epochs |Accuracy    |Recall      |
+|---------------|-----------|-------|------------|------------|
+|1.0.0.35b.98   |          9|40     |.9571       |.9012       |
+|1.0.0.46b      |          9|30     |.8370       |.0392       |
+|1.0.0.29n      |          8|30     |.9930       |1.0         |
+|1.0.0.46b      |          6|20     |.1810       |1.0         |
+|VGG-16.03.06b.9|          9|30     |.8138       |.9884       |
+|inception_v4.05b.9|          9|20     |.1828       |1.0         |
+​             <div style="text-align:center;"><i>Table 1: Binary Performance on Test Set</i></div><br>
 
 Table 2 shows the accuracy and recall of the test dataset for selected training runs for multi-class classification. We see the trend of models tending to predict everything as either negative or positive.
 
-|Model          |Classification |Dataset    |Epochs |Accuracy    |Recall      |Initialization |
-|---------------|---------------|-----------|-------|------------|------------|---------------|
-|1.0.0.29n      |    Multi-class|          6|40     |.9142       |.9353       |Scratch        |
-|1.0.0.46l.8    |    Multi-class|          8|20     |.1139       |1.0         |Scratch        |
-|1.0.0.46l.6    |    Multi-class|          6|20     |.8187       |0           |Scratch        |
-|VGG-16.03.04l.6|    Multi-class|          6|20     |.8333       |.0288       |Scratch        |
+| Model           | Dataset | Epochs | Accuracy | Recall | Initialization |
+| --------------- | ------- | ------ | -------- | ------ | -------------- |
+| 1.0.0.29n       | 6       | 40     | .9142    | .9353  | Scratch        |
+| 1.0.0.46l.8     | 8       | 20     | .1139    | 1.0    | Scratch        |
+| 1.0.0.46l.6     | 6       | 20     | .8187    | 0      | Scratch        |
+| VGG-16.03.04l.6 | 6       | 20     | .8333    | .0288  | Scratch        |
 ​                <div style="text-align:center;"><i>Table 2: Multi-class Performance on Test Set</i></div><br>
 
-<p>Figure 2 shows the training metrics for model 1.0.0.29 trained on dataset 8 for binary classification. This model was trained with a cross entropy weight of 2 which may have contributed to the volatility of the validation results.
+Figure 5 shows the training metrics for model 1.0.0.29 trained on dataset 8 for binary classification. This model was trained with a cross entropy weight of 2 which may have contributed to the volatility of the validation results.
 
 <img src="1.0.0.29_results.png" alt="Binary Accuracy and Recall of Model 1.0.0.29 on Dataset 8" align="center"><br>
-           <i>Figure 2 - Binary Accuracy and Recall for Model 1.0.0.29 on Dataset 8</i>
+         <i>Figure 5 - Binary Accuracy and Recall for Model 1.0.0.29 on Dataset 8</i>
 
-Figure 3 shows the training metrics for model 1.0.0.45 trained on dataset 9 for binary classification. We see that this model was learning to predict positive examples through epoch 15, at which point the accuracy drops to the baseline and the recall approaches 0. We believe this is due to the cross entropy weight of 2 used for this model, which encourages the model to ignore positive examples and focus on negative ones.
+Figure 6 shows the training metrics for model 1.0.0.45 trained on dataset 9 for binary classification. We see that this model was learning to predict positive examples through epoch 15, at which point the accuracy drops to the baseline and the recall approaches 0. We believe this is due to the cross entropy weight of 2 used for this model, which encourages the model to ignore positive examples and focus on negative ones.
 
 <img src="1.0.0.45b.9.1_results.png" alt="Binary Accuracy and Recall of Model 1.0.0.45 on Dataset 9" align="center"><br>
-           <i>Figure 3 - Binary Accuracy and Recall for Model 1.0.0.45 on Dataset 9</i>
+           <i>Figure 6 - Binary Accuracy and Recall for Model 1.0.0.45 on Dataset 9</i>
 
-Figure 4 shows the training metrics for model 1.0.0.35 trained on dataset 9 for binary classification. This model was trained with a cross entropy weight of 6, which compensates for the unbalanced nature of the dataset and encourages the model to focus on positive examples.
+Figure 7 shows the training metrics for model 1.0.0.35 trained on dataset 9 for binary classification. This model was trained with a cross entropy weight of 6, which compensates for the unbalanced nature of the dataset and encourages the model to focus on positive examples.
 
 <img src="1.0.0.35b.9_results.png" alt="Binary Accuracy and Recall of Model 1.0.0.35 on Dataset 9" align="center"><br>
-       <i>Figure 4 - Binary Accuracy and Recall for Model 1.0.0.35 b.98 on Dataset 9</i> 
+       <i>Figure 7 - Binary Accuracy and Recall for Model 1.0.0.35 b.98 on Dataset 9</i> 
 
 While model 1.0.0.29 achieved the best results, we were unable to duplicate these results in future training runs and thus conclude that the high recall and accuracy were flukes that were not due to inherent advantages of the model.
 
@@ -202,7 +228,7 @@ These results indicate that model 1.0.0.35b.98 was able to achieve relatively hi
 ​                <div style="text-align:center;"><i>Table 3: Performance on MIAS Dataset</i></div><br>
 
 ### Effect of Cross Entropy Weight
-As mentioned above, a weighted cross entropy was used to improve recall and counter the unbalanced nature of our dataset. Increasing the weight improved recall at the expense of precision. With a cross entropy weight of 1 to 3, our models tended to initially learn to classify positive examples, but after 15-20 epochs started to predict everything as negative. A cross entropy weight of 4 to 6 allowed the model to continue to predict positive examples and greatly reduced the volatility of the validation results.
+As mentioned above, a weighted cross entropy was used to improve recall and counter the unbalanced nature of our dataset. Increasing the weight improved recall at the expense of precision. With a cross entropy weight of 1 to 3, our models tended to initially learn to classify positive examples, but after 15-20 epochs started to predict everything as negative. A cross entropy weight of 4 to 7 allowed the model to continue to predict positive examples and greatly reduced the volatility of the validation results. Cross entropy weights above 7 encouraged the model to predict everything as positive.
 
 | Model        | X-Entropy Weight | Test Accuracy | Test Recall |
 | ------------ | ---------------- | ------------- | ----------- |
@@ -214,38 +240,40 @@ As mentioned above, a weighted cross entropy was used to improve recall and coun
 
 ### Effect of Input Data Scaling
 
-We had attempted to scale and center our input data when creating the dataset but the size of the data made it impossible to compute the mean of the pixels, much less adjust them in memory. As a result, our first models, including 1.0.0.29, took the raw pixel data as input. For model 1.0.0.45 we had precalculated the mean and centered the data by subtracting it. This improved the training results, but had a detrimental effect on the validation results. 
+We had attempted to scale and center our input data when creating the dataset but the size of the data made it impossible to do any such manipulation of the data in memory. As a result, our first models, including 1.0.0.29, took the raw pixel data as input. For model 1.0.0.45 we had pre-calculated the mean and centered the data by subtracting it. While this improved the training results, it caused the behavior seen in Figure 6 - where after a certain point everything in the validation set was predicted as negative.
 
-This was surprising so we evaluated several combinations of centering and scaling the data and found that the best performance was achieved by scaling the input data to be between 0 and 1 without centering it. During this process we discovered that there was a problem with how our graph was constructed which led to the validation data bypassing the scaling step and being inserted directly into the first convolutional layer at a different scale than the training data. Once this was corrected we found that centering the data led to the behavior seen in Figure 3, where after 15 epochs the model would learn to predict everything negative. 
+While we now believe this behavior to be caused by a low cross entropy weight, at the time we were unsure of the cause so settled on scaling the input data to between 0 and 1 without centering it. This approach was used for model 1.0.0.35. 
 
-At the time we were using relatively low weights for the cross entropy, and we suspect that centering the data caused the model to learn faster. Without the proper cross entropy weighting this led to the model quickly starting to overfit the training data and predicting all validation examples as negative.
+It seems that rather than causing the issue of predicting all validation examples as negative, scaling and centering the input data caused the model to learn more quickly and thus reduced the number of epochs before this behavior would appear. With the proper cross entropy weighting the model behaves as expected with the input data scaled and centered.
 
 ### Effect of Contrast Enhancement
-While performing some exploratory manipulations of the images, we found that increasing the contrast of the scans could bring out subtle features and we added an optional contrast enhancement in the data augmentation part of the model. We attempted to train models using values for the contrast enhancement of between 1.0 and 2.0. 
+While performing some exploratory manipulations of the images, we found that increasing the contrast of the scans could bring out subtle features and we added an optional contrast enhancement in the data augmentation part of the model. We see in figure 8 that a contrast adjustment of 2.0 makes all images in the test set appear to be positive.
 
-In the end we found that training with a contrast of 1.0 (no contrast adjustment) yielded the best results. However increasing the contrast at test time allowed us to increase recall at the expense of precision.
+![](C:\Users\eric\Documents\Courses\Applied ML 2\capstone-project-ads-ml-c5-s2-38\threshold_vs_recall.png)
+
+​	                                       <i>Figure 8- Recall vs Threshold by Contrast on Test Data</i> 
 
 ### Effect of Decision Threshold
 
-A binary softmax classifier has a default threshold of 0.50. We used pr curves during training to evaluate the effects of adjusting the threshold. We found that we could easily trade off precision and recall by adjusting the threshold, allowing us to achieve precision or recall close to 1.0.
+A binary softmax classifier has a default threshold of 0.50. We used pr curves during training to evaluate the effects of adjusting the threshold. We found that we could easily trade off precision and recall by adjusting the threshold, allowing us to achieve precision or recall close to 1.0. We can also see the effects of using different thresholds on recall in figure 8.
 
-Figure 5 is the curve for model 1.0.0.35b.98 after 40 epochs of training. The points on the lines indicate the threshold of 0.50. Precision is on the y-axis and recall on the x-axis.
+Figure 9 is the curve for model 1.0.0.35b.98 after 40 epochs of training. The points on the lines indicate the threshold of 0.50. Precision is on the y-axis and recall on the x-axis.
 
 ![pr_curve.png](C:\Users\eric\Documents\Machine Learning\mammography\pr_curve.png)
 
-​                                                     <i>Figure 5 - PR Curve for model 1.0.0.35b.98</i> 
+​                                                     <i>Figure 9 - PR Curve for model 1.0.0.35b.98</i> 
 
 
 ## Conclusion
-While we were able to achieve extraordinary results on datasets 6 and 8, the artificial nature of these datasets caused the models to not generalize to the MIAS data. Models trained on dataset 9, which was constructed specifically to avoid these problems, did not achieve accuracy or recall as high as models trained on other datasets, but generalized to the MIAS data fairly well.
+While we were able to achieve better than expected results on datasets 6 and 8, the artificial nature of these datasets caused the models to not generalize to the MIAS data. Models trained on dataset 9, which was constructed specifically to avoid these problems, did not achieve accuracy or recall as high as models trained on other datasets, but generalized to the MIAS data better.
 
-The weight of the cross entropy turned out to be a critical factor in training models which did not overfit the training data, and whose performance could be replicated. We wasted a lot of time training models with low cross entropy weighting and trying to figure out why those models seemed so unstable.
+The weight of the cross entropy turned out to be a critical factor in training models which did not overfit the training data, and whose performance could be replicated. We could have saved a great deal of time if we tested different weights earlier in the process.
 
 While we were able to achieve recall significantly above human performance on the DDSM data, the recall on the MIAS data was significantly lower. However, as a proof of concept, we feel that we have demonstrated that ConvNets can successfully be trained to predict whether mammograms are normal or abnormal.
 
 The life and death nature of diagnosing cancer creates many obstacles to putting a system like this into practice. We feel that using a system to output the probabilities rather than the predictions would allow such a system to provide additional information to radiologists rather than replacing them. In addition the ability to adjust the decision threshold would allow radiologists to focus on more ambiguous scans while devoting less time to scans which have very low probabilities.
 
-Future work would include creating a system which would take an entire, unaltered scan as input and analyse it for abnormalities. Algorithms such as a sliding window, YOLO, or attention models could be used to apply our techniques to entire scans, and would also have the added benefit of indicating what regions of the scan require extra attention. Unfortunately, the lack of available training data seems to be the bottleneck for pursuing this in the future.
+Future work would include creating a system which would take an entire, unaltered scan as input and analyse it for abnormalities. This could be done with a fully convolutional network which can accept an image of any size. Other algorithms such as a sliding window, YOLO, or attention models could be used to apply our techniques to entire scans. Unfortunately, the lack of available training data seems to be the bottleneck for pursuing this in the future.
 
 ## Supplementary Files
 
