@@ -19,8 +19,8 @@
       <file leaf-file-name="candidate_3.0.0.36.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/candidate_3.0.0.36.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="404">
-              <caret line="862" column="173" selection-start-line="862" selection-start-column="173" selection-end-line="862" selection-end-column="173" />
+            <state relative-caret-position="370">
+              <caret line="863" column="146" selection-start-line="863" selection-start-column="146" selection-end-line="863" selection-end-column="146" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -43,8 +43,8 @@
       <file leaf-file-name="training_utils.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/training_utils.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="85">
-              <caret line="638" column="27" selection-start-line="638" selection-start-column="27" selection-end-line="638" selection-end-column="27" />
+            <state relative-caret-position="221">
+              <caret line="610" column="11" selection-start-line="610" selection-start-column="4" selection-end-line="610" selection-end-column="11" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -110,6 +110,7 @@
       <find>png</find>
       <find>width</find>
       <find>10_</find>
+      <find>load_we</find>
     </findStrings>
     <replaceStrings>
       <replace>11_</replace>
@@ -634,8 +635,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/training_utils.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="638" column="27" selection-start-line="638" selection-start-column="27" selection-end-line="638" selection-end-column="27" />
+        <state relative-caret-position="221">
+          <caret line="610" column="11" selection-start-line="610" selection-start-column="4" selection-end-line="610" selection-end-column="11" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
@@ -644,8 +645,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/candidate_3.0.0.36.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="404">
-          <caret line="862" column="173" selection-start-line="862" selection-start-column="173" selection-end-line="862" selection-end-column="173" />
+        <state relative-caret-position="370">
+          <caret line="863" column="146" selection-start-line="863" selection-start-column="146" selection-end-line="863" selection-end-column="146" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
