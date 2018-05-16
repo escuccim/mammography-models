@@ -129,10 +129,10 @@ def read_and_decode_single_example(filenames, label_type='label_normal', normali
                 'image': tf.FixedLenFeature([], tf.string)
             })
 
-        label = tf.decode_raw(features['label'], tf.uint8)
-        image = tf.decode_raw(features['image'], tf.uint8)
+        label = tf.decode_raw(features['label'], tf.int32)
+        image = tf.decode_raw(features['image'], tf.float32)
 
-        label = tf.cast(label, tf.int32)
+        # label = tf.cast(label, tf.int32)
 
         image = tf.reshape(image, [288, 288, 1])
         label = tf.reshape(label, [288, 288, 1])
