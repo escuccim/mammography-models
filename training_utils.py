@@ -35,7 +35,7 @@ def download_file(url, name):
             # then delete the zip to save disk space
             try:
                 os.remove(os.path.join("data", name))
-                print("Zip file extracted and deleted", name)
+                print("\nZip file extracted and deleted", name)
             except:
                 print("Error deleting zip file", name)
 
@@ -396,7 +396,7 @@ def download_data(what=4):
         # download test labels
         if not os.path.exists(os.path.join("data", "test11_labels.npy")):
             _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/test11_labels.zip',
-                              'test11_labels.zipzip')
+                              'test11_labels.zip')
 
         # download and unzip validation data
         if not os.path.exists(os.path.join("data", "cv11_data.npy")):
