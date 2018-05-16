@@ -106,7 +106,7 @@ print("Number of classes:", num_classes)
 ## Build the graph
 graph = tf.Graph()
 
-model_name = "model_s3.0.0.37" + model_label + "." + str(dataset) + str(version)
+model_name = "model_s3.0.0.38" + model_label + "." + str(dataset) + str(version)
 ## Change Log
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
@@ -139,6 +139,7 @@ model_name = "model_s3.0.0.37" + model_label + "." + str(dataset) + str(version)
 # 2.0.0.36 - scaling and centering data?
 # 3.0.0.36 - adjusting to do segmentation instead of classification
 # 3.0.0.37 - trying to get this to train faster
+# 3.0.0.38 - adding tiny value to logits to avoid xe of NaN
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -718,7 +719,7 @@ with graph.as_default():
     # Different weighting method
     # This will weight the positive examples higher so as to improve recall
     weights = tf.multiply(tf.cast(weight, tf.float32), tf.cast(tf.greater(y, 0), tf.float32)) + 1
-    mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=logits, weights=weight))
+    mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=(logits + 1e-10), weights=weight))
 
     # Add in l2 loss
     loss = mean_ce + tf.losses.get_regularization_loss()
