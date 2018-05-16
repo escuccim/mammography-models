@@ -903,8 +903,8 @@ with tf.Session(graph=graph, config=config) as sess:
                         # write the summary
                         train_writer.add_summary(image_summary, step)
                     else:
-                        _, _, _, step = sess.run(
-                            [train_op, extra_update_ops, update_op, global_step],
+                        _, _, step = sess.run(
+                            [train_op, extra_update_ops, global_step],
                                 feed_dict={
                                     training: True,
                                 },
