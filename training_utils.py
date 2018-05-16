@@ -132,7 +132,7 @@ def read_and_decode_single_example(filenames, label_type='label_normal', normali
         label = tf.decode_raw(features['label'], tf.uint8)
         image = tf.decode_raw(features['image'], tf.uint8)
 
-        # label = tf.cast(label, tf.int32)
+        label = tf.cast(label, tf.int32)
         # label = tf.image.convert_image_dtype(label, dtype=tf.int32)
         image = tf.image.convert_image_dtype(image, dtype=tf.float32)
 
@@ -223,7 +223,7 @@ def load_validation_data(data="validation", how="normal", which=5, percentage=1)
         y_cv[labels == 3] = 2
         y_cv[labels == 4] = 2
     elif how == "mask":
-        y_cv = labels.astype(np.float32)
+        y_cv = labels.astype(np.int32)
 
     # shuffle the data
     X_cv, y_cv = shuffle(X_cv, y_cv)
