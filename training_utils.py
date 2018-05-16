@@ -133,8 +133,7 @@ def read_and_decode_single_example(filenames, label_type='label_normal', normali
         image = tf.decode_raw(features['image'], tf.uint8)
 
         label = tf.cast(label, tf.int32)
-        # label = tf.image.convert_image_dtype(label, dtype=tf.int32)
-        image = tf.image.convert_image_dtype(image, dtype=tf.float32)
+        # image = tf.image.convert_image_dtype(image, dtype=tf.float32)
 
         image = tf.reshape(image, [288, 288, 1])
         label = tf.reshape(label, [288, 288, 1])
@@ -634,10 +633,10 @@ def _scale_input_data(X, contrast=None, mu=104.1353, scale=255.0):
         X_adj = X
 
     # cast to float
-    X_adj = tf.cast(X_adj, dtype=tf.float32)
+    if X_adj.dtype != tf.float32:
+        X_adj = tf.cast(X_adj, dtype=tf.float32)
 
     # center the pixel data
-    # mu_tf = tf.constant(mu, name="pixel_mean", dtype=tf.float32)
     X_adj = tf.subtract(X_adj, mu, name="centered_input")
 
     # scale the data

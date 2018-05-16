@@ -164,7 +164,7 @@ with graph.as_default():
         y = tf.placeholder_with_default(y_def, shape=[None, 288, 288, 1])
 
         # cast to float and scale input data
-        X_adj = tf.cast(X, dtype=tf.float32)
+        X_adj = tf.image.convert_image_dtype(X, dtype=tf.float32)
         X_adj = _scale_input_data(X_adj, contrast=contrast, mu=127.0, scale=255.0)
 
         # optional online data augmentation
@@ -718,7 +718,7 @@ with graph.as_default():
     else:
         train_op = optimizer.minimize(loss, global_step=global_step)
 
-    predictions = tf.reshape(tf.argmax(logits, axis=-1, output_type=tf.int64), (-1, 288,288))
+    predictions = tf.reshape(tf.argmax(logits, axis=-1, output_type=tf.int32), (-1, 288,288))
 
     predicted_abnormal = tf.reduce_max(predictions, axis=[1,2])
     actual_abnormal = tf.reduce_max(y, axis=[1,2])
