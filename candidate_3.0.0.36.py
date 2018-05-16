@@ -21,7 +21,7 @@ parser.add_argument("-s", "--stop", help="stop gradient at pool5", nargs='?', co
 parser.add_argument("-t", "--threshold", help="decision threshold", default=0.5, type=float)
 parser.add_argument("-c", "--contrast", help="contrast adjustment, if any", default=0.0, type=float)
 parser.add_argument("-n", "--normalize", help="apply per image normalization", nargs='?', const=True, default=False)
-parser.add_argument("-w", "--weight", help="weight to give to positive examples in cross-entropy", default=2, type=float)
+parser.add_argument("-w", "--weight", help="weight to give to positive examples in cross-entropy", default=6, type=float)
 parser.add_argument("-v", "--version", help="version or run number to assign to model name", default="")
 parser.add_argument("--distort", help="use online data augmentation", default=False, const=True, nargs="?")
 args = parser.parse_args()
@@ -515,12 +515,8 @@ with graph.as_default():
     if stop:
         conv5_bn_relu = tf.stop_gradient(conv5_bn_relu, name="pool5_freeze")
 
-    # print("conv5_bn_relu", conv5_bn_relu.shape)
-
     fc1 = _conv2d_batch_norm(conv5_bn_relu, 2048, kernel_size=(1, 1), stride=(1, 1), training=training, epsilon=1e-8,
                              padding="SAME", seed=1013, lambd=lamC, name="fc_1")
-
-    # print("fc1", fc1.shape)
 
     with tf.name_scope('unpool1') as scope:
         unpool1 = tf.layers.conv2d_transpose(
@@ -730,13 +726,7 @@ with graph.as_default():
     # get the probabilites for the classes
     # probabilities = tf.nn.softmax(logits, name="probabilities")
     # abnormal_probability = 1 - probabilities[:,0]
-    #
-    # # Compute predictions from the probabilities
-    # if threshold == 0.5:
 
-    # else:
-    #     predictions = tf.cast(tf.greater(abnormal_probability, threshold), tf.int32)
-    #
     # get the accuracy
     accuracy, acc_op = tf.metrics.accuracy(
         labels=actual_abnormal,
@@ -744,17 +734,12 @@ with graph.as_default():
         updates_collections=tf.GraphKeys.UPDATE_OPS,
         name="accuracy",
     )
-    #
-    # # calculate recall
+
+    # calculate recall
     recall, rec_op = tf.metrics.recall(labels=actual_abnormal, predictions=predicted_abnormal, updates_collections=tf.GraphKeys.UPDATE_OPS, name="recall")
     precision, prec_op = tf.metrics.precision(labels=actual_abnormal, predictions=predicted_abnormal, updates_collections=tf.GraphKeys.UPDATE_OPS, name="precision")
 
     f1_score = 2 * ((precision * recall) / (precision + recall))
-    # _, update_op = summary_lib.pr_curve_streaming_op(name='pr_curve',
-    #                                                  predictions=abnormal_probability,
-    #                                                  labels=y,
-    #                                                  updates_collections=tf.GraphKeys.UPDATE_OPS,
-    #                                                  num_thresholds=20)
 
     tf.summary.scalar('recall_1', recall, collections=["summaries"])
     tf.summary.scalar('precision_1', precision, collections=["summaries"])
