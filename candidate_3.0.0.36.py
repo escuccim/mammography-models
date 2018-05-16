@@ -892,8 +892,8 @@ with tf.Session(graph=graph, config=config) as sess:
                 if (i % 50 != 0) or (i == 0):
                     # log the kernel images once per epoch
                     if (i == (steps_per_epoch - 1)) and log_to_tensorboard:
-                        _, _, _, image_summary, step = sess.run(
-                            [train_op, extra_update_ops, update_op, kernel_summaries, global_step],
+                        _, _, image_summary, step = sess.run(
+                            [train_op, extra_update_ops, kernel_summaries, global_step],
                             feed_dict={
                                 training: True,
                             },
@@ -913,8 +913,8 @@ with tf.Session(graph=graph, config=config) as sess:
 
                 # every 50th step get the metrics
                 else:
-                    _, _, _, precision_value, summary, acc_value, cost_value, recall_value, step, lr = sess.run(
-                        [train_op, extra_update_ops, update_op, prec_op, merged, accuracy, mean_ce, rec_op, global_step, learning_rate],
+                    _, _, precision_value, summary, acc_value, cost_value, recall_value, step, lr = sess.run(
+                        [train_op, extra_update_ops, prec_op, merged, accuracy, mean_ce, rec_op, global_step, learning_rate],
                         feed_dict={
                             training: True,
                         },
@@ -957,8 +957,8 @@ with tf.Session(graph=graph, config=config) as sess:
 
             # evaluate the test data
             for X_batch, y_batch in get_batches(X_cv, y_cv, batch_size, distort=False):
-                _, _, valid_acc, valid_recall, valid_precision, valid_fscore, valid_cost = sess.run(
-                    [update_op, extra_update_ops, accuracy, rec_op, prec_op, f1_score, mean_ce],
+                _, valid_acc, valid_recall, valid_precision, valid_fscore, valid_cost = sess.run(
+                    [extra_update_ops, accuracy, rec_op, prec_op, f1_score, mean_ce],
                     feed_dict={
                         X: X_batch,
                         y: y_batch,
