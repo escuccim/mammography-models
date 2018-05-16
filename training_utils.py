@@ -395,8 +395,8 @@ def download_data(what=4):
 
         # download test labels
         if not os.path.exists(os.path.join("data", "test11_labels.npy")):
-            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/test11_labels.npy',
-                              'test11_labels.npy')
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/test11_labels.zip',
+                              'test11_labels.zipzip')
 
         # download and unzip validation data
         if not os.path.exists(os.path.join("data", "cv11_data.npy")):
@@ -404,7 +404,7 @@ def download_data(what=4):
 
         # download validation labels
         if not os.path.exists(os.path.join("data", "cv11_labels.npy")):
-            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/cv11_labels.npy','cv11_labels.npy')
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/cv11_labels.zip','cv11_labels.zip')
     
     elif what == 0:
         # download MIAS test data
@@ -424,56 +424,6 @@ def download_data(what=4):
         if not os.path.exists(os.path.join("data", "all_mias_labels9.npy")):
             _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/all_mias_labels9.npy',
                               'all_mias_labels9.npy')
-
-    elif what == 5:
-        # download and unzip tfrecords training data
-        if not os.path.exists(os.path.join("data", "training5_0.tfrecords")):
-            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training5_0.zip',
-                              'training5_0.zip')
-
-        if not os.path.exists(os.path.join("data", "training5_1.tfrecords")):
-            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training5_1.zip',
-                              'training5_1.zip')
-
-        if not os.path.exists(os.path.join("data", "training5_2.tfrecords")):
-            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training5_2.zip',
-                              'training5_2.zip')
-
-        if not os.path.exists(os.path.join("data", "training5_3.tfrecords")):
-            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training5_3.zip',
-                              'training5_3.zip')
-
-        if not os.path.exists(os.path.join("data", "training5_4.tfrecords")):
-            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training5_4.zip',
-                              'training5_4.zip')
-
-        # download and unzip test data
-        if not os.path.exists(os.path.join("data", "test5_data.npy")):
-            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/test5_data.zip',
-                              'test5_data.zip')
-
-        if not os.path.exists(os.path.join("data", "test5_filenames.npy")):
-            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/test5_filenames.npy',
-                              'test5_filenames.npy')
-
-        # download test labels
-        if not os.path.exists(os.path.join("data", "test5_labels.npy")):
-            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/test5_labels.npy',
-                              'test5_labels.npy')
-
-        # download and unzip validation data
-        if not os.path.exists(os.path.join("data", "cv5_data.npy")):
-            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/cv5_data.zip',
-                              'cv5_data.zip')
-
-        # download validation labels
-        if not os.path.exists(os.path.join("data", "cv5_labels.npy")):
-            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/cv5_labels.npy',
-                              'cv5_labels.npy')
-
-        if not os.path.exists(os.path.join("data", "cv5_filenames.npy")):
-            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/cv5_filenames.npy',
-                              'cv5_filenames.npy')
 
     elif what ==6:
         # download and unzip tfrecords training data
@@ -528,27 +478,7 @@ def download_data(what=4):
 ## Load the training data and return a list of the tfrecords file and the size of the dataset
 ## Multiple data sets have been created for this project, which one to be used can be set with the type argument
 def get_training_data(what=5):
-    if what == 5:
-        train_path_10 = os.path.join("data", "training5_0.tfrecords")
-        train_path_11 = os.path.join("data", "training5_1.tfrecords")
-        train_path_12 = os.path.join("data", "training5_2.tfrecords")
-        train_path_13 = os.path.join("data", "training5_3.tfrecords")
-        train_path_14 = os.path.join("data", "training5_4.tfrecords")
-
-        train_files = [train_path_10, train_path_11, train_path_12, train_path_13, train_path_14]
-        total_records = 39316
-
-    elif what == 4:
-        train_path_10 = os.path.join("data", "training4_0.tfrecords")
-        train_path_11 = os.path.join("data", "training4_1.tfrecords")
-        train_path_12 = os.path.join("data", "training4_2.tfrecords")
-        train_path_13 = os.path.join("data", "training4_3.tfrecords")
-        train_path_14 = os.path.join("data", "training4_4.tfrecords")
-
-        train_files = [train_path_10, train_path_11, train_path_12, train_path_13, train_path_14]
-        total_records = 41527
-
-    elif what == 6:
+    if what == 6:
         train_path_10 = os.path.join("data", "training6_0.tfrecords")
         train_path_11 = os.path.join("data", "training6_1.tfrecords")
         train_path_12 = os.path.join("data", "training6_2.tfrecords")
@@ -597,15 +527,8 @@ def get_training_data(what=5):
 
         train_files = [train_path_10, train_path_11, train_path_12, train_path_13, train_path_14]
         total_records = 33241
-
     else:
-        train_path_0 = os.path.join("data", "training_0.tfrecords")
-        train_path_1 = os.path.join("data", "training_1.tfrecords")
-        train_path_2 = os.path.join("data", "training_2.tfrecords")
-        train_path_3 = os.path.join("data", "training_3.tfrecords")
-
-        train_files = [train_path_0, train_path_1, train_path_2, train_path_3]
-        total_records = 27393
+        raise ValueError('Invalid dataset!')
 
     return train_files, total_records
 
