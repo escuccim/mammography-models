@@ -719,7 +719,7 @@ with graph.as_default():
     # Different weighting method
     # This will weight the positive examples higher so as to improve recall
     weights = tf.multiply(tf.cast(weight, tf.float32), tf.cast(tf.greater(y, 0), tf.float32)) + 1
-    mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=(logits + 1e-10), weights=weight))
+    mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=(logits + 1e-10), weights=weights))
 
     # Add in l2 loss
     loss = mean_ce + tf.losses.get_regularization_loss()
