@@ -20,7 +20,7 @@
         <entry file="file://$PROJECT_DIR$/candidate_3.0.0.36.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="268">
-              <caret line="863" column="12" selection-start-line="863" selection-start-column="12" selection-end-line="863" selection-end-column="12" />
+              <caret line="863" column="174" selection-start-line="863" selection-start-column="174" selection-end-line="863" selection-end-column="174" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -43,8 +43,8 @@
       <file leaf-file-name="training_utils.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/training_utils.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="272">
-              <caret line="613" column="72" selection-start-line="613" selection-start-column="27" selection-end-line="613" selection-end-column="72" />
+            <state relative-caret-position="306">
+              <caret line="615" lean-forward="true" selection-start-line="615" selection-end-line="615" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -635,8 +635,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/training_utils.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="613" column="72" selection-start-line="613" selection-start-column="27" selection-end-line="613" selection-end-column="72" />
+        <state relative-caret-position="306">
+          <caret line="615" lean-forward="true" selection-start-line="615" selection-end-line="615" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
@@ -646,7 +646,7 @@
     <entry file="file://$PROJECT_DIR$/candidate_3.0.0.36.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="268">
-          <caret line="863" column="12" selection-start-line="863" selection-start-column="12" selection-end-line="863" selection-end-column="12" />
+          <caret line="863" column="174" selection-start-line="863" selection-start-column="174" selection-end-line="863" selection-end-column="174" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
