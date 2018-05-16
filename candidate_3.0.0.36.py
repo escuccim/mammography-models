@@ -106,7 +106,7 @@ print("Number of classes:", num_classes)
 ## Build the graph
 graph = tf.Graph()
 
-model_name = "model_s3.0.0.36" + model_label + "." + str(dataset) + str(version)
+model_name = "model_s3.0.0.37" + model_label + "." + str(dataset) + str(version)
 ## Change Log
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
@@ -138,6 +138,7 @@ model_name = "model_s3.0.0.36" + model_label + "." + str(dataset) + str(version)
 # 2.0.0.35 - turning into fcn
 # 2.0.0.36 - scaling and centering data?
 # 3.0.0.36 - adjusting to do segmentation instead of classification
+# 3.0.0.37 - trying to get this to train faster
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -153,23 +154,24 @@ with graph.as_default():
                                                staircase=staircase)
 
     with tf.name_scope('inputs') as scope:
-        image, label = read_and_decode_single_example(train_files, label_type=how, normalize=False, distort=False)
+        with tf.device('/cpu:0'):
+            image, label = read_and_decode_single_example(train_files, label_type=how, normalize=False, distort=False)
 
-        X_def, y_def = tf.train.shuffle_batch([image, label], batch_size=batch_size, capacity=2000,
-                                              seed=None,
-                                              min_after_dequeue=1000)
+            X_def, y_def = tf.train.shuffle_batch([image, label], batch_size=batch_size, capacity=2000,
+                                                  seed=None,
+                                                  min_after_dequeue=1000)
 
-        # Placeholders
-        X = tf.placeholder_with_default(X_def, shape=[None, 288, 288, 1])
-        y = tf.placeholder_with_default(y_def, shape=[None, 288, 288, 1])
+            # Placeholders
+            X = tf.placeholder_with_default(X_def, shape=[None, 288, 288, 1])
+            y = tf.placeholder_with_default(y_def, shape=[None, 288, 288, 1])
 
-        # cast to float and scale input data
-        X_adj = tf.image.convert_image_dtype(X, dtype=tf.float32)
-        X_adj = _scale_input_data(X_adj, contrast=contrast, mu=127.0, scale=255.0)
+            # cast to float and scale input data
+            X_adj = tf.image.convert_image_dtype(X, dtype=tf.float32)
+            X_adj = _scale_input_data(X_adj, contrast=contrast, mu=127.0, scale=255.0)
 
-        # optional online data augmentation
-        if distort:
-            X_adj, y = augment(X_adj, y, horizontal_flip=True, augment_labels=True, vertical_flip=True, mixup=0)
+            # optional online data augmentation
+            if distort:
+                X_adj, y = augment(X_adj, y, horizontal_flip=True, augment_labels=True, vertical_flip=True, mixup=0)
 
     # Convolutional layer 1
     with tf.name_scope('conv1') as scope:
@@ -197,6 +199,7 @@ with graph.as_default():
             moving_mean_initializer=tf.zeros_initializer(),
             moving_variance_initializer=tf.ones_initializer(),
             training=training,
+            fused=True,
             name='bn1'
         )
 
@@ -228,6 +231,7 @@ with graph.as_default():
             moving_mean_initializer=tf.zeros_initializer(),
             moving_variance_initializer=tf.ones_initializer(),
             training=training,
+            fused=True,
             name='bn1.1'
         )
 
@@ -260,6 +264,7 @@ with graph.as_default():
             moving_mean_initializer=tf.zeros_initializer(),
             moving_variance_initializer=tf.ones_initializer(),
             training=training,
+            fused=True,
             name='bn1.2'
         )
 
@@ -306,6 +311,7 @@ with graph.as_default():
             moving_mean_initializer=tf.zeros_initializer(),
             moving_variance_initializer=tf.ones_initializer(),
             training=training,
+            fused=True,
             name='bn2.1'
         )
 
@@ -338,6 +344,7 @@ with graph.as_default():
             moving_mean_initializer=tf.zeros_initializer(),
             moving_variance_initializer=tf.ones_initializer(),
             training=training,
+            fused=True,
             name='bn2.2'
         )
 
@@ -384,6 +391,7 @@ with graph.as_default():
             moving_mean_initializer=tf.zeros_initializer(),
             moving_variance_initializer=tf.ones_initializer(),
             training=training,
+            fused=True,
             name='bn3.1'
         )
 
@@ -416,6 +424,7 @@ with graph.as_default():
             moving_mean_initializer=tf.zeros_initializer(),
             moving_variance_initializer=tf.ones_initializer(),
             training=training,
+            fused=True,
             name='bn3.2'
         )
 
@@ -461,6 +470,7 @@ with graph.as_default():
                 moving_mean_initializer=tf.zeros_initializer(),
                 moving_variance_initializer=tf.ones_initializer(),
                 training=training,
+                fused=True,
                 name='bn4'
             )
 
@@ -506,6 +516,7 @@ with graph.as_default():
             moving_mean_initializer=tf.zeros_initializer(),
             moving_variance_initializer=tf.ones_initializer(),
             training=training,
+            fused=True,
             name='bn5'
         )
 
@@ -558,6 +569,7 @@ with graph.as_default():
             moving_mean_initializer=tf.zeros_initializer(),
             moving_variance_initializer=tf.ones_initializer(),
             training=training,
+            fused=True,
             name='bn6'
         )
 
@@ -604,6 +616,7 @@ with graph.as_default():
             moving_mean_initializer=tf.zeros_initializer(),
             moving_variance_initializer=tf.ones_initializer(),
             training=training,
+            fused=True,
             name='bn7'
         )
 
@@ -650,6 +663,7 @@ with graph.as_default():
             moving_mean_initializer=tf.zeros_initializer(),
             moving_variance_initializer=tf.ones_initializer(),
             training=training,
+            fused=True,
             name='bn9'
         )
 
