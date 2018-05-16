@@ -5,7 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="98c4e5b0-4f90-4540-b87f-9bd6d2ddc583" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/candidate_2.0.0.35.py" beforeDir="false" afterPath="$PROJECT_DIR$/candidate_2.0.0.35.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/training_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/training_utils.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -16,22 +18,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="600">
-      <file leaf-file-name="candidate_1.0.0.35.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/candidate_1.0.0.35.py">
+      <file leaf-file-name="candidate_3.0.0.36.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/candidate_3.0.0.36.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <folding>
-                <element signature="e#0#18#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="candidate_2.0.0.35.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/candidate_2.0.0.35.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="231">
-              <caret line="560" column="70" selection-start-line="560" selection-start-column="70" selection-end-line="560" selection-end-column="70" />
+            <state relative-caret-position="1428">
+              <caret line="1107" column="50" lean-forward="true" selection-start-line="1107" selection-start-column="50" selection-end-line="1107" selection-end-column="50" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -43,8 +34,8 @@
         <entry file="file://$PROJECT_DIR$/Report.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="357">
-                <caret line="222" column="73" lean-forward="true" selection-start-line="222" selection-start-column="73" selection-end-line="222" selection-end-column="73" />
+              <first_editor relative-caret-position="5627">
+                <caret line="331" selection-start-line="331" selection-end-line="331" />
               </first_editor>
               <second_editor />
             </state>
@@ -54,8 +45,8 @@
       <file leaf-file-name="training_utils.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/training_utils.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="374">
-              <caret line="486" column="53" lean-forward="true" selection-start-line="486" selection-start-column="53" selection-end-line="486" selection-end-column="53" />
+            <state relative-caret-position="-7">
+              <caret line="124" column="22" lean-forward="true" selection-start-line="124" selection-start-column="22" selection-end-line="124" selection-end-column="22" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -120,7 +111,11 @@
       <find>overfit</find>
       <find>png</find>
       <find>width</find>
+      <find>10_</find>
     </findStrings>
+    <replaceStrings>
+      <replace>11_</replace>
+    </replaceStrings>
     <dirStrings>
       <dir>C:\Users\eric\Documents\Machine Learning\mammography</dir>
     </dirStrings>
@@ -131,8 +126,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/model_1.0.1.39n.py" />
-        <option value="$PROJECT_DIR$/model_1.0.2.02.py" />
         <option value="$PROJECT_DIR$/candidate_1.3.0.03n.py" />
         <option value="$PROJECT_DIR$/candidate_1.0.1.40.py" />
         <option value="$PROJECT_DIR$/candidate_1.0.1.39d.py" />
@@ -180,13 +173,15 @@
         <option value="$PROJECT_DIR$/ReadMe.md" />
         <option value="$PROJECT_DIR$/candidate_1.0.5.01.py" />
         <option value="$PROJECT_DIR$/Report.md" />
-        <option value="$PROJECT_DIR$/training_utils.py" />
         <option value="$PROJECT_DIR$/candidate_2.0.0.35.py" />
+        <option value="$PROJECT_DIR$/candidate_3.0.0.35.py" />
+        <option value="$PROJECT_DIR$/training_utils.py" />
+        <option value="$PROJECT_DIR$/candidate_3.0.0.36.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="1010" />
+    <option name="x" value="1272" />
     <option name="width" value="1814" />
     <option name="height" value="1732" />
   </component>
@@ -196,6 +191,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -207,18 +203,17 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\eric\Documents\Machine Learning\mammography" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\eric\Documents\Machine Learning\mammography\old_models" />
+      <recent name="C:\Users\eric\Documents\Machine Learning\mammography" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\eric\Documents\Machine Learning\mammography" />
     </key>
   </component>
@@ -270,12 +265,12 @@
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.3297587" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.3297587" />
     </layout>
   </component>
   <component name="VcsContentAnnotationSettings">
@@ -291,16 +286,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/vgg_16.2.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5185">
-          <caret line="305" column="5" selection-start-line="298" selection-start-column="4" selection-end-line="305" selection-end-column="5" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/candidate_1.0.5.01.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="6188">
@@ -619,39 +604,50 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/candidate_1.0.0.35.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Report.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
-          <first_editor relative-caret-position="357">
-            <caret line="222" column="73" lean-forward="true" selection-start-line="222" selection-start-column="73" selection-end-line="222" selection-end-column="73" />
+          <first_editor relative-caret-position="5627">
+            <caret line="331" selection-start-line="331" selection-end-line="331" />
           </first_editor>
           <second_editor />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/training_utils.py">
+    <entry file="file://$PROJECT_DIR$/candidate_2.0.0.35.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="486" column="53" lean-forward="true" selection-start-line="486" selection-start-column="53" selection-end-line="486" selection-end-column="53" />
+        <state relative-caret-position="-4">
+          <caret line="532" column="81" selection-start-line="528" selection-start-column="4" selection-end-line="532" selection-end-column="81" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/candidate_2.0.0.35.py">
+    <entry file="file://$PROJECT_DIR$/candidate_1.0.0.35.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="231">
-          <caret line="560" column="70" selection-start-line="560" selection-start-column="70" selection-end-line="560" selection-end-column="70" />
+        <state relative-caret-position="425">
+          <caret line="595" column="5" lean-forward="true" selection-start-line="588" selection-start-column="4" selection-end-line="595" selection-end-column="5" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/training_utils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-7">
+          <caret line="124" column="22" lean-forward="true" selection-start-line="124" selection-start-column="22" selection-end-line="124" selection-end-column="22" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/candidate_3.0.0.36.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1428">
+          <caret line="1107" column="50" lean-forward="true" selection-start-line="1107" selection-start-column="50" selection-end-line="1107" selection-end-column="50" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>

@@ -14,7 +14,7 @@ parser.add_argument("-e", "--epochs", help="number of epochs to train", default=
 parser.add_argument("-d", "--data", help="which dataset to use", default=10, type=int)
 parser.add_argument("-m", "--model", help="model to initialize weights with", default=None)
 parser.add_argument("-r", "--restore", help="model to restore and continue training", default=None)
-parser.add_argument("-l", "--label", help="how to classify data", default="normal")
+parser.add_argument("-l", "--label", help="how to classify data", default="mask")
 parser.add_argument("-a", "--action", help="action to perform", default="train")
 parser.add_argument("-f", "--freeze", help="whether to freeze convolutional layers", nargs='?', const=True, default=False)
 parser.add_argument("-s", "--stop", help="stop gradient at pool5", nargs='?', const=True, default=False)
@@ -46,6 +46,8 @@ if how == "label":
     model_label = "l"
 elif how == "normal":
     model_label = "b"
+elif how == "mask":
+    model_label = "m"
 else:
     model_label = "x"
 
@@ -96,13 +98,15 @@ elif how == "mass":
     num_classes = 3
 elif how == "benign":
     num_classes = 3
+elif how == "mask":
+    num_classes = 2
 
 print("Number of classes:", num_classes)
 
 ## Build the graph
 graph = tf.Graph()
 
-model_name = "model_s2.0.0.36" + model_label + "." + str(dataset) + str(version)
+model_name = "model_s3.0.0.36" + model_label + "." + str(dataset) + str(version)
 ## Change Log
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
@@ -133,6 +137,7 @@ model_name = "model_s2.0.0.36" + model_label + "." + str(dataset) + str(version)
 # 1.0.0.35 - not centering data, just scaling it
 # 2.0.0.35 - turning into fcn
 # 2.0.0.36 - scaling and centering data?
+# 3.0.0.36 - adjusting to do segmentation instead of classification
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -155,8 +160,8 @@ with graph.as_default():
                                               min_after_dequeue=1000)
 
         # Placeholders
-        X = tf.placeholder_with_default(X_def, shape=[None, 299, 299, 1])
-        y = tf.placeholder_with_default(y_def, shape=[None])
+        X = tf.placeholder_with_default(X_def, shape=[None, 288, 288, 1])
+        y = tf.placeholder_with_default(y_def, shape=[None, 288, 288, 1])
 
         # cast to float and scale input data
         X_adj = tf.cast(X, dtype=tf.float32)
@@ -164,7 +169,7 @@ with graph.as_default():
 
         # optional online data augmentation
         if distort:
-            X_adj, y = augment(X_adj, y, horizontal_flip=True, vertical_flip=True, mixup=0)
+            X_adj, y = augment(X_adj, y, horizontal_flip=True, augment_labels=True, vertical_flip=True, mixup=0)
 
     # Convolutional layer 1
     with tf.name_scope('conv1') as scope:
@@ -337,12 +342,12 @@ with graph.as_default():
         )
 
         # apply relu
-        conv22 = tf.nn.relu(conv22, name='relu2.2')
+        conv22_relu = tf.nn.relu(conv22, name='relu2.2')
 
     # Max pooling layer 2
     with tf.name_scope('pool2') as scope:
         pool2 = tf.layers.max_pooling2d(
-            conv22,  # Input
+            conv22_relu,  # Input
             pool_size=(2, 2),  # Pool size: 3x3
             strides=(2, 2),  # Stride: 2
             padding='SAME',  # "same" padding
@@ -462,9 +467,6 @@ with graph.as_default():
             # apply relu
             conv4_bn_relu = tf.nn.relu(conv4, name='relu4')
 
-            #if dropout:
-            #    conv4_bn_relu = tf.layers.dropout(conv4_bn_relu, rate=convdropout_rate, seed=111, training=training)
-
     # Max pooling layer 4
     with tf.name_scope('pool4') as scope:
             pool4 = tf.layers.max_pooling2d(
@@ -478,7 +480,7 @@ with graph.as_default():
             if dropout:
                 pool4 = tf.layers.dropout(pool4, rate=pooldropout_rate, seed=112, training=training)
 
-            # Convolutional layer 4
+    # Convolutional layer 4
     with tf.name_scope('conv5') as scope:
         conv5 = tf.layers.conv2d(
             pool4,  # Input data
@@ -510,38 +512,184 @@ with graph.as_default():
         # apply relu
         conv5_bn_relu = tf.nn.relu(conv5, name='relu5')
 
-    # Max pooling layer 4
-    with tf.name_scope('pool5') as scope:
-        pool5 = tf.layers.max_pooling2d(
-            conv5_bn_relu,
-            pool_size=(2, 2),  # Pool size: 2x2
-            strides=(2, 2),  # Stride: 2
+    if stop:
+        conv5_bn_relu = tf.stop_gradient(conv5_bn_relu, name="pool5_freeze")
+
+    # print("conv5_bn_relu", conv5_bn_relu.shape)
+
+    fc1 = _conv2d_batch_norm(conv5_bn_relu, 2048, kernel_size=(1, 1), stride=(1, 1), training=training, epsilon=1e-8,
+                             padding="SAME", seed=1013, lambd=lamC, name="fc_1")
+
+    # print("fc1", fc1.shape)
+
+    with tf.name_scope('unpool1') as scope:
+        unpool1 = tf.layers.conv2d_transpose(
+            fc1,
+            filters=256,
+            kernel_size=(4, 4),
+            strides=(2, 2),
             padding='SAME',
-            name='pool5'
+            activation=tf.nn.elu,
+            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=11435),
+            kernel_regularizer=None,
+            name='up_conv1'
         )
 
-        if dropout:
-            pool5 = tf.layers.dropout(pool5, rate=pooldropout_rate, seed=115, training=training)
+        unpool1 = unpool1 + conv4
 
-    if stop:
-        pool5 = tf.stop_gradient(pool5, name="pool5_freeze")
+    with tf.name_scope('conv6') as scope:
+        conv6 = tf.layers.conv2d(
+            unpool1,  # Input data
+            filters=256,  # 48 filters
+            kernel_size=(3, 3),  # Kernel size: 5x5
+            strides=(1, 1),  # Stride: 1
+            padding='SAME',  # "same" padding
+            activation=None,  # None
+            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=71145),
+            kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
+            name='conv6'
+        )
 
-    fc1 = _conv2d_batch_norm(pool5, 2048, kernel_size=(5, 5), stride=(5, 5), training=training, epsilon=1e-8,
-                             padding="VALID", seed=1013, lambd=lamC, name="fc_1")
+        conv6 = tf.layers.batch_normalization(
+            conv6,
+            axis=-1,
+            momentum=0.99,
+            epsilon=epsilon,
+            center=True,
+            scale=True,
+            beta_initializer=tf.zeros_initializer(),
+            gamma_initializer=tf.ones_initializer(),
+            moving_mean_initializer=tf.zeros_initializer(),
+            moving_variance_initializer=tf.ones_initializer(),
+            training=training,
+            name='bn6'
+        )
 
-    fc2 = _conv2d_batch_norm(fc1, 2048, kernel_size=(1, 1), stride=(1, 1), training=training, epsilon=1e-8,
-                             padding="VALID", seed=1014, lambd=lamC, name="fc_2")
+        # apply relu
+        conv6 = tf.nn.elu(conv6, name='relu6')
 
-    fc3 = tf.layers.dense(
-        fc2,
-        num_classes,  # One output unit per category
-        activation=None,  # No activation function
-        kernel_initializer=tf.variance_scaling_initializer(scale=1, seed=121),
-        bias_initializer=tf.zeros_initializer(),
-        name="fc_logits"
-    )
+    with tf.name_scope('unpool2') as scope:
+        unpool2 = tf.layers.conv2d_transpose(
+            conv6,
+            filters=128,
+            kernel_size=(4, 4),
+            strides=(2, 2),
+            padding='SAME',
+            activation=tf.nn.elu,
+            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=19317),
+            kernel_regularizer=None,
+            name='up_conv2'
+        )
 
-    logits = tf.squeeze(fc3, name="fc_flat_logits")
+        unpool2 = unpool2 + conv3
+
+    with tf.name_scope('conv7') as scope:
+        conv7 = tf.layers.conv2d(
+            unpool2,  # Input data
+            filters=128,  # 48 filters
+            kernel_size=(3, 3),  # Kernel size: 5x5
+            strides=(1, 1),  # Stride: 1
+            padding='SAME',  # "same" padding
+            activation=None,  # None
+            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=1185),
+            kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
+            name='conv7'
+        )
+
+        conv7 = tf.layers.batch_normalization(
+            conv7,
+            axis=-1,
+            momentum=0.99,
+            epsilon=epsilon,
+            center=True,
+            scale=True,
+            beta_initializer=tf.zeros_initializer(),
+            gamma_initializer=tf.ones_initializer(),
+            moving_mean_initializer=tf.zeros_initializer(),
+            moving_variance_initializer=tf.ones_initializer(),
+            training=training,
+            name='bn7'
+        )
+
+        # apply relu
+        conv7 = tf.nn.elu(conv7, name='relu7')
+
+    with tf.name_scope('unpool3') as scope:
+        unpool3 = tf.layers.conv2d_transpose(
+            conv7,
+            filters=64,
+            kernel_size=(3, 3),
+            strides=(2, 2),
+            padding='SAME',
+            activation=tf.nn.elu,
+            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=11728),
+            kernel_regularizer=None,
+            name='up_conv3'
+        )
+
+        unpool3 = unpool3 + conv22
+
+    with tf.name_scope('conv9') as scope:
+        conv9 = tf.layers.conv2d(
+            unpool3,  # Input data
+            filters=64,  # 48 filters
+            kernel_size=(3, 3),  # Kernel size: 5x5
+            strides=(1, 1),  # Stride: 1
+            padding='SAME',  # "same" padding
+            activation=None,  # None
+            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=115),
+            kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
+            name='conv9'
+        )
+
+        conv9 = tf.layers.batch_normalization(
+            conv9,
+            axis=-1,
+            momentum=0.99,
+            epsilon=epsilon,
+            center=True,
+            scale=True,
+            beta_initializer=tf.zeros_initializer(),
+            gamma_initializer=tf.ones_initializer(),
+            moving_mean_initializer=tf.zeros_initializer(),
+            moving_variance_initializer=tf.ones_initializer(),
+            training=training,
+            name='bn9'
+        )
+
+        # apply relu
+        conv9 = tf.nn.elu(conv9, name='relu9')
+
+    with tf.name_scope('unpool5') as scope:
+        unpool5 = tf.layers.conv2d_transpose(
+            conv9,
+            filters=32,
+            kernel_size=(3, 3),
+            strides=(2, 2),
+            padding='SAME',
+            activation=tf.nn.elu,
+            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=11756),
+            kernel_regularizer=None,
+            name='up_conv5'
+        )
+
+    with tf.name_scope('logits') as scope:
+        logits = tf.layers.conv2d_transpose(
+            unpool5,
+            filters=2,
+            kernel_size=(3, 3),
+            strides=(2, 2),
+            padding='SAME',
+            activation=None,
+            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=11793),
+            kernel_regularizer=None,
+            name='logits'
+        )
+
+    flat_logits = tf.reshape(logits, (-1, num_classes), name="fcn_logits")
+
+    correct_label_reshaped = tf.cast(tf.reshape(y, (-1, num_classes)), tf.float32)
+    # print("Labels", correct_label_reshaped.shape)
 
     # get the fully connected variables so we can only train them when retraining the network
     fc_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "fc")
@@ -559,8 +707,8 @@ with graph.as_default():
 
     # Different weighting method
     # This will weight the positive examples higher so as to improve recall
-    weights = tf.multiply(weight, tf.cast(tf.greater(y, 0), tf.float32)) + 1
-    mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=logits, weights=weights))
+    weights = tf.multiply(tf.cast(weight, tf.float32), tf.cast(tf.greater(y, 0), tf.float32)) + 1
+    mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=logits, weights=weight))
 
     # Add in l2 loss
     loss = mean_ce + tf.losses.get_regularization_loss()
@@ -574,51 +722,46 @@ with graph.as_default():
     else:
         train_op = optimizer.minimize(loss, global_step=global_step)
 
+    predictions = tf.reshape(tf.argmax(logits, axis=-1, output_type=tf.int64), (-1, 288,288))
+
+    predicted_abnormal = tf.reduce_max(predictions, axis=[1,2])
+    actual_abnormal = tf.reduce_max(y, axis=[1,2])
+
     # get the probabilites for the classes
-    probabilities = tf.nn.softmax(logits, name="probabilities")
-    abnormal_probability = 1 - probabilities[:,0]
+    # probabilities = tf.nn.softmax(logits, name="probabilities")
+    # abnormal_probability = 1 - probabilities[:,0]
+    #
+    # # Compute predictions from the probabilities
+    # if threshold == 0.5:
 
-    # Compute predictions from the probabilities
-    if threshold == 0.5:
-        predictions = tf.argmax(probabilities, axis=1, output_type=tf.int64)
-    else:
-        predictions = tf.cast(tf.greater(abnormal_probability, threshold), tf.int32)
-
+    # else:
+    #     predictions = tf.cast(tf.greater(abnormal_probability, threshold), tf.int32)
+    #
     # get the accuracy
     accuracy, acc_op = tf.metrics.accuracy(
-        labels=y,
-        predictions=predictions,
+        labels=actual_abnormal,
+        predictions=predicted_abnormal,
         updates_collections=tf.GraphKeys.UPDATE_OPS,
         name="accuracy",
     )
-
-    # calculate recall
-    if num_classes > 2:
-        # collapse the predictions down to normal or not for our pr metrics
-        zero = tf.constant(0, dtype=tf.int64)
-        collapsed_predictions = tf.cast(tf.greater(abnormal_probability, threshold), tf.int32)
-        collapsed_labels = tf.greater(y, 0)
-
-        recall, rec_op = tf.metrics.recall(labels=collapsed_labels, predictions=collapsed_predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="recall")
-        precision, prec_op = tf.metrics.precision(labels=collapsed_labels, predictions=collapsed_predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="precision")
-
-    else:
-        recall, rec_op = tf.metrics.recall(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="recall")
-        precision, prec_op = tf.metrics.precision(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="precision")
+    #
+    # # calculate recall
+    recall, rec_op = tf.metrics.recall(labels=actual_abnormal, predictions=predicted_abnormal, updates_collections=tf.GraphKeys.UPDATE_OPS, name="recall")
+    precision, prec_op = tf.metrics.precision(labels=actual_abnormal, predictions=predicted_abnormal, updates_collections=tf.GraphKeys.UPDATE_OPS, name="precision")
 
     f1_score = 2 * ((precision * recall) / (precision + recall))
-    _, update_op = summary_lib.pr_curve_streaming_op(name='pr_curve',
-                                                     predictions=abnormal_probability,
-                                                     labels=y,
-                                                     updates_collections=tf.GraphKeys.UPDATE_OPS,
-                                                     num_thresholds=20)
+    # _, update_op = summary_lib.pr_curve_streaming_op(name='pr_curve',
+    #                                                  predictions=abnormal_probability,
+    #                                                  labels=y,
+    #                                                  updates_collections=tf.GraphKeys.UPDATE_OPS,
+    #                                                  num_thresholds=20)
 
     tf.summary.scalar('recall_1', recall, collections=["summaries"])
     tf.summary.scalar('precision_1', precision, collections=["summaries"])
     tf.summary.scalar('f1_score', f1_score, collections=["summaries"])
 
     # Create summary hooks
-    tf.summary.scalar('accuracy', accuracy, collections=["summaries"])
+    # tf.summary.scalar('accuracy', accuracy, collections=["summaries"])
     tf.summary.scalar('cross_entropy', mean_ce, collections=["summaries"])
     tf.summary.scalar('learning_rate', learning_rate, collections=["summaries"])
 

@@ -67,6 +67,25 @@ def get_batches(X, y, batch_size, filenames=None, distort=False):
         else:
             yield X_return, y[batch_idx], filenames[batch_idx]
 
+## Code for data augmentation for images and labels take from http://ddokkddokk.tistory.com/11
+def _do_nothing(image, label):
+    return image, label
+
+def _random_true_false():
+    prob = tf.random_uniform(shape=[], minval=0., maxval=1., dtype=tf.float32)
+    predicate = tf.less(prob, 0.5)
+    return predicate
+
+def _image_and_label_flip(image, label):
+    image_flip = tf.image.flip_left_right(image)
+    label_flip = tf.image.flip_left_right(label)
+    return image_flip, label_flip
+
+def _image_random_flip(image, label):
+    predicate = _random_true_false()
+    image_aug, label_aug = tf.cond(predicate, lambda: _image_and_label_flip(image, label), lambda: _do_nothing(image, label))
+    return image_aug, label_aug
+
 ## read data from tfrecords file
 def read_and_decode_single_example(filenames, label_type='label_normal', normalize=False, distort=False, num_epochs=None):
     filename_queue = tf.train.string_input_producer(filenames, num_epochs=num_epochs)
@@ -77,30 +96,52 @@ def read_and_decode_single_example(filenames, label_type='label_normal', normali
         label_type = 'label_' + label_type
 
     _, serialized_example = reader.read(filename_queue)
-    features = tf.parse_single_example(
-        serialized_example,
-        features={
-            'label': tf.FixedLenFeature([], tf.int64),
-            'label_normal': tf.FixedLenFeature([], tf.int64),
-            # 'label_mass': tf.FixedLenFeature([], tf.int64),
-            # 'label_benign': tf.FixedLenFeature([], tf.int64),
-            'image': tf.FixedLenFeature([], tf.string)
-        })
+    if label_type != 'label_mask':
+        features = tf.parse_single_example(
+            serialized_example,
+            features={
+                'label': tf.FixedLenFeature([], tf.int64),
+                'label_normal': tf.FixedLenFeature([], tf.int64),
+                # 'label_mass': tf.FixedLenFeature([], tf.int64),
+                # 'label_benign': tf.FixedLenFeature([], tf.int64),
+                'image': tf.FixedLenFeature([], tf.string)
+            })
 
-    # extract the data
-    label = features[label_type]
-    image = tf.decode_raw(features['image'], tf.uint8)
+        # extract the data
+        label = features[label_type]
+        image = tf.decode_raw(features['image'], tf.uint8)
 
-    # reshape and scale the image
-    image = tf.reshape(image, [299, 299, 1])
+        # reshape and scale the image
+        image = tf.reshape(image, [299, 299, 1])
+
+        # random flipping of image
+        if distort:
+            image = tf.image.random_flip_left_right(image)
+            image = tf.image.random_flip_up_down(image)
+
+    else:
+        features = tf.parse_single_example(
+            serialized_example,
+            features={
+                # We know the length of both fields. If not the
+                # tf.VarLenFeature could be used
+                'label': tf.FixedLenFeature([], tf.string),
+                'image': tf.FixedLenFeature([], tf.string)
+            })
+
+        label = tf.decode_raw(features['label'], tf.uint8)
+        image = tf.decode_raw(features['image'], tf.uint8)
+
+        label = tf.cast(label, tf.int32)
+
+        image = tf.reshape(image, [288, 288, 1])
+        label = tf.reshape(label, [288, 288, 1])
+
+        # if distort:
+        #     image, label = _image_random_flip(image, label)
 
     if normalize:
         image = tf.image.per_image_standardization(image)
-
-    # random flipping of image
-    if distort:
-        image = tf.image.random_flip_left_right(image)
-        image = tf.image.random_flip_up_down(image)
 
     # return the image and the label
     return image, label
@@ -128,6 +169,9 @@ def load_validation_data(data="validation", how="normal", which=5, percentage=1)
         elif which == 10:
             X_cv = np.load(os.path.join("data", "cv10_data.npy"))
             labels = np.load(os.path.join("data", "cv10_labels.npy"))
+        elif which == 11:
+            X_cv = np.load(os.path.join("data", "cv11_data.npy"))
+            labels = np.load(os.path.join("data", "cv11_labels.npy"))
     elif data == "test":
         if which == 4:
             X_cv = np.load(os.path.join("data", "test4_data.npy"))
@@ -147,7 +191,9 @@ def load_validation_data(data="validation", how="normal", which=5, percentage=1)
         elif which == 10:
             X_cv = np.load(os.path.join("data", "test10_data.npy"))
             labels = np.load(os.path.join("data", "test10_labels.npy"))
-
+        elif which == 11:
+            X_cv = np.load(os.path.join("data", "test11_data.npy"))
+            labels = np.load(os.path.join("data", "test11_labels.npy"))
     elif data == "mias":
         if which == 9:
             X_cv = np.load(os.path.join("data", "all_mias_slices9.npy"))
@@ -174,6 +220,8 @@ def load_validation_data(data="validation", how="normal", which=5, percentage=1)
         y_cv[labels == 2] = 1
         y_cv[labels == 3] = 2
         y_cv[labels == 4] = 2
+    elif how == "mask":
+        y_cv = labels
 
     # shuffle the data
     X_cv, y_cv = shuffle(X_cv, y_cv)
@@ -317,7 +365,47 @@ def download_data(what=4):
         # download validation labels
         if not os.path.exists(os.path.join("data", "cv10_labels.npy")):
             _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/cv10_labels.npy','cv10_labels.npy')
+    
+    elif what == 11:
+        # download and unzip tfrecords training data
+        if not os.path.exists(os.path.join("data", "training11_0.tfrecords")):
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training11_0.zip',
+                              'training11_0.zip')
 
+        if not os.path.exists(os.path.join("data", "training11_1.tfrecords")):
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training11_1.zip',
+                              'training11_1.zip')
+
+        if not os.path.exists(os.path.join("data", "training11_2.tfrecords")):
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training11_2.zip',
+                              'training11_2.zip')
+
+        if not os.path.exists(os.path.join("data", "training11_3.tfrecords")):
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training11_3.zip',
+                              'training11_3.zip')
+
+        if not os.path.exists(os.path.join("data", "training11_4.tfrecords")):
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training11_4.zip',
+                              'training11_4.zip')
+
+        # download and unzip test data
+        if not os.path.exists(os.path.join("data", "test11_data.npy")):
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/test11_data.zip',
+                              'test11_data.zip')
+
+        # download test labels
+        if not os.path.exists(os.path.join("data", "test11_labels.npy")):
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/test11_labels.npy',
+                              'test11_labels.npy')
+
+        # download and unzip validation data
+        if not os.path.exists(os.path.join("data", "cv11_data.npy")):
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/cv11_data.zip', 'cv11_data.zip')
+
+        # download validation labels
+        if not os.path.exists(os.path.join("data", "cv11_labels.npy")):
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/cv11_labels.npy','cv11_labels.npy')
+    
     elif what == 0:
         # download MIAS test data
         if not os.path.exists(os.path.join("data", "mias_test_images.npy")):
@@ -500,6 +588,16 @@ def get_training_data(what=5):
         train_files = [train_path_10, train_path_11, train_path_12, train_path_13, train_path_14]
         total_records = 55890
 
+    elif what == 11:
+        train_path_10 = os.path.join("data", "training11_0.tfrecords")
+        train_path_11 = os.path.join("data", "training11_1.tfrecords")
+        train_path_12 = os.path.join("data", "training11_2.tfrecords")
+        train_path_13 = os.path.join("data", "training11_3.tfrecords")
+        train_path_14 = os.path.join("data", "training11_4.tfrecords")
+
+        train_files = [train_path_10, train_path_11, train_path_12, train_path_13, train_path_14]
+        total_records = 33241
+
     else:
         train_path_0 = os.path.join("data", "training_0.tfrecords")
         train_path_1 = os.path.join("data", "training_1.tfrecords")
@@ -627,6 +725,7 @@ def _scale_input_data(X, contrast=None, mu=104.1353, scale=255.0):
 def augment(images, labels,
             horizontal_flip=False,
             vertical_flip=False,
+            augment_labels=False,
             mixup=0):  # Mixup coeffecient, see https://arxiv.org/abs/1710.09412.pdf
 
     # My experiments showed that casting on GPU improves training performance
@@ -666,6 +765,12 @@ def augment(images, labels,
                 images,
                 tf.contrib.image.compose_transforms(*transforms),
                 interpolation='BILINEAR')  # or 'NEAREST'
+
+            if augment_labels:
+                labels = tf.contrib.image.transform(
+                    labels,
+                    tf.contrib.image.compose_transforms(*transforms),
+                    interpolation='BILINEAR')  # or 'NEAREST'
 
         def cshift(values):  # Circular shift in batch dimension
             return tf.concat([values[-1:, ...], values[:-1, ...]], 0)
