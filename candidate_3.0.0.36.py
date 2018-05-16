@@ -746,7 +746,7 @@ with graph.as_default():
     tf.summary.scalar('f1_score', f1_score, collections=["summaries"])
 
     # Create summary hooks
-    # tf.summary.scalar('accuracy', accuracy, collections=["summaries"])
+    tf.summary.scalar('accuracy', accuracy, collections=["summaries"])
     tf.summary.scalar('cross_entropy', mean_ce, collections=["summaries"])
     tf.summary.scalar('learning_rate', learning_rate, collections=["summaries"])
 
