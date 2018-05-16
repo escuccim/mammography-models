@@ -221,7 +221,7 @@ def load_validation_data(data="validation", how="normal", which=5, percentage=1)
         y_cv[labels == 3] = 2
         y_cv[labels == 4] = 2
     elif how == "mask":
-        y_cv = labels
+        y_cv = labels.astype(np.float32)
 
     # shuffle the data
     X_cv, y_cv = shuffle(X_cv, y_cv)
