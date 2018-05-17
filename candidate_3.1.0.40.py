@@ -106,7 +106,7 @@ print("Number of classes:", num_classes)
 ## Build the graph
 graph = tf.Graph()
 
-model_name = "model_s3.1.0.40" + model_label + "." + str(dataset) + str(version)
+model_name = "model_s3.1.0.41" + model_label + "." + str(dataset) + str(version)
 ## Change Log
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
@@ -143,6 +143,7 @@ model_name = "model_s3.1.0.40" + model_label + "." + str(dataset) + str(version)
 # 3.0.0.39 - doing metrics per pixel instead of per image
 # 3.0.0.40 - adjusted graph so we can do online data augmentation and labels will be transformed in same way as images
 # 3.1.0.40 - adding some layers back in that were previously removed to take more advantage of pre-trained model
+# 3.1.0.41 - changed skip connections to try to make it a bit more stable
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -579,12 +580,10 @@ with graph.as_default():
             name='up_conv2'
         )
 
-        unpool1 = unpool1 + conv5
-
     with tf.name_scope('conv6') as scope:
         conv6 = tf.layers.conv2d(
             unpool1,  # Input data
-            filters=256,  # 48 filters
+            filters=512,  # 48 filters
             kernel_size=(3, 3),  # Kernel size: 5x5
             strides=(1, 1),  # Stride: 1
             padding='SAME',  # "same" padding
@@ -610,6 +609,8 @@ with graph.as_default():
             name='bn6'
         )
 
+        conv6 = conv6 + conv5
+
         # apply relu
         conv6 = tf.nn.elu(conv6, name='relu6')
 
@@ -626,12 +627,10 @@ with graph.as_default():
             name='up_conv3'
         )
 
-        unpool2 = unpool2 + conv4
-
     with tf.name_scope('conv7') as scope:
         conv7 = tf.layers.conv2d(
             unpool2,  # Input data
-            filters=128,  # 48 filters
+            filters=256,  # 48 filters
             kernel_size=(3, 3),  # Kernel size: 5x5
             strides=(1, 1),  # Stride: 1
             padding='SAME',  # "same" padding
@@ -657,6 +656,8 @@ with graph.as_default():
             name='bn7'
         )
 
+        conv7 = conv7 + conv4
+
         # apply relu
         conv7 = tf.nn.elu(conv7, name='relu7')
 
@@ -673,12 +674,10 @@ with graph.as_default():
             name='up_conv4'
         )
 
-        unpool3 = unpool3 + conv32
-
     with tf.name_scope('conv9') as scope:
         conv9 = tf.layers.conv2d(
             unpool3,  # Input data
-            filters=64,  # 48 filters
+            filters=128,  # 48 filters
             kernel_size=(3, 3),  # Kernel size: 5x5
             strides=(1, 1),  # Stride: 1
             padding='SAME',  # "same" padding
@@ -703,6 +702,8 @@ with graph.as_default():
             fused=True,
             name='bn9'
         )
+
+        conv9 = conv9 + conv32
 
         # apply relu
         conv9 = tf.nn.elu(conv9, name='relu9')
