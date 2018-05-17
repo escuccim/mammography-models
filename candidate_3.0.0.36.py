@@ -976,7 +976,7 @@ with tf.Session(graph=graph, config=config) as sess:
             # evaluate the test data
             for X_batch, y_batch in get_batches(X_cv, y_cv, batch_size, distort=False):
                 valid_acc, valid_recall, valid_precision, valid_fscore, valid_cost = sess.run(
-                    [accuracy, rec_op, prec_op, f1_score, mean_ce],
+                    [acc_op, rec_op, prec_op, f1_score, mean_ce],
                     feed_dict={
                         X: X_batch,
                         y: y_batch,
