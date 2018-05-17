@@ -554,9 +554,18 @@ with graph.as_default():
     fc2 = _conv2d_batch_norm(fc1, 2048, kernel_size=(1, 1), stride=(1, 1), training=training, epsilon=1e-8,
                              padding="VALID", seed=1014, lambd=lamC, name="fc_2")
 
+    fc3 = tf.layers.dense(
+        fc2,
+        num_classes,  # One output unit per category
+        activation=None,  # No activation function
+        kernel_initializer=tf.variance_scaling_initializer(scale=1, seed=121),
+        bias_initializer=tf.zeros_initializer(),
+        name="fc_logits"
+    )
+
     with tf.name_scope('up_conv1') as scope:
         unpool1 = tf.layers.conv2d_transpose(
-            fc2,
+            fc3,
             filters=1024,
             kernel_size=(3, 3),
             strides=(3, 3),
