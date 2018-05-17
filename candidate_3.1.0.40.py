@@ -674,7 +674,7 @@ with graph.as_default():
         conv7 = tf.nn.elu(conv7, name='relu7')
 
     with tf.name_scope('up_conv4') as scope:
-        unpool3 = tf.layers.conv2d_transpose(
+        unpool4 = tf.layers.conv2d_transpose(
             conv7,
             filters=128,
             kernel_size=(3, 3),
@@ -688,7 +688,7 @@ with graph.as_default():
 
     with tf.name_scope('conv9') as scope:
         conv9 = tf.layers.conv2d(
-            unpool3,
+            unpool4,
             filters=128,
             kernel_size=(3, 3),
             strides=(1, 1),
@@ -1013,7 +1013,7 @@ with tf.Session(graph=graph, config=config) as sess:
                     feed_dict={
                         X: X_batch,
                         y: y_batch,
-                        training: False
+                        training: True
                     })
 
                 batch_cv_acc.append(valid_acc)
@@ -1122,39 +1122,5 @@ with tf.Session(graph=graph, config=config) as sess:
     np.save(os.path.join("data", "truth_" + model_name + ".npy"), ground_truth)
 
     sess.run(tf.local_variables_initializer())
-
-    # print("Evaluating on MIAS data")
-    #
-    # ## evaluate on MIAS  dataset 9 which is the closest to raw images we have
-    # X_te, y_te = load_validation_data(how=how, data="mias", which=9)
-    #
-    # mias_test_accuracy = []
-    # mias_test_recall = []
-    # mias_test_predictions = []
-    # mias_ground_truth = []
-    # for X_batch, y_batch in get_batches(X_te, y_te, batch_size, distort=False):
-    #     _, yhat, test_acc_value, test_recall_value = sess.run([extra_update_ops, predictions, accuracy, rec_op], feed_dict=
-    #     {
-    #         X: X_batch,
-    #         y: y_batch,
-    #         training: False
-    #     })
-    #
-    #     mias_test_accuracy.append(test_acc_value)
-    #     mias_test_recall.append(test_recall_value)
-    #     mias_test_predictions.append(yhat)
-    #     mias_ground_truth.append(y_batch)
-    #
-    # # print the results
-    # print("Mean MIAS Accuracy:", np.mean(mias_test_accuracy))
-    # print("Mean MIAS Recall:", np.mean(mias_test_recall))
-    #
-    # # unlist the predictions and truth
-    # mias_test_predictions = flatten(mias_test_predictions)
-    # mias_ground_truth = flatten(mias_ground_truth)
-    #
-    # # save the predictions and truth for review
-    # np.save(os.path.join("data", "mias_predictions_" + model_name + ".npy"), mias_test_predictions)
-    # np.save(os.path.join("data", "mias_truth_" + model_name + ".npy"), mias_ground_truth)
 
 
