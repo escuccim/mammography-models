@@ -725,7 +725,7 @@ with graph.as_default():
             unpool5,
             filters=2,
             kernel_size=(3, 3),
-            strides=(2, 2),
+            strides=(4, 4),
             padding='SAME',
             activation=None,
             kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=11793),
@@ -750,7 +750,9 @@ with graph.as_default():
     # Different weighting method
     # This will weight the positive examples higher so as to improve recall
     weights = tf.multiply(tf.cast(weight, tf.float32), tf.cast(tf.greater(y_adj, 0), tf.float32)) + 1
-    mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y_adj, logits=(logits + 1e-10), weights=weights))
+    print("Y_adj", y_adj.shape)
+    print("Logits", logits.shape)
+    mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y_adj, logits=logits, weights=weights))
 
     # Add in l2 loss
     loss = mean_ce + tf.losses.get_regularization_loss()
@@ -765,6 +767,7 @@ with graph.as_default():
         train_op = optimizer.minimize(loss, global_step=global_step)
 
     predictions = tf.reshape(tf.argmax(logits, axis=-1, output_type=tf.int32), (-1, 288,288))
+    print("Predictions:", predictions.shape)
 
     predicted_abnormal = tf.reduce_max(predictions, axis=[1,2])
     actual_abnormal = tf.reduce_max(y_adj, axis=[1,2])
