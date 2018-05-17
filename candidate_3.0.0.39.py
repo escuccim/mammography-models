@@ -19,7 +19,7 @@ parser.add_argument("-a", "--action", help="action to perform", default="train")
 parser.add_argument("-f", "--freeze", help="whether to freeze convolutional layers", nargs='?', const=True, default=False)
 parser.add_argument("-s", "--stop", help="stop gradient at pool5", nargs='?', const=True, default=False)
 parser.add_argument("-t", "--threshold", help="decision threshold", default=0.5, type=float)
-parser.add_argument("-c", "--contrast", help="contrast adjustment, if any", default=0.0, type=float)
+parser.add_argument("-c", "--contrast", help="contrast adjustment, if any", default=None, type=float)
 parser.add_argument("-n", "--normalize", help="apply per image normalization", nargs='?', const=True, default=False)
 parser.add_argument("-w", "--weight", help="weight to give to positive examples in cross-entropy", default=10, type=float)
 parser.add_argument("-v", "--version", help="version or run number to assign to model name", default="")
@@ -168,13 +168,17 @@ with graph.as_default():
             X = tf.placeholder_with_default(X_def, shape=[None, 288, 288, 1])
             y = tf.placeholder_with_default(y_def, shape=[None, 288, 288, 1])
 
-            # cast to float and scale input data
-            X_adj = tf.image.convert_image_dtype(X, dtype=tf.float32)
-            X_adj = _scale_input_data(X_adj, contrast=contrast, mu=127.0, scale=255.0)
+            X_fl = tf.cast(X, tf.float32)
 
             # optional online data augmentation
             if distort:
-                X_adj, y_adj = augment(X_adj, y, horizontal_flip=True, augment_labels=True, vertical_flip=True, mixup=0)
+                X_dis, y_adj = augment(X_fl, y, horizontal_flip=True, augment_labels=True, vertical_flip=True, mixup=0)
+            else:
+                y_adj = y
+                X_dis = X_fl
+
+            # cast to float and scale input data
+            X_adj = _scale_input_data(X_dis, contrast=contrast, mu=127.0, scale=255.0)
 
     # Convolutional layer 1
     with tf.name_scope('conv1') as scope:

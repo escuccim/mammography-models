@@ -633,7 +633,7 @@ def flatten(l):
 
 def _scale_input_data(X, contrast=None, mu=104.1353, scale=255.0):
     # if we are adjusting contrast do that
-    if contrast:
+    if contrast and contrast != 1.0:
         X_adj = tf.image.adjust_contrast(X, contrast)
     else:
         X_adj = X
