@@ -106,7 +106,7 @@ print("Number of classes:", num_classes)
 ## Build the graph
 graph = tf.Graph()
 
-model_name = "model_s3.0.0.39" + model_label + "." + str(dataset) + str(version)
+model_name = "model_s3.0.0.40" + model_label + "." + str(dataset) + str(version)
 ## Change Log
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
@@ -141,6 +141,7 @@ model_name = "model_s3.0.0.39" + model_label + "." + str(dataset) + str(version)
 # 3.0.0.37 - trying to get this to train faster
 # 3.0.0.38 - adding tiny value to logits to avoid xe of NaN
 # 3.0.0.39 - doing metrics per pixel instead of per image
+# 3.0.0.40 - adjusted graph so we can do online data augmentation and labels will be transformed in same way as images
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -173,7 +174,7 @@ with graph.as_default():
 
             # optional online data augmentation
             if distort:
-                X_adj, y = augment(X_adj, y, horizontal_flip=True, augment_labels=True, vertical_flip=True, mixup=0)
+                X_adj, y_adj = augment(X_adj, y, horizontal_flip=True, augment_labels=True, vertical_flip=True, mixup=0)
 
     # Convolutional layer 1
     with tf.name_scope('conv1') as scope:
@@ -529,7 +530,7 @@ with graph.as_default():
         conv5_bn_relu = tf.stop_gradient(conv5_bn_relu, name="pool5_freeze")
 
     fc1 = _conv2d_batch_norm(conv5_bn_relu, 2048, kernel_size=(1, 1), stride=(1, 1), training=training, epsilon=1e-8,
-                             padding="SAME", seed=1013, lambd=lamC, name="fc_1")
+                             padding="SAME", seed=1013, lambd=lamF, name="fc_1")
 
     with tf.name_scope('un_conv1') as scope:
         unpool1 = tf.layers.conv2d_transpose(
@@ -698,10 +699,10 @@ with graph.as_default():
             name='logits'
         )
 
-    flat_logits = tf.reshape(logits, (-1, num_classes), name="fcn_logits")
-
-    correct_label_reshaped = tf.cast(tf.reshape(y, (-1, num_classes)), tf.float32)
-    # print("Labels", correct_label_reshaped.shape)
+    # flat_logits = tf.reshape(logits, (-1, num_classes), name="fcn_logits")
+    #
+    # correct_label_reshaped = tf.cast(tf.reshape(y, (-1, num_classes)), tf.float32)
+    # # print("Labels", correct_label_reshaped.shape)
 
     # get the fully connected variables so we can only train them when retraining the network
     fc_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "fc")
@@ -719,8 +720,8 @@ with graph.as_default():
 
     # Different weighting method
     # This will weight the positive examples higher so as to improve recall
-    weights = tf.multiply(tf.cast(weight, tf.float32), tf.cast(tf.greater(y, 0), tf.float32)) + 1
-    mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=(logits + 1e-10), weights=weights))
+    weights = tf.multiply(tf.cast(weight, tf.float32), tf.cast(tf.greater(y_adj, 0), tf.float32)) + 1
+    mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y_adj, logits=(logits + 1e-10), weights=weights))
 
     # Add in l2 loss
     loss = mean_ce + tf.losses.get_regularization_loss()
@@ -737,19 +738,19 @@ with graph.as_default():
     predictions = tf.reshape(tf.argmax(logits, axis=-1, output_type=tf.int32), (-1, 288,288))
 
     predicted_abnormal = tf.reduce_max(predictions, axis=[1,2])
-    actual_abnormal = tf.reduce_max(y, axis=[1,2])
+    actual_abnormal = tf.reduce_max(y_adj, axis=[1,2])
 
     # get the accuracy per pixel
     accuracy, acc_op = tf.metrics.accuracy(
-        labels=y,
+        labels=y_adj,
         predictions=predictions,
         updates_collections=tf.GraphKeys.UPDATE_OPS,
         name="accuracy",
     )
 
     # calculate recall and precision per pixel
-    recall, rec_op = tf.metrics.recall(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="pixel_recall")
-    precision, prec_op = tf.metrics.precision(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="pixel_precision")
+    recall, rec_op = tf.metrics.recall(labels=y_adj, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="pixel_recall")
+    precision, prec_op = tf.metrics.precision(labels=y_adj, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="pixel_precision")
 
     f1_score = 2 * ((precision * recall) / (precision + recall))
 

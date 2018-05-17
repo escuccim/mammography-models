@@ -103,8 +103,6 @@ def read_and_decode_single_example(filenames, label_type='label_normal', normali
             features={
                 'label': tf.FixedLenFeature([], tf.int64),
                 'label_normal': tf.FixedLenFeature([], tf.int64),
-                # 'label_mass': tf.FixedLenFeature([], tf.int64),
-                # 'label_benign': tf.FixedLenFeature([], tf.int64),
                 'image': tf.FixedLenFeature([], tf.string)
             })
 
@@ -718,17 +716,9 @@ def augment(images, labels,
 
 def standardize(tensor):
     # cast to float 32
-    tensor = tf.image.convert_image_dtype(tensor, dtype=tf.float32)
+    if tensor.dtype != tf.float32:
+        tensor = tf.image.convert_image_dtype(tensor, dtype=tf.float32)
 
-    # # get mean and variance
-    # mean, variance = tf.nn.moments(tensor, axes=[0], name="moments")
-    #
-    # # get adjusted sigma from variance
-    # sigma = tf.sqrt(variance, name="sigma")
-    # adj_sigma = tf.maximum(sigma, 0.0033)
-    #
-    # # standardize the tensor and return it
-    # standardized_tensor = tf.divide(tf.subtract(tensor, mean), adj_sigma)
     standardized_tensor = tf.div(
         tf.subtract(
             tensor,
