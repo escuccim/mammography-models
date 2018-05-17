@@ -760,8 +760,7 @@ with graph.as_default():
     # Different weighting method
     # This will weight the positive examples higher so as to improve recall
     weights = tf.multiply(tf.cast(weight, tf.float32), tf.cast(tf.greater(y_adj, 0), tf.float32)) + 1
-    print("Y_adj", y_adj.shape)
-    print("Logits", logits.shape)
+
     mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y_adj, logits=logits, weights=weights))
 
     # Add in l2 loss
@@ -777,7 +776,6 @@ with graph.as_default():
         train_op = optimizer.minimize(loss, global_step=global_step)
 
     predictions = tf.reshape(tf.argmax(logits, axis=-1, output_type=tf.int32), (-1, 288,288))
-    print("Predictions:", predictions.shape)
 
     predicted_abnormal = tf.reduce_max(predictions, axis=[1,2])
     actual_abnormal = tf.reduce_max(y_adj, axis=[1,2])
@@ -901,7 +899,7 @@ with tf.Session(graph=graph, config=config) as sess:
             sess.run(tf.global_variables_initializer())
 
             # create the initializer function to initialize the weights
-            init_fn = load_weights(init_model, exclude=["up_conv5", "accuracy", "up_conv4", "up_conv3","up_conv2","up_conv1","conv9", "bn9", "conv8", "bn8","conv6", "bn6", "conv7", "bn7","fcn_logits", "logits", "global_step"])
+            init_fn = load_weights(init_model, exclude=["up_conv5", "accuracy", "up_conv4", "up_conv3","up_conv2","up_conv1","conv9", "bn9", "conv8", "bn8","conv6", "bn6", "conv7", "bn7", "logits", "global_step"])
             # init_fn = load_weights(init_model, include=["conv1", "conv1.1", "conv1.2", "conv2.1", "conv2.2", "conv3.1", "conv3.2", "conv4", "conv5"], exclude=["conv1.1/bias","fc1", "up_conv5", "up_conv4", "up_conv3","up_conv2","up_conv1","conv9", "bn9", "conv8", "bn8","conv6", "bn6", "conv7", "bn7","fcn_logits", "logits", "bn_fc2", "bn_fc1", "fc2", "global_step"])
             # run the initializer
             init_fn(sess)
