@@ -106,7 +106,7 @@ print("Number of classes:", num_classes)
 ## Build the graph
 graph = tf.Graph()
 
-model_name = "model_s3.1.0.42" + model_label + "." + str(dataset) + str(version)
+model_name = "model_s3.1.0.43" + model_label + "." + str(dataset) + str(version)
 ## Change Log
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
@@ -145,6 +145,7 @@ model_name = "model_s3.1.0.42" + model_label + "." + str(dataset) + str(version)
 # 3.1.0.40 - adding some layers back in that were previously removed to take more advantage of pre-trained model
 # 3.1.0.41 - changed skip connections to try to make it a bit more stable
 # 3.1.0.42 - changed one more skip connection
+# 3.1.0.43 - trying to not restore batch norm to see if that helps with NaN at test time
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -897,8 +898,14 @@ with tf.Session(graph=graph, config=config) as sess:
             sess.run(tf.global_variables_initializer())
 
             # create the initializer function to initialize the weights
-            init_fn = load_weights(init_model, exclude=["up_conv5", "accuracy", "up_conv4", "up_conv3","up_conv2","up_conv1","conv9", "bn9", "conv8", "bn8","conv6", "bn6", "conv7", "bn7", "logits", "global_step"])
-            # init_fn = load_weights(init_model, include=["conv1", "conv1.1", "conv1.2", "conv2.1", "conv2.2", "conv3.1", "conv3.2", "conv4", "conv5"], exclude=["conv1.1/bias","fc1", "up_conv5", "up_conv4", "up_conv3","up_conv2","up_conv1","conv9", "bn9", "conv8", "bn8","conv6", "bn6", "conv7", "bn7","fcn_logits", "logits", "bn_fc2", "bn_fc1", "fc2", "global_step"])
+            ## Trying for version 43
+            init_fn = load_weights(init_model, exclude=["bn1","bn1.1","bn2.1","bn2.2","bn3.1","bn3.2","bn4","bn5","up_conv5", "accuracy", "up_conv4", "up_conv3","up_conv2", "up_conv1", "conv9", "bn9", "conv8", "bn8","conv6", "bn6", "conv7", "bn7", "logits", "global_step"])
+            ## From version 42
+            # init_fn = load_weights(init_model,
+            #                        exclude=["up_conv5", "accuracy", "up_conv4", "up_conv3", "up_conv2",
+            #                                 "up_conv1", "conv9", "bn9", "conv8", "bn8", "conv6", "bn6", "conv7", "bn7",
+            #                                 "logits", "global_step"])
+            # # init_fn = load_weights(init_model, include=["conv1", "conv1.1", "conv1.2", "conv2.1", "conv2.2", "conv3.1", "conv3.2", "conv4", "conv5"], exclude=["conv1.1/bias","fc1", "up_conv5", "up_conv4", "up_conv3","up_conv2","up_conv1","conv9", "bn9", "conv8", "bn8","conv6", "bn6", "conv7", "bn7","fcn_logits", "logits", "bn_fc2", "bn_fc1", "fc2", "global_step"])
             # run the initializer
             init_fn(sess)
 
@@ -1013,7 +1020,7 @@ with tf.Session(graph=graph, config=config) as sess:
                     feed_dict={
                         X: X_batch,
                         y: y_batch,
-                        training: True
+                        training: False
                     })
 
                 batch_cv_acc.append(valid_acc)
@@ -1071,14 +1078,6 @@ with tf.Session(graph=graph, config=config) as sess:
                 'Epoch {:02d} - step {} - cv acc: {:.4f} - train acc: {:.3f} (mean)'.format(
                     epoch, step, np.mean(batch_cv_acc), np.mean(batch_acc)
                 ))
-
-            # Print data every 50th epoch so I can write it down to compare models
-            if (not print_metrics) and (epoch % 50 == 0) and (epoch > 1):
-                if (epoch % print_every == 0):
-                    print(
-                    'Epoch {:02d} - step {} - cv acc: {:.4f} - train acc: {:.3f} (mean)'.format(
-                        epoch, step, np.mean(batch_cv_acc), np.mean(batch_acc)
-                    ))
 
         # stop the coordinator
         coord.request_stop()
