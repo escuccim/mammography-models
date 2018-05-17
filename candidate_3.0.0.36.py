@@ -106,7 +106,7 @@ print("Number of classes:", num_classes)
 ## Build the graph
 graph = tf.Graph()
 
-model_name = "model_s3.0.0.38" + model_label + "." + str(dataset) + str(version)
+model_name = "model_s3.0.0.39" + model_label + "." + str(dataset) + str(version)
 ## Change Log
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
@@ -140,6 +140,7 @@ model_name = "model_s3.0.0.38" + model_label + "." + str(dataset) + str(version)
 # 3.0.0.36 - adjusting to do segmentation instead of classification
 # 3.0.0.37 - trying to get this to train faster
 # 3.0.0.38 - adding tiny value to logits to avoid xe of NaN
+# 3.0.0.39 - doing metrics per pixel instead of per image
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -738,24 +739,17 @@ with graph.as_default():
     predicted_abnormal = tf.reduce_max(predictions, axis=[1,2])
     actual_abnormal = tf.reduce_max(y, axis=[1,2])
 
-    # get the probabilites for the classes
-    # probabilities = tf.nn.softmax(logits, name="probabilities")
-    # abnormal_probability = 1 - probabilities[:,0]
-
-    # flatten predictions and labels
-
-
-    # get the accuracy
+    # get the accuracy per pixel
     accuracy, acc_op = tf.metrics.accuracy(
         labels=y,
         predictions=predictions,
         updates_collections=tf.GraphKeys.UPDATE_OPS,
-        name="accuracy",
+        name="pixel_accuracy",
     )
 
-    # calculate recall
-    recall, rec_op = tf.metrics.recall(labels=actual_abnormal, predictions=predicted_abnormal, updates_collections=tf.GraphKeys.UPDATE_OPS, name="recall")
-    precision, prec_op = tf.metrics.precision(labels=actual_abnormal, predictions=predicted_abnormal, updates_collections=tf.GraphKeys.UPDATE_OPS, name="precision")
+    # calculate recall and precision per pixel
+    recall, rec_op = tf.metrics.recall(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="pixel_recall")
+    precision, prec_op = tf.metrics.precision(labels=y, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="pixel_precision")
 
     f1_score = 2 * ((precision * recall) / (precision + recall))
 
