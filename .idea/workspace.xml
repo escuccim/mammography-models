@@ -31,8 +31,8 @@
       <file leaf-file-name="candidate_3.1.0.40.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/candidate_3.1.0.40.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="289">
-              <caret line="901" column="188" selection-start-line="901" selection-start-column="188" selection-end-line="901" selection-end-column="188" />
+            <state relative-caret-position="80">
+              <caret line="761" column="105" selection-start-line="761" selection-start-column="105" selection-end-line="761" selection-end-column="105" />
             </state>
           </provider>
         </entry>
@@ -53,8 +53,8 @@
         <entry file="file://$PROJECT_DIR$/Report.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="5627">
-                <caret line="331" selection-start-line="331" selection-end-line="331" />
+              <first_editor relative-caret-position="255">
+                <caret line="345" column="145" lean-forward="true" selection-start-line="345" selection-start-column="4" selection-end-line="345" selection-end-column="145" />
               </first_editor>
               <second_editor />
             </state>
@@ -64,8 +64,8 @@
       <file leaf-file-name="training_utils.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/training_utils.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="272">
-              <caret line="16" column="55" selection-start-line="16" selection-start-column="55" selection-end-line="16" selection-end-column="55" />
+            <state relative-caret-position="323">
+              <caret line="112" column="48" lean-forward="true" selection-start-line="99" selection-start-column="8" selection-end-line="112" selection-end-column="48" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -617,16 +617,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Report.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="5627">
-            <caret line="331" selection-start-line="331" selection-end-line="331" />
-          </first_editor>
-          <second_editor />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/candidate_1.0.0.35.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="425">
@@ -647,16 +637,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/training_utils.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="16" column="55" selection-start-line="16" selection-start-column="55" selection-end-line="16" selection-end-column="55" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/candidate_2.0.0.35.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="425">
@@ -667,10 +647,30 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/training_utils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="323">
+          <caret line="112" column="48" lean-forward="true" selection-start-line="99" selection-start-column="8" selection-end-line="112" selection-end-column="48" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Report.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="255">
+            <caret line="345" column="145" lean-forward="true" selection-start-line="345" selection-start-column="4" selection-end-line="345" selection-end-column="145" />
+          </first_editor>
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/candidate_3.1.0.40.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="901" column="188" selection-start-line="901" selection-start-column="188" selection-end-line="901" selection-end-column="188" />
+        <state relative-caret-position="80">
+          <caret line="761" column="105" selection-start-line="761" selection-start-column="105" selection-end-line="761" selection-end-column="105" />
         </state>
       </provider>
     </entry>

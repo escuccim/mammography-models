@@ -106,7 +106,7 @@ print("Number of classes:", num_classes)
 ## Build the graph
 graph = tf.Graph()
 
-model_name = "model_s3.1.0.41" + model_label + "." + str(dataset) + str(version)
+model_name = "model_s3.1.0.42" + model_label + "." + str(dataset) + str(version)
 ## Change Log
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
@@ -144,6 +144,7 @@ model_name = "model_s3.1.0.41" + model_label + "." + str(dataset) + str(version)
 # 3.0.0.40 - adjusted graph so we can do online data augmentation and labels will be transformed in same way as images
 # 3.1.0.40 - adding some layers back in that were previously removed to take more advantage of pre-trained model
 # 3.1.0.41 - changed skip connections to try to make it a bit more stable
+# 3.1.0.42 - changed one more skip connection
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -185,12 +186,12 @@ with graph.as_default():
     # Convolutional layer 1
     with tf.name_scope('conv1') as scope:
         conv1 = tf.layers.conv2d(
-            X_adj,  # Input data
-            filters=32,  # 32 filters
-            kernel_size=(3, 3),  # Kernel size: 5x5
-            strides=(2, 2),  # Stride: 2
-            padding='SAME',  # "same" padding
-            activation=None,  # None
+            X_adj,
+            filters=32,
+            kernel_size=(3, 3),
+            strides=(2, 2),
+            padding='SAME',
+            activation=None,
             kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=100),
             kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
             name='conv1'
@@ -217,12 +218,12 @@ with graph.as_default():
 
     with tf.name_scope('conv1.1') as scope:
         conv11 = tf.layers.conv2d(
-            conv1_bn_relu,  # Input data
-            filters=32,  # 32 filters
-            kernel_size=(3, 3),  # Kernel size: 5x5
-            strides=(1, 1),  # Stride: 2
-            padding='SAME',  # "same" padding
-            activation=None,  # None
+            conv1_bn_relu,
+            filters=32,
+            kernel_size=(3, 3),
+            strides=(1, 1),
+            padding='SAME',
+            activation=None,
             kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=101),
             kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
             name='conv1.1'
@@ -250,12 +251,12 @@ with graph.as_default():
 
     with tf.name_scope('conv1.2') as scope:
         conv12 = tf.layers.conv2d(
-            conv11,  # Input data
-            filters=32,  # 32 filters
-            kernel_size=(3, 3),  # Kernel size: 5x5
-            strides=(1, 1),  # Stride: 2
-            padding='SAME',  # "same" padding
-            activation=None,  # None
+            conv11,
+            filters=32,
+            kernel_size=(3, 3),
+            strides=(1, 1),
+            padding='SAME',
+            activation=None,
             kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=1101),
             kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
             name='conv1.2'
@@ -283,10 +284,10 @@ with graph.as_default():
     # Max pooling layer 1
     with tf.name_scope('pool1') as scope:
         pool1 = tf.layers.max_pooling2d(
-            conv12,  # Input
-            pool_size=(3, 3),  # Pool size: 3x3
-            strides=(2, 2),  # Stride: 2
-            padding='SAME',  # "same" padding
+            conv12,
+            pool_size=(3, 3),
+            strides=(2, 2),
+            padding='SAME',
             name='pool1'
         )
 
@@ -297,12 +298,12 @@ with graph.as_default():
     # Convolutional layer 2
     with tf.name_scope('conv2.1') as scope:
         conv2 = tf.layers.conv2d(
-            pool1,  # Input data
-            filters=64,  # 32 filters
-            kernel_size=(3, 3),  # Kernel size: 9x9
-            strides=(1, 1),  # Stride: 1
-            padding='SAME',  # "same" padding
-            activation=None,  # None
+            pool1,
+            filters=64,
+            kernel_size=(3, 3),
+            strides=(1, 1),
+            padding='SAME',
+            activation=None,
             kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=104),
             kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
             name='conv2.1'
@@ -330,12 +331,12 @@ with graph.as_default():
     # Convolutional layer 2
     with tf.name_scope('conv2.2') as scope:
         conv22 = tf.layers.conv2d(
-            conv2,  # Input data
-            filters=64,  # 32 filters
-            kernel_size=(3, 3),  # Kernel size: 9x9
-            strides=(1, 1),  # Stride: 1
-            padding='SAME',  # "same" padding
-            activation=None,  # None
+            conv2,
+            filters=64,
+            kernel_size=(3, 3),
+            strides=(1, 1),
+            padding='SAME',
+            activation=None,
             kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=1104),
             kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
             name='conv2.2'
@@ -363,10 +364,10 @@ with graph.as_default():
     # Max pooling layer 2
     with tf.name_scope('pool2') as scope:
         pool2 = tf.layers.max_pooling2d(
-            conv22_relu,  # Input
-            pool_size=(2, 2),  # Pool size: 3x3
-            strides=(2, 2),  # Stride: 2
-            padding='SAME',  # "same" padding
+            conv22_relu,
+            pool_size=(2, 2),
+            strides=(2, 2),
+            padding='SAME',
             name='pool2'
         )
 
@@ -377,12 +378,12 @@ with graph.as_default():
     # Convolutional layer 3
     with tf.name_scope('conv3.1') as scope:
         conv3 = tf.layers.conv2d(
-            pool2,  # Input data
-            filters=128,  # 48 filters
-            kernel_size=(3, 3),  # Kernel size: 5x5
-            strides=(1, 1),  # Stride: 1
-            padding='SAME',  # "same" padding
-            activation=None,  # None
+            pool2,
+            filters=128,
+            kernel_size=(3, 3),
+            strides=(1, 1),
+            padding='SAME',
+            activation=None,
             kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=107),
             kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
             name='conv3.1'
@@ -410,12 +411,12 @@ with graph.as_default():
     # Convolutional layer 3
     with tf.name_scope('conv3.2') as scope:
         conv32 = tf.layers.conv2d(
-            conv3,  # Input data
-            filters=128,  # 48 filters
-            kernel_size=(3, 3),  # Kernel size: 5x5
-            strides=(1, 1),  # Stride: 1
-            padding='SAME',  # "same" padding
-            activation=None,  # None
+            conv3,
+            filters=128,
+            kernel_size=(3, 3),
+            strides=(1, 1),
+            padding='SAME',
+            activation=None,
             kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=1107),
             kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
             name='conv3.2'
@@ -443,10 +444,10 @@ with graph.as_default():
     # Max pooling layer 3
     with tf.name_scope('pool3') as scope:
         pool3 = tf.layers.max_pooling2d(
-            conv32,  # Input
-            pool_size=(2, 2),  # Pool size: 2x2
-            strides=(2, 2),  # Stride: 2
-            padding='SAME',  # "same" padding
+            conv32,
+            pool_size=(2, 2),
+            strides=(2, 2),
+            padding='SAME',
             name='pool3'
         )
 
@@ -456,12 +457,12 @@ with graph.as_default():
     # Convolutional layer 4
     with tf.name_scope('conv4') as scope:
             conv4 = tf.layers.conv2d(
-                pool3,  # Input data
-                filters=256,  # 48 filters
-                kernel_size=(3, 3),  # Kernel size: 5x5
-                strides=(1, 1),  # Stride: 1
-                padding='SAME',  # "same" padding
-                activation=None,  # None
+                pool3,
+                filters=256,
+                kernel_size=(3, 3),
+                strides=(1, 1),
+                padding='SAME',
+                activation=None,
                 kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=110),
                 kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
                 name='conv4'
@@ -489,10 +490,10 @@ with graph.as_default():
     # Max pooling layer 4
     with tf.name_scope('pool4') as scope:
             pool4 = tf.layers.max_pooling2d(
-                conv4_bn_relu,  # Input
-                pool_size=(2, 2),  # Pool size: 2x2
-                strides=(2, 2),  # Stride: 2
-                padding='SAME',  # "same" padding
+                conv4_bn_relu,
+                pool_size=(2, 2),
+                strides=(2, 2),
+                padding='SAME',
                 name='pool4'
             )
 
@@ -502,12 +503,12 @@ with graph.as_default():
     # Convolutional layer 4
     with tf.name_scope('conv5') as scope:
         conv5 = tf.layers.conv2d(
-            pool4,  # Input data
-            filters=512,  # 48 filters
-            kernel_size=(3, 3),  # Kernel size: 5x5
-            strides=(1, 1),  # Stride: 1
-            padding='SAME',  # "same" padding
-            activation=None,  # None
+            pool4,
+            filters=512,
+            kernel_size=(3, 3),
+            strides=(1, 1),
+            padding='SAME',
+            activation=None,
             kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=113),
             kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
             name='conv5'
@@ -532,12 +533,12 @@ with graph.as_default():
         # apply relu
         conv5_bn_relu = tf.nn.relu(conv5, name='relu5')
 
-    # Max pooling layer 4
+    # Max pooling layer 5
     with tf.name_scope('pool5') as scope:
         pool5 = tf.layers.max_pooling2d(
             conv5_bn_relu,
-            pool_size=(2, 2),  # Pool size: 2x2
-            strides=(2, 2),  # Stride: 2
+            pool_size=(2, 2),
+            strides=(2, 2),
             padding='SAME',
             name='pool5'
         )
@@ -556,8 +557,8 @@ with graph.as_default():
 
     fc3 = tf.layers.dense(
         fc2,
-        num_classes,  # One output unit per category
-        activation=None,  # No activation function
+        num_classes,
+        activation=None,
         kernel_initializer=tf.variance_scaling_initializer(scale=1, seed=121),
         bias_initializer=tf.zeros_initializer(),
         name="fc_logits"
@@ -583,20 +584,24 @@ with graph.as_default():
             kernel_size=(3, 3),
             strides=(3, 3),
             padding='SAME',
-            activation=tf.nn.elu,
+            activation=None,
             kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=11435),
             kernel_regularizer=None,
             name='up_conv2'
         )
 
+        unpool1 = unpool1 + conv5
+
+        unpooll1 = tf.nn.elu(unpool1, name="up_conv2_relu")
+
     with tf.name_scope('conv6') as scope:
         conv6 = tf.layers.conv2d(
-            unpool1,  # Input data
-            filters=512,  # 48 filters
-            kernel_size=(3, 3),  # Kernel size: 5x5
-            strides=(1, 1),  # Stride: 1
-            padding='SAME',  # "same" padding
-            activation=None,  # None
+            unpool1,
+            filters=256,
+            kernel_size=(3, 3),
+            strides=(1, 1),
+            padding='SAME',
+            activation=None,
             kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=71145),
             kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
             name='conv6'
@@ -618,8 +623,6 @@ with graph.as_default():
             name='bn6'
         )
 
-        conv6 = conv6 + conv5
-
         # apply relu
         conv6 = tf.nn.elu(conv6, name='relu6')
 
@@ -638,12 +641,12 @@ with graph.as_default():
 
     with tf.name_scope('conv7') as scope:
         conv7 = tf.layers.conv2d(
-            unpool2,  # Input data
-            filters=256,  # 48 filters
-            kernel_size=(3, 3),  # Kernel size: 5x5
-            strides=(1, 1),  # Stride: 1
-            padding='SAME',  # "same" padding
-            activation=None,  # None
+            unpool2,
+            filters=256,
+            kernel_size=(3, 3),
+            strides=(1, 1),
+            padding='SAME',
+            activation=None,
             kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=1185),
             kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
             name='conv7'
@@ -685,12 +688,12 @@ with graph.as_default():
 
     with tf.name_scope('conv9') as scope:
         conv9 = tf.layers.conv2d(
-            unpool3,  # Input data
-            filters=128,  # 48 filters
-            kernel_size=(3, 3),  # Kernel size: 5x5
-            strides=(1, 1),  # Stride: 1
-            padding='SAME',  # "same" padding
-            activation=None,  # None
+            unpool3,
+            filters=128,
+            kernel_size=(3, 3),
+            strides=(1, 1),
+            padding='SAME',
+            activation=None,
             kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=115),
             kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
             name='conv9'
@@ -753,15 +756,10 @@ with graph.as_default():
     with tf.variable_scope('visualization'):
         tf.summary.image('conv1/filters', kernel_transposed, max_outputs=32, collections=["kernels"])
 
-    ## Loss function options
-    # Regular mean cross entropy
-    #mean_ce = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits))
-
-    # Different weighting method
     # This will weight the positive examples higher so as to improve recall
     weights = tf.multiply(tf.cast(weight, tf.float32), tf.cast(tf.greater(y_adj, 0), tf.float32)) + 1
 
-    mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y_adj, logits=logits, weights=weights))
+    mean_ce = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y_adj, logits=(logits + 1e-10), weights=weights))
 
     # Add in l2 loss
     loss = mean_ce + tf.losses.get_regularization_loss()
