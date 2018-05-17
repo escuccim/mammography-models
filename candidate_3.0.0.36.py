@@ -744,7 +744,7 @@ with graph.as_default():
         labels=y,
         predictions=predictions,
         updates_collections=tf.GraphKeys.UPDATE_OPS,
-        name="pixel_accuracy",
+        name="accuracy",
     )
 
     # calculate recall and precision per pixel
