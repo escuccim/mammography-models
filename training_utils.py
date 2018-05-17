@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 import os
 import wget
 import zipfile
@@ -570,10 +571,12 @@ def _conv2d_batch_norm(input, filters, kernel_size=(3,3), stride=(1,1), training
         if activation == "relu":
             # apply relu
             conv = tf.nn.relu(conv, name='relu_'+name)
+        elif activation == "elu":
+            conv = tf.nn.elu(conv, name="elu_" + name)
 
     return conv
 
-def _dense_batch_norm(input, units,  training = tf.placeholder(dtype=tf.bool, name="is_training"), epsilon=1e-8, seed=None, dropout_rate=0.5, lambd=0.0, name=None):
+def _dense_batch_norm(input, units,  training = tf.placeholder(dtype=tf.bool, name="is_training"), epsilon=1e-8, activation="relu", seed=None, dropout_rate=0.5, lambd=0.0, name=None):
     with tf.name_scope('fc_' + name) as scope:
         fc = tf.layers.dense(
             input,  # input
@@ -600,7 +603,12 @@ def _dense_batch_norm(input, units,  training = tf.placeholder(dtype=tf.bool, na
             name='bn_fc_' + name
         )
 
-        fc = tf.nn.relu(fc, name='fc_relu' + name)
+        if activation == "elu":
+            fc = tf.nn.elu(fc, name="fc_elu" + name)
+        elif activation == None:
+            pass
+        else:
+            fc = tf.nn.relu(fc, name='fc_relu' + name)
 
         # dropout
         fc = tf.layers.dropout(fc, rate=dropout_rate, seed=seed, training=training)
@@ -732,3 +740,15 @@ def standardize(tensor):
         )
     )
     return standardized_tensor
+
+def plot_results(y_, yhat, x_, threshold=20):
+    for i in range(len(yhat)):
+        if (np.sum(yhat[i] == 1) > threshold) or (np.sum(y_[i] == 1) > threshold):
+            f, ax = plt.subplots(1, 3, figsize=(10, 4))
+            ax[0].imshow(x_[i].reshape(288,288))
+            ax[0].set_title("Image")
+            ax[1].imshow(y_[i].reshape(288,288))
+            ax[1].set_title("Label")
+            ax[2].imshow(yhat[i].reshape(288,288))
+            ax[2].set_title("Prediction")
+            plt.show()

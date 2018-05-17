@@ -21,7 +21,7 @@ parser.add_argument("-s", "--stop", help="stop gradient at pool5", nargs='?', co
 parser.add_argument("-t", "--threshold", help="decision threshold", default=0.5, type=float)
 parser.add_argument("-c", "--contrast", help="contrast adjustment, if any", default=0.0, type=float)
 parser.add_argument("-n", "--normalize", help="apply per image normalization", nargs='?', const=True, default=False)
-parser.add_argument("-w", "--weight", help="weight to give to positive examples in cross-entropy", default=6, type=float)
+parser.add_argument("-w", "--weight", help="weight to give to positive examples in cross-entropy", default=10, type=float)
 parser.add_argument("-v", "--version", help="version or run number to assign to model name", default="")
 parser.add_argument("--distort", help="use online data augmentation", default=False, const=True, nargs="?")
 args = parser.parse_args()
@@ -66,8 +66,8 @@ train_files, total_records = get_training_data(what=dataset)
 epsilon = 1e-8
 
 # learning rate
-epochs_per_decay = 5
-decay_factor = 0.80
+epochs_per_decay = 10
+decay_factor = 0.85
 staircase = True
 
 # if we are retraining some layers start with smaller learning rate
