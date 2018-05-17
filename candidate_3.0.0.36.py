@@ -742,10 +742,13 @@ with graph.as_default():
     # probabilities = tf.nn.softmax(logits, name="probabilities")
     # abnormal_probability = 1 - probabilities[:,0]
 
+    # flatten predictions and labels
+
+
     # get the accuracy
     accuracy, acc_op = tf.metrics.accuracy(
-        labels=actual_abnormal,
-        predictions=predicted_abnormal,
+        labels=y,
+        predictions=predictions,
         updates_collections=tf.GraphKeys.UPDATE_OPS,
         name="accuracy",
     )
