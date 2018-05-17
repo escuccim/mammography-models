@@ -106,7 +106,7 @@ print("Number of classes:", num_classes)
 ## Build the graph
 graph = tf.Graph()
 
-model_name = "model_s3.1.0.43" + model_label + "." + str(dataset) + str(version)
+model_name = "model_s3.1.0.44" + model_label + "." + str(dataset) + str(version)
 ## Change Log
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
@@ -146,6 +146,7 @@ model_name = "model_s3.1.0.43" + model_label + "." + str(dataset) + str(version)
 # 3.1.0.41 - changed skip connections to try to make it a bit more stable
 # 3.1.0.42 - changed one more skip connection
 # 3.1.0.43 - trying to not restore batch norm to see if that helps with NaN at test time
+# 3.1.0.44 - increased size of upconv filters to try to reduce patchiness of result, removed fc layer 3 as it was losing a lot of data
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -556,20 +557,11 @@ with graph.as_default():
     fc2 = _conv2d_batch_norm(fc1, 2048, kernel_size=(1, 1), stride=(1, 1), training=training, epsilon=1e-8,
                              padding="VALID", seed=1014, lambd=lamC, name="fc_2")
 
-    fc3 = tf.layers.dense(
-        fc2,
-        num_classes,
-        activation=None,
-        kernel_initializer=tf.variance_scaling_initializer(scale=1, seed=121),
-        bias_initializer=tf.zeros_initializer(),
-        name="fc_logits"
-    )
-
     with tf.name_scope('up_conv1') as scope:
         unpool1 = tf.layers.conv2d_transpose(
-            fc3,
+            fc2,
             filters=1024,
-            kernel_size=(3, 3),
+            kernel_size=(4, 4),
             strides=(3, 3),
             padding='SAME',
             activation=tf.nn.elu,
@@ -582,7 +574,7 @@ with graph.as_default():
         unpool1 = tf.layers.conv2d_transpose(
             unpool1,
             filters=512,
-            kernel_size=(3, 3),
+            kernel_size=(4, 4),
             strides=(3, 3),
             padding='SAME',
             activation=None,
@@ -678,7 +670,7 @@ with graph.as_default():
         unpool4 = tf.layers.conv2d_transpose(
             conv7,
             filters=128,
-            kernel_size=(3, 3),
+            kernel_size=(4, 4),
             strides=(2, 2),
             padding='SAME',
             activation=tf.nn.elu,
@@ -725,7 +717,7 @@ with graph.as_default():
         unpool5 = tf.layers.conv2d_transpose(
             conv9,
             filters=32,
-            kernel_size=(3, 3),
+            kernel_size=(4, 4),
             strides=(2, 2),
             padding='SAME',
             activation=tf.nn.elu,
@@ -738,7 +730,7 @@ with graph.as_default():
         logits = tf.layers.conv2d_transpose(
             unpool5,
             filters=2,
-            kernel_size=(3, 3),
+            kernel_size=(4, 4),
             strides=(4, 4),
             padding='SAME',
             activation=None,
