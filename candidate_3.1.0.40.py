@@ -106,7 +106,7 @@ print("Number of classes:", num_classes)
 ## Build the graph
 graph = tf.Graph()
 
-model_name = "model_s3.1.0.44" + model_label + "." + str(dataset) + str(version)
+model_name = "model_s3.1.0.45" + model_label + "." + str(dataset) + str(version)
 ## Change Log
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
@@ -147,6 +147,7 @@ model_name = "model_s3.1.0.44" + model_label + "." + str(dataset) + str(version)
 # 3.1.0.42 - changed one more skip connection
 # 3.1.0.43 - trying to not restore batch norm to see if that helps with NaN at test time
 # 3.1.0.44 - increased size of upconv filters to try to reduce patchiness of result, removed fc layer 3 as it was losing a lot of data
+# 3.1.0.45 - adding some dropout to try to regularize
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -554,8 +555,12 @@ with graph.as_default():
     fc1 = _conv2d_batch_norm(pool5, 2048, kernel_size=(5, 5), stride=(5, 5), training=training, epsilon=1e-8,
                              padding="VALID", seed=1013, lambd=lamC, name="fc_1")
 
+    fc1= tf.layers.dropout(fc1, rate=fcdropout_rate, seed=11537, training=training)
+
     fc2 = _conv2d_batch_norm(fc1, 2048, kernel_size=(1, 1), stride=(1, 1), training=training, epsilon=1e-8,
                              padding="VALID", seed=1014, lambd=lamC, name="fc_2")
+
+    fc2 = tf.layers.dropout(fc2, rate=fcdropout_rate, seed=12537, training=training)
 
     with tf.name_scope('up_conv1') as scope:
         unpool1 = tf.layers.conv2d_transpose(
@@ -585,7 +590,10 @@ with graph.as_default():
 
         unpool1 = unpool1 + conv5
 
-        unpooll1 = tf.nn.elu(unpool1, name="up_conv2_relu")
+        unpooll = tf.nn.elu(unpool1, name="up_conv2_relu")
+
+        if dropout:
+            unpooll = tf.layers.dropout(unpooll, rate=pooldropout_rate, seed=13537, training=training)
 
     with tf.name_scope('conv6') as scope:
         conv6 = tf.layers.conv2d(
@@ -679,6 +687,9 @@ with graph.as_default():
             name='up_conv4'
         )
 
+        if dropout:
+            unpool4 = tf.layers.dropout(unpool4, rate=pooldropout_rate, seed=14537, training=training)
+
     with tf.name_scope('conv9') as scope:
         conv9 = tf.layers.conv2d(
             unpool4,
@@ -725,6 +736,9 @@ with graph.as_default():
             kernel_regularizer=None,
             name='up_conv5'
         )
+
+        if dropout:
+            unpool5 = tf.layers.dropout(unpool5, rate=pooldropout_rate, seed=14537, training=training)
 
     with tf.name_scope('logits') as scope:
         logits = tf.layers.conv2d_transpose(

@@ -4,7 +4,10 @@
     <bookmark url="file://$PROJECT_DIR$/ReadMe.md" line="130" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="98c4e5b0-4f90-4540-b87f-9bd6d2ddc583" name="Default" comment="" />
+    <list default="true" id="98c4e5b0-4f90-4540-b87f-9bd6d2ddc583" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/candidate_3.1.0.40.py" beforeDir="false" afterPath="$PROJECT_DIR$/candidate_3.1.0.40.py" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -15,7 +18,7 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="600">
       <file leaf-file-name="candidate_3.0.0.39.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/candidate_3.0.0.39.py">
+        <entry file="file://$PROJECT_DIR$/old_models/candidate_3.0.0.39.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="442">
               <caret line="26" column="26" lean-forward="true" selection-start-line="26" selection-start-column="26" selection-end-line="26" selection-end-column="26" />
@@ -29,8 +32,8 @@
       <file leaf-file-name="candidate_3.1.0.40.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/candidate_3.1.0.40.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-4421">
-              <caret line="804" column="29" lean-forward="true" selection-start-line="106" selection-end-line="804" selection-end-column="29" />
+            <state relative-caret-position="1084">
+              <caret line="740" column="47" selection-start-line="740" selection-start-column="47" selection-end-line="740" selection-end-column="47" />
             </state>
           </provider>
         </entry>
@@ -385,7 +388,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/candidate_1.3.1.01n.py">
+    <entry file="file://$PROJECT_DIR$/old_models/candidate_1.3.1.01n.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="11733">
           <caret line="408" column="18" selection-start-line="408" selection-start-column="12" selection-end-line="408" selection-end-column="18" />
@@ -413,14 +416,14 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/model_1.0.1.32.py">
+    <entry file="file://$PROJECT_DIR$/old_models/model_1.0.1.32.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="27720">
           <caret line="935" column="72" selection-start-line="935" selection-start-column="72" selection-end-line="935" selection-end-column="72" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/model_1.0.2.02.py">
+    <entry file="file://$PROJECT_DIR$/old_models/model_1.0.2.02.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-2673" />
       </provider>
@@ -460,14 +463,14 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/vgg_16.py">
+    <entry file="file://$PROJECT_DIR$/old_models/vgg_16.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="528">
           <caret line="81" column="26" selection-start-line="81" selection-start-column="26" selection-end-line="81" selection-end-column="26" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/model_1.0.1.39n.bu.py">
+    <entry file="file://$PROJECT_DIR$/old_models/model_1.0.1.39n.bu.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-9306" />
       </provider>
@@ -479,7 +482,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/candidate_1.0.0.28.2.py">
+    <entry file="file://$PROJECT_DIR$/old_models/candidate_1.0.0.28.2.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="33">
           <caret line="21" column="103" selection-start-line="21" selection-start-column="103" selection-end-line="21" selection-end-column="103" />
@@ -491,7 +494,7 @@
         <state relative-caret-position="-3960" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/candidate_1.1.0.01.py">
+    <entry file="file://$PROJECT_DIR$/old_models/candidate_1.1.0.01.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1238">
           <caret line="118" column="29" selection-start-line="118" selection-start-column="29" selection-end-line="118" selection-end-column="29" />
@@ -526,7 +529,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/candidate_1.0.0.28-bu2.py">
+    <entry file="file://$PROJECT_DIR$/old_models/candidate_1.0.0.28-bu2.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-18612" />
       </provider>
@@ -560,7 +563,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/vgg_16.2.py">
+    <entry file="file://$PROJECT_DIR$/old_models/vgg_16.2.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="5049">
           <caret line="305" column="5" selection-start-line="298" selection-start-column="4" selection-end-line="305" selection-end-column="5" />
@@ -570,7 +573,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/candidate_1.0.5.01.py">
+    <entry file="file://$PROJECT_DIR$/old_models/candidate_1.0.5.01.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="6052">
           <caret line="364" column="8" selection-start-line="364" selection-start-column="8" selection-end-line="364" selection-end-column="84" />
@@ -590,7 +593,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/candidate_3.0.0.39.py">
+    <entry file="file://$PROJECT_DIR$/old_models/candidate_3.0.0.39.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="442">
           <caret line="26" column="26" lean-forward="true" selection-start-line="26" selection-start-column="26" selection-end-line="26" selection-end-column="26" />
@@ -632,8 +635,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/candidate_3.1.0.40.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-4421">
-          <caret line="804" column="29" lean-forward="true" selection-start-line="106" selection-end-line="804" selection-end-column="29" />
+        <state relative-caret-position="1084">
+          <caret line="740" column="47" selection-start-line="740" selection-start-column="47" selection-end-line="740" selection-end-column="47" />
         </state>
       </provider>
     </entry>
