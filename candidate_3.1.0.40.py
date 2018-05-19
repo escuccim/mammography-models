@@ -86,7 +86,7 @@ lamF = 0.00250
 
 # use dropout
 dropout = True
-fcdropout_rate = 0.5
+fcdropout_rate = 0.25
 convdropout_rate = 0.001
 pooldropout_rate = 0.1
 
@@ -593,7 +593,7 @@ with graph.as_default():
         unpooll = tf.nn.elu(unpool1, name="up_conv2_relu")
 
         if dropout:
-            unpooll = tf.layers.dropout(unpooll, rate=pooldropout_rate, seed=13537, training=training)
+            unpooll = tf.layers.dropout(unpooll, rate=convdropout_rate, seed=13537, training=training)
 
     with tf.name_scope('conv6') as scope:
         conv6 = tf.layers.conv2d(
@@ -688,7 +688,7 @@ with graph.as_default():
         )
 
         if dropout:
-            unpool4 = tf.layers.dropout(unpool4, rate=pooldropout_rate, seed=14537, training=training)
+            unpool4 = tf.layers.dropout(unpool4, rate=convdropout_rate, seed=14537, training=training)
 
     with tf.name_scope('conv9') as scope:
         conv9 = tf.layers.conv2d(
