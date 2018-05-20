@@ -782,39 +782,62 @@ with graph.as_default():
 
     predictions = tf.reshape(tf.argmax(logits, axis=-1, output_type=tf.int32), (-1, 288,288))
 
-    predicted_abnormal = tf.reduce_max(predictions, axis=[1,2])
-    actual_abnormal = tf.reduce_max(y_adj, axis=[1,2])
+    # squash the predictions into a per image prediction - negative images will have a max of 0
+    image_predictions = tf.reduce_max(predictions, axis=[1,2])
+    image_truth = tf.reduce_max(y_adj, axis=[1,2])
 
     # get the accuracy per pixel
     accuracy, acc_op = tf.metrics.accuracy(
         labels=y_adj,
         predictions=predictions,
-        updates_collections=tf.GraphKeys.UPDATE_OPS,
+        updates_collections=[tf.GraphKeys.UPDATE_OPS, 'metrics_ops'],
         name="accuracy",
     )
-
     # calculate recall and precision per pixel
-    recall, rec_op = tf.metrics.recall(labels=y_adj, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="pixel_recall")
-    precision, prec_op = tf.metrics.precision(labels=y_adj, predictions=predictions, updates_collections=tf.GraphKeys.UPDATE_OPS, name="pixel_precision")
+    recall, rec_op = tf.metrics.recall(labels=y_adj, predictions=predictions,
+                                       updates_collections=[tf.GraphKeys.UPDATE_OPS, 'metrics_ops'],
+                                       name="pixel_recall")
+    precision, prec_op = tf.metrics.precision(labels=y_adj, predictions=predictions,
+                                              updates_collections=[tf.GraphKeys.UPDATE_OPS, 'metrics_ops'],
+                                              name="pixel_precision")
 
     f1_score = 2 * ((precision * recall) / (precision + recall))
 
+    # per image metrics
+    image_accuracy, image_acc_op = tf.metrics.accuracy(
+        labels=image_truth,
+        predictions=image_predictions,
+        updates_collections=[tf.GraphKeys.UPDATE_OPS, 'metrics_ops'],
+        name="image_accuracy",
+    )
+
+    image_recall, image_rec_op = tf.metrics.recall(labels=image_truth, predictions=image_predictions,
+                                       updates_collections=[tf.GraphKeys.UPDATE_OPS, 'metrics_ops'], name="image_recall")
+    image_precision, image_prec_op = tf.metrics.precision(labels=image_truth, predictions=image_predictions,
+                                              updates_collections=[tf.GraphKeys.UPDATE_OPS, 'metrics_ops'], name="image_precision")
+
+
     tf.summary.scalar('recall_1', recall, collections=["summaries"])
+    tf.summary.scalar('recall_per_image', image_recall, collections=["summaries"])
     tf.summary.scalar('precision_1', precision, collections=["summaries"])
+    tf.summary.scalar('precision_per_image', image_precision, collections=["summaries"])
     tf.summary.scalar('f1_score', f1_score, collections=["summaries"])
 
     # Create summary hooks
     tf.summary.scalar('accuracy', accuracy, collections=["summaries"])
+    tf.summary.scalar('accuracy_per_image', image_accuracy, collections=["summaries"])
     tf.summary.scalar('cross_entropy', mean_ce, collections=["summaries"])
     tf.summary.scalar('learning_rate', learning_rate, collections=["summaries"])
 
     # add this so that the batch norm gets run
     extra_update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
 
+    # collect the metrics ops into one op so we can run that at test time
+    metrics_op = tf.get_collection('metrics_ops')
+
     # Merge all the summaries
     merged = tf.summary.merge_all("summaries")
     kernel_summaries = tf.summary.merge_all("kernels")
-    per_epoch_summaries = [[]]
 
     print("Graph created...")
 
@@ -1021,8 +1044,8 @@ with tf.Session(graph=graph, config=config) as sess:
 
             # evaluate the test data
             for X_batch, y_batch in get_batches(X_cv, y_cv, batch_size, distort=False):
-                valid_acc, valid_recall, valid_precision, valid_fscore, valid_cost = sess.run(
-                    [acc_op, rec_op, prec_op, f1_score, mean_ce],
+                _, valid_acc, valid_recall, valid_cost = sess.run(
+                    [metrics_op, accuracy, recall, mean_ce],
                     feed_dict={
                         X: X_batch,
                         y: y_batch,
