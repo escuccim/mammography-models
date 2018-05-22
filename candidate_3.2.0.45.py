@@ -819,7 +819,9 @@ with graph.as_default():
     else:
         train_op = optimizer.minimize(loss, global_step=global_step)
 
-    predictions = tf.reshape(tf.argmax(logits, axis=-1, output_type=tf.int32), (-1, 320,320))
+    # predictions = tf.reshape(tf.argmax(logits, axis=-1, output_type=tf.int32), (-1, 320,320))
+    # if we reshape the predictions it won't work with images of other sizes
+    predictions = tf.argmax(logits, axis=-1, output_type=tf.int32)
 
     # squash the predictions into a per image prediction - negative images will have a max of 0
     image_predictions = tf.reduce_max(predictions, axis=[1,2])
@@ -1185,8 +1187,8 @@ with tf.Session(graph=graph, config=config) as sess:
     ground_truth = flatten(ground_truth)
 
     # save the predictions and truth for review
-    np.save(os.path.join("data", "predictions_" + model_name + ".npy"), test_predictions)
-    np.save(os.path.join("data", "truth_" + model_name + ".npy"), ground_truth)
+    # np.save(os.path.join("data", "predictions_" + model_name + ".npy"), test_predictions)
+    # np.save(os.path.join("data", "truth_" + model_name + ".npy"), ground_truth)
 
     sess.run(tf.local_variables_initializer())
 
