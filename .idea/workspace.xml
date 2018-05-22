@@ -5,8 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="98c4e5b0-4f90-4540-b87f-9bd6d2ddc583" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/banner2.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/banner2.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/training_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/training_utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/candidate_3.2.0.45.py" beforeDir="false" afterPath="$PROJECT_DIR$/candidate_3.2.0.45.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -41,8 +40,8 @@
       <file leaf-file-name="candidate_3.2.0.45.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/candidate_3.2.0.45.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="180">
-              <caret line="819" column="91" selection-start-line="819" selection-start-column="91" selection-end-line="819" selection-end-column="91" />
+            <state relative-caret-position="95">
+              <caret line="967" column="141" selection-start-line="967" selection-start-column="141" selection-end-line="967" selection-end-column="141" />
             </state>
           </provider>
         </entry>
@@ -644,8 +643,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/candidate_3.2.0.45.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="819" column="91" selection-start-line="819" selection-start-column="91" selection-end-line="819" selection-end-column="91" />
+        <state relative-caret-position="95">
+          <caret line="967" column="141" selection-start-line="967" selection-start-column="141" selection-end-line="967" selection-end-column="141" />
         </state>
       </provider>
     </entry>
