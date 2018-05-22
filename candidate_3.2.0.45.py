@@ -106,7 +106,7 @@ print("Number of classes:", num_classes)
 ## Build the graph
 graph = tf.Graph()
 
-model_name = "model_s3.2.0.45" + model_label + "." + str(dataset) + str(version)
+model_name = "model_s3.2.0.46" + model_label + "." + str(dataset) + str(version)
 ## Change Log
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
@@ -149,6 +149,7 @@ model_name = "model_s3.2.0.45" + model_label + "." + str(dataset) + str(version)
 # 3.1.0.44 - increased size of upconv filters to try to reduce patchiness of result, removed fc layer 3 as it was losing a lot of data
 # 3.1.0.45 - adding some dropout to try to regularize
 # 3.2.0.45 - restructuring to accept 320x320 images as input
+# 3.2.0.46 - increased sizes of upsample filters
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -568,7 +569,7 @@ with graph.as_default():
         unpool1 = tf.layers.conv2d_transpose(
             fc2,
             filters=1024,
-            kernel_size=(3, 3),
+            kernel_size=(5, 5),
             strides=(5, 5),
             padding='SAME',
             activation=tf.nn.elu,
@@ -582,7 +583,7 @@ with graph.as_default():
         unpool1 = tf.layers.conv2d_transpose(
             unpool1,
             filters=512,
-            kernel_size=(3, 3),
+            kernel_size=(4, 4),
             strides=(2, 2),
             padding='SAME',
             activation=None,
