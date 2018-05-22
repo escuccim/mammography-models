@@ -106,7 +106,7 @@ print("Number of classes:", num_classes)
 ## Build the graph
 graph = tf.Graph()
 
-model_name = "model_s3.2.0.46" + model_label + "." + str(dataset) + str(version)
+model_name = "model_s3.2.0.47" + model_label + "." + str(dataset) + str(version)
 ## Change Log
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
@@ -150,6 +150,7 @@ model_name = "model_s3.2.0.46" + model_label + "." + str(dataset) + str(version)
 # 3.1.0.45 - adding some dropout to try to regularize
 # 3.2.0.45 - restructuring to accept 320x320 images as input
 # 3.2.0.46 - increased sizes of upsample filters
+# 3.2.0.47 - changed number of filters again to speed up training
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -568,7 +569,7 @@ with graph.as_default():
     with tf.name_scope('up_conv1') as scope:
         unpool1 = tf.layers.conv2d_transpose(
             fc2,
-            filters=1024,
+            filters=512,
             kernel_size=(5, 5),
             strides=(5, 5),
             padding='SAME',
@@ -637,7 +638,7 @@ with graph.as_default():
         unpool2 = tf.layers.conv2d_transpose(
             conv6,
             filters=256,
-            kernel_size=(4, 4),
+            kernel_size=(3, 3),
             strides=(2, 2),
             padding='SAME',
             activation=None,
@@ -688,7 +689,7 @@ with graph.as_default():
         unpool4 = tf.layers.conv2d_transpose(
             conv7,
             filters=128,
-            kernel_size=(4, 4),
+            kernel_size=(3, 3),
             strides=(2, 2),
             padding='SAME',
             activation=tf.nn.elu,
