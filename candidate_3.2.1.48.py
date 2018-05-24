@@ -66,7 +66,7 @@ train_files, total_records = get_training_data(what=dataset)
 epsilon = 1e-8
 
 # learning rate
-epochs_per_decay = 10
+epochs_per_decay = 5
 decay_factor = 0.85
 staircase = True
 
