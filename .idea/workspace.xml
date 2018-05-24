@@ -40,7 +40,7 @@
       <file leaf-file-name="candidate_3.2.0.45.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/candidate_3.2.0.45.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-8864">
+            <state relative-caret-position="-9527">
               <caret line="189" column="86" lean-forward="true" selection-start-line="167" selection-start-column="3" selection-end-line="189" selection-end-column="86" />
             </state>
           </provider>
@@ -50,7 +50,7 @@
         <entry file="file://$PROJECT_DIR$/candidate_3.2.1.48.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="238">
-              <caret line="884" column="99" selection-start-line="884" selection-start-column="99" selection-end-line="884" selection-end-column="99" />
+              <caret line="884" column="110" selection-start-line="884" selection-start-column="110" selection-end-line="884" selection-end-column="110" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -648,7 +648,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/candidate_3.2.0.45.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-8864">
+        <state relative-caret-position="-9527">
           <caret line="189" column="86" lean-forward="true" selection-start-line="167" selection-start-column="3" selection-end-line="189" selection-end-column="86" />
         </state>
       </provider>
@@ -656,7 +656,7 @@
     <entry file="file://$PROJECT_DIR$/candidate_3.2.1.48.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="238">
-          <caret line="884" column="99" selection-start-line="884" selection-start-column="99" selection-end-line="884" selection-end-column="99" />
+          <caret line="884" column="110" selection-start-line="884" selection-start-column="110" selection-end-line="884" selection-end-column="110" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
