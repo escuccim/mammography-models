@@ -131,12 +131,8 @@ def read_and_decode_single_example(filenames, label_type='label_normal', normali
         image = tf.decode_raw(features['image'], tf.uint8)
 
         label = tf.cast(label, tf.int32)
-        # image = tf.image.convert_image_dtype(image, dtype=tf.float32)
-
+        image = tf.reshape(image, [size, size, 1])
         label = tf.reshape(label, [size, size, 1])
-
-        # if distort:
-        #     image, label = _image_random_flip(image, label)
 
     if normalize:
         image = tf.image.per_image_standardization(image)
