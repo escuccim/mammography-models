@@ -67,7 +67,7 @@ epsilon = 1e-8
 
 # learning rate
 epochs_per_decay = 5
-decay_factor = 0.85
+decay_factor = 0.75
 staircase = True
 
 # if we are retraining some layers start with smaller learning rate
