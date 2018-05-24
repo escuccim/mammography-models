@@ -882,7 +882,7 @@ with tf.Session(graph=graph, config=config) as sess:
 
             # create the initializer function to initialize the weights
             ## Trying for version 43
-            init_fn = load_weights(init_model, exclude=["fc3", "bn_conv6", "conv6", "accuracy", "up_conv4", "up_conv3","logits", "global_step"])
+            init_fn = load_weights(init_model, exclude=["fc3", "bn_conv6", "conv_conv6", "accuracy", "up_conv4", "up_conv3","logits", "global_step"])
             ## From version 42
             # init_fn = load_weights(init_model,
             #                        exclude=["up_conv5", "accuracy", "up_conv4", "up_conv3", "up_conv2",
