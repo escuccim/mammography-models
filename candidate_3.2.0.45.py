@@ -762,7 +762,7 @@ with graph.as_default():
     with tf.name_scope('up_conv6') as scope:
         unpool6 = tf.layers.conv2d_transpose(
             unpool5,
-            filters=16,
+            filters=32,
             kernel_size=(4, 4),
             strides=(2, 2),
             padding='SAME',

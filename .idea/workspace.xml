@@ -4,7 +4,9 @@
     <bookmark url="file://$PROJECT_DIR$/ReadMe.md" line="130" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="98c4e5b0-4f90-4540-b87f-9bd6d2ddc583" name="Default" comment="" />
+    <list default="true" id="98c4e5b0-4f90-4540-b87f-9bd6d2ddc583" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/candidate_3.2.1.48.py" beforeDir="false" afterPath="$PROJECT_DIR$/candidate_3.2.1.48.py" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -35,20 +37,20 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="candidate_3.2.0.45.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="candidate_3.2.0.45.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/candidate_3.2.0.45.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-9527">
-              <caret line="189" column="86" lean-forward="true" selection-start-line="167" selection-start-column="3" selection-end-line="189" selection-end-column="86" />
+            <state relative-caret-position="248">
+              <caret line="764" column="22" selection-start-line="764" selection-start-column="22" selection-end-line="764" selection-end-column="22" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="candidate_3.2.1.48.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="candidate_3.2.1.48.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/candidate_3.2.1.48.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="238">
-              <caret line="884" column="146" selection-start-line="884" selection-start-column="146" selection-end-line="884" selection-end-column="146" />
+              <caret line="884" column="121" selection-start-line="884" selection-start-column="121" selection-end-line="884" selection-end-column="121" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -183,10 +185,10 @@
         <option value="$PROJECT_DIR$/candidate_3.1.0.39.py" />
         <option value="$PROJECT_DIR$/candidate_3.1.0.40.py" />
         <option value="$PROJECT_DIR$/candidate_3.2.0.40.py" />
-        <option value="$PROJECT_DIR$/candidate_3.2.0.45.py" />
         <option value="$PROJECT_DIR$/candidate_3.2.0.48.py" />
         <option value="$PROJECT_DIR$/training_utils.py" />
         <option value="$PROJECT_DIR$/candidate_3.2.1.48.py" />
+        <option value="$PROJECT_DIR$/candidate_3.2.0.45.py" />
       </list>
     </option>
   </component>
@@ -644,20 +646,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/candidate_3.2.0.45.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-9527">
-          <caret line="189" column="86" lean-forward="true" selection-start-line="167" selection-start-column="3" selection-end-line="189" selection-end-column="86" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/candidate_3.2.1.48.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="238">
-          <caret line="884" column="146" selection-start-line="884" selection-start-column="146" selection-end-line="884" selection-end-column="146" />
+          <caret line="884" column="121" selection-start-line="884" selection-start-column="121" selection-end-line="884" selection-end-column="121" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/candidate_3.2.0.45.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="248">
+          <caret line="764" column="22" selection-start-line="764" selection-start-column="22" selection-end-line="764" selection-end-column="22" />
         </state>
       </provider>
     </entry>
