@@ -133,7 +133,6 @@ def read_and_decode_single_example(filenames, label_type='label_normal', normali
         label = tf.cast(label, tf.int32)
         # image = tf.image.convert_image_dtype(image, dtype=tf.float32)
 
-        image = tf.reshape(image, [size, size, 1])
         label = tf.reshape(label, [size, size, 1])
 
         # if distort:
