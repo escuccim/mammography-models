@@ -598,7 +598,7 @@ def _conv2d_batch_norm(input, filters, kernel_size=(3,3), stride=(1,1), training
             activation=None,
             kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=seed),
             kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lambd),
-            name=name
+            name='conv_'+name
         )
 
         # apply batch normalization
