@@ -881,9 +881,15 @@ with tf.Session(graph=graph, config=config) as sess:
             sess.run(tf.global_variables_initializer())
 
             # create the initializer function to initialize the weights
-            init_fn = load_weights(init_model, exclude=["fc3", "bn_conv6", "up_conv7", "bn_up_conv7", "conv_conv6","up_conv2","up_conv5","up_conv6", "accuracy", "up_conv4", "up_conv3", "global_step"])
+            # init_fn = load_weights(init_model, exclude=["fc3", "bn_conv6", "up_conv7", "bn_up_conv7", "conv_conv6","up_conv2","up_conv5","up_conv6", "accuracy", "up_conv4", "up_conv3", "global_step"])
+            #
+            # # run the initializer
+            # init_fn(sess)
 
-            # run the initializer
+            init_fn = load_weights("model_s3.2.1.48m.12", exclude=["fc3", "conv5", "accuracy", "bn5"])
+            init_fn(sess)
+
+            init_fn = load_weights("model_s3.2.0.47m.12", include=["conv5", "bn5"])
             init_fn(sess)
 
             # reset the global step
