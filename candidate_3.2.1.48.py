@@ -887,7 +887,7 @@ with tf.Session(graph=graph, config=config) as sess:
             # init_fn(sess)
 
             ## reload some weights from one checkpoint and some from a different one
-            init_fn = load_weights("model_s3.2.1.48m.12", exclude=["up_conv7", "bn_up_conv7", "fc3", "conv5", "accuracy", "bn5"])
+            init_fn = load_weights("model_s3.2.1.48m.12", exclude=["conv_up_conv7", "bn_up_conv7", "fc3", "conv5", "accuracy", "bn5"])
             init_fn(sess)
 
             init_fn = load_weights("model_s3.2.0.47m.12", include=["conv5", "bn5"])
