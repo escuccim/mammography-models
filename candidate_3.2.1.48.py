@@ -683,7 +683,7 @@ with graph.as_default():
         if dropout:
             unpool6 = tf.layers.dropout(unpool6, rate=pooldropout_rate, seed=14557, training=training)
 
-        unpool6 = unpool6 + conv11
+        unpool6 = unpool6 + conv1
 
         # activation
         unpool6 = tf.nn.elu(unpool6, name='relu11')
@@ -881,7 +881,7 @@ with tf.Session(graph=graph, config=config) as sess:
             sess.run(tf.global_variables_initializer())
 
             # create the initializer function to initialize the weights
-            init_fn = load_weights(init_model, exclude=["fc3", "bn_conv6", "conv_conv6","up_conv2","up_conv5","up_conv6", "accuracy", "up_conv4", "up_conv3", "global_step"])
+            init_fn = load_weights(init_model, exclude=["fc3", "bn_conv6", "up_conv7", "bn_up_conv7", "conv_conv6","up_conv2","up_conv5","up_conv6", "accuracy", "up_conv4", "up_conv3", "global_step"])
 
             # run the initializer
             init_fn(sess)
