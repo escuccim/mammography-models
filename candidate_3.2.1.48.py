@@ -106,7 +106,7 @@ print("Number of classes:", num_classes)
 ## Build the graph
 graph = tf.Graph()
 
-model_name = "model_s3.2.1.48" + model_label + "." + str(dataset) + str(version)
+model_name = "model_s3.2.1.49" + model_label + "." + str(dataset) + str(version)
 ## Change Log
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
@@ -152,6 +152,7 @@ model_name = "model_s3.2.1.48" + model_label + "." + str(dataset) + str(version)
 # 3.2.0.46 - increased sizes of upsample filters
 # 3.2.0.47 - changed number of filters again to speed up training
 # 3.2.1.48 - adding extra skip connection to try to get better predictions
+# 3.2.1.49 - renamed one upconv layer so they can be isolated and trained
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -881,17 +882,17 @@ with tf.Session(graph=graph, config=config) as sess:
             sess.run(tf.global_variables_initializer())
 
             # create the initializer function to initialize the weights
-            init_fn = load_weights(init_model, exclude=["fc3", "bn_conv6", "up_conv7", "bn_up_conv7", "conv_conv6","up_conv2","up_conv5","up_conv6", "accuracy", "up_conv4", "up_conv3", "global_step"])
-
-            # run the initializer
-            init_fn(sess)
+            # init_fn = load_weights(init_model, exclude=["fc3", "bn_conv6", "up_conv7", "bn_up_conv7", "conv_conv6","up_conv2","up_conv5","up_conv6", "accuracy", "up_conv4", "up_conv3", "global_step"])
+            #
+            # # run the initializer
+            # init_fn(sess)
 
             ## reload some weights from one checkpoint and some from a different one
-            # init_fn = load_weights("model_s3.2.1.48m.12", exclude=["conv_up_conv7", "bn_up_conv7", "fc3", "conv5", "accuracy", "bn5"])
-            # init_fn(sess)
-            #
-            # init_fn = load_weights("model_s3.2.0.47m.12", include=["conv5", "bn5"])
-            # init_fn(sess)
+            init_fn = load_weights("model_s3.2.1.48m.12", exclude=["conv_up_conv7", "bn_up_conv7", "fc3", "conv5", "accuracy", "bn5"])
+            init_fn(sess)
+
+            init_fn = load_weights("model_s3.2.0.47m.12", include=["conv5", "bn5"])
+            init_fn(sess)
 
             # reset the global step
             initial_global_step = global_step.assign(0)
