@@ -689,7 +689,7 @@ with graph.as_default():
         unpool6 = tf.nn.elu(unpool6, name='relu11')
 
     # one last conv layer before logits
-    conv6 = _conv2d_batch_norm(unpool6, 16, kernel_size=(3,3), stride=(1,1), training=training, lambd=0.0, name="conv6", activation="elu")
+    conv6 = _conv2d_batch_norm(unpool6, 16, kernel_size=(3,3), stride=(1,1), training=training, lambd=0.0, name="up_conv7", activation="elu")
 
     # upsample to 320x320
     with tf.name_scope('logits') as scope:
@@ -706,7 +706,7 @@ with graph.as_default():
         )
 
     # get the fully connected variables so we can only train them when retraining the network
-    fc_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "fc")
+    fc_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "up_")
 
     with tf.variable_scope('conv1', reuse=True):
         conv_kernels1 = tf.get_variable('kernel')
@@ -881,14 +881,8 @@ with tf.Session(graph=graph, config=config) as sess:
             sess.run(tf.global_variables_initializer())
 
             # create the initializer function to initialize the weights
-            ## Trying for version 43
-            init_fn = load_weights(init_model, exclude=["fc3", "bn_conv6", "conv_conv6","up_conv2","up_conv5","up_conv6", "accuracy", "up_conv4", "up_conv3", "global_step"])
-            ## From version 42
-            # init_fn = load_weights(init_model,
-            #                        exclude=["up_conv5", "accuracy", "up_conv4", "up_conv3", "up_conv2",
-            #                                 "up_conv1", "conv9", "bn9", "conv8", "bn8", "conv6", "bn6", "conv7", "bn7",
-            #                                 "logits", "global_step"])
-            # # init_fn = load_weights(init_model, include=["conv1", "conv1.1", "conv1.2", "conv2.1", "conv2.2", "conv3.1", "conv3.2", "conv4", "conv5"], exclude=["conv1.1/bias","fc1", "up_conv5", "up_conv4", "up_conv3","up_conv2","up_conv1","conv9", "bn9", "conv8", "bn8","conv6", "bn6", "conv7", "bn7","fcn_logits", "logits", "bn_fc2", "bn_fc1", "fc2", "global_step"])
+            # init_fn = load_weights(init_model, exclude=["fc3", "bn_conv6", "conv_conv6","up_conv2","up_conv5","up_conv6", "accuracy", "up_conv4", "up_conv3", "global_step"])
+
             # run the initializer
             init_fn(sess)
 

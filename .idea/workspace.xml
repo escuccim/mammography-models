@@ -4,7 +4,9 @@
     <bookmark url="file://$PROJECT_DIR$/ReadMe.md" line="130" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="98c4e5b0-4f90-4540-b87f-9bd6d2ddc583" name="Default" comment="" />
+    <list default="true" id="98c4e5b0-4f90-4540-b87f-9bd6d2ddc583" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/candidate_3.2.1.48.py" beforeDir="false" afterPath="$PROJECT_DIR$/candidate_3.2.1.48.py" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -14,27 +16,6 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="600">
-      <file leaf-file-name="candidate_3.0.0.39.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/old_models/candidate_3.0.0.39.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="442">
-              <caret line="26" column="26" lean-forward="true" selection-start-line="26" selection-start-column="26" selection-end-line="26" selection-end-column="26" />
-              <folding>
-                <element signature="e#0#18#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="candidate_3.1.0.40.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/candidate_3.1.0.40.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-11153">
-              <caret line="122" column="52" selection-start-line="106" selection-end-line="841" selection-end-column="29" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="candidate_3.2.0.45.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/candidate_3.2.0.45.py">
           <provider selected="true" editor-type-id="text-editor">
@@ -47,13 +28,18 @@
       <file leaf-file-name="candidate_3.2.1.48.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/candidate_3.2.1.48.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="141">
-              <caret line="69" column="18" selection-start-line="69" selection-start-column="18" selection-end-line="69" selection-end-column="18" />
+            <state relative-caret-position="550">
+              <caret line="691" column="121" selection-start-line="691" selection-start-column="121" selection-end-line="691" selection-end-column="121" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
             </state>
           </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="architecture_3.2.1.48.png" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/architecture_3.2.1.48.png">
+          <provider selected="true" editor-type-id="images" />
         </entry>
       </file>
       <file leaf-file-name="candidate_2.0.0.35.py" pinned="false" current-in-tab="false">
@@ -71,7 +57,7 @@
       <file leaf-file-name="training_utils.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/training_utils.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="373">
+            <state relative-caret-position="-9198">
               <caret line="132" column="40" selection-start-line="132" selection-start-column="40" selection-end-line="132" selection-end-column="40" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
@@ -91,7 +77,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>pool2.2</find>
       <find>7</find>
       <find>conv_b_3_2</find>
       <find>conv_b_4_2</find>
@@ -121,6 +106,7 @@
       <find>training</find>
       <find>per_epoch_summaries</find>
       <find>11_</find>
+      <find>init_model</find>
     </findStrings>
     <replaceStrings>
       <replace>11_</replace>
@@ -296,13 +282,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/old_models/candidate_1.3.0.03n.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1452">
-          <caret line="21" selection-start-line="21" selection-end-line="24" selection-end-column="15" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/old_models/candidate_1.1.0.39n.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1382">
@@ -634,16 +613,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/training_utils.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="373">
-          <caret line="132" column="40" selection-start-line="132" selection-start-column="40" selection-end-line="132" selection-end-column="40" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/candidate_3.2.0.45.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="248">
@@ -651,10 +620,23 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/architecture_3.2.1.48.png">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/training_utils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-9198">
+          <caret line="132" column="40" selection-start-line="132" selection-start-column="40" selection-end-line="132" selection-end-column="40" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/candidate_3.2.1.48.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="141">
-          <caret line="69" column="18" selection-start-line="69" selection-start-column="18" selection-end-line="69" selection-end-column="18" />
+        <state relative-caret-position="550">
+          <caret line="691" column="121" selection-start-line="691" selection-start-column="121" selection-end-line="691" selection-end-column="121" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
