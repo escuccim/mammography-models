@@ -58,7 +58,7 @@ mu = 104.1353
 download_data(what=dataset)
 
 ## config
-batch_size = 32
+batch_size = 16
 
 train_files, total_records = get_training_data(what=dataset)
 
@@ -174,8 +174,8 @@ with graph.as_default():
             X_def, y_def = tf.train.shuffle_batch([image, label], batch_size=batch_size, capacity=2000, seed=None, min_after_dequeue=1000)
 
             # Placeholders
-            X = tf.placeholder_with_default(X_def, shape=[None, 320, 320, 1])
-            y = tf.placeholder_with_default(y_def, shape=[None, 320, 320, 1])
+            X = tf.placeholder_with_default(X_def, shape=[None, 640, 640, 1])
+            y = tf.placeholder_with_default(y_def, shape=[None, 640, 640, 1])
 
             X_fl = tf.cast(X, tf.float32)
 
@@ -708,6 +708,7 @@ with graph.as_default():
 
     # get the fully connected variables so we can only train them when retraining the network
     fc_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "up_")
+    tr_logits =  tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "logits")
 
     with tf.variable_scope('conv1', reuse=True):
         conv_kernels1 = tf.get_variable('kernel')
@@ -729,7 +730,7 @@ with graph.as_default():
 
     # Minimize cross-entropy - freeze certain layers depending on input
     if freeze:
-        train_op = optimizer.minimize(loss, global_step=global_step, var_list=fc_vars)
+        train_op = optimizer.minimize(loss, global_step=global_step, var_list=fc_vars + tr_logits)
     else:
         train_op = optimizer.minimize(loss, global_step=global_step)
 
@@ -882,21 +883,21 @@ with tf.Session(graph=graph, config=config) as sess:
             sess.run(tf.global_variables_initializer())
 
             # create the initializer function to initialize the weights
-            # init_fn = load_weights(init_model, exclude=["fc3", "bn_conv6", "up_conv7", "bn_up_conv7", "conv_conv6","up_conv2","up_conv5","up_conv6", "accuracy", "up_conv4", "up_conv3", "global_step"])
-            #
-            # # run the initializer
-            # init_fn(sess)
+            init_fn = load_weights(init_model, exclude=["fc3", "bn_conv6", "up_conv7", "bn_up_conv7", "conv_conv6","up_conv2","up_conv5","up_conv6", "accuracy", "up_conv4", "up_conv3", "global_step"])
+
+            # run the initializer
+            init_fn(sess)
 
             ## reload some weights from one checkpoint and some from a different one
-            init_fn = load_weights("model_s3.2.1.48m.12", exclude=["conv_up_conv7", "bn_up_conv7", "fc3", "conv5", "accuracy", "bn5"])
-            init_fn(sess)
-
-            init_fn = load_weights("model_s3.2.0.47m.12", include=["conv5", "bn5"])
-            init_fn(sess)
-
-            # reset the global step
-            initial_global_step = global_step.assign(0)
-            sess.run(initial_global_step)
+            # init_fn = load_weights("model_s3.2.1.48m.12", exclude=["conv_up_conv7", "bn_up_conv7", "fc3", "conv5", "accuracy", "bn5"])
+            # init_fn(sess)
+            #
+            # init_fn = load_weights("model_s3.2.0.47m.12", include=["conv5", "bn5"])
+            # init_fn(sess)
+            #
+            # # reset the global step
+            # initial_global_step = global_step.assign(0)
+            # sess.run(initial_global_step)
 
             print("Initializing weights from model", init_model)
 

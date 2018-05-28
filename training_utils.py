@@ -169,6 +169,9 @@ def load_validation_data(data="validation", how="normal", which=5, percentage=1)
         elif which == 12:
             X_cv = np.load(os.path.join("data", "cv12_data.npy"))
             labels = np.load(os.path.join("data", "cv12_labels.npy"))
+        elif which == 13:
+            X_cv = np.load(os.path.join("data", "cv13_data.npy"))
+            labels = np.load(os.path.join("data", "cv13_labels.npy"))
     elif data == "test":
         if which == 4:
             X_cv = np.load(os.path.join("data", "test4_data.npy"))
@@ -194,6 +197,9 @@ def load_validation_data(data="validation", how="normal", which=5, percentage=1)
         elif which == 12:
             X_cv = np.load(os.path.join("data", "test12_data.npy"))
             labels = np.load(os.path.join("data", "test12_labels.npy"))
+        elif which == 13:
+            X_cv = np.load(os.path.join("data", "test13_data.npy"))
+            labels = np.load(os.path.join("data", "test13_labels.npy"))
     elif data == "mias":
         if which == 9:
             X_cv = np.load(os.path.join("data", "all_mias_slices9.npy"))
@@ -446,7 +452,47 @@ def download_data(what=4):
         if not os.path.exists(os.path.join("data", "cv12_labels.npy")):
             _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/cv12_labels.zip',
                               'cv12_labels.zip')
-    
+            
+    elif what == 13:
+        # download and unzip tfrecords training data
+        if not os.path.exists(os.path.join("data", "training13_0.tfrecords")):
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training13_0.zip',
+                              'training13_0.zip')
+
+        if not os.path.exists(os.path.join("data", "training13_1.tfrecords")):
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training13_1.zip',
+                              'training13_1.zip')
+
+        if not os.path.exists(os.path.join("data", "training13_2.tfrecords")):
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training13_2.zip',
+                              'training13_2.zip')
+
+        if not os.path.exists(os.path.join("data", "training13_3.tfrecords")):
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training13_3.zip',
+                              'training13_3.zip')
+
+        if not os.path.exists(os.path.join("data", "training13_4.tfrecords")):
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training13_4.zip',
+                              'training13_4.zip')
+
+        # download and unzip test data
+        if not os.path.exists(os.path.join("data", "test13_data.npy")):
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/test13_data.zip',
+                              'test13_data.zip')
+
+        # download test labels
+        if not os.path.exists(os.path.join("data", "test13_labels.npy")):
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/test13_labels.zip',
+                              'test13_labels.zip')
+
+        # download and unzip validation data
+        if not os.path.exists(os.path.join("data", "cv13_data.npy")):
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/cv13_data.zip', 'cv13_data.zip')
+
+        # download validation labels
+        if not os.path.exists(os.path.join("data", "cv13_labels.npy")):
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/cv13_labels.zip',
+                              'cv13_labels.zip')
     elif what == 0:
         # download MIAS test data
         if not os.path.exists(os.path.join("data", "mias_test_images.npy")):
@@ -575,6 +621,16 @@ def get_training_data(what=5):
         train_path_12 = os.path.join("data", "training12_2.tfrecords")
         train_path_13 = os.path.join("data", "training12_3.tfrecords")
         train_path_14 = os.path.join("data", "training12_4.tfrecords")
+
+        train_files = [train_path_10, train_path_11, train_path_12, train_path_13, train_path_14]
+        total_records = 36755
+        
+    elif what == 13:
+        train_path_10 = os.path.join("data", "training13_0.tfrecords")
+        train_path_11 = os.path.join("data", "training13_1.tfrecords")
+        train_path_12 = os.path.join("data", "training13_2.tfrecords")
+        train_path_13 = os.path.join("data", "training13_3.tfrecords")
+        train_path_14 = os.path.join("data", "training13_4.tfrecords")
 
         train_files = [train_path_10, train_path_11, train_path_12, train_path_13, train_path_14]
         total_records = 36755

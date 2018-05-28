@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="BookmarkManager">
-    <bookmark url="file://$PROJECT_DIR$/ReadMe.md" line="130" />
-  </component>
   <component name="ChangeListManager">
     <list default="true" id="98c4e5b0-4f90-4540-b87f-9bd6d2ddc583" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/ReadMe.md" beforeDir="false" afterPath="$PROJECT_DIR$/ReadMe.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/candidate_3.2.1.48.py" beforeDir="false" afterPath="$PROJECT_DIR$/candidate_3.2.1.48.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/training_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/training_utils.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -28,8 +27,8 @@
       <file leaf-file-name="candidate_3.2.1.48.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/candidate_3.2.1.48.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="441">
-              <caret line="894" column="25" lean-forward="true" selection-start-line="890" selection-start-column="25" selection-end-line="894" selection-end-column="25" />
+            <state relative-caret-position="479">
+              <caret line="60" column="15" selection-start-line="60" selection-start-column="15" selection-end-line="60" selection-end-column="15" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -54,6 +53,18 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="training_utils.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/training_utils.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-1008">
+              <caret line="523" lean-forward="true" selection-start-line="523" selection-end-line="523" />
+              <folding>
+                <element signature="e#0#18#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
     </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
@@ -65,7 +76,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>7</find>
       <find>conv_b_3_2</find>
       <find>conv_b_4_2</find>
       <find>conv_b_4_3</find>
@@ -95,10 +105,12 @@
       <find>per_epoch_summaries</find>
       <find>11_</find>
       <find>init_model</find>
+      <find>12_</find>
     </findStrings>
     <replaceStrings>
       <replace>11_</replace>
       <replace>12_</replace>
+      <replace>13_</replace>
     </replaceStrings>
     <dirStrings>
       <dir>C:\Users\eric\Documents\Machine Learning\mammography</dir>
@@ -512,7 +524,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ReadMe.md" />
     <entry file="file://$PROJECT_DIR$/old_models/candidate_1.0.4.01.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="18975">
@@ -581,16 +592,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Report.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="573">
-            <caret line="373" column="139" lean-forward="true" selection-start-line="373" selection-end-line="373" selection-end-column="139" />
-          </first_editor>
-          <second_editor />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/candidate_3.2.0.45.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="248">
@@ -600,16 +601,6 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/architecture_3.2.1.48.png">
       <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/training_utils.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="339">
-          <caret line="606" column="20" lean-forward="true" selection-start-line="606" selection-start-column="20" selection-end-line="606" selection-end-column="20" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/candidate_2.0.0.35.py">
       <provider selected="true" editor-type-id="text-editor">
@@ -621,10 +612,38 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Report.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="573">
+            <caret line="373" column="139" lean-forward="true" selection-start-line="373" selection-end-line="373" selection-end-column="139" />
+          </first_editor>
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ReadMe.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="-663" />
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/training_utils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1008">
+          <caret line="523" lean-forward="true" selection-start-line="523" selection-end-line="523" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/candidate_3.2.1.48.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="441">
-          <caret line="894" column="25" lean-forward="true" selection-start-line="890" selection-start-column="25" selection-end-line="894" selection-end-column="25" />
+        <state relative-caret-position="479">
+          <caret line="60" column="15" selection-start-line="60" selection-start-column="15" selection-end-line="60" selection-end-column="15" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
