@@ -906,6 +906,7 @@ with tf.Session(graph=graph, config=config) as sess:
         elif restore_model is not None:
             saver.restore(sess, './model/' + restore_model + '.ckpt')
             print("Restoring model", restore_model)
+
             initial_global_step = global_step.assign(0)
             sess.run(initial_global_step)
         # otherwise load this model
