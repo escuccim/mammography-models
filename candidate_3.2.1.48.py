@@ -739,8 +739,12 @@ with graph.as_default():
     predictions = tf.argmax(logits, axis=-1, output_type=tf.int32)
 
     # squash the predictions into a per image prediction - negative images will have a max of 0
-    image_predictions = tf.reduce_max(predictions, axis=[1,2])
-    image_truth = tf.reduce_max(y_adj, axis=[1,2])
+    # image_predictions = tf.reduce_max(predictions, axis=[1,2,3])
+    image_truth = tf.reduce_max(y_adj, axis=[1,2,3])
+
+    # set a threshold on the predictions so we ignore images with only a few positive pixels
+    la_sum = tf.reduce_sum(tf.cast(y, dtype=tf.int16), axis=[1, 2, 3])
+    image_predictions = tf.cast(tf.greater(la_sum, (640*640//850)),dtype=tf.uint8)
 
     # get the accuracy per pixel
     accuracy, acc_op = tf.metrics.accuracy(
