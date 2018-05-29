@@ -744,7 +744,7 @@ with graph.as_default():
 
     # set a threshold on the predictions so we ignore images with only a few positive pixels
     la_sum = tf.reduce_sum(tf.cast(y, dtype=tf.int16), axis=[1, 2, 3])
-    image_predictions = tf.cast(tf.greater(la_sum, (640*640//850)),dtype=tf.uint8)
+    image_predictions = tf.cast(tf.greater(la_sum, (640*640//750)),dtype=tf.uint8)
 
     # get the accuracy per pixel
     accuracy, acc_op = tf.metrics.accuracy(
