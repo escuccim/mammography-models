@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="98c4e5b0-4f90-4540-b87f-9bd6d2ddc583" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/candidate_3.2.1.48.py" beforeDir="false" afterPath="$PROJECT_DIR$/candidate_3.2.1.48.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/training_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/training_utils.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -25,8 +26,8 @@
       <file leaf-file-name="candidate_3.2.1.48.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/candidate_3.2.1.48.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="187">
-              <caret line="746" column="62" selection-start-line="746" selection-start-column="62" selection-end-line="746" selection-end-column="62" />
+            <state relative-caret-position="431">
+              <caret line="744" column="66" selection-start-line="744" selection-start-column="66" selection-end-line="744" selection-end-column="66" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -37,30 +38,6 @@
       <file leaf-file-name="architecture_3.2.1.48.png" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/architecture_3.2.1.48.png">
           <provider selected="true" editor-type-id="images" />
-        </entry>
-      </file>
-      <file leaf-file-name="candidate_2.0.0.35.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/candidate_2.0.0.35.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="4947">
-              <caret line="852" column="22" lean-forward="true" selection-start-line="829" selection-start-column="12" selection-end-line="852" selection-end-column="22" />
-              <folding>
-                <element signature="e#0#18#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="training_utils.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/training_utils.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1071">
-              <caret line="42" column="39" lean-forward="true" selection-start-line="18" selection-end-line="42" selection-end-column="39" />
-              <folding>
-                <element signature="e#0#18#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
         </entry>
       </file>
     </leaf>
@@ -615,13 +592,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/architecture_3.2.1.48.png">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/training_utils.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1071">
-          <caret line="42" column="39" lean-forward="true" selection-start-line="18" selection-end-line="42" selection-end-column="39" />
+        <state relative-caret-position="187">
+          <caret line="47" column="63" selection-start-line="47" selection-start-column="63" selection-end-line="47" selection-end-column="63" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
@@ -630,7 +604,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/candidate_2.0.0.35.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4947">
+        <state relative-caret-position="5763">
           <caret line="852" column="22" lean-forward="true" selection-start-line="829" selection-start-column="12" selection-end-line="852" selection-end-column="22" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
@@ -638,10 +612,13 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/architecture_3.2.1.48.png">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
     <entry file="file://$PROJECT_DIR$/candidate_3.2.1.48.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="746" column="62" selection-start-line="746" selection-start-column="62" selection-end-line="746" selection-end-column="62" />
+        <state relative-caret-position="431">
+          <caret line="744" column="66" selection-start-line="744" selection-start-column="66" selection-end-line="744" selection-end-column="66" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>

@@ -43,7 +43,6 @@ def download_file(url, name):
         print("Error downloading", url)
 
 
-
 ## Batch generator with optional filenames parameter which will also return the filenames of the images
 ## so that they can be identified
 def get_batches(X, y, batch_size, filenames=None, distort=False):
