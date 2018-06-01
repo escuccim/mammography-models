@@ -770,7 +770,7 @@ def augment(images, labels,
     # My experiments showed that casting on GPU improves training performance
     if images.dtype != tf.float32:
         images = tf.image.convert_image_dtype(images, dtype=tf.float32)
-    
+
     with tf.name_scope('augmentation'):
         shp = tf.shape(images)
         batch_size, height, width = shp[0], shp[1], shp[2]
