@@ -56,7 +56,7 @@ else:
 mu = 104.1353
 
 # download the data
-download_data(what=dataset)
+# download_data(what=dataset)
 
 ## config
 batch_size = 16
@@ -170,41 +170,41 @@ with graph.as_default():
             pool1 = tf.layers.dropout(pool1, rate=pooldropout_rate, seed=103, training=training)
 
     ## Dense Layer 1
-    dense1 = _dense_block(pool1, 6, growth_rate=12, bottleneck=True, training=training, seed=None, name="dense_1", activation="relu")
+    dense1 = _dense_block(pool1, 6, growth_rate=12, bottleneck=True, training=training, seed=None, name="2.0", activation="relu")
 
     ## Transition 1 - ouput 80x80
-    transition1 = _transition(dense1, filters=36, training=training, name="transition_1")
+    transition1 = _transition(dense1, filters=36, training=training, name="t_1")
 
     ## Dense Layer 2
-    dense2 = _dense_block(transition1, 12, growth_rate=12, bottleneck=True, training=training, seed=None, name="dense_2",
+    dense2 = _dense_block(transition1, 12, growth_rate=12, bottleneck=True, training=training, seed=None, name="3.0",
                           activation="relu")
 
     ## Transition 2 - output 40x40
-    transition2 = _transition(dense2, filters=48, training=training, name="transition_2")
+    transition2 = _transition(dense2, filters=48, training=training, name="t_2")
 
     ## Dense Layer 3
     dense3 = _dense_block(transition2, 24, growth_rate=12, bottleneck=True, training=training, seed=None,
-                          name="dense_3",
+                          name="4.0",
                           activation="relu")
 
     ## Transition 3 - output 20x20
-    transition3 = _transition(dense3, filters=56, training=training, name="transition_3")
+    transition3 = _transition(dense3, filters=56, training=training, name="t_3")
 
     ## Dense Layer 4
     dense4 = _dense_block(transition3, 16, growth_rate=12, bottleneck=True, training=training, seed=None,
-                          name="dense_4",
+                          name="5.0",
                           activation="relu")
 
     ## Transition 4 - output 10x10
-    transition4 = _transition(dense4, filters=56, training=training, name="transition_4")
+    transition4 = _transition(dense4, filters=56, training=training, name="t_4")
 
     ## Dense 5
     dense5 = _dense_block(transition4, 16, growth_rate=12, bottleneck=True, training=training, seed=None,
-                          name="dense_5",
+                          name="6.0",
                           activation="relu")
 
     ## Transition 5 - output 5x5
-    transition5 = _transition(dense5, filters=64, training=training, name="transition_5")
+    transition5 = _transition(dense5, filters=64, training=training, name="t_5")
 
     fc1 = _conv2d_batch_norm(transition5, 2048, kernel_size=(5, 5), stride=(5, 5), training=training, epsilon=1e-8,
                              padding="VALID", seed=1013, lambd=lamC, name="fc_1")
@@ -220,7 +220,7 @@ with graph.as_default():
     with tf.name_scope('up_conv1') as scope:
         unpool1 = tf.layers.conv2d_transpose(
             fc2,
-            filters=512,
+            filters=64,
             kernel_size=(5, 5),
             strides=(5, 5),
             padding='SAME',
@@ -236,7 +236,7 @@ with graph.as_default():
     with tf.name_scope('up_conv2') as scope:
         unpool2 = tf.layers.conv2d_transpose(
             unpool1,
-            filters=256,
+            filters=56,
             kernel_size=(4, 4),
             strides=(2, 2),
             padding='SAME',
@@ -258,7 +258,7 @@ with graph.as_default():
     with tf.name_scope('up_conv3') as scope:
         unpool3 = tf.layers.conv2d_transpose(
             unpool2,
-            filters=128,
+            filters=56,
             kernel_size=(4, 4),
             strides=(2, 2),
             padding='SAME',
@@ -278,7 +278,7 @@ with graph.as_default():
     with tf.name_scope('up_conv4') as scope:
         unpool4 = tf.layers.conv2d_transpose(
             unpool3,
-            filters=64,
+            filters=48,
             kernel_size=(4, 4),
             strides=(2, 2),
             padding='SAME',
@@ -299,7 +299,7 @@ with graph.as_default():
     with tf.name_scope('up_conv5') as scope:
         unpool5 = tf.layers.conv2d_transpose(
             unpool4,
-            filters=32,
+            filters=36,
             kernel_size=(4, 4),
             strides=(2, 2),
             padding='SAME',
@@ -364,12 +364,12 @@ with graph.as_default():
     fc_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "up_")
     tr_logits =  tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "logits")
 
-    with tf.variable_scope('conv1', reuse=True):
-        conv_kernels1 = tf.get_variable('kernel')
-        kernel_transposed = tf.transpose(conv_kernels1, [3, 0, 1, 2])
-
-    with tf.variable_scope('visualization'):
-        tf.summary.image('conv1/filters', kernel_transposed, max_outputs=32, collections=["kernels"])
+    # with tf.variable_scope('conv1', reuse=True):
+    #     conv_kernels1 = tf.get_variable('kernel')
+    #     kernel_transposed = tf.transpose(conv_kernels1, [3, 0, 1, 2])
+    #
+    # with tf.variable_scope('visualization'):
+    #     tf.summary.image('conv1/filters', kernel_transposed, max_outputs=32, collections=["kernels"])
 
     # This will weight the positive examples higher so as to improve recall
     weights = tf.multiply(tf.cast(weight, tf.float32), tf.cast(tf.greater(y_adj, 0), tf.float32)) + 1
