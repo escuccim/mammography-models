@@ -4,7 +4,7 @@ import wget
 from sklearn.model_selection import train_test_split
 import tensorflow as tf
 from training_utils import download_file, get_batches, read_and_decode_single_example, load_validation_data, \
-    download_data, evaluate_model, get_training_data, load_weights, flatten, _scale_input_data, augment, _conv2d_batch_norm, standardize, _read_images
+    download_data, evaluate_model, get_training_data, load_weights, flatten, _scale_input_data, augment, _conv2d_batch_norm, standardize, _read_images, _process_images
 import argparse
 from tensorboard import summary as summary_lib
 
@@ -178,9 +178,21 @@ with graph.as_default():
                                                staircase=staircase)
 
     with tf.name_scope('inputs') as scope:
-        # with tf.device('/cpu:0'):
-        image, label = _read_images("./data/train_images/", size, scale_by=0.66)
-        X_def, y_def = tf.train.batch([image, label], batch_size=batch_size)
+        with tf.device('/cpu:0'):
+            filenames = tf.train.match_filenames_once("./data/train_images." + "*.png")
+            filename_queue = tf.train.string_input_producer(filenames, capacity=256, name="file_queue")
+
+            # create the reader
+            image_reader = tf.WholeFileReader()
+
+            # Read a whole file from the queue
+            filename, image_file = image_reader.read(filename_queue)
+
+            # decode the image
+            raw_image = tf.image.decode_png(image_file)
+
+            image, label = _process_images(raw_image, crop_size=640, scale_by=0.66)
+            X_def, y_def = tf.train.batch([image, label], batch_size=batch_size)
 
             # image, label = read_and_decode_single_example(train_files, label_type=how, normalize=False, distort=False, size=640)
             # X_def, y_def = tf.train.shuffle_batch([image, label], batch_size=batch_size, capacity=2000, seed=None, min_after_dequeue=1000)
