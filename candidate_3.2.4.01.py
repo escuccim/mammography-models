@@ -178,24 +178,12 @@ with graph.as_default():
                                                staircase=staircase)
 
     with tf.name_scope('inputs') as scope:
-        with tf.device('/cpu:0'):
-            # filenames = tf.train.match_filenames_once("./data/train_images." + "*.png")
-            # filename_queue = tf.train.string_input_producer(filenames, capacity=256, name="file_queue")
-            #
-            # # create the reader
-            # image_reader = tf.WholeFileReader()
-            #
-            # # Read a whole file from the queue
-            # filename, image_file = image_reader.read(filename_queue)
+        # with tf.device('/cpu:0'):
+        # decode the image
+        raw_image = _read_images("./data/train_images/", size, scale_by=0.66)
 
-            # decode the image
-            raw_image = _read_images("./data/train_images/", size, scale_by=0.66)
-
-            image, label = _process_images(raw_image, crop_size=size, scale_by=0.66)
-            X_def, y_def = tf.train.batch([image, label], batch_size=batch_size)
-
-            # image, label = read_and_decode_single_example(train_files, label_type=how, normalize=False, distort=False, size=640)
-            # X_def, y_def = tf.train.shuffle_batch([image, label], batch_size=batch_size, capacity=2000, seed=None, min_after_dequeue=1000)
+        image, label = _process_images(raw_image, crop_size=size, scale_by=0.66)
+        X_def, y_def = tf.train.batch([image, label], batch_size=batch_size)
 
         # Placeholders
         X = tf.placeholder_with_default(X_def, shape=[None, size, size, 1])
