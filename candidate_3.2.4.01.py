@@ -178,9 +178,9 @@ with graph.as_default():
                                                staircase=staircase)
 
     with tf.name_scope('inputs') as scope:
-        with tf.device('/cpu:0'):
-            image, label = _read_images("./data/train_images/", size, scale_by=0.66)
-            X_def, y_def = tf.train.batch([image, label], batch_size=batch_size)
+        # with tf.device('/cpu:0'):
+        image, label = _read_images("./data/train_images/", size, scale_by=0.66)
+        X_def, y_def = tf.train.batch([image, label], batch_size=batch_size)
 
             # image, label = read_and_decode_single_example(train_files, label_type=how, normalize=False, distort=False, size=640)
             # X_def, y_def = tf.train.shuffle_batch([image, label], batch_size=batch_size, capacity=2000, seed=None, min_after_dequeue=1000)
