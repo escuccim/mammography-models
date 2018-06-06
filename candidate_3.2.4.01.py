@@ -178,28 +178,28 @@ with graph.as_default():
                                                staircase=staircase)
 
     with tf.name_scope('inputs') as scope:
-        with tf.device('/cpu:0'):
-            image, label = _read_images("./data/train_images/", size, scale_by=0.66)
-            X_def, y_def = tf.train.batch([image, label], batch_size=batch_size)
+        # with tf.device('/cpu:0'):
+        image, label = _read_images("./data/train_images/", size, scale_by=0.66)
+        X_def, y_def = tf.train.batch([image, label], batch_size=batch_size)
 
-            # image, label = read_and_decode_single_example(train_files, label_type=how, normalize=False, distort=False, size=640)
-            # X_def, y_def = tf.train.shuffle_batch([image, label], batch_size=batch_size, capacity=2000, seed=None, min_after_dequeue=1000)
+        # image, label = read_and_decode_single_example(train_files, label_type=how, normalize=False, distort=False, size=640)
+        # X_def, y_def = tf.train.shuffle_batch([image, label], batch_size=batch_size, capacity=2000, seed=None, min_after_dequeue=1000)
 
-            # Placeholders
-            X = tf.placeholder_with_default(X_def, shape=[None, size, size, 1])
-            y = tf.placeholder_with_default(y_def, shape=[None, size, size, 1])
+        # Placeholders
+        X = tf.placeholder_with_default(X_def, shape=[None, size, size, 1])
+        y = tf.placeholder_with_default(y_def, shape=[None, size, size, 1])
 
-            X_fl = tf.cast(X, tf.float32)
+        X_fl = tf.cast(X, tf.float32)
 
-            # optional online data augmentation
-            if distort:
-                X_dis, y_adj = augment(X_fl, y, horizontal_flip=True, augment_labels=True, vertical_flip=True, mixup=0)
-            else:
-                y_adj = y
-                X_dis = X_fl
+        # optional online data augmentation
+        if distort:
+            X_dis, y_adj = augment(X_fl, y, horizontal_flip=True, augment_labels=True, vertical_flip=True, mixup=0)
+        else:
+            y_adj = y
+            X_dis = X_fl
 
-            # cast to float and scale input data
-            X_adj = _scale_input_data(X_dis, contrast=contrast, mu=127.0, scale=255.0)
+        # cast to float and scale input data
+        X_adj = _scale_input_data(X_dis, contrast=contrast, mu=127.0, scale=255.0)
 
     # Convolutional layer 1
     with tf.name_scope('conv1') as scope:
