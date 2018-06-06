@@ -65,7 +65,8 @@ batch_size = 16
 if dataset != 100:
     train_files, total_records = get_training_data(what=dataset)
 else:
-    total_records = len(os.listdir(os.path.join("data", "train_images")))
+    # else use each image 10 times for an epoch
+    total_records = len(os.listdir(os.path.join("data", "train_images"))) * 10
 
 ## Hyperparameters
 epsilon = 1e-8
