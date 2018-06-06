@@ -177,6 +177,9 @@ def load_validation_data(data="validation", how="normal", which=5, percentage=1)
         elif which == 13:
             X_cv = np.load(os.path.join("data", "cv13_data.npy"))
             labels = np.load(os.path.join("data", "cv13_labels.npy"))
+        else:
+            X_cv = np.load(os.path.join("data", "cv13_data.npy"))
+            labels = np.load(os.path.join("data", "cv13_labels.npy"))
     elif data == "test":
         if which == 4:
             X_cv = np.load(os.path.join("data", "test4_data.npy"))
@@ -203,6 +206,9 @@ def load_validation_data(data="validation", how="normal", which=5, percentage=1)
             X_cv = np.load(os.path.join("data", "test12_data.npy"))
             labels = np.load(os.path.join("data", "test12_labels.npy"))
         elif which == 13:
+            X_cv = np.load(os.path.join("data", "test13_data.npy"))
+            labels = np.load(os.path.join("data", "test13_labels.npy"))
+        else:
             X_cv = np.load(os.path.join("data", "test13_data.npy"))
             labels = np.load(os.path.join("data", "test13_labels.npy"))
     elif data == "mias":
@@ -873,7 +879,7 @@ def _parse_function(filename, size=640):
 #          label - Tensor of label, shape (crop_size, crop_size, 1)
 def _read_images(image_dir, crop_size, scale_by=0.66):
     filenames = tf.train.match_filenames_once(image_dir + "*.png")
-    filename_queue = tf.train.string_input_producer(filenames, capacity=256, name="file_queue")
+    filename_queue = tf.train.string_input_producer(filenames, capacity=128, name="file_queue")
 
     # create the reader
     image_reader = tf.WholeFileReader()
@@ -886,6 +892,12 @@ def _read_images(image_dir, crop_size, scale_by=0.66):
 
     return _process_images(raw_image, crop_size, scale_by)
 
+
+def _parse_image(filename, crop_size=640, scale_by=0.66):
+    image_string = tf.read_file(filename)
+    raw_image = tf.image.decode_png(image_string)
+
+    return _process_images(raw_image, crop_size, scale_by)
 
 def _process_images(raw_image, crop_size=640, scale_by=0.66):
     if scale_by != 1.0:

@@ -4,7 +4,7 @@ import wget
 from sklearn.model_selection import train_test_split
 import tensorflow as tf
 from training_utils import download_file, get_batches, read_and_decode_single_example, load_validation_data, \
-    download_data, evaluate_model, get_training_data, load_weights, flatten, _scale_input_data, augment, _conv2d_batch_norm, standardize, _read_images, _process_images
+    download_data, evaluate_model, get_training_data, load_weights, flatten, _scale_input_data, augment, _conv2d_batch_norm, standardize, _read_images, _process_images, _parse_image
 import argparse
 from tensorboard import summary as summary_lib
 
@@ -178,11 +178,17 @@ with graph.as_default():
                                                staircase=staircase)
 
     with tf.name_scope('inputs') as scope:
-        with tf.device('/cpu:0'):
-            # decode the image
-            image, label = _read_images("./data/train_images/", size, scale_by=1)
+        # with tf.device('/cpu:0'):
+        # decode the image
+        image, label = _read_images("./data/train_images/", size, scale_by=1)
 
-            X_def, y_def = tf.train.batch([image, label], batch_size=batch_size)
+        X_def, y_def = tf.train.batch([image, label], batch_size=batch_size, num_threads=4)
+
+            # try tf dataset
+            # filenames = tf.constant(os.listdir(os.path.join("data", "train_images")))
+            #
+            # dataset = tf.data.Dataset.from_tensor_slices((filenames))
+            # dataset = dataset.map(_parse_image)
 
         # Placeholders
         X = tf.placeholder_with_default(X_def, shape=[None, size, size, 1])
