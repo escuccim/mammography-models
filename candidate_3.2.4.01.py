@@ -193,7 +193,7 @@ with graph.as_default():
             y = tf.placeholder_with_default(y_def, shape=[None, size, size, 1])
 
             X_fl = tf.cast(X, tf.float32)
-            y_adj = y
+            y_adj = tf.cast(y, tf.int32)
 
             # optional online data augmentation
             if distort:
