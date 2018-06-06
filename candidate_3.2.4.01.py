@@ -65,8 +65,8 @@ batch_size = 16
 if dataset != 100:
     train_files, total_records = get_training_data(what=dataset)
 else:
-    # else use each image 10 times for an epoch
-    total_records = len(os.listdir(os.path.join("data", "train_images"))) * 10
+    # else use each image 20 times for an epoch
+    total_records = len(os.listdir(os.path.join("data", "train_images"))) * 20
 
 ## Hyperparameters
 epsilon = 1e-8
@@ -182,7 +182,7 @@ with graph.as_default():
             # decode the image
             image, label = _read_images("./data/train_images/", size, scale_by=0.66,distort=distort)
 
-            X_def, y_def = tf.train.batch([image, label], batch_size=batch_size, num_threads=8)
+            X_def, y_def = tf.train.batch([image, label], batch_size=batch_size, num_threads=8, capacity=64)
 
         # Placeholders
         X = tf.placeholder_with_default(X_def, shape=[None, size, size, 1])
