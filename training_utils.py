@@ -291,19 +291,19 @@ def download_data(what=4):
                               'cv8_filenames.npy')
     elif what == 100:
         # download and unzip images
-        if not os.path.exists(os.path.join("data", "training_images", "P_00499_RIGHT_MLO_771.png")):
+        if not os.path.exists(os.path.join("data", "train_images", "P_00499_RIGHT_MLO_771.png")):
             _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/train_images0.zip',
                               'train_images0.zip')
 
-        # if not os.path.exists(os.path.join("data", "training_images", "P_00520_LEFT_CC_809.png")):
+        # if not os.path.exists(os.path.join("data", "train_images", "P_00520_LEFT_CC_809.png")):
         #     _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/train_images1.zip',
         #                       'train_images1.zip')
         #
-        # if not os.path.exists(os.path.join("data", "training_images", "P_01009_RIGHT_CC_1583.png")):
+        # if not os.path.exists(os.path.join("data", "train_images", "P_01009_RIGHT_CC_1583.png")):
         #     _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/train_images2.zip',
         #                       'train_images2.zip')
         #
-        # if not os.path.exists(os.path.join("data", "training_images", "P_01524_LEFT_MLO_2377.png")):
+        # if not os.path.exists(os.path.join("data", "train_images", "P_01524_LEFT_MLO_2377.png")):
         #     _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/train_images3.zip',
         #                       'train_images3.zip')
 
