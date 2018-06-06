@@ -182,7 +182,7 @@ with graph.as_default():
             # decode the image
             image, label = _read_images("./data/train_images/", size, scale_by=0.66,distort=distort)
 
-            X_def, y_def = tf.train.batch([image, label], batch_size=batch_size, num_threads=6)
+            X_def, y_def = tf.train.batch([image, label], batch_size=batch_size, num_threads=8)
 
         # Placeholders
         X = tf.placeholder_with_default(X_def, shape=[None, size, size, 1])
