@@ -884,7 +884,7 @@ def _read_images(image_dir, crop_size, scale_by=0.66):
     # decode the image
     raw_image = tf.image.decode_png(image_file)
 
-
+    return raw_image
 
     # # figure out size of raw crop by dividing size by scale
     # image_size = int(crop_size // scale_by)
