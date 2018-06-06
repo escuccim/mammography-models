@@ -883,7 +883,7 @@ def _parse_function(filename, size=640):
 #          label - Tensor of label, shape (crop_size, crop_size, 1)
 def _read_images(image_dir, crop_size, scale_by=0.66, mu=127.0, scale=255.0, distort=False):
     filenames = tf.train.match_filenames_once(image_dir + "*.png")
-    filename_queue = tf.train.string_input_producer(filenames, capacity=512, name="file_queue")
+    filename_queue = tf.train.string_input_producer(filenames, capacity=1024, name="file_queue")
 
     # create the reader
     image_reader = tf.WholeFileReader()
