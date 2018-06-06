@@ -178,11 +178,11 @@ with graph.as_default():
                                                staircase=staircase)
 
     with tf.name_scope('inputs') as scope:
-        # with tf.device('/cpu:0'):
-        # decode the image
-        image, label = _read_images("./data/train_images/", size, scale_by=0.66)
+        with tf.device('/cpu:0'):
+            # decode the image
+            image, label = _read_images("./data/train_images/", size, scale_by=0.66)
 
-        X_def, y_def = tf.train.batch([image, label], batch_size=batch_size)
+            X_def, y_def = tf.train.batch([image, label], batch_size=batch_size)
 
         # Placeholders
         X = tf.placeholder_with_default(X_def, shape=[None, size, size, 1])
