@@ -897,6 +897,6 @@ def _read_images(image_dir, crop_size, scale_by=0.66):
     image = tf.reshape(resized_image[:, :, 0], [crop_size, crop_size, 1])
     label = tf.reshape(resized_image[:, :, 1], [crop_size, crop_size, 1])
 
-    label = tf.cast(label, dtype=tf.uint8)
+    label = tf.cast(label, dtype=tf.int32)
 
     return image, label
