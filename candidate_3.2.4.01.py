@@ -62,7 +62,10 @@ download_data(what=dataset)
 ## config
 batch_size = 16
 
-train_files, total_records = get_training_data(what=dataset)
+if dataset != 100:
+    train_files, total_records = get_training_data(what=dataset)
+else:
+    total_records = len(os.listdir(os.path.join("data", "train_images")))
 
 ## Hyperparameters
 epsilon = 1e-8

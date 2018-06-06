@@ -30,7 +30,10 @@ def download_file(url, name):
 
         # if the file is a zip file unzip it
         if "zip" in name:
-            unzip(os.path.join("data", name), "data")
+            try:
+                unzip(os.path.join("data", name), "data")
+            except:
+                print("Error extracting zip file...")
 
             # then delete the zip to save disk space
             try:
@@ -288,7 +291,7 @@ def download_data(what=4):
                               'cv8_filenames.npy')
     elif what == 100:
         # download and unzip images
-        if not os.path.exists(os.path.join("data", "training_images", "P_00012_LEFT_MLO_21.png")):
+        if not os.path.exists(os.path.join("data", "training_images", "P_00499_RIGHT_MLO_771.png")):
             _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/train_images0.zip',
                               'train_images0.zip')
 
