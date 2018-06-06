@@ -888,14 +888,20 @@ def _read_images(image_dir, crop_size, scale_by=0.66):
 
 
 def _process_images(raw_image, crop_size=640, scale_by=0.66):
-    # figure out size of raw crop by dividing size by scale
-    image_size = int(crop_size // scale_by)
+    if scale_by != 1.0:
+        # figure out size of raw crop by dividing size by scale
+        image_size = int(crop_size // scale_by)
+    else:
+        image_size = crop_size
 
     # crop the image
     raw_image = tf.random_crop(raw_image, size=[image_size, image_size, 3])
 
     # resize the image
-    resized_image = tf.image.resize_images(raw_image, size=[crop_size, crop_size])
+    if scale_by != 1:
+        resized_image = tf.image.resize_images(raw_image, size=[crop_size, crop_size])
+    else:
+        resized_image = raw_image
 
     # extract the image and label from the channels and resize them for convnet
     image = tf.reshape(resized_image[:, :, 0], [crop_size, crop_size, 1])
