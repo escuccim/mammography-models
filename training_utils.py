@@ -910,8 +910,8 @@ def _process_images(raw_image, crop_size=640, scale_by=0.66):
     raw_image = tf.random_crop(raw_image, size=[image_size, image_size, 3])
 
     # extract the image and label from the channels and resize them for convnet
-    image = tf.reshape(raw_image[:, :, 0], [crop_size, crop_size, 1])
-    label = tf.reshape(raw_image[:, :, 1], [crop_size, crop_size, 1])
+    image = tf.reshape(raw_image[:, :, 0], [image_size, image_size, 1])
+    label = tf.reshape(raw_image[:, :, 1], [image_size, image_size, 1])
 
     label = tf.cast(label, dtype=tf.int32)
 
