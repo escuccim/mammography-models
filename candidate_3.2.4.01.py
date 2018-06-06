@@ -184,15 +184,16 @@ with graph.as_default():
 
             X_def, y_def = tf.train.batch([image, label], batch_size=batch_size, num_threads=6)
 
+            # resize the image
+            X_def = tf.image.resize_images(X_def, size=[size, size])
+            y_def = tf.image.resize_images(y_def, size=[size, size])
+
             # Placeholders
             X = tf.placeholder_with_default(X_def, shape=[None, size, size, 1])
             y = tf.placeholder_with_default(y_def, shape=[None, size, size, 1])
 
             X_fl = tf.cast(X, tf.float32)
-
-            # resize the image
-            X_fl = tf.image.resize_images(X_fl, size=[size, size])
-            y_adj = tf.image.resize_images(y, size=[size, size])
+            y_adj = y
 
             # optional online data augmentation
             if distort:
