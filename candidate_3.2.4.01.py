@@ -180,7 +180,7 @@ with graph.as_default():
     with tf.name_scope('inputs') as scope:
         # with tf.device('/cpu:0'):
         # decode the image
-        image_label = _read_images("./data/train_images/", size, scale_by=0.66)
+        image, label = _read_images("./data/train_images/", size, scale_by=0.66)
 
         X_def, y_def = tf.train.batch([image, label], batch_size=batch_size)
 
