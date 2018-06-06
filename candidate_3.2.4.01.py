@@ -178,32 +178,26 @@ with graph.as_default():
                                                staircase=staircase)
 
     with tf.name_scope('inputs') as scope:
-        # with tf.device('/cpu:0'):
-        # decode the image
-        image, label = _read_images("./data/train_images/", size, scale_by=1)
+        with tf.device('/cpu:0'):
+            # decode the image
+            image, label = _read_images("./data/train_images/", size, scale_by=1)
 
-        X_def, y_def = tf.train.batch([image, label], batch_size=batch_size, num_threads=4)
+            X_def, y_def = tf.train.batch([image, label], batch_size=batch_size, num_threads=6)
 
-            # try tf dataset
-            # filenames = tf.constant(os.listdir(os.path.join("data", "train_images")))
-            #
-            # dataset = tf.data.Dataset.from_tensor_slices((filenames))
-            # dataset = dataset.map(_parse_image)
+            # Placeholders
+            X = tf.placeholder_with_default(X_def, shape=[None, size, size, 1])
+            y = tf.placeholder_with_default(y_def, shape=[None, size, size, 1])
 
-        # Placeholders
-        X = tf.placeholder_with_default(X_def, shape=[None, size, size, 1])
-        y = tf.placeholder_with_default(y_def, shape=[None, size, size, 1])
+            X_fl = tf.cast(X, tf.float32)
 
-        X_fl = tf.cast(X, tf.float32)
+            # optional online data augmentation
+            if distort:
+                X_fl, y_adj = augment(X_fl, y, horizontal_flip=True, augment_labels=True, vertical_flip=True, mixup=0)
+            else:
+                y_adj = y
 
-        # optional online data augmentation
-        if distort:
-            X_fl, y_adj = augment(X_fl, y, horizontal_flip=True, augment_labels=True, vertical_flip=True, mixup=0)
-        else:
-            y_adj = y
-
-        # cast to float and scale input data
-        X_adj = _scale_input_data(X_fl, contrast=contrast, mu=127.0, scale=255.0)
+            # cast to float and scale input data
+            X_adj = _scale_input_data(X_fl, contrast=contrast, mu=127.0, scale=255.0)
 
     # Convolutional layer 1
     with tf.name_scope('conv1') as scope:
