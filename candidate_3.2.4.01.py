@@ -107,7 +107,7 @@ elif how == "mask":
     num_classes = 2
 
 print("Number of classes:", num_classes)
-print("Image crop size;", size)
+print("Image crop size:", size)
 
 ## Build the graph
 graph = tf.Graph()
