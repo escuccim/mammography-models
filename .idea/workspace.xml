@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="98c4e5b0-4f90-4540-b87f-9bd6d2ddc583" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/candidate_3.2.3.01.py" beforeDir="false" afterPath="$PROJECT_DIR$/candidate_3.2.3.01.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/candidate_3.2.4.01.py" beforeDir="false" afterPath="$PROJECT_DIR$/candidate_3.2.4.01.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -35,7 +36,7 @@
         <entry file="file://$PROJECT_DIR$/candidate_3.2.3.01.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="136">
-              <caret line="176" column="12" lean-forward="true" selection-start-line="176" selection-start-column="12" selection-end-line="176" selection-end-column="138" />
+              <caret line="176" column="119" lean-forward="true" selection-start-line="176" selection-start-column="119" selection-end-line="176" selection-end-column="119" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -47,7 +48,7 @@
         <entry file="file://$PROJECT_DIR$/candidate_3.2.4.01.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="119">
-              <caret line="185" column="137" lean-forward="true" selection-start-line="185" selection-start-column="137" selection-end-line="185" selection-end-column="137" />
+              <caret line="185" column="158" selection-start-line="185" selection-start-column="158" selection-end-line="185" selection-end-column="158" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -190,8 +191,8 @@
         <option value="$PROJECT_DIR$/candidate_3.2.2.01.py" />
         <option value="$PROJECT_DIR$/dense_utils.py" />
         <option value="$PROJECT_DIR$/candidate_4.0.0.01.py" />
-        <option value="$PROJECT_DIR$/candidate_3.2.3.01.py" />
         <option value="$PROJECT_DIR$/training_utils.py" />
+        <option value="$PROJECT_DIR$/candidate_3.2.3.01.py" />
         <option value="$PROJECT_DIR$/candidate_3.2.4.01.py" />
       </list>
     </option>
@@ -668,7 +669,7 @@
     <entry file="file://$PROJECT_DIR$/candidate_3.2.3.01.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="136">
-          <caret line="176" column="12" lean-forward="true" selection-start-line="176" selection-start-column="12" selection-end-line="176" selection-end-column="138" />
+          <caret line="176" column="119" lean-forward="true" selection-start-line="176" selection-start-column="119" selection-end-line="176" selection-end-column="119" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
@@ -678,7 +679,7 @@
     <entry file="file://$PROJECT_DIR$/candidate_3.2.4.01.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
-          <caret line="185" column="137" lean-forward="true" selection-start-line="185" selection-start-column="137" selection-end-line="185" selection-end-column="137" />
+          <caret line="185" column="158" selection-start-line="185" selection-start-column="158" selection-end-line="185" selection-end-column="158" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
