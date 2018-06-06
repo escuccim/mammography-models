@@ -877,7 +877,7 @@ def _parse_function(filename, size=640):
 #       scale_by - float - how much to resize raw images by
 # Returns: image - Tensor of image, shape (crop_size, crop_size, 1)
 #          label - Tensor of label, shape (crop_size, crop_size, 1)
-def _read_images(image_dir, crop_size, scale_by=0.66):
+def _read_images(image_dir, crop_size, scale_by=0.66, mu=127.0, scale=255.0):
     filenames = tf.train.match_filenames_once(image_dir + "*.png")
     filename_queue = tf.train.string_input_producer(filenames, capacity=256, name="file_queue")
 
@@ -890,7 +890,7 @@ def _read_images(image_dir, crop_size, scale_by=0.66):
     # decode the image
     raw_image = tf.image.decode_png(image_file)
 
-    return _process_images(raw_image, crop_size, scale_by)
+    return _process_images(raw_image, crop_size=crop_size, scale_by=scale_by, mu=127.0, scale=255.0)
 
 
 def _parse_image(filename, crop_size=640, scale_by=0.66):
@@ -899,24 +899,29 @@ def _parse_image(filename, crop_size=640, scale_by=0.66):
 
     return _process_images(raw_image, crop_size, scale_by)
 
-def _process_images(raw_image, crop_size=640, scale_by=0.66):
+def _process_images(raw_image, crop_size=640, scale_by=0.66, mu=127.0, scale=255.0):
+    # figure out size of raw crop by dividing size by scale
     if scale_by != 1.0:
-        # figure out size of raw crop by dividing size by scale
         image_size = int(crop_size // scale_by)
     else:
         image_size = crop_size
 
-    # crop the image
+    # random crop the image
     raw_image = tf.random_crop(raw_image, size=[image_size, image_size, 3])
 
+    # if applicable, resize the image to the destination size
     if scale_by != 1.0:
         image_size = crop_size
-        raw_image = tf.image.resize_images(raw_image, [crop_size, crop_size])
+        raw_image = tf.image.resize_images(raw_image, [image_size, image_size])
 
     # extract the image and label from the channels and resize them for convnet
     image = tf.reshape(raw_image[:, :, 0], [image_size, image_size, 1])
     label = tf.reshape(raw_image[:, :, 1], [image_size, image_size, 1])
 
+    # cast the label to an int
     label = tf.cast(label, dtype=tf.int32)
+
+    # scale the image
+    image = _scale_input_data(image, contrast=None, mu=mu, scale=scale)
 
     return image, label

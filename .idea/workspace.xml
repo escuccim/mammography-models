@@ -47,8 +47,8 @@
       <file leaf-file-name="candidate_3.2.4.01.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/candidate_3.2.4.01.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="340">
-              <caret line="188" column="66" lean-forward="true" selection-start-line="187" selection-start-column="10" selection-end-line="188" selection-end-column="66" />
+            <state relative-caret-position="493">
+              <caret line="197" lean-forward="true" selection-start-line="197" selection-end-line="197" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -76,8 +76,8 @@
       <file leaf-file-name="training_utils.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/training_utils.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="540">
-              <caret line="914" lean-forward="true" selection-start-line="914" selection-end-line="914" />
+            <state relative-caret-position="33">
+              <caret line="894" lean-forward="true" selection-start-line="894" selection-end-line="894" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -668,8 +668,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/training_utils.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="540">
-          <caret line="914" lean-forward="true" selection-start-line="914" selection-end-line="914" />
+        <state relative-caret-position="33">
+          <caret line="894" lean-forward="true" selection-start-line="894" selection-end-line="894" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
@@ -678,8 +678,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/candidate_3.2.4.01.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="340">
-          <caret line="188" column="66" lean-forward="true" selection-start-line="187" selection-start-column="10" selection-end-line="188" selection-end-column="66" />
+        <state relative-caret-position="493">
+          <caret line="197" lean-forward="true" selection-start-line="197" selection-end-line="197" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>

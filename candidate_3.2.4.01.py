@@ -184,24 +184,20 @@ with graph.as_default():
 
             X_def, y_def = tf.train.batch([image, label], batch_size=batch_size, num_threads=6)
 
-        # resize the image
-        # X_def = tf.image.resize_images(X_def, size=[size, size])
-        # y_def = tf.image.resize_images(y_def, size=[size, size])
-
         # Placeholders
         X = tf.placeholder_with_default(X_def, shape=[None, size, size, 1])
         y = tf.placeholder_with_default(y_def, shape=[None, size, size, 1])
 
-        X_fl = tf.cast(X, tf.float32)
+        X_adj = tf.cast(X, tf.float32)
         y_adj = tf.cast(y, tf.int32)
 
         with tf.device('/cpu:0'):
             # optional online data augmentation
             if distort:
-                X_fl, y_adj = augment(X_fl, y_adj, horizontal_flip=True, augment_labels=True, vertical_flip=True, mixup=0)
+                X_adj, y_adj = augment(X_adj, y_adj, horizontal_flip=True, augment_labels=True, vertical_flip=True, mixup=0)
 
             # cast to float and scale input data
-            X_adj = _scale_input_data(X_fl, contrast=contrast, mu=127.0, scale=255.0)
+            # X_adj = _scale_input_data(X_fl, contrast=contrast, mu=127.0, scale=255.0)
 
     # Convolutional layer 1
     with tf.name_scope('conv1') as scope:
