@@ -879,6 +879,7 @@ def _parse_function(filename, size=640):
 # Args: image_dir - str - path to directory
 #       crop_size - int - size of images to return
 #       scale_by - float - how much to resize raw images by
+#       distort - bool - whether or not to do online data augmentation
 # Returns: image - Tensor of image, shape (crop_size, crop_size, 1)
 #          label - Tensor of label, shape (crop_size, crop_size, 1)
 def _read_images(image_dir, crop_size, scale_by=0.66, mu=127.0, scale=255.0, distort=False):
@@ -894,6 +895,7 @@ def _read_images(image_dir, crop_size, scale_by=0.66, mu=127.0, scale=255.0, dis
     # decode the image
     raw_image = tf.image.decode_png(image_file)
 
+    # call function to process and crop images
     return _process_images(raw_image, crop_size=crop_size, scale_by=scale_by, mu=127.0, scale=255.0, distort=distort)
 
 def _process_images(raw_image, crop_size=640, scale_by=0.66, mu=127.0, scale=255.0, distort=False):
