@@ -180,7 +180,7 @@ with graph.as_default():
     with tf.name_scope('inputs') as scope:
         with tf.device('/cpu:0'):
             # decode the image
-            image, label = _read_images("./data/train_images/", size, scale_by=0.66)
+            image, label = _read_images("./data/train_images/", size, scale_by=0.66,distort=distort)
 
             X_def, y_def = tf.train.batch([image, label], batch_size=batch_size, num_threads=6)
 
@@ -191,13 +191,13 @@ with graph.as_default():
         X_adj = tf.cast(X, tf.float32)
         y_adj = tf.cast(y, tf.int32)
 
-        with tf.device('/cpu:0'):
-            # optional online data augmentation
-            if distort:
-                X_adj, y_adj = augment(X_adj, y_adj, horizontal_flip=True, augment_labels=True, vertical_flip=True, mixup=0)
-
-            # cast to float and scale input data
-            # X_adj = _scale_input_data(X_fl, contrast=contrast, mu=127.0, scale=255.0)
+        # with tf.device('/cpu:0'):
+        #     # optional online data augmentation
+        #     if distort:
+        #         X_adj, y_adj = augment(X_adj, y_adj, horizontal_flip=True, augment_labels=True, vertical_flip=True, mixup=0)
+        #
+        #     cast to float and scale input data
+        #     X_adj = _scale_input_data(X_fl, contrast=contrast, mu=127.0, scale=255.0)
 
     # Convolutional layer 1
     with tf.name_scope('conv1') as scope:
@@ -1085,7 +1085,7 @@ with tf.Session(graph=graph, config=config) as sess:
 
             print("Evaluating model...")
             # load the test data
-            X_cv, y_cv = load_validation_data(percentage=1, how=how, which=dataset)
+            X_cv, y_cv = load_validation_data(percentage=1, how=how, which=dataset, scale=True)
 
             # evaluate the test data
             for X_batch, y_batch in get_batches(X_cv, y_cv, batch_size, distort=False):
@@ -1163,7 +1163,7 @@ with tf.Session(graph=graph, config=config) as sess:
     print("Evaluating on test data")
 
     # evaluate the test data
-    X_te, y_te = load_validation_data(how=how, data="test", which=dataset)
+    X_te, y_te = load_validation_data(how=how, data="test", which=dataset, scale=True)
 
     test_accuracy = []
     test_recall = []

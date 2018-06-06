@@ -147,7 +147,7 @@ def read_and_decode_single_example(filenames, label_type='label_normal', normali
 
 
 ## load the test data from files
-def load_validation_data(data="validation", how="normal", which=5, percentage=1):
+def load_validation_data(data="validation", how="normal", which=5, percentage=1, scale=False):
     if data == "validation":
         # load the two data files
         if which == 4:
@@ -242,6 +242,10 @@ def load_validation_data(data="validation", how="normal", which=5, percentage=1)
 
     # shuffle the data
     X_cv, y_cv = shuffle(X_cv, y_cv)
+
+    # optional scaling
+    if scale:
+        X_cv = (X_cv - 127.0) / 255.0
 
     return X_cv, y_cv
 
@@ -877,7 +881,7 @@ def _parse_function(filename, size=640):
 #       scale_by - float - how much to resize raw images by
 # Returns: image - Tensor of image, shape (crop_size, crop_size, 1)
 #          label - Tensor of label, shape (crop_size, crop_size, 1)
-def _read_images(image_dir, crop_size, scale_by=0.66, mu=127.0, scale=255.0):
+def _read_images(image_dir, crop_size, scale_by=0.66, mu=127.0, scale=255.0, distort=False):
     filenames = tf.train.match_filenames_once(image_dir + "*.png")
     filename_queue = tf.train.string_input_producer(filenames, capacity=256, name="file_queue")
 
@@ -890,16 +894,9 @@ def _read_images(image_dir, crop_size, scale_by=0.66, mu=127.0, scale=255.0):
     # decode the image
     raw_image = tf.image.decode_png(image_file)
 
-    return _process_images(raw_image, crop_size=crop_size, scale_by=scale_by, mu=127.0, scale=255.0)
+    return _process_images(raw_image, crop_size=crop_size, scale_by=scale_by, mu=127.0, scale=255.0, distort=distort)
 
-
-def _parse_image(filename, crop_size=640, scale_by=0.66):
-    image_string = tf.read_file(filename)
-    raw_image = tf.image.decode_png(image_string)
-
-    return _process_images(raw_image, crop_size, scale_by)
-
-def _process_images(raw_image, crop_size=640, scale_by=0.66, mu=127.0, scale=255.0):
+def _process_images(raw_image, crop_size=640, scale_by=0.66, mu=127.0, scale=255.0, distort=False):
     # figure out size of raw crop by dividing size by scale
     if scale_by != 1.0:
         image_size = int(crop_size // scale_by)
@@ -923,5 +920,8 @@ def _process_images(raw_image, crop_size=640, scale_by=0.66, mu=127.0, scale=255
 
     # scale the image
     image = _scale_input_data(image, contrast=None, mu=mu, scale=scale)
+
+    if distort:
+        image, label = augment(image, label, horizontal_flip=True, augment_labels=True, vertical_flip=True, mixup=0)
 
     return image, label
