@@ -180,7 +180,7 @@ with graph.as_default():
     with tf.name_scope('inputs') as scope:
         with tf.device('/cpu:0'):
             # decode the image
-            image, label = _read_images("./data/train_images/", size, scale_by=0.66)
+            image, label = _read_images("./data/train_images/", size, scale_by=1.0)
 
             X_def, y_def = tf.train.batch([image, label], batch_size=batch_size, num_threads=6)
 
@@ -190,11 +190,15 @@ with graph.as_default():
 
             X_fl = tf.cast(X, tf.float32)
 
+            # resize the image
+            X_fl = tf.image.resize_images(X_fl, size=[size, size])
+            y_adj = tf.image.resize_images(y, size=[size, size])
+
             # optional online data augmentation
             if distort:
                 X_fl, y_adj = augment(X_fl, y, horizontal_flip=True, augment_labels=True, vertical_flip=True, mixup=0)
-            else:
-                y_adj = y
+            # else:
+            #     y_adj = y
 
             # cast to float and scale input data
             X_adj = _scale_input_data(X_fl, contrast=contrast, mu=127.0, scale=255.0)
