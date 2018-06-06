@@ -291,7 +291,7 @@ def download_data(what=4):
                               'cv8_filenames.npy')
     elif what == 100:
         # download and unzip images
-        if not os.path.exists(os.path.join("data", "train_images", "P_00499_RIGHT_MLO_771.png")):
+        if not os.path.exists(os.path.join("data", "train_images", "P_00008_LEFT_CC_10.png")):
             _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/train_images0.zip',
                               'train_images0.zip')
 

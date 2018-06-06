@@ -955,6 +955,7 @@ with tf.Session(graph=graph, config=config) as sess:
     
     # create the saver
     saver = tf.train.Saver()
+    sess.run(tf.local_variables_initializer())
     
     # If the model is new initialize variables, else restore the session
     if init:
@@ -998,11 +999,12 @@ with tf.Session(graph=graph, config=config) as sess:
             saver.restore(sess, './model/' + model_name + '.ckpt')
             print("Restoring model", model_name)
 
+    # start the queue runners
+    coord = tf.train.Coordinator()
+    threads = tf.train.start_queue_runners(coord=coord)
+
     # if we are training the model
     if action == "train":
-
-        coord = tf.train.Coordinator()
-        threads = tf.train.start_queue_runners(coord=coord)
 
         print("Training model", model_name, "...")
 
@@ -1152,11 +1154,11 @@ with tf.Session(graph=graph, config=config) as sess:
                     epoch, step, np.mean(batch_cv_acc), np.mean(batch_acc)
                 ))
 
-        # stop the coordinator
-        coord.request_stop()
+    # stop the coordinator
+    coord.request_stop()
 
-        # Wait for threads to stop
-        coord.join(threads)
+    # Wait for threads to stop
+    coord.join(threads)
 
     sess.run(tf.local_variables_initializer())
     print("Evaluating on test data")
@@ -1188,11 +1190,5 @@ with tf.Session(graph=graph, config=config) as sess:
     # unlist the predictions and truth
     test_predictions = flatten(test_predictions)
     ground_truth = flatten(ground_truth)
-
-    # save the predictions and truth for review
-    # np.save(os.path.join("data", "predictions_" + model_name + ".npy"), test_predictions)
-    # np.save(os.path.join("data", "truth_" + model_name + ".npy"), ground_truth)
-
-    sess.run(tf.local_variables_initializer())
 
 
