@@ -112,7 +112,7 @@ print("Image crop size:", size)
 ## Build the graph
 graph = tf.Graph()
 
-model_name = "model_s3.2.3.01" + model_label + "." + str(dataset) + str(version)
+model_name = "model_s3.2.4.01" + model_label + "." + str(dataset) + str(version)
 ## Change Log
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
@@ -956,7 +956,7 @@ with tf.Session(graph=graph, config=config) as sess:
     # create the saver
     saver = tf.train.Saver()
     sess.run(tf.local_variables_initializer())
-    
+
     # If the model is new initialize variables, else restore the session
     if init:
         sess.run(tf.global_variables_initializer())
