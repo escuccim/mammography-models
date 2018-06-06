@@ -286,8 +286,25 @@ def download_data(what=4):
         if not os.path.exists(os.path.join("data", "cv8_filenames.npy")):
             _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/cv8_filenames.npy',
                               'cv8_filenames.npy')
+    elif what == 100:
+        # download and unzip images
+        if not os.path.exists(os.path.join("data", "training_images", "P_00012_LEFT_MLO_21.png")):
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/train_images0.zip',
+                              'train_images0.zip')
 
-    if what == 9:
+        if not os.path.exists(os.path.join("data", "training_images", "P_00520_LEFT_CC_809.png")):
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/train_images1.zip',
+                              'train_images1.zip')
+
+        if not os.path.exists(os.path.join("data", "training_images", "P_01009_RIGHT_CC_1583.png")):
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/train_images2.zip',
+                              'train_images2.zip')
+
+        if not os.path.exists(os.path.join("data", "training_images", "P_01524_LEFT_MLO_2377.png")):
+            _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/train_images3.zip',
+                              'train_images3.zip')
+
+    elif what == 9:
         # download and unzip tfrecords training data
         if not os.path.exists(os.path.join("data", "training9_0.tfrecords")):
             _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/training9_0.zip',
@@ -567,17 +584,7 @@ def download_data(what=4):
 ## Load the training data and return a list of the tfrecords file and the size of the dataset
 ## Multiple data sets have been created for this project, which one to be used can be set with the type argument
 def get_training_data(what=5):
-    if what == 6:
-        train_path_10 = os.path.join("data", "training6_0.tfrecords")
-        train_path_11 = os.path.join("data", "training6_1.tfrecords")
-        train_path_12 = os.path.join("data", "training6_2.tfrecords")
-        train_path_13 = os.path.join("data", "training6_3.tfrecords")
-        train_path_14 = os.path.join("data", "training6_4.tfrecords")
-
-        train_files = [train_path_10, train_path_11, train_path_12, train_path_13, train_path_14]
-        total_records = 62764
-
-    elif what == 8:
+    if what == 8:
         train_path_10 = os.path.join("data", "training8_0.tfrecords")
         train_path_11 = os.path.join("data", "training8_1.tfrecords")
         train_path_12 = os.path.join("data", "training8_2.tfrecords")
@@ -606,16 +613,6 @@ def get_training_data(what=5):
 
         train_files = [train_path_10, train_path_11, train_path_12, train_path_13, train_path_14]
         total_records = 55890
-
-    elif what == 11:
-        train_path_10 = os.path.join("data", "training11_0.tfrecords")
-        train_path_11 = os.path.join("data", "training11_1.tfrecords")
-        train_path_12 = os.path.join("data", "training11_2.tfrecords")
-        train_path_13 = os.path.join("data", "training11_3.tfrecords")
-        train_path_14 = os.path.join("data", "training11_4.tfrecords")
-
-        train_files = [train_path_10, train_path_11, train_path_12, train_path_13, train_path_14]
-        total_records = 33241
 
     elif what == 12:
         train_path_10 = os.path.join("data", "training12_0.tfrecords")
@@ -851,3 +848,50 @@ def plot_results(y_, yhat, x_, threshold=20):
             ax[2].imshow(yhat[i].reshape(288,288))
             ax[2].set_title("Prediction")
             plt.show()
+
+
+def _parse_function(filename, size=640):
+    image_string = tf.read_file(filename)
+    image_decoded = tf.image.decode_image(image_string)
+
+    cropped_image = tf.random_crop(image_decoded, size=[size, size, 3])
+
+    image = cropped_image[:, :, 0]
+    label = cropped_image[:, :, 1]
+
+    return image, label
+
+# From a directory, read the files in the directory, create a queue, read images from the queue,
+# process, re-size and reshape and return them.
+# Args: image_dir - str - path to directory
+#       crop_size - int - size of images to return
+#       scale_by - float - how much to resize raw images by
+# Returns: image - Tensor of image, shape (crop_size, crop_size, 1)
+#          label - Tensor of label, shape (crop_size, crop_size, 1)
+def _read_images(image_dir, crop_size, scale_by=0.66):
+    filenames = tf.train.match_filenames_once(image_dir + "*.png")
+    filename_queue = tf.train.string_input_producer(filenames)
+
+    # create the reader
+    image_reader = tf.WholeFileReader()
+
+    # Read a whole file from the queue
+    filename, image_file = image_reader.read(filename_queue)
+
+    # decode the image
+    raw_image = tf.image.decode_png(image_file)
+
+    # figure out size of raw crop by dividing size by scale
+    image_size = int(crop_size // scale_by)
+
+    # crop the image
+    raw_image = tf.random_crop(raw_image, size=[image_size, image_size, 3])
+
+    # resize the image
+    resized_image = tf.image.resize_images(raw_image, size=[crop_size, crop_size])
+
+    # extract the image and label from the channels and resize them for convnet
+    image = tf.reshape(resized_image[:, :, 0], [crop_size, crop_size, 1])
+    label = tf.reshape(resized_image[:, :, 1], [crop_size, crop_size, 1])
+
+    return image, label

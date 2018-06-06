@@ -24,6 +24,7 @@ parser.add_argument("-n", "--normalize", help="apply per image normalization", n
 parser.add_argument("-w", "--weight", help="weight to give to positive examples in cross-entropy", default=10, type=float)
 parser.add_argument("-v", "--version", help="version or run number to assign to model name", default="")
 parser.add_argument("--distort", help="use online data augmentation", default=False, const=True, nargs="?")
+parser.add_argument("--size", help="size of image to crop (default 640)", default=640, type=int)
 args = parser.parse_args()
 
 epochs = args.epochs
@@ -37,6 +38,7 @@ freeze = args.freeze
 stop = args.stop
 contrast = args.contrast
 normalize = args.normalize
+size = args.size
 weight = args.weight - 1
 distort = args.distort
 version = args.version
@@ -102,6 +104,7 @@ elif how == "mask":
     num_classes = 2
 
 print("Number of classes:", num_classes)
+print("Image crop size;", size)
 
 ## Build the graph
 graph = tf.Graph()
@@ -155,6 +158,7 @@ model_name = "model_s3.2.3.01" + model_label + "." + str(dataset) + str(version)
 # 3.2.1.49 - renamed one upconv layer so they can be isolated and trained
 # 3.2.2.01 - tweaking the upsampling layers
 # 3.2.3.01 - going to train from scratch so adding some extras layers and such
+# 3.2.4.01 - switching from tf records to reading entire images and taking random crops for more training data
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -171,14 +175,14 @@ with graph.as_default():
 
     with tf.name_scope('inputs') as scope:
         with tf.device('/cpu:0'):
-            # image, label = _read_images("./data/train_images/", 640)
-            image, label = read_and_decode_single_example(train_files, label_type=how, normalize=False, distort=False, size=640)
+            image, label = _read_images("./data/train_images/", size)
+            # image, label = read_and_decode_single_example(train_files, label_type=how, normalize=False, distort=False, size=640)
 
             X_def, y_def = tf.train.shuffle_batch([image, label], batch_size=batch_size, capacity=2000, seed=None, min_after_dequeue=1000)
 
             # Placeholders
-            X = tf.placeholder_with_default(X_def, shape=[None, 640, 640, 1])
-            y = tf.placeholder_with_default(y_def, shape=[None, 640, 640, 1])
+            X = tf.placeholder_with_default(X_def, shape=[None, size, size, 1])
+            y = tf.placeholder_with_default(y_def, shape=[None, size, size, 1])
 
             X_fl = tf.cast(X, tf.float32)
 
@@ -810,13 +814,13 @@ with graph.as_default():
 
     # squash the predictions into a per image prediction - negative images will have a max of 0
     pred_sum = tf.reduce_sum(predictions, axis=[1, 2])
-    image_predictions = tf.cast(tf.greater(pred_sum, (640 * 640 // 750)), dtype=tf.uint8)
+    image_predictions = tf.cast(tf.greater(pred_sum, (size * size // 750)), dtype=tf.uint8)
     image_truth = tf.reduce_max(y_adj, axis=[1, 2])
     # image_predictions = tf.reduce_max(predictions, axis=[1,2,3])
 
     # set a threshold on the predictions so we ignore images with only a few positive pixels
     pred_sum = tf.reduce_sum(predictions, axis=[1, 2])
-    image_predictions = tf.cast(tf.greater(pred_sum, (640*640//750)),dtype=tf.uint8)
+    image_predictions = tf.cast(tf.greater(pred_sum, (size*size//750)),dtype=tf.uint8)
 
     # get the accuracy per pixel
     accuracy, acc_op = tf.metrics.accuracy(
