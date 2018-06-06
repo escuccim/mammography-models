@@ -3,8 +3,8 @@ import os
 import wget
 from sklearn.model_selection import train_test_split
 import tensorflow as tf
-from training_utils import download_file, get_batches, read_and_decode_single_example, load_validation_data, \
-    download_data, evaluate_model, get_training_data, load_weights, flatten, _scale_input_data, augment, _conv2d_batch_norm, standardize, _read_images, _process_images, _parse_image
+from training_utils import download_file, get_batches, load_validation_data, \
+    download_data, get_training_data, load_weights, flatten, _conv2d_batch_norm, _read_images
 import argparse
 from tensorboard import summary as summary_lib
 
