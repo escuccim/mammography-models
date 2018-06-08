@@ -305,10 +305,10 @@ def download_data(what=4):
             _ = download_file('https://s3.eu-central-1.amazonaws.com/aws.skoo.ch/files/train_images0.zip',
                               'train_images0.zip')
 
-        # if not os.path.exists(os.path.join("data", "train_images", "P_00510_RIGHT_CC_791.png")):
-        #     _ = download_file('https://s3.eu-west-3.amazonaws.com/deep.skoo.ch/mammography/train_images1.zip',
-        #                       'train_images1.zip')
-        #
+        if not os.path.exists(os.path.join("data", "train_images", "P_00510_RIGHT_CC_791.png")):
+            _ = download_file('https://s3.eu-west-3.amazonaws.com/deep.skoo.ch/mammography/train_images1.zip',
+                              'train_images1.zip')
+
         if not os.path.exists(os.path.join("data", "train_images", "P_01009_RIGHT_CC_1583.png")):
             _ = download_file('https://s3.eu-west-3.amazonaws.com/deep.skoo.ch/mammography/train_images2.zip',
                               'train_images2.zip')
@@ -321,10 +321,10 @@ def download_data(what=4):
         #     _ = download_file('https://s3.eu-west-3.amazonaws.com/deep.skoo.ch/mammography/train_images2.zip',
         #                       'train_images4.zip')
         #
-        # if not os.path.exists(os.path.join("data", "train_images", "P_01501_RIGHT_CC_2343.png")):
-        #     _ = download_file('https://s3.eu-west-3.amazonaws.com/deep.skoo.ch/mammography/train_images2.zip',
-        #                       'train_images5.zip')
-        #
+        if not os.path.exists(os.path.join("data", "train_images", "P_01501_RIGHT_CC_2343.png")):
+            _ = download_file('https://s3.eu-west-3.amazonaws.com/deep.skoo.ch/mammography/train_images2.zip',
+                              'train_images5.zip')
+
         # if not os.path.exists(os.path.join("data", "train_images", "P_00751_LEFT_CC_1184.png")):
         #     _ = download_file('https://s3.eu-west-3.amazonaws.com/deep.skoo.ch/mammography/train_images2.zip',
         #                       'train_images6.zip')
