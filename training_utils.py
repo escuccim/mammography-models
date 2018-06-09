@@ -173,6 +173,9 @@ def load_validation_data(data="validation", how="normal", which=5, percentage=1,
         elif which == 13:
             X_cv = np.load(os.path.join("data", "cv13_data.npy"))
             labels = np.load(os.path.join("data", "cv13_labels.npy"))
+        elif which == 100:
+            X_cv = np.load(os.path.join("data", "cv100_data.npy"))
+            labels = np.load(os.path.join("data", "cv100_labels.npy"))
         else:
             X_cv = np.load(os.path.join("data", "cv13_data.npy"))
             labels = np.load(os.path.join("data", "cv13_labels.npy"))
@@ -204,6 +207,9 @@ def load_validation_data(data="validation", how="normal", which=5, percentage=1,
         elif which == 13:
             X_cv = np.load(os.path.join("data", "test13_data.npy"))
             labels = np.load(os.path.join("data", "test13_labels.npy"))
+        elif which == 100:
+            X_cv = np.load(os.path.join("data", "test100_data.npy"))
+            labels = np.load(os.path.join("data", "test100_labels.npy"))
         else:
             X_cv = np.load(os.path.join("data", "test13_data.npy"))
             labels = np.load(os.path.join("data", "test13_labels.npy"))
