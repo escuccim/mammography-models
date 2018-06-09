@@ -33,14 +33,10 @@ def download_file(url, name):
             try:
                 unzip(os.path.join("data", name), "data")
 
-                # then delete the zip to save disk space
-                try:
-                    os.remove(os.path.join("data", name))
-                    print("\nZip file extracted and deleted", name)
-                except:
-                    print("Error deleting zip file", name)
+                os.remove(os.path.join("data", name))
+                print("\nZip file extracted and deleted", name)
             except:
-                print("Error extracting zip file...")
+                print("Error extracting and/or deleting zip file...")
 
     except:
         print("Error downloading", url)
@@ -316,18 +312,18 @@ def download_data(what=4):
         # if not os.path.exists(os.path.join("data", "train_images", "P_01252_RIGHT_CC_1953.png")):
         #     _ = download_file('https://s3.eu-west-3.amazonaws.com/deep.skoo.ch/mammography/train_images2.zip',
         #                       'train_images3.zip')
-        #
-        # if not os.path.exists(os.path.join("data", "train_images", "P_01741_RIGHT_CC_2710.png")):
-        #     _ = download_file('https://s3.eu-west-3.amazonaws.com/deep.skoo.ch/mammography/train_images2.zip',
-        #                       'train_images4.zip')
-        #
+
+        if not os.path.exists(os.path.join("data", "train_images", "P_01741_RIGHT_CC_2710.png")):
+            _ = download_file('https://s3.eu-west-3.amazonaws.com/deep.skoo.ch/mammography/train_images2.zip',
+                              'train_images4.zip')
+
         if not os.path.exists(os.path.join("data", "train_images", "P_01501_RIGHT_CC_2343.png")):
             _ = download_file('https://s3.eu-west-3.amazonaws.com/deep.skoo.ch/mammography/train_images5.zip',
                               'train_images5.zip')
 
-        # if not os.path.exists(os.path.join("data", "train_images", "P_00751_LEFT_CC_1184.png")):
-        #     _ = download_file('https://s3.eu-west-3.amazonaws.com/deep.skoo.ch/mammography/train_images2.zip',
-        #                       'train_images6.zip')
+        if not os.path.exists(os.path.join("data", "train_images", "P_00751_LEFT_CC_1184.png")):
+            _ = download_file('https://s3.eu-west-3.amazonaws.com/deep.skoo.ch/mammography/train_images2.zip',
+                              'train_images6.zip')
 
     elif what == 9:
         # download and unzip tfrecords training data
