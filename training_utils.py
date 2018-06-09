@@ -309,9 +309,9 @@ def download_data(what=4):
             _ = download_file('https://s3.eu-west-3.amazonaws.com/deep.skoo.ch/mammography/train_images2.zip',
                               'train_images2.zip')
 
-        # if not os.path.exists(os.path.join("data", "train_images", "P_01252_RIGHT_CC_1953.png")):
-        #     _ = download_file('https://s3.eu-west-3.amazonaws.com/deep.skoo.ch/mammography/train_images2.zip',
-        #                       'train_images3.zip')
+        if not os.path.exists(os.path.join("data", "train_images", "P_01252_RIGHT_CC_1953.png")):
+            _ = download_file('https://s3.eu-west-3.amazonaws.com/deep.skoo.ch/mammography/train_images3.zip',
+                              'train_images3.zip')
 
         if not os.path.exists(os.path.join("data", "train_images", "P_01741_RIGHT_CC_2710.png")):
             _ = download_file('https://s3.eu-west-3.amazonaws.com/deep.skoo.ch/mammography/train_images4.zip',
@@ -325,6 +325,21 @@ def download_data(what=4):
             _ = download_file('https://s3.eu-west-3.amazonaws.com/deep.skoo.ch/mammography/train_images6.zip',
                               'train_images6.zip')
 
+        if not os.path.exists(os.path.join("data", "cv100_data.npy")):
+            _ = download_file('https://s3.eu-west-3.amazonaws.com/deep.skoo.ch/mammography/cv100_data.zip',
+                              'cv100_data.zip')
+
+        if not os.path.exists(os.path.join("data", "cv100_labels.npy")):
+            _ = download_file('https://s3.eu-west-3.amazonaws.com/deep.skoo.ch/mammography/cv100_labels.zip',
+                              'cv100_labels.zip')
+
+        if not os.path.exists(os.path.join("data", "test100_data.npy")):
+            _ = download_file('https://s3.eu-west-3.amazonaws.com/deep.skoo.ch/mammography/test100_data.zip',
+                              'test100_data.zip')
+
+        if not os.path.exists(os.path.join("data", "test100_labels.npy")):
+            _ = download_file('https://s3.eu-west-3.amazonaws.com/deep.skoo.ch/mammography/test100_labels.zip',
+                              'test100_labels.zip')
     elif what == 9:
         # download and unzip tfrecords training data
         if not os.path.exists(os.path.join("data", "training9_0.tfrecords")):
