@@ -88,7 +88,7 @@ def _image_random_flip(image, label):
     return image_aug, label_aug
 
 ## read data from tfrecords file
-def read_and_decode_single_example(filenames, label_type='label_normal', normalize=False, distort=False, num_epochs=None, size=299):
+def read_and_decode_single_example(filenames, label_type='label_normal', normalize=False, distort=False, num_epochs=None, size=299, scale=True):
     filename_queue = tf.train.string_input_producer(filenames, num_epochs=num_epochs)
 
     reader = tf.TFRecordReader()
@@ -134,6 +134,10 @@ def read_and_decode_single_example(filenames, label_type='label_normal', normali
         label = tf.cast(label, tf.int32)
         image = tf.reshape(image, [size, size, 1])
         label = tf.reshape(label, [size, size, 1])
+
+    if scale:
+        # image = tf.cast(image, tf.float32)
+        image = _scale_input_data(image, contrast=0, mu=127.0, scale=255.0)
 
     if normalize:
         image = tf.image.per_image_standardization(image)

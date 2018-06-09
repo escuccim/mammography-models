@@ -4,7 +4,7 @@ import wget
 from sklearn.model_selection import train_test_split
 import tensorflow as tf
 from training_utils import download_file, get_batches, load_validation_data, \
-    download_data, get_training_data, load_weights, flatten, _conv2d_batch_norm, _read_images
+    download_data, get_training_data, load_weights, flatten, _conv2d_batch_norm, _read_images, read_and_decode_single_example, augment
 import argparse
 from tensorboard import summary as summary_lib
 
@@ -179,11 +179,16 @@ with graph.as_default():
 
     with tf.name_scope('inputs') as scope:
         with tf.device('/cpu:0'):
-            # decode the image
-            image, label = _read_images("./data/train_images/", size, scale_by=0.66,distort=distort)
+            if dataset == 100:
+                # decode the image
+                image, label = _read_images("./data/train_images/", size, scale_by=0.66,distort=distort)
+            else:
+                image, label = read_and_decode_single_example(train_files, label_type=how, normalize=False,
+                                                              distort=False, size=640)
 
             # X_def, y_def = tf.train.batch([image, label], batch_size=batch_size, num_threads=8, capacity=20*batch_size)
             X_def, y_def = tf.train.shuffle_batch([image, label], batch_size=batch_size, capacity=75*batch_size, seed=None, num_threads=8, min_after_dequeue=20*batch_size)
+
         # Placeholders
         X = tf.placeholder_with_default(X_def, shape=[None, size, size, 1])
         y = tf.placeholder_with_default(y_def, shape=[None, size, size, 1])
@@ -191,13 +196,13 @@ with graph.as_default():
         X_adj = tf.cast(X, tf.float32)
         y_adj = tf.cast(y, tf.int32)
 
-        # with tf.device('/cpu:0'):
-        #     # optional online data augmentation
-        #     if distort:
-        #         X_adj, y_adj = augment(X_adj, y_adj, horizontal_flip=True, augment_labels=True, vertical_flip=True, mixup=0)
-        #
-        #     cast to float and scale input data
-        #     X_adj = _scale_input_data(X_fl, contrast=contrast, mu=127.0, scale=255.0)
+        with tf.device('/cpu:0'):
+            # optional online data augmentation
+            if distort:
+                X_adj, y_adj = augment(X_adj, y_adj, horizontal_flip=True, augment_labels=True, vertical_flip=True, mixup=0)
+
+            # cast to float and scale input data
+            # X_adj = _scale_input_data(X_fl, contrast=contrast, mu=127.0, scale=255.0)
 
     # Convolutional layer 1
     with tf.name_scope('conv1') as scope:
