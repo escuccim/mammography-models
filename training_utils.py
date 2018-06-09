@@ -322,7 +322,7 @@ def download_data(what=4):
                               'train_images5.zip')
 
         if not os.path.exists(os.path.join("data", "train_images", "P_00751_LEFT_CC_1184.png")):
-            _ = download_file('https://s3.eu-west-3.amazonaws.com/deep.skoo.ch/mammography/train_images2.zip',
+            _ = download_file('https://s3.eu-west-3.amazonaws.com/deep.skoo.ch/mammography/train_images6.zip',
                               'train_images6.zip')
 
     elif what == 9:
