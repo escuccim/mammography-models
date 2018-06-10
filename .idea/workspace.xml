@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="98c4e5b0-4f90-4540-b87f-9bd6d2ddc583" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/candidate_3.2.4.01.py" beforeDir="false" afterPath="$PROJECT_DIR$/candidate_3.2.4.01.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/training_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/training_utils.py" afterDir="false" />
     </list>
@@ -32,11 +33,14 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="candidate_3.2.4.01.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="candidate_3.2.4.01.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/candidate_3.2.4.01.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-3111">
-              <caret line="6" column="134" selection-start-line="6" selection-start-column="134" selection-end-line="6" selection-end-column="134" />
+            <state relative-caret-position="170">
+              <caret line="67" column="76" selection-start-line="67" selection-start-column="76" selection-end-line="67" selection-end-column="76" />
+              <folding>
+                <element signature="e#0#18#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -58,11 +62,11 @@
           <provider selected="true" editor-type-id="images" />
         </entry>
       </file>
-      <file leaf-file-name="training_utils.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="training_utils.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/training_utils.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="418">
-              <caret line="139" column="44" lean-forward="true" selection-start-line="139" selection-start-column="44" selection-end-line="139" selection-end-column="44" />
+            <state relative-caret-position="520">
+              <caret line="361" column="88" selection-start-line="361" selection-start-column="88" selection-end-line="361" selection-end-column="88" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -177,8 +181,8 @@
         <option value="$PROJECT_DIR$/dense_utils.py" />
         <option value="$PROJECT_DIR$/candidate_4.0.0.01.py" />
         <option value="$PROJECT_DIR$/candidate_3.2.3.01.py" />
-        <option value="$PROJECT_DIR$/candidate_3.2.4.01.py" />
         <option value="$PROJECT_DIR$/training_utils.py" />
+        <option value="$PROJECT_DIR$/candidate_3.2.4.01.py" />
       </list>
     </option>
   </component>
@@ -651,17 +655,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/candidate_3.2.4.01.py">
+    <entry file="file://$PROJECT_DIR$/training_utils.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-3111">
-          <caret line="6" column="134" selection-start-line="6" selection-start-column="134" selection-end-line="6" selection-end-column="134" />
+        <state relative-caret-position="520">
+          <caret line="361" column="88" selection-start-line="361" selection-start-column="88" selection-end-line="361" selection-end-column="88" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/training_utils.py">
+    <entry file="file://$PROJECT_DIR$/candidate_3.2.4.01.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="418">
-          <caret line="139" column="44" lean-forward="true" selection-start-line="139" selection-start-column="44" selection-end-line="139" selection-end-column="44" />
+        <state relative-caret-position="170">
+          <caret line="67" column="76" selection-start-line="67" selection-start-column="76" selection-end-line="67" selection-end-column="76" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>

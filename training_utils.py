@@ -350,6 +350,18 @@ def download_data(what=4):
         if not os.path.exists(os.path.join("data", "test100_labels.npy")):
             _ = download_file('https://s3.eu-west-3.amazonaws.com/deep.skoo.ch/mammography/test100_labels.zip',
                               'test100_labels.zip')
+
+        if not os.path.exists(os.path.join("data", "train_images", "P_00008_RIGHT_MLO_13_cropped.png")):
+            _ = download_file('https://s3.eu-west-3.amazonaws.com/deep.skoo.ch/mammography/train_images2_0.zip',
+                              'train_images2_0.zip')
+
+        if not os.path.exists(os.path.join("data", "train_images", "P_00701_LEFT_CC_844_cropped.png")):
+            _ = download_file('https://s3.eu-west-3.amazonaws.com/deep.skoo.ch/mammography/train_images2_1.zip',
+                              'train_images2_1.zip')
+
+        if not os.path.exists(os.path.join("data", "train_images", "P_01313_LEFT_CC_1626_cropped.png")):
+            _ = download_file('https://s3.eu-west-3.amazonaws.com/deep.skoo.ch/mammography/train_images2_2.zip',
+                              'train_images2_2.zip')
     elif what == 9:
         # download and unzip tfrecords training data
         if not os.path.exists(os.path.join("data", "training9_0.tfrecords")):

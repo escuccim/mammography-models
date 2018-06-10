@@ -65,8 +65,8 @@ batch_size = 16
 if dataset != 100:
     train_files, total_records = get_training_data(what=dataset)
 else:
-    # use each image 10 times for each epoch since we are taking random crops of very large images
-    total_records = len(os.listdir(os.path.join("data", "train_images"))) * 10
+    # use each image 5 times for each epoch since we are taking random crops
+    total_records = len(os.listdir(os.path.join("data", "train_images"))) * 5
 
 ## Hyperparameters
 epsilon = 1e-8
