@@ -113,7 +113,7 @@ print("Image crop size:", size)
 ## Build the graph
 graph = tf.Graph()
 
-model_name = "model_s3.2.4.01" + model_label + "." + str(dataset) + str(version)
+model_name = "model_s3.2.4.02" + model_label + "." + str(dataset) + str(version)
 ## Change Log
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
@@ -163,6 +163,7 @@ model_name = "model_s3.2.4.01" + model_label + "." + str(dataset) + str(version)
 # 3.2.2.01 - tweaking the upsampling layers
 # 3.2.3.01 - going to train from scratch so adding some extras layers and such
 # 3.2.4.01 - switching from tf records to reading entire images and taking random crops for more training data
+# 3.2.4.02 - fixed bug where one layer was missing activation function
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -658,7 +659,11 @@ with graph.as_default():
             name='up_conv1'
         )
 
+        # add layer 5 back in
         unpool1 = unpool1 + pool5
+
+        # activation
+        unpool1 = tf.nn.elu(unpool1, name="up_conv1_relu")
 
     # upsample to 10x10
     with tf.name_scope('up_conv2') as scope:
@@ -746,6 +751,7 @@ with graph.as_default():
         # activation
         unpool5 = tf.nn.elu(unpool5, name='relu10')
 
+    # conv layer
     conv6 = _conv2d_batch_norm(unpool5, 16, kernel_size=(3, 3), stride=(1, 1), training=training, lambd=0.0,
                                name="up_conv6", activation="elu")
 
