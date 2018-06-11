@@ -188,7 +188,7 @@ with graph.as_default():
                                                               distort=False, size=640)
 
             # X_def, y_def = tf.train.batch([image, label], batch_size=batch_size, num_threads=8, capacity=20*batch_size)
-            X_def, y_def = tf.train.shuffle_batch([image, label], batch_size=batch_size, capacity=75*batch_size, seed=None, num_threads=8, min_after_dequeue=20*batch_size)
+            X_def, y_def = tf.train.shuffle_batch([image, label], batch_size=batch_size, capacity=75*batch_size, seed=None, num_threads=10, min_after_dequeue=20*batch_size)
 
         # Placeholders
         X = tf.placeholder_with_default(X_def, shape=[None, size, size, 1])
