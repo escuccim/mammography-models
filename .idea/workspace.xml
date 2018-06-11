@@ -34,8 +34,8 @@
       <file leaf-file-name="candidate_3.2.4.01.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/candidate_3.2.4.01.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="391">
-              <caret line="23" column="109" selection-start-line="23" selection-start-column="109" selection-end-line="23" selection-end-column="109" />
+            <state relative-caret-position="218">
+              <caret line="67" column="22" selection-start-line="67" selection-start-column="22" selection-end-line="67" selection-end-column="22" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -63,7 +63,7 @@
       <file leaf-file-name="training_utils.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/training_utils.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="520">
+            <state relative-caret-position="2261">
               <caret line="361" column="88" selection-start-line="361" selection-start-column="88" selection-end-line="361" selection-end-column="88" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
@@ -83,7 +83,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>conv_b_4_2</find>
       <find>conv_b_4_3</find>
       <find>max</find>
       <find>valid_acc</find>
@@ -113,6 +112,7 @@
       <find>12_</find>
       <find>concat</find>
       <find>640</find>
+      <find>load</find>
     </findStrings>
     <replaceStrings>
       <replace>11_</replace>
@@ -655,7 +655,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/training_utils.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="520">
+        <state relative-caret-position="2261">
           <caret line="361" column="88" selection-start-line="361" selection-start-column="88" selection-end-line="361" selection-end-column="88" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
@@ -665,8 +665,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/candidate_3.2.4.01.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="391">
-          <caret line="23" column="109" selection-start-line="23" selection-start-column="109" selection-end-line="23" selection-end-column="109" />
+        <state relative-caret-position="218">
+          <caret line="67" column="22" selection-start-line="67" selection-start-column="22" selection-end-line="67" selection-end-column="22" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>

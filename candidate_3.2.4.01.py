@@ -65,8 +65,8 @@ batch_size = 16
 if dataset != 100:
     train_files, total_records = get_training_data(what=dataset)
 else:
-    # use each image 5 times for each epoch since we are taking random crops
-    total_records = len(os.listdir(os.path.join("data", "train_images"))) * 5
+    # use each image 3 times for each epoch since we are taking random crops
+    total_records = len(os.listdir(os.path.join("data", "train_images"))) * 3
 
 ## Hyperparameters
 epsilon = 1e-8
@@ -196,10 +196,10 @@ with graph.as_default():
         X_adj = tf.cast(X, tf.float32)
         y_adj = tf.cast(y, tf.int32)
 
-        with tf.device('/cpu:0'):
-            # optional online data augmentation
-            if distort:
-                X_adj, y_adj = augment(X_adj, y_adj, horizontal_flip=True, augment_labels=True, vertical_flip=True, mixup=0)
+        # with tf.device('/cpu:0'):
+        # optional online data augmentation
+        if distort:
+            X_adj, y_adj = augment(X_adj, y_adj, horizontal_flip=True, augment_labels=True, vertical_flip=True, mixup=0)
 
             # cast to float and scale input data
             # X_adj = _scale_input_data(X_fl, contrast=contrast, mu=127.0, scale=255.0)
@@ -977,13 +977,6 @@ with tf.Session(graph=graph, config=config) as sess:
             # run the initializer
             init_fn(sess)
 
-            ## reload some weights from one checkpoint and some from a different one
-            # init_fn = load_weights("model_s3.2.1.48m.12", exclude=["conv_up_conv7", "bn_up_conv7", "fc3", "conv5", "accuracy", "bn5"])
-            # init_fn(sess)
-            #
-            # init_fn = load_weights("model_s3.2.0.47m.12", include=["conv5", "bn5"])
-            # init_fn(sess)
-            #
             # # reset the global step
             initial_global_step = global_step.assign(0)
             sess.run(initial_global_step)
