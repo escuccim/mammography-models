@@ -702,6 +702,22 @@ with graph.as_default():
             name='up_conv3'
         )
 
+        unpool3 = tf.layers.batch_normalization(
+            unpool3,
+            axis=-1,
+            momentum=0.99,
+            epsilon=epsilon,
+            center=True,
+            scale=True,
+            beta_initializer=tf.zeros_initializer(),
+            gamma_initializer=tf.ones_initializer(),
+            moving_mean_initializer=tf.zeros_initializer(),
+            moving_variance_initializer=tf.ones_initializer(),
+            training=training,
+            fused=True,
+            name='bn_unpool3.1'
+        )
+
         # skip connection
         unpool3 = unpool3 + pool3
 
@@ -1055,7 +1071,7 @@ with tf.Session(graph=graph, config=config) as sess:
             sess.run(tf.global_variables_initializer())
 
             # create the initializer function to initialize the weights
-            init_fn = load_weights(init_model, exclude=["fc3", "logits", "bn_conv6", "up_conv7",   "bn_up_conv8","bn_up_conv6","bn_up_conv7","conv_up_conv6", "conv_up_conv8","up_conv1","up_conv2","up_conv5","up_conv6", "accuracy", "up_conv4", "up_conv3", "global_step"])
+            init_fn = load_weights(init_model, exclude=["bottleneck_2.1", "bottleneck_3.1", "bn_unpool5.1", "bn_unpool7", "bn_unpool4.1",  "bn_unpool3.1", "bn_up_conv8","bn_up_conv6","bn_up_conv7","conv_up_conv6", "conv_up_conv8","up_conv1","up_conv2","up_conv5","up_conv6", "accuracy", "up_conv4", "up_conv3", "global_step"])
 
             # run the initializer
             init_fn(sess)
