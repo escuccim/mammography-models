@@ -113,7 +113,7 @@ print("Image crop size:", size)
 ## Build the graph
 graph = tf.Graph()
 
-model_name = "model_s3.2.5.01" + model_label + "." + str(dataset) + str(version)
+model_name = "model_s3.2.5.02" + model_label + "." + str(dataset) + str(version)
 ## Change Log
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
@@ -165,6 +165,7 @@ model_name = "model_s3.2.5.01" + model_label + "." + str(dataset) + str(version)
 # 3.2.4.01 - switching from tf records to reading entire images and taking random crops for more training data
 # 3.2.4.02 - fixed bug where one layer was missing activation function
 # 3.2.5.01 - rearranging some skip connections to use conv layers rather than pools
+# 3.2.5.02 - adding more bottlenecks and batch norms
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -189,7 +190,7 @@ with graph.as_default():
                                                               distort=False, size=640)
 
             # X_def, y_def = tf.train.batch([image, label], batch_size=batch_size, num_threads=8, capacity=20*batch_size)
-            X_def, y_def = tf.train.shuffle_batch([image, label], batch_size=batch_size, capacity=75*batch_size, seed=None, num_threads=12, min_after_dequeue=20*batch_size)
+            X_def, y_def = tf.train.shuffle_batch([image, label], batch_size=batch_size, capacity=75*batch_size, seed=None, num_threads=16, min_after_dequeue=30*batch_size)
 
         # Placeholders
         X = tf.placeholder_with_default(X_def, shape=[None, size, size, 1])
@@ -680,6 +681,22 @@ with graph.as_default():
             name='up_conv2'
         )
 
+        unpool2 = tf.layers.batch_normalization(
+            unpool2,
+            axis=-1,
+            momentum=0.99,
+            epsilon=epsilon,
+            center=True,
+            scale=True,
+            beta_initializer=tf.zeros_initializer(),
+            gamma_initializer=tf.ones_initializer(),
+            moving_mean_initializer=tf.zeros_initializer(),
+            moving_variance_initializer=tf.ones_initializer(),
+            training=training,
+            fused=True,
+            name='bn_unpool2.1'
+        )
+
         # skip connection
         unpool2 = unpool2 + pool4
 
@@ -687,6 +704,20 @@ with graph.as_default():
 
         if dropout:
             unpool2 = tf.layers.dropout(unpool2, rate=convdropout_rate, seed=13537, training=training)
+
+    # downsize conv4.1 to 128 channels
+    with tf.name_scope("reduce_4.1") as scope:
+        bottleneck_41 = tf.layers.conv2d_transpose(
+            conv4,
+            filters=128,
+            kernel_size=(1, 1),
+            strides=(1, 1),
+            padding='SAME',
+            activation=None,
+            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=11759),
+            kernel_regularizer=None,
+            name='bottleneck_4.1'
+        )
 
     # upsample to 20x20
     with tf.name_scope('up_conv3') as scope:
@@ -719,12 +750,12 @@ with graph.as_default():
         )
 
         # skip connection
-        unpool3 = unpool3 + pool3
+        unpool3 = unpool3 + bottleneck_41
 
         unpool3 = tf.nn.elu(unpool3, name='relu6.5')
 
     # downsize conv3.1 to 64 channels
-    with tf.name_scope("reduce_2.1") as scope:
+    with tf.name_scope("reduce_3.1") as scope:
         bottleneck_31 = tf.layers.conv2d_transpose(
             conv3,
             filters=64,
@@ -1071,7 +1102,7 @@ with tf.Session(graph=graph, config=config) as sess:
             sess.run(tf.global_variables_initializer())
 
             # create the initializer function to initialize the weights
-            init_fn = load_weights(init_model, exclude=["bottleneck_2.1", "bottleneck_3.1", "bn_unpool5.1", "bn_unpool7", "bn_unpool4.1",  "bn_unpool3.1", "bn_up_conv8","bn_up_conv6","bn_up_conv7","conv_up_conv6", "conv_up_conv8","up_conv1","up_conv2","up_conv5","up_conv6", "accuracy", "up_conv4", "up_conv3", "global_step"])
+            init_fn = load_weights(init_model, exclude=["bottleneck_2.1", "bottleneck_3.1", "bottleneck_4.1", "bn_unpool5.1", "bn_unpool7", "bn_unpool4.1",  "bn_unpool3.1", "bn_up_conv8","bn_up_conv6","bn_up_conv7","conv_up_conv6", "conv_up_conv8","up_conv1","up_conv2","up_conv5","up_conv6", "accuracy", "up_conv4", "up_conv3", "global_step"])
 
             # run the initializer
             init_fn(sess)
