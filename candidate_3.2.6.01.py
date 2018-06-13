@@ -1164,7 +1164,7 @@ with tf.Session(graph=graph, config=config) as sess:
             sess.run(tf.global_variables_initializer())
 
             # create the initializer function to initialize the weights
-            init_fn = load_weights(init_model, exclude=["logits", "bn_unpool8", "up_conv8", "up_conv6", "bn_up_conv6"])
+            init_fn = load_weights(init_model, exclude=["logits", "bn_unpool8", "up_conv8", "conv_up_conv6", "up_conv6", "bn_up_conv6"])
 
             # run the initializer
             init_fn(sess)
