@@ -1006,10 +1006,11 @@ with graph.as_default():
         deconv6 = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "up_conv6")
         deconv7 = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "up_conv7")
         deconv8 = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "up_conv8")
+        deconv_all = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "up_")
         bottleneck_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "bottleneck")
         tr_logits = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "logits")
 
-        train_op_2 = optimizer.minimize(loss, global_step=global_step, var_list=bottleneck_vars + tr_logits + deconv6 + deconv7 + deconv8)
+        train_op_2 = optimizer.minimize(loss, global_step=global_step, var_list=bottleneck_vars + tr_logits + deconv_all)
         # train_op = optimizer.minimize(loss, global_step=global_step, var_list=fc_vars + tr_logits)
 
     train_op_1 = optimizer.minimize(loss, global_step=global_step)
@@ -1108,40 +1109,13 @@ use_gpu = False  # whether or not to use the GPU
 print_metrics = True  # whether to print or plot metrics, if False a plot will be created and updated every epoch
 
 # Initialize metrics or load them from disk if they exist
-if os.path.exists(os.path.join("data", model_name + "train_acc.npy")):
-    train_acc_values = np.load(os.path.join("data", model_name + "train_acc.npy")).tolist()
-else:
-    train_acc_values = []
-
-if os.path.exists(os.path.join("data", model_name + "train_loss.npy")):
-    train_cost_values = np.load(os.path.join("data", model_name + "train_loss.npy")).tolist()
-else:
-    train_cost_values = []
-
-if os.path.exists(os.path.join("data", model_name + "train_lr.npy")):
-    train_lr_values = np.load(os.path.join("data", model_name + "train_lr.npy")).tolist()
-else:
-    train_lr_values = []
-
-if os.path.exists(os.path.join("data", model_name + "train_recall.npy")):
-    train_recall_values = np.load(os.path.join("data", model_name + "train_recall.npy")).tolist()
-else:
-    train_recall_values = []
-
-if os.path.exists(os.path.join("data", model_name + "cv_acc.npy")):
-    valid_acc_values = np.load(os.path.join("data", model_name + "cv_acc.npy")).tolist()
-else:
-    valid_acc_values = []
-
-if os.path.exists(os.path.join("data", model_name + "cv_loss.npy")):
-    valid_cost_values = np.load(os.path.join("data", model_name + "cv_loss.npy")).tolist()
-else:
-    valid_cost_values = []
-
-if os.path.exists(os.path.join("data", model_name + "cv_recall.npy")):
-    valid_recall_values = np.load(os.path.join("data", model_name + "cv_recall.npy")).tolist()
-else:
-    valid_recall_values = []
+train_acc_values = []
+train_cost_values = []
+train_lr_values = []
+train_recall_values = []
+valid_acc_values = []
+valid_cost_values = []
+valid_recall_values = []
 
 config = tf.ConfigProto()
 
@@ -1328,27 +1302,10 @@ with tf.Session(graph=graph, config=config) as sess:
 
             # take the mean of the values to add to the metrics
             valid_acc_values.append(np.mean(batch_cv_acc))
-            train_acc_values.append(np.mean(batch_acc))
-
             valid_cost_values.append(np.mean(batch_cv_loss))
-            train_cost_values.append(np.mean(batch_cost))
-
             valid_recall_values.append(np.mean(batch_cv_recall))
-            train_recall_values.append(np.mean(batch_recall))
 
             train_lr_values.append(lr)
-
-            # save the metrics
-            np.save(os.path.join("data", model_name + "train_acc.npy"), train_acc_values)
-            np.save(os.path.join("data", model_name + "cv_acc.npy"), valid_acc_values)
-
-            np.save(os.path.join("data", model_name + "train_loss.npy"), train_cost_values)
-            np.save(os.path.join("data", model_name + "cv_loss.npy"), valid_cost_values)
-
-            np.save(os.path.join("data", model_name + "train_recall.npy"), train_recall_values)
-            np.save(os.path.join("data", model_name + "cv_recall.npy"), valid_recall_values)
-
-            np.save(os.path.join("data", model_name + "train_lr.npy"), train_lr_values)
 
             # Print progress every nth epoch to keep output to reasonable amount
             if (epoch % print_every == 0):

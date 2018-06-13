@@ -55,8 +55,8 @@
       <file leaf-file-name="candidate_3.2.6.01.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/candidate_3.2.6.01.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1088">
-              <caret line="1269" column="95" selection-start-line="1269" selection-start-column="95" selection-end-line="1269" selection-end-column="95" />
+            <state relative-caret-position="390">
+              <caret line="1012" column="121" selection-start-line="1012" selection-start-column="121" selection-end-line="1012" selection-end-column="121" />
             </state>
           </provider>
         </entry>
@@ -96,7 +96,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>conv_b_4_3</find>
       <find>max</find>
       <find>valid_acc</find>
       <find>pool1.0</find>
@@ -126,6 +125,7 @@
       <find>concat</find>
       <find>640</find>
       <find>load</find>
+      <find>train_acc</find>
     </findStrings>
     <replaceStrings>
       <replace>11_</replace>
@@ -667,8 +667,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/candidate_3.2.6.01.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1088">
-          <caret line="1269" column="95" selection-start-line="1269" selection-start-column="95" selection-end-line="1269" selection-end-column="95" />
+        <state relative-caret-position="390">
+          <caret line="1012" column="121" selection-start-line="1012" selection-start-column="121" selection-end-line="1012" selection-end-column="121" />
         </state>
       </provider>
     </entry>
