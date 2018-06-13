@@ -113,7 +113,7 @@ print("Image crop size:", size)
 ## Build the graph
 graph = tf.Graph()
 
-model_name = "model_s3.2.5.02" + model_label + "." + str(dataset) + str(version)
+model_name = "model_s3.2.5.03" + model_label + "." + str(dataset) + str(version)
 ## Change Log
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
@@ -166,6 +166,7 @@ model_name = "model_s3.2.5.02" + model_label + "." + str(dataset) + str(version)
 # 3.2.4.02 - fixed bug where one layer was missing activation function
 # 3.2.5.01 - rearranging some skip connections to use conv layers rather than pools
 # 3.2.5.02 - adding more bottlenecks and batch norms
+# 3.2.5.03 - replaced another skip pool connection with a conv + reduce channels, fixed reduce layers from transpose to normal convs
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -667,6 +668,36 @@ with graph.as_default():
         # activation
         unpool1 = tf.nn.elu(unpool1, name="up_conv1_relu")
 
+    # downsize conv5.1 to 256 channels
+    with tf.name_scope("reduce_5.1") as scope:
+        bottleneck_51 = tf.layers.conv2d(
+            conv5,
+            filters=256,
+            kernel_size=(1, 1),
+            strides=(1, 1),
+            padding='SAME',
+            activation=None,
+            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=11759),
+            kernel_regularizer=None,
+            name='bottleneck_5.1'
+        )
+
+        bottleneck_51 = tf.layers.batch_normalization(
+            bottleneck_51,
+            axis=-1,
+            momentum=0.99,
+            epsilon=epsilon,
+            center=True,
+            scale=True,
+            beta_initializer=tf.zeros_initializer(),
+            gamma_initializer=tf.ones_initializer(),
+            moving_mean_initializer=tf.zeros_initializer(),
+            moving_variance_initializer=tf.ones_initializer(),
+            training=training,
+            fused=True,
+            name='bn_bottleneck_5.1'
+        )
+
     # upsample to 10x10
     with tf.name_scope('up_conv2') as scope:
         unpool2 = tf.layers.conv2d_transpose(
@@ -698,7 +729,7 @@ with graph.as_default():
         )
 
         # skip connection
-        unpool2 = unpool2 + pool4
+        unpool2 = unpool2 + bottleneck_51
 
         unpool2 = tf.nn.elu(unpool2, name="up_conv2_relu")
 
@@ -707,7 +738,7 @@ with graph.as_default():
 
     # downsize conv4.1 to 128 channels
     with tf.name_scope("reduce_4.1") as scope:
-        bottleneck_41 = tf.layers.conv2d_transpose(
+        bottleneck_41 = tf.layers.conv2d(
             conv4,
             filters=128,
             kernel_size=(1, 1),
@@ -756,7 +787,7 @@ with graph.as_default():
 
     # downsize conv3.1 to 64 channels
     with tf.name_scope("reduce_3.1") as scope:
-        bottleneck_31 = tf.layers.conv2d_transpose(
+        bottleneck_31 = tf.layers.conv2d(
             conv3,
             filters=64,
             kernel_size=(1, 1),
@@ -807,7 +838,7 @@ with graph.as_default():
 
     # downsize conv2.1 to 32 channels
     with tf.name_scope("reduce_2.1") as scope:
-        bottleneck_21 = tf.layers.conv2d_transpose(
+        bottleneck_21 = tf.layers.conv2d(
             conv2,
             filters=32,
             kernel_size=(1, 1),
@@ -1083,10 +1114,6 @@ with tf.Session(graph=graph, config=config) as sess:
         train_writer = tf.summary.FileWriter('./logs/tr_' + model_name, sess.graph)
         test_writer = tf.summary.FileWriter('./logs/te_' + model_name)
     
-    if not print_metrics:
-        # create a plot to be updated as model is trained
-        f, ax = plt.subplots(1,4,figsize=(24,5))
-    
     # create the saver
     saver = tf.train.Saver()
     sess.run(tf.local_variables_initializer())
@@ -1102,12 +1129,12 @@ with tf.Session(graph=graph, config=config) as sess:
             sess.run(tf.global_variables_initializer())
 
             # create the initializer function to initialize the weights
-            init_fn = load_weights(init_model, exclude=["bottleneck_2.1", "bottleneck_3.1", "bottleneck_4.1", "bn_unpool5.1","bn_unpool2.1",  "bn_unpool7", "bn_unpool4.1",  "bn_unpool3.1", "global_step"])
+            init_fn = load_weights(init_model, exclude=["bottleneck_5.1", "bn_bottleneck_5.1", "bottleneck_2.1", "bottleneck_3.1", "bottleneck_4.1", "global_step"])
 
             # run the initializer
             init_fn(sess)
 
-            # # reset the global step
+            # reset the global step
             initial_global_step = global_step.assign(0)
             sess.run(initial_global_step)
 
@@ -1121,6 +1148,7 @@ with tf.Session(graph=graph, config=config) as sess:
 
             initial_global_step = global_step.assign(0)
             sess.run(initial_global_step)
+
         # otherwise load this model
         else:
             saver.restore(sess, './model/' + model_name + '.ckpt')
