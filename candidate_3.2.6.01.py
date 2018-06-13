@@ -1002,12 +1002,14 @@ with graph.as_default():
 
     # Minimize cross-entropy - freeze certain layers depending on input
     if freeze:
-        # get the fully connected variables so we can only train them when retraining the network
-        fc_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "up_")
+        # only train the layers which have changed for now so we can try to get everything into sync
+        deconv6 = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "up_conv6")
+        deconv7 = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "up_conv7")
+        deconv8 = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "up_conv8")
         bottleneck_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "bottleneck")
         tr_logits = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "logits")
 
-        train_op = optimizer.minimize(loss, global_step=global_step, var_list=bottleneck_vars)
+        train_op = optimizer.minimize(loss, global_step=global_step, var_list=bottleneck_vars + tr_logits + deconv6 + deconv7 + deconv8)
         # train_op = optimizer.minimize(loss, global_step=global_step, var_list=fc_vars + tr_logits)
     else:
         train_op = optimizer.minimize(loss, global_step=global_step)

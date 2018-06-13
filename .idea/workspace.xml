@@ -46,8 +46,8 @@
       <file leaf-file-name="candidate_3.2.5.03.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/candidate_3.2.5.03.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="98">
-              <caret line="935" column="142" lean-forward="true" selection-start-line="935" selection-start-column="4" selection-end-line="935" selection-end-column="142" />
+            <state relative-caret-position="336">
+              <caret line="901" column="31" lean-forward="true" selection-start-line="901" selection-start-column="31" selection-end-line="901" selection-end-column="31" />
             </state>
           </provider>
         </entry>
@@ -55,8 +55,8 @@
       <file leaf-file-name="candidate_3.2.6.01.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/candidate_3.2.6.01.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="421">
-              <caret line="1166" column="121" selection-start-line="1166" selection-start-column="121" selection-end-line="1166" selection-end-column="121" />
+            <state relative-caret-position="217">
+              <caret line="1004" column="100" selection-start-line="1004" selection-start-column="100" selection-end-line="1004" selection-end-column="100" />
             </state>
           </provider>
         </entry>
@@ -660,15 +660,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/candidate_3.2.5.03.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="98">
-          <caret line="935" column="142" lean-forward="true" selection-start-line="935" selection-start-column="4" selection-end-line="935" selection-end-column="142" />
+        <state relative-caret-position="336">
+          <caret line="901" column="31" lean-forward="true" selection-start-line="901" selection-start-column="31" selection-end-line="901" selection-end-column="31" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/candidate_3.2.6.01.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="421">
-          <caret line="1166" column="121" selection-start-line="1166" selection-start-column="121" selection-end-line="1166" selection-end-column="121" />
+        <state relative-caret-position="217">
+          <caret line="1004" column="100" selection-start-line="1004" selection-start-column="100" selection-end-line="1004" selection-end-column="100" />
         </state>
       </provider>
     </entry>
