@@ -166,7 +166,7 @@ model_name = "model_s3.2.5.03" + model_label + "." + str(dataset) + str(version)
 # 3.2.4.02 - fixed bug where one layer was missing activation function
 # 3.2.5.01 - rearranging some skip connections to use conv layers rather than pools
 # 3.2.5.02 - adding more bottlenecks and batch norms
-# 3.2.5.03 - replaced another skip pool connection with a conv + reduce channels, fixed reduce layers from transpose to normal convs
+# 3.2.5.03 - replaced another skip pool connection with a conv + reduce channels, fixed reduce layers from transpose to normal convs, added regularization to transpose conv layers
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -658,7 +658,7 @@ with graph.as_default():
             padding='SAME',
             activation=None,
             kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=11435),
-            kernel_regularizer=None,
+            kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
             name='up_conv1'
         )
 
@@ -708,7 +708,7 @@ with graph.as_default():
             padding='SAME',
             activation=None,
             kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=11435),
-            kernel_regularizer=None,
+            kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
             name='up_conv2'
         )
 
@@ -760,7 +760,7 @@ with graph.as_default():
             padding='SAME',
             activation=None,
             kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=19317),
-            kernel_regularizer=None,
+            kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
             name='up_conv3'
         )
 
@@ -809,7 +809,7 @@ with graph.as_default():
             padding='SAME',
             activation=None,
             kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=11728),
-            kernel_regularizer=None,
+            kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
             name='up_conv4'
         )
 
@@ -861,7 +861,7 @@ with graph.as_default():
             padding='SAME',
             activation=None,
             kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=11756),
-            kernel_regularizer=None,
+            kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
             name='up_conv5'
         )
 
@@ -891,7 +891,7 @@ with graph.as_default():
         unpool5 = tf.nn.elu(unpool5, name='relu10')
 
     # conv layer
-    conv6 = _conv2d_batch_norm(unpool5, 16, kernel_size=(3, 3), stride=(1, 1), training=training, lambd=0.0,
+    conv6 = _conv2d_batch_norm(unpool5, 16, kernel_size=(3, 3), stride=(1, 1), training=training, lambd=lamC,
                                name="up_conv6", activation="elu")
 
     # upsample to 160x160
@@ -904,7 +904,7 @@ with graph.as_default():
             padding='SAME',
             activation=None,
             kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=11756),
-            kernel_regularizer=None,
+            kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
             name='up_conv7'
         )
 
@@ -933,7 +933,7 @@ with graph.as_default():
         unpool7 = tf.nn.elu(unpool7, name='relu11')
 
     # one last conv layer before logits
-    conv8 = _conv2d_batch_norm(unpool7, 16, kernel_size=(3,3), stride=(1,1), training=training, lambd=0.0, name="up_conv8", activation="elu")
+    conv8 = _conv2d_batch_norm(unpool7, 16, kernel_size=(3,3), stride=(1,1), training=training, lambd=lamC, name="up_conv8", activation="elu")
 
     # upsample to 320x320
     with tf.name_scope('logits') as scope:
