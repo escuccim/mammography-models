@@ -1213,7 +1213,7 @@ with tf.Session(graph=graph, config=config) as sess:
             batch_cost = []
             batch_recall = []
 
-            for i in range(steps_per_epoch // 4):
+            for i in range(steps_per_epoch):
                 # create the metadata
                 run_options = tf.RunOptions(trace_level=tf.RunOptions.FULL_TRACE)
                 run_metadata = tf.RunMetadata()
@@ -1267,7 +1267,7 @@ with tf.Session(graph=graph, config=config) as sess:
 
             # save checkpoint every nth epoch
             if (epoch % checkpoint_every == 0):
-                # if we have frozen some layers run one more iteration so we save the entire graph
+                # if we have frozen some layers run one more iteration on the full training op so we (hopefully) save the entire graph
                 if freeze:
                     _ = sess.run(train_op_1, feed_dict={
                         training:True,
