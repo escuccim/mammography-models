@@ -1009,10 +1009,10 @@ with graph.as_default():
         bottleneck_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "bottleneck")
         tr_logits = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "logits")
 
-        train_op = optimizer.minimize(loss, global_step=global_step, var_list=bottleneck_vars + tr_logits + deconv6 + deconv7 + deconv8)
+        train_op_2 = optimizer.minimize(loss, global_step=global_step, var_list=bottleneck_vars + tr_logits + deconv6 + deconv7 + deconv8)
         # train_op = optimizer.minimize(loss, global_step=global_step, var_list=fc_vars + tr_logits)
-    else:
-        train_op = optimizer.minimize(loss, global_step=global_step)
+
+    train_op_1 = optimizer.minimize(loss, global_step=global_step)
 
     # predictions = tf.reshape(tf.argmax(logits, axis=-1, output_type=tf.int32), (-1, 320,320))
     # if we reshape the predictions it won't work with images of other sizes
@@ -1203,12 +1203,17 @@ with tf.Session(graph=graph, config=config) as sess:
         for epoch in range(epochs):
             sess.run(tf.local_variables_initializer())
 
+            if freeze:
+                train_op = train_op_2
+            else:
+                train_op = train_op_1
+
             # Accuracy values (train) after each batch
             batch_acc = []
             batch_cost = []
             batch_recall = []
 
-            for i in range(steps_per_epoch):
+            for i in range(steps_per_epoch // 4):
                 # create the metadata
                 run_options = tf.RunOptions(trace_level=tf.RunOptions.FULL_TRACE)
                 run_metadata = tf.RunMetadata()
@@ -1262,6 +1267,12 @@ with tf.Session(graph=graph, config=config) as sess:
 
             # save checkpoint every nth epoch
             if (epoch % checkpoint_every == 0):
+                # if we have frozen some layers run one more iteration so we save the entire graph
+                if freeze:
+                    _ = sess.run(train_op_1, feed_dict={
+                        training:True,
+                    })
+
                 print("Saving checkpoint")
                 save_path = saver.save(sess, './model/' + model_name + '.ckpt')
 
