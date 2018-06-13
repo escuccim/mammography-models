@@ -1002,20 +1002,20 @@ with graph.as_default():
 
     # Minimize cross-entropy - freeze certain layers depending on input
     if freeze:
-        # only train the layers which have changed for now so we can try to get everything into sync
+        # make some collections so we can specify what to train
         deconv6 = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "up_conv6")
         deconv7 = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "up_conv7")
         deconv8 = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "up_conv8")
         deconv_all = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "up_")
+        fc_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "fc")
         bottleneck_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "bottleneck")
         tr_logits = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "logits")
 
+        # create a training step for vars that should be trained
         train_op_2 = optimizer.minimize(loss, global_step=global_step, var_list=bottleneck_vars + tr_logits + deconv_all)
-        # train_op = optimizer.minimize(loss, global_step=global_step, var_list=fc_vars + tr_logits)
 
     train_op_1 = optimizer.minimize(loss, global_step=global_step)
 
-    # predictions = tf.reshape(tf.argmax(logits, axis=-1, output_type=tf.int32), (-1, 320,320))
     # if we reshape the predictions it won't work with images of other sizes
     predictions = tf.argmax(logits, axis=-1, output_type=tf.int32)
 
@@ -1023,7 +1023,6 @@ with graph.as_default():
     pred_sum = tf.reduce_sum(predictions, axis=[1, 2])
     image_predictions = tf.cast(tf.greater(pred_sum, (size * size // 750)), dtype=tf.uint8)
     image_truth = tf.reduce_max(y_adj, axis=[1, 2])
-    # image_predictions = tf.reduce_max(predictions, axis=[1,2,3])
 
     # set a threshold on the predictions so we ignore images with only a few positive pixels
     pred_sum = tf.reduce_sum(predictions, axis=[1, 2])
