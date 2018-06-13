@@ -185,7 +185,7 @@ with graph.as_default():
         with tf.device('/cpu:0'):
             if dataset == 100:
                 # decode the image
-                image, label = _read_images("./data/train_images/", size, scale_by=0.66, distort=False)
+                image, label = _read_images("./data/train_images/", size, scale_by=0.66, distort=False, standardize=normalize)
             else:
                 image, label = read_and_decode_single_example(train_files, label_type=how, normalize=False,
                                                               distort=False, size=640)
@@ -949,10 +949,6 @@ with graph.as_default():
             name='logits'
         )
 
-    # get the fully connected variables so we can only train them when retraining the network
-    fc_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "up_")
-    tr_logits =  tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "logits")
-
     with tf.variable_scope('conv1', reuse=True):
         conv_kernels1 = tf.get_variable('kernel')
         kernel_transposed = tf.transpose(conv_kernels1, [3, 0, 1, 2])
@@ -973,7 +969,13 @@ with graph.as_default():
 
     # Minimize cross-entropy - freeze certain layers depending on input
     if freeze:
-        train_op = optimizer.minimize(loss, global_step=global_step, var_list=fc_vars + tr_logits)
+        # get the fully connected variables so we can only train them when retraining the network
+        fc_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "up_")
+        bottleneck_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "bottleneck")
+        tr_logits = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "logits")
+
+        train_op = optimizer.minimize(loss, global_step=global_step, var_list=bottleneck_vars)
+        # train_op = optimizer.minimize(loss, global_step=global_step, var_list=fc_vars + tr_logits)
     else:
         train_op = optimizer.minimize(loss, global_step=global_step)
 

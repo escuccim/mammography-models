@@ -927,7 +927,7 @@ def _parse_function(filename, size=640):
 #       distort - bool - whether or not to do online data augmentation
 # Returns: image - Tensor of image, shape (crop_size, crop_size, 1)
 #          label - Tensor of label, shape (crop_size, crop_size, 1)
-def _read_images(image_dir, crop_size, scale_by=0.66, mu=127.0, scale=255.0, distort=False):
+def _read_images(image_dir, crop_size, scale_by=0.66, mu=127.0, scale=255.0, distort=False, standardize=False):
     filenames = tf.train.match_filenames_once(image_dir + "*.png")
     filename_queue = tf.train.string_input_producer(filenames, capacity=2048, name="file_queue")
 
@@ -941,9 +941,9 @@ def _read_images(image_dir, crop_size, scale_by=0.66, mu=127.0, scale=255.0, dis
     raw_image = tf.image.decode_png(image_file)
 
     # call function to process and crop images
-    return _process_images(raw_image, crop_size=crop_size, scale_by=scale_by, mu=127.0, scale=255.0, distort=distort)
+    return _process_images(raw_image, crop_size=crop_size, scale_by=scale_by, mu=127.0, scale=255.0, distort=distort, standardize=standardize)
 
-def _process_images(raw_image, crop_size=640, scale_by=0.66, mu=127.0, scale=255.0, distort=False):
+def _process_images(raw_image, crop_size=640, scale_by=0.66, mu=127.0, scale=255.0, distort=False, standardize=False):
     # figure out size of raw crop by dividing size by scale
     if scale_by != 1.0:
         image_size = int(crop_size // scale_by)
@@ -965,8 +965,11 @@ def _process_images(raw_image, crop_size=640, scale_by=0.66, mu=127.0, scale=255
     # cast the label to an int
     label = tf.cast(label, dtype=tf.int32)
 
-    # scale the image
-    image = _scale_input_data(image, contrast=None, mu=mu, scale=scale)
+    if standardize:
+        image = tf.image.per_image_standardization(image)
+    else:
+        # scale the image
+        image = _scale_input_data(image, contrast=None, mu=mu, scale=scale)
 
     if distort:
         image, label = augment(image, label, horizontal_flip=True, augment_labels=True, vertical_flip=True, mixup=0)
