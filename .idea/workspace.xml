@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="98c4e5b0-4f90-4540-b87f-9bd6d2ddc583" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/candidate_3.2.7.01.py" beforeDir="false" afterPath="$PROJECT_DIR$/candidate_3.2.7.01.py" afterDir="false" />
-    </list>
+    <list default="true" id="98c4e5b0-4f90-4540-b87f-9bd6d2ddc583" name="Default" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -38,7 +36,7 @@
         <entry file="file://$PROJECT_DIR$/candidate_3.2.7.01.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="268">
-              <caret line="1048" column="119" selection-start-line="1048" selection-start-column="119" selection-end-line="1048" selection-end-column="119" />
+              <caret line="1048" column="113" selection-start-line="1048" selection-start-column="113" selection-end-line="1048" selection-end-column="113" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -629,7 +627,7 @@
     <entry file="file://$PROJECT_DIR$/candidate_3.2.7.01.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="268">
-          <caret line="1048" column="119" selection-start-line="1048" selection-start-column="119" selection-end-line="1048" selection-end-column="119" />
+          <caret line="1048" column="113" selection-start-line="1048" selection-start-column="113" selection-end-line="1048" selection-end-column="113" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
