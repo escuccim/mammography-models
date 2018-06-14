@@ -786,6 +786,9 @@ with graph.as_default():
 
         unpool3 = tf.nn.elu(unpool3, name='relu6.5')
 
+        if dropout:
+            unpool3 = tf.layers.dropout(unpool3, rate=convdropout_rate, seed=23537, training=training)
+
     # downsize conv3.1 to 64 channels
     with tf.name_scope("reduce_3.1") as scope:
         bottleneck_31 = tf.layers.conv2d(
@@ -890,6 +893,9 @@ with graph.as_default():
 
         # activation
         unpool5 = tf.nn.elu(unpool5, name='relu10')
+
+        if dropout:
+            unpool5 = tf.layers.dropout(unpool5, rate=convdropout_rate, seed=33537, training=training)
 
     # conv layer
     conv6 = _conv2d_batch_norm(unpool5, 32, kernel_size=(3, 3), stride=(1, 1), training=training, lambd=lamC,
