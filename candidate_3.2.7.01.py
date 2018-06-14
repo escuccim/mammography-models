@@ -892,6 +892,9 @@ with graph.as_default():
             name='logits'
         )
 
+    # softmax the logits
+    logits_sm = tf.nn.softmax(logits, name="softmax")
+
     with tf.variable_scope('conv1', reuse=True):
         conv_kernels1 = tf.get_variable('kernel')
         kernel_transposed = tf.transpose(conv_kernels1, [3, 0, 1, 2])
