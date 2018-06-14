@@ -1046,7 +1046,7 @@ with tf.Session(graph=graph, config=config) as sess:
             sess.run(tf.global_variables_initializer())
 
             # create the initializer function to initialize the weights
-            init_fn = load_weights(init_model, exclude=["logits", "conv_up_conv_6", "bn_unpool8", "up_conv8", "bn_unpool7", "bn_up_conv7", "up_conv7","conv_up_conv7", "up_conv6", "bn_unpool6", "bn_unpool5.1", "up_conv5", "bottleneck_2.1", "bn_unpool4.1", "up_conv4", "bottleneck_3.1", "bn_unpool3.1", "up_conv3", "bottleneck_4.1", "bn_unpool2.1", "up_conv2", "bn_unpool5"])
+            init_fn = load_weights(init_model, exclude=["logits", "conv_up_conv6", "bn_unpool8", "up_conv8", "bn_unpool7", "bn_up_conv7", "up_conv7","conv_up_conv7", "up_conv6", "bn_unpool6", "bn_unpool5.1", "up_conv5", "bottleneck_2.1", "bn_unpool4.1", "up_conv4", "bottleneck_3.1", "bn_unpool3.1", "up_conv3", "bottleneck_4.1", "bn_unpool2.1", "up_conv2", "bn_unpool5"])
 
             # run the initializer
             init_fn(sess)
