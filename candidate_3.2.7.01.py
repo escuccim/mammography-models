@@ -1052,8 +1052,8 @@ with tf.Session(graph=graph, config=config) as sess:
             init_fn(sess)
 
             # reset the global step
-            # initial_global_step = global_step.assign(0)
-            # sess.run(initial_global_step)
+            initial_global_step = global_step.assign(0)
+            sess.run(initial_global_step)
 
             print("Initializing weights from model", init_model)
 
