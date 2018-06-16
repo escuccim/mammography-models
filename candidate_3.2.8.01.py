@@ -113,7 +113,7 @@ print("Image crop size:", size)
 ## Build the graph
 graph = tf.Graph()
 
-model_name = "model_s3.2.7.01" + model_label + "." + str(dataset) + str(version)
+model_name = "model_s3.2.8.01" + model_label + "." + str(dataset) + str(version)
 ## Change Log
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
@@ -169,6 +169,7 @@ model_name = "model_s3.2.7.01" + model_label + "." + str(dataset) + str(version)
 # 3.2.5.03 - replaced another skip pool connection with a conv + reduce channels, fixed reduce layers from transpose to normal convs, added regularization to transpose conv layers
 # 3.2.6.01 - replacing convs in upsample section with transpose convs with stride 1
 # 3.2.7.01 - changing upsampling to try to improve quality
+# 3.2.8.01 - remove skip connection so results don't resemble image so much
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -817,20 +818,6 @@ with graph.as_default():
     conv6 = _conv2d_batch_norm(unpool4, 32, kernel_size=(3, 3), stride=(1, 1), training=training, lambd=lamC,
                                name="up_conv6", activation="elu")
 
-    # downsize conv3.1 to 64 channels
-    with tf.name_scope("reduce_3.1") as scope:
-        bottleneck_31 = tf.layers.conv2d(
-            conv32,
-            filters=32,
-            kernel_size=(1, 1),
-            strides=(1, 1),
-            padding='SAME',
-            activation=tf.nn.elu,
-            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=11759),
-            kernel_regularizer=None,
-            name='bottleneck_3.1'
-        )
-
     # upsample to 80x80
     with tf.name_scope('up_conv5') as scope:
         unpool5 = tf.layers.conv2d_transpose(
@@ -863,8 +850,6 @@ with graph.as_default():
             fused=True,
             name='bn_unpool5'
         )
-
-        unpool5 = unpool5 + bottleneck_31
 
         # activation
         unpool5 = tf.nn.elu(unpool5, name='relu11')
@@ -1049,7 +1034,7 @@ with tf.Session(graph=graph, config=config) as sess:
             sess.run(tf.global_variables_initializer())
 
             # create the initializer function to initialize the weights
-            init_fn = load_weights(init_model, exclude=["logits", "conv_up_conv6", "bn_unpool8", "up_conv8", "bn_unpool7", "bn_up_conv7", "up_conv7","conv_up_conv7", "up_conv6", "bn_unpool6", "bn_unpool5.1", "up_conv5", "bottleneck_2.1", "bn_unpool4.1", "up_conv4", "bottleneck_3.1", "bn_unpool3.1", "up_conv3", "bottleneck_4.1", "bn_unpool2.1", "up_conv2", "bn_unpool5"])
+            init_fn = load_weights(init_model, exclude=["bottleneck_3.1"])
 
             # run the initializer
             init_fn(sess)
