@@ -908,8 +908,8 @@ with graph.as_default():
         up_conv5_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "up_conv5")
 
         # create a training step for vars that should be trained
-        train_op_2 = optimizer.minimize(loss, global_step=global_step, var_list=up_conv5_vars)
-        # train_op_2 = optimizer.minimize(loss, global_step=global_step, var_list=bottleneck_vars + tr_logits + deconv_all)
+        # train_op_2 = optimizer.minimize(loss, global_step=global_step, var_list=up_conv5_vars)
+        train_op_2 = optimizer.minimize(loss, global_step=global_step, var_list=bottleneck_vars + tr_logits + deconv_all)
 
     train_op_1 = optimizer.minimize(loss, global_step=global_step)
 
