@@ -784,7 +784,7 @@ with graph.as_default():
         if dropout:
             unpool2 = tf.layers.dropout(unpool2, rate=convdropout_rate, seed=13537, training=training)
 
-    # downsize conv3.1 to 128 channels
+    # downsize conv4.1 to 128 channels
     with tf.name_scope("reduce_4.1") as scope:
         bottleneck_41 = tf.layers.conv2d(
             conv41,
@@ -843,13 +843,11 @@ with graph.as_default():
             name='bn_bottleneck_4.2'
         )
 
-    # upsample to 40x40
     with tf.name_scope('up_conv3') as scope:
-        # scale unpool2 down to 64 channels so we can add it to bottleneck 3
         unpool3 = tf.layers.conv2d(
             unpool2,
             filters=128,
-            kernel_size=(1, 1),
+            kernel_size=(3, 3),
             strides=(1, 1),
             padding='SAME',
             activation=None,
@@ -869,7 +867,7 @@ with graph.as_default():
     with tf.name_scope('up_conv4') as scope:
         unpool4 = tf.layers.conv2d(
             unpool3,
-            filters=64,
+            filters=128,
             kernel_size=(3, 3),
             strides=(1, 1),
             padding='SAME',
@@ -905,7 +903,7 @@ with graph.as_default():
         unpool4 = tf.nn.elu(unpool4, name='relu10')
 
     # conv layer
-    conv6 = _conv2d_batch_norm(unpool4, 32, kernel_size=(3, 3), stride=(1, 1), training=training, lambd=lamC,
+    conv6 = _conv2d_batch_norm(unpool4, 64, kernel_size=(3, 3), stride=(1, 1), training=training, lambd=lamC,
                                name="up_conv6", activation="elu")
 
     # upsample to 80x80
@@ -1126,7 +1124,7 @@ with tf.Session(graph=graph, config=config) as sess:
             sess.run(tf.global_variables_initializer())
 
             # create the initializer function to initialize the weights
-            init_fn = load_weights(init_model, exclude=['bottleneck_5.1', "bn_bottleneck_5.1", 'bottleneck_5.2', 'bn_bottleneck_5.2', 'bn_bottleneck_4.1', 'bottleneck_4.2', 'bn_bottleneck_4.2', 'bottleneck_4.1', 'bn_bottleneck_4.1', 'bn_unpool1.1', "up_conv3"])
+            init_fn = load_weights(init_model, exclude=['bottleneck_5.1',"up_conv6", "bn_bottleneck_5.1", 'bottleneck_5.2', 'bn_bottleneck_5.2', 'bn_bottleneck_4.1', 'bottleneck_4.2', 'bn_bottleneck_4.2', 'bottleneck_4.1', 'bn_bottleneck_4.1', 'bn_unpool1.1', "up_conv3"])
 
             # run the initializer
             init_fn(sess)
