@@ -82,6 +82,8 @@ if not stop and not freeze:
 else:
     starting_rate = 0.0001
 
+starting_rate = 0.0001
+
 # learning rate decay variables
 steps_per_epoch = int(total_records / batch_size)
 print("Steps per epoch:", steps_per_epoch)
@@ -1102,6 +1104,10 @@ valid_cost_values = []
 valid_recall_values = []
 
 config = tf.ConfigProto()
+
+# if we are freezing some layers adjust the steps per epoch since we will do one extra training step
+if freeze:
+    steps_per_epoch -= 1
 
 ## train the model
 with tf.Session(graph=graph, config=config) as sess:
