@@ -957,7 +957,7 @@ def _process_images(raw_image, crop_size=640, scale_by=0.66, mu=127.0, scale=255
     noisy_image_size = tf.cast(image_size * nnoise, dtype=tf.int32)
 
     # random crop the image
-    raw_image = tf.random_crop(raw_image, size=[noisy_image_size, noisy_image_size, 3])
+    raw_image = tf.random_crop(raw_image, size=[noisy_image_size[0], noisy_image_size[0], 3])
 
     # if applicable, resize the image to the destination size
     if scale_by != 1.0:
