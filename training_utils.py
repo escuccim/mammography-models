@@ -950,6 +950,10 @@ def _process_images(raw_image, crop_size=640, scale_by=0.66, mu=127.0, scale=255
     else:
         image_size = crop_size
 
+    # add a small amount of random noise to the size
+    nnoise = tf.random_normal([1], mean=1.0, stddev=0.025)
+    image_size = image_size * nnoise
+
     # random crop the image
     raw_image = tf.random_crop(raw_image, size=[image_size, image_size, 3])
 
