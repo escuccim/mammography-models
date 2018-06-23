@@ -21,7 +21,7 @@ parser.add_argument("-s", "--stop", help="stop gradient at pool5", nargs='?', co
 parser.add_argument("-t", "--threshold", help="decision threshold", default=0.5, type=float)
 parser.add_argument("-c", "--contrast", help="contrast adjustment, if any", default=None, type=float)
 parser.add_argument("-n", "--normalize", help="apply per image normalization", nargs='?', const=True, default=False)
-parser.add_argument("-w", "--weight", help="weight to give to positive examples in cross-entropy", default=20, type=float)
+parser.add_argument("-w", "--weight", help="weight to give to positive examples in cross-entropy", default=18, type=float)
 parser.add_argument("-v", "--version", help="version or run number to assign to model name", default="")
 parser.add_argument("--distort", help="use online data augmentation", default=False, const=True, nargs="?")
 parser.add_argument("--size", help="size of image to crop (default 640)", default=640, type=int)
@@ -661,8 +661,8 @@ with graph.as_default():
         unpool1 = tf.layers.conv2d_transpose(
             fc2,
             filters=256,
-            kernel_size=(4, 4),
-            strides=(2, 2),
+            kernel_size=(8, 8),
+            strides=(4, 4),
             padding='SAME',
             activation=None,
             kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=11435),
@@ -754,7 +754,7 @@ with graph.as_default():
         bottleneck_51 = tf.nn.elu(bottleneck_51, name="bottleneck_5.2_relu")
 
     # concat results - 20x20x512
-    concat1 = tf.concat([unpool1,bottleneck_51], name="upsample_concat_1")
+    concat1 = tf.concat([unpool1,bottleneck_51], axis=-1, name="upsample_concat_1")
 
     # downsize conv4.1 to 40x40x56
     with tf.name_scope("reduce_4.1") as scope:
@@ -856,7 +856,7 @@ with graph.as_default():
             unpool2 = tf.layers.dropout(unpool2, rate=convdropout_rate, seed=13537, training=training)
 
     # concat 2 - 40x40x384
-    concat2 = tf.concat([unpool2, bottleneck_41], name="upsample_concat_2")
+    concat2 = tf.concat([unpool2, bottleneck_41], axis=-1, name="upsample_concat_2")
 
     with tf.name_scope('up_conv3') as scope:
         unpool3 = tf.layers.conv2d(
@@ -884,7 +884,7 @@ with graph.as_default():
             moving_variance_initializer=tf.ones_initializer(),
             training=training,
             fused=True,
-            name='bn_upsample_3'
+            name='bn_up_conv3'
         )
 
         unpool3 = tf.nn.elu(unpool3, name='relu6.5')
@@ -1156,8 +1156,8 @@ with tf.Session(graph=graph, config=config) as sess:
             sess.run(tf.global_variables_initializer())
 
             # create the initializer function to initialize the weights
-            # init_fn = load_weights(init_model, exclude=['bottleneck_5.1',"up_conv6", "conv_up_conv6", "bn_up_conv6", "bn_unpool5.1", "up_conv5",'bn_unpool4.1', "up_conv4", "bn_bottleneck_5.1", 'bottleneck_5.2', 'bn_bottleneck_5.2', 'bn_bottleneck_4.1', 'bottleneck_4.2', 'bn_bottleneck_4.2', 'bottleneck_4.1', 'bn_bottleneck_4.1', 'bn_unpool1.1', "up_conv3"])
-            init_fn = load_weights(init_model, exclude=['up_conv1', "bn_unpool1.1", "conv_fc_1", "bn_fc_1"])
+            init_fn = load_weights(init_model, exclude=['bottleneck_5.1',"up_conv6", "conv_up_conv6", "bn_up_conv6", "bn_unpool5.1", "up_conv5",'bn_unpool4.1', "up_conv4", "bn_bottleneck_5.1", 'bottleneck_5.2', 'bn_bottleneck_5.2', 'bn_bottleneck_4.1', 'bottleneck_4.2', 'bn_bottleneck_4.2', 'bottleneck_4.1', 'bn_bottleneck_4.1', 'bn_unpool1.1', "up_conv3", "bn_upsample_3", "upsample_3", "up_conv6", "up_conv5", "bn_unpool4.1", 'up_conv4', 'bn_up_conv3', 'up_conv3', 'bn_upsample_2', 'upsample_2', 'bn_bottleneck_4.2', 'bottleneck_4.2', 'bn_bottleneck_4.1', 'bottleneck_4.1', 'bn_bottleneck_5.2', 'bn_bottleneck_5.1', 'bottleneck_5.2', 'bottleneck_5.1', 'bn_upsample_1', 'upsample_1'])
+            # init_fn = load_weights(init_model, exclude=['up_conv1', "bn_unpool1.1", "conv_fc_1", "bn_fc_1"])
 
             # run the initializer
             init_fn(sess)

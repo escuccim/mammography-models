@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="98c4e5b0-4f90-4540-b87f-9bd6d2ddc583" name="Default" comment="" />
+    <list default="true" id="98c4e5b0-4f90-4540-b87f-9bd6d2ddc583" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/candidate_3.3.3.01.py" beforeDir="false" afterPath="$PROJECT_DIR$/candidate_3.3.3.01.py" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -35,8 +37,8 @@
       <file leaf-file-name="candidate_3.3.3.01.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/candidate_3.3.3.01.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="185">
-              <caret line="91" column="14" lean-forward="true" selection-start-line="91" selection-start-column="14" selection-end-line="91" selection-end-column="14" />
+            <state relative-caret-position="425">
+              <caret line="1158" column="685" selection-start-line="1158" selection-start-column="685" selection-end-line="1158" selection-end-column="685" />
             </state>
           </provider>
         </entry>
@@ -44,15 +46,6 @@
       <file leaf-file-name="model_3.3.0.1.png" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/model_3.3.0.1.png">
           <provider selected="true" editor-type-id="images" />
-        </entry>
-      </file>
-      <file leaf-file-name="candidate_3.3.1.01.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/candidate_3.3.1.01.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="323">
-              <caret line="1001" column="8" lean-forward="true" selection-start-line="1001" selection-start-column="8" selection-end-line="1001" selection-end-column="121" />
-            </state>
-          </provider>
         </entry>
       </file>
     </leaf>
@@ -620,9 +613,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/model_3.3.0.1.png">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/candidate_3.3.1.01.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="323">
@@ -630,10 +620,13 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/model_3.3.0.1.png">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
     <entry file="file://$PROJECT_DIR$/candidate_3.3.3.01.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="185">
-          <caret line="91" column="14" lean-forward="true" selection-start-line="91" selection-start-column="14" selection-end-line="91" selection-end-column="14" />
+        <state relative-caret-position="425">
+          <caret line="1158" column="685" selection-start-line="1158" selection-start-column="685" selection-end-line="1158" selection-end-column="685" />
         </state>
       </provider>
     </entry>
