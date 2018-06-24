@@ -858,6 +858,7 @@ with graph.as_default():
     # concat 2 - 40x40x384
     concat2 = tf.concat([unpool2, bottleneck_41], axis=-1, name="upsample_concat_2")
 
+    # 40x40x256
     with tf.name_scope('up_conv3') as scope:
         unpool3 = tf.layers.conv2d(
             concat2,
@@ -943,7 +944,7 @@ with graph.as_default():
     conv6 = _conv2d_batch_norm(unpool6, 32, kernel_size=(3, 3), stride=(1, 1), training=training, lambd=lamC,
                                name="up_conv6", activation="elu")
 
-    # logits, stride 1 to smooth out artificacts
+    # 640x640x16
     with tf.name_scope('upsample_3') as scope:
         up_conv7 = tf.layers.conv2d_transpose(
             conv6,
