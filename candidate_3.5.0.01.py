@@ -852,11 +852,11 @@ with graph.as_default():
             moving_variance_initializer=tf.ones_initializer(),
             training=training,
             fused=True,
-            name='bn_up_conv1'
+            name='bn_up_conv2'
         )
 
         # activation
-        unpool1 = tf.nn.elu(unpool1, name="up_conv1_relu")
+        unpool1 = tf.nn.elu(unpool1, name="up_conv2_relu")
 
     # downsize conv4.1 to 40x40x56
     with tf.name_scope("reduce_4.1") as scope:
@@ -1009,11 +1009,11 @@ with graph.as_default():
 
     # 320x320x32
     conv5 = _conv2d_batch_norm(unpool6, 32, kernel_size=(3, 3), stride=(1, 1), training=training, lambd=lamC,
-                               name="up_conv5", activation="elu")
+                               name="up_conv6", activation="elu")
 
     # 320x320x32
     conv6 = _conv2d_batch_norm(conv5, 32, kernel_size=(3, 3), stride=(1, 1), training=training, lambd=lamC,
-                               name="up_conv6", activation="elu")
+                               name="up_conv7", activation="elu")
 
     # 640x640x16
     with tf.name_scope('upsample_4') as scope:
@@ -1086,18 +1086,18 @@ with graph.as_default():
     # Minimize cross-entropy - freeze certain layers depending on input
     if freeze:
         # make some collections so we can specify what to train
-        deconv_all = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "up_")
+        deconv_all = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "up_conv")
         fc_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "fc")
         bottleneck_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "bottleneck")
-        tr_logits = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "logits")
-        upsample_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "sample")
+        logits_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "logits")
+        upsample_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "upsample")
 
         # retrain vars
         rt_fc = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "fc_1")
 
         # create a training step for vars that should be trained
         # train_op_2 = optimizer.minimize(loss, global_step=global_step, var_list=up_conv5_vars)
-        train_op_2 = optimizer.minimize(loss, global_step=global_step, var_list=bottleneck_vars + tr_logits + deconv_all + fc_vars + upsample_vars)
+        train_op_2 = optimizer.minimize(loss, global_step=global_step, var_list=bottleneck_vars + logits_vars + deconv_all + fc_vars + upsample_vars)
 
     train_op_1 = optimizer.minimize(loss, global_step=global_step)
 
@@ -1228,7 +1228,9 @@ with tf.Session(graph=graph, config=config) as sess:
             sess.run(tf.global_variables_initializer())
 
             # create the initializer function to initialize the weights
-            init_fn = load_weights(init_model, exclude=['bottleneck_5.1',"up_conv6", "conv_up_conv6", "bn_up_conv6", "bn_unpool5.1", "up_conv5",'bn_unpool4.1', "up_conv4", "bn_bottleneck_5.1", 'bottleneck_5.2', 'bn_bottleneck_5.2', 'bn_bottleneck_4.1', 'bottleneck_4.2', 'bn_bottleneck_4.2', 'bottleneck_4.1', 'bn_bottleneck_4.1', 'bn_unpool1.1', "up_conv3", "bn_upsample_3", "upsample_3", "up_conv6", "up_conv5", "bn_unpool4.1", 'up_conv4', 'bn_up_conv3', 'up_conv3', 'bn_upsample_2', 'upsample_2', 'bn_bottleneck_4.2', 'bottleneck_4.2', 'bn_bottleneck_4.1', 'bottleneck_4.1', 'bn_bottleneck_5.2', 'bn_bottleneck_5.1', 'bottleneck_5.2', 'bottleneck_5.1', 'bn_upsample_1', 'upsample_1'])
+            # init_fn = load_weights(init_model, exclude=['bottleneck_5.1',"up_conv6", "conv_up_conv6", "bn_up_conv6", "bn_unpool5.1", "up_conv5",'bn_unpool4.1', "up_conv4", "bn_bottleneck_5.1", 'bottleneck_5.2', 'bn_bottleneck_5.2', 'bn_bottleneck_4.1', 'bottleneck_4.2', 'bn_bottleneck_4.2', 'bottleneck_4.1', 'bn_bottleneck_4.1', 'bn_unpool1.1', "up_conv3", "bn_upsample_3", "upsample_3", "up_conv6", "up_conv5", "bn_unpool4.1", 'up_conv4', 'bn_up_conv3', 'up_conv3', 'bn_upsample_2', 'upsample_2', 'bn_bottleneck_4.2', 'bottleneck_4.2', 'bn_bottleneck_4.1', 'bottleneck_4.1', 'bn_bottleneck_5.2', 'bn_bottleneck_5.1', 'bottleneck_5.2', 'bottleneck_5.1', 'bn_upsample_1', 'upsample_1'])
+            init_fn = load_weights(init_model, exclude=['upsample_1', 'bn_upsample_1', 'up_conv1', 'bn_up_conv1', 'bottleneck_5.1', 'bn_bottleneck_5.1', 'bottleneck_5.2', 'bn_bottleneck_5.2', 'upsample_2', 'bn_upsample_2', 'up_conv2', 'bn_up_conv2', 'bottleneck_4.1', 'bn_bottleneck_4.1', 'bottleneck_4.2', 'bn_bottleneck_4.2', 'up_conv3', 'bn_up_conv3', 'up_conv4', 'bn_up_conv4', "conv_up_conv5", "bn_up_conv5", "conv_up_conv6", "bn_up_conv6", "conv_up_conv7", "bn_up_conv7", 'upsample_4', 'bn_upsample_4', "logits"])
+
             # init_fn = load_weights(init_model, exclude=['up_conv1', "bn_unpool1.1", "conv_fc_1", "bn_fc_1"])
 
             # run the initializer
