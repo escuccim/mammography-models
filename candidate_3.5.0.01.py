@@ -927,7 +927,7 @@ with graph.as_default():
 
     # 40x40x128
     with tf.name_scope('up_conv3') as scope:
-        unpool3 = tf.layers.conv2d(
+        unpool3 = tf.layers.conv2d_transpose(
             concat2,
             filters=128,
             kernel_size=(3, 3),
@@ -1016,7 +1016,7 @@ with graph.as_default():
                                name="up_conv6", activation="elu")
 
     # 640x640x16
-    with tf.name_scope('upsample_3') as scope:
+    with tf.name_scope('upsample_4') as scope:
         up_conv7 = tf.layers.conv2d_transpose(
             conv6,
             filters=16,
@@ -1026,7 +1026,7 @@ with graph.as_default():
             activation=None,
             kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=11793),
             kernel_regularizer=None,
-            name='upsample_3'
+            name='upsample_4'
         )
 
         up_conv7 = tf.layers.batch_normalization(
@@ -1042,11 +1042,11 @@ with graph.as_default():
             moving_variance_initializer=tf.ones_initializer(),
             training=training,
             fused=True,
-            name='bn_upsample_3'
+            name='bn_upsample_4'
         )
 
         # activation
-        up_conv7 = tf.nn.elu(up_conv7, name='upsample_3_relu')
+        up_conv7 = tf.nn.elu(up_conv7, name='upsample_4_relu')
 
     # logits, stride 1 to smooth out artificacts
     with tf.name_scope('logits') as scope:
