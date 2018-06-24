@@ -97,6 +97,7 @@ dropout = True
 fcdropout_rate = 0.25
 convdropout_rate = 0.001
 pooldropout_rate = 0.1
+upsample_dropout = 0.05
 
 if how == "label":
     num_classes = 5
@@ -993,7 +994,7 @@ with graph.as_default():
         )
 
         if dropout:
-            unpool4 = tf.layers.dropout(unpool4, rate=pooldropout_rate, seed=14537, training=training)
+            unpool4 = tf.layers.dropout(unpool4, rate=convdropout_rate, seed=14537, training=training)
 
         # activation
         unpool4 = tf.nn.elu(unpool4, name='relu10')
@@ -1297,6 +1298,7 @@ with tf.Session(graph=graph, config=config) as sess:
 
                         # write the summary
                         train_writer.add_summary(image_summary, step)
+
                     else:
                         _, _, step = sess.run(
                             [train_op, extra_update_ops, global_step],
