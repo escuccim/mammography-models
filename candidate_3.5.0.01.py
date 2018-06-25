@@ -82,7 +82,7 @@ if not stop and not freeze:
 else:
     starting_rate = 0.0001
 
-starting_rate = 0.0001
+starting_rate = 0.0005
 
 # learning rate decay variables
 steps_per_epoch = int(total_records / batch_size)
