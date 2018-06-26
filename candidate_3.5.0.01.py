@@ -186,7 +186,7 @@ with graph.as_default():
     # hopefully we can pass the path to the images in as a placeholder so we can use different dirs without
     # recreating the graph
     default_path = tf.constant("./data/train_images/", dtype=tf.string, name="default_image_path")
-    data_path = tf.placeholder_with_default(default_path, shape=[])
+    data_path = tf.placeholder_with_default(default_path, shape=[], name="data_dir")
 
     # create global step for decaying learning rate
     global_step = tf.Variable(0, trainable=False)
@@ -1368,13 +1368,13 @@ with tf.Session(graph=graph, config=config) as sess:
             counter = 0
 
             # evaluate on full-size images
-            for counter in range(cv_count // batch_size):
-               _ = sess.run(
-                    [metrics_op],
-                    feed_dict={
-                        training: True,
-                        data_path: "data/cv_images",
-                    })
+            # for counter in range(cv_count // batch_size):
+            #    _ = sess.run(
+            #         [metrics_op],
+            #         feed_dict={
+            #             training: True,
+            #             data_path: "data/cv_images",
+            #         })
 
             # evaluate on pre-cropped images
             for X_batch, y_batch in get_batches(X_cv, y_cv, batch_size, distort=False):
