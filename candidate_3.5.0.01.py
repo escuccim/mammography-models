@@ -177,10 +177,16 @@ model_name = "model_s3.5.0.01" + model_label + "." + str(dataset) + str(version)
 # 3.3.2.01 - changing FC1 from 5x5 filter to 2x2 and changing unpool1 from 5x5 to 2x2 so we can more easily alter input image size
 # 3.3.3.01 - changing structure of upsampling section
 # 3.5.0.01 - again redoing the upsampling section to simplify
+# 3.5.0.01 - making path to images a placeholder so we can evaluate the test images the same way as train images
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
     is_testing = tf.placeholder(dtype=bool, shape=(), name="is_testing")
+
+    # hopefully we can pass the path to the images in as a placeholder so we can use different dirs without
+    # recreating the graph
+    default_path = tf.constant("./data/train_images/", dtype=tf.string, name="default_image_path")
+    data_path = tf.placeholder_with_default(default_path, shape=[])
 
     # create global step for decaying learning rate
     global_step = tf.Variable(0, trainable=False)
@@ -195,7 +201,7 @@ with graph.as_default():
         with tf.device('/cpu:0'):
             if dataset == 100:
                 # decode the image
-                image, label = _read_images("./data/train_images/", size, scale_by=0.66, distort=False, standardize=normalize)
+                image, label = _read_images(data_path, size, scale_by=0.66, distort=False, standardize=normalize)
             else:
                 image, label = read_and_decode_single_example(train_files, label_type=how, normalize=False,
                                                               distort=False, size=640)
@@ -1357,8 +1363,20 @@ with tf.Session(graph=graph, config=config) as sess:
             print("Evaluating model...")
             # load the test data
             X_cv, y_cv = load_validation_data(percentage=1, how=how, which=dataset, scale=True)
+            cv_path = "data/cv_images"
+            cv_count = len(os.listdir(cv_path)) * 2
+            counter = 0
 
-            # evaluate the test data
+            # evaluate on full-size images
+            for counter in range(cv_count // batch_size):
+               _ = sess.run(
+                    [metrics_op],
+                    feed_dict={
+                        training: True,
+                        data_path: "data/cv_images",
+                    })
+
+            # evaluate on pre-cropped images
             for X_batch, y_batch in get_batches(X_cv, y_cv, batch_size, distort=False):
                 _, valid_acc, valid_recall, valid_cost = sess.run(
                     [metrics_op, accuracy, recall, mean_ce],
@@ -1368,23 +1386,23 @@ with tf.Session(graph=graph, config=config) as sess:
                         training: False
                     })
 
-                batch_cv_acc.append(valid_acc)
-                batch_cv_loss.append(valid_cost)
-                batch_cv_recall.append(valid_recall)
+            # one more step to get our metrics
+            summary, valid_acc, valid_recall, valid_prec, cv_image_acc, cv_image_recall, cv_image_precision = sess.run(
+                [merged, accuracy, recall, precision, image_accuracy, image_recall, image_precision],
+                feed_dict={
+                    # X: X_cv[0:2],
+                    # y: y_cv[0:2],
+                    data_path: "data/cv_images",
+                    training: False
+                })
 
-            # Write average of validation data to summary logs
+            batch_cv_acc.append(valid_acc)
+            batch_cv_loss.append(valid_cost)
+            batch_cv_recall.append(valid_recall)
+
             if log_to_tensorboard:
-                # evaluate once more to get the summary, which will then be written to tensorboard
-                summary, cv_accuracy = sess.run(
-                    [merged, accuracy],
-                    feed_dict={
-                        X: X_cv[0:2],
-                        y: y_cv[0:2],
-                        training: False
-                    })
+                test_writer.add_summary(summary, step)
 
-            test_writer.add_summary(summary, step)
-            # test_writer.add_summary(other_summaries, step)
             step += 1
 
             # delete the test data to save memory
