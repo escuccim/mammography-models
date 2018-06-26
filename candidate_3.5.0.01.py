@@ -1387,8 +1387,8 @@ with tf.Session(graph=graph, config=config) as sess:
                     })
 
             # one more step to get our metrics
-            summary, valid_acc, valid_recall, valid_prec, cv_image_acc, cv_image_recall, cv_image_precision = sess.run(
-                [merged, accuracy, recall, precision, image_accuracy, image_recall, image_precision],
+            summary, valid_acc, valid_recall, valid_prec = sess.run(
+                [merged, accuracy, recall, precision],
                 feed_dict={
                     # X: X_cv[0:2],
                     # y: y_cv[0:2],
