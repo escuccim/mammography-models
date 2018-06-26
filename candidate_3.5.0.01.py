@@ -1364,7 +1364,7 @@ with tf.Session(graph=graph, config=config) as sess:
             # load the test data
             X_cv, y_cv = load_validation_data(percentage=1, how=how, which=dataset, scale=True)
             cv_path = "data/cv_images"
-            cv_count = len(os.listdir(cv_path)) * 2
+            cv_count = len(os.listdir(cv_path))
             counter = 0
 
             # evaluate on full-size images
