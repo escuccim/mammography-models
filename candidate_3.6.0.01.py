@@ -638,7 +638,7 @@ with graph.as_default():
     # convolution w/ dilation 2 - 20x20x1024
     with tf.name_scope('conv5.2') as scope:
         conv51 = tf.layers.conv2d(
-            conv5_bn_relu,
+            conv51_bn_relu,
             filters=1024,
             kernel_size=(3, 3),
             strides=(1, 1),
@@ -672,7 +672,7 @@ with graph.as_default():
     # convolution w/ dilation 3 - 20x20x1024
     with tf.name_scope('conv5.3') as scope:
         conv51 = tf.layers.conv2d(
-            conv5_bn_relu,
+            conv51,
             filters=1024,
             kernel_size=(3, 3),
             strides=(1, 1),
