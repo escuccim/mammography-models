@@ -669,40 +669,6 @@ with graph.as_default():
         # apply relu
         conv51 = tf.nn.relu(conv51, name='relu5.2')
 
-    # convolution w/ dilation 3 - 20x20x1024
-    with tf.name_scope('conv5.3') as scope:
-        conv51 = tf.layers.conv2d(
-            conv51,
-            filters=1024,
-            kernel_size=(3, 3),
-            strides=(1, 1),
-            padding='SAME',
-            dilation_rate=(3, 3),
-            activation=None,
-            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=1193),
-            kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
-            name='conv5.3'
-        )
-
-        conv51 = tf.layers.batch_normalization(
-            conv51,
-            axis=-1,
-            momentum=0.99,
-            epsilon=epsilon,
-            center=True,
-            scale=True,
-            beta_initializer=tf.zeros_initializer(),
-            gamma_initializer=tf.ones_initializer(),
-            moving_mean_initializer=tf.zeros_initializer(),
-            moving_variance_initializer=tf.ones_initializer(),
-            training=training,
-            fused=True,
-            name='bn5.3'
-        )
-
-        # apply relu
-        conv51 = tf.nn.relu(conv51, name='relu5.3')
-
     # Max pooling layer 5 - 10x10x512
     # with tf.name_scope('pool5') as scope:
     #     pool5 = tf.layers.max_pooling2d(
