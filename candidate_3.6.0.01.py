@@ -82,7 +82,8 @@ if not stop and not freeze:
 else:
     starting_rate = 0.0001
 
-starting_rate = 0.0002
+# start with a slightly lower learning rate since we are re-training later layers
+starting_rate = 0.0007
 
 # learning rate decay variables
 steps_per_epoch = int(total_records / batch_size)
@@ -634,23 +635,97 @@ with graph.as_default():
         # apply relu
         conv51_bn_relu = tf.nn.relu(conv51, name='relu5.1')
 
-    # Max pooling layer 5 - 10x10x512
-    with tf.name_scope('pool5') as scope:
-        pool5 = tf.layers.max_pooling2d(
-            conv51_bn_relu,
-            pool_size=(2, 2),
-            strides=(2, 2),
+    # convolution w/ dilation 2 - 20x20x1024
+    with tf.name_scope('conv5.2') as scope:
+        conv51 = tf.layers.conv2d(
+            conv5_bn_relu,
+            filters=1024,
+            kernel_size=(3, 3),
+            strides=(1, 1),
             padding='SAME',
-            name='pool5'
+            dilation_rate=(2, 2),
+            activation=None,
+            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=1193),
+            kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
+            name='conv5.2'
         )
 
-        if dropout:
-            pool5 = tf.layers.dropout(pool5, rate=pooldropout_rate, seed=115, training=training)
+        conv51 = tf.layers.batch_normalization(
+            conv51,
+            axis=-1,
+            momentum=0.99,
+            epsilon=epsilon,
+            center=True,
+            scale=True,
+            beta_initializer=tf.zeros_initializer(),
+            gamma_initializer=tf.ones_initializer(),
+            moving_mean_initializer=tf.zeros_initializer(),
+            moving_variance_initializer=tf.ones_initializer(),
+            training=training,
+            fused=True,
+            name='bn5.2'
+        )
 
-    # upsample back to 20x20x256
+        # apply relu
+        conv51 = tf.nn.relu(conv51, name='relu5.2')
+
+    # convolution w/ dilation 3 - 20x20x1024
+    with tf.name_scope('conv5.3') as scope:
+        conv51 = tf.layers.conv2d(
+            conv5_bn_relu,
+            filters=1024,
+            kernel_size=(3, 3),
+            strides=(1, 1),
+            padding='SAME',
+            dilation_rate=(3, 3),
+            activation=None,
+            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=1193),
+            kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
+            name='conv5.3'
+        )
+
+        conv51 = tf.layers.batch_normalization(
+            conv51,
+            axis=-1,
+            momentum=0.99,
+            epsilon=epsilon,
+            center=True,
+            scale=True,
+            beta_initializer=tf.zeros_initializer(),
+            gamma_initializer=tf.ones_initializer(),
+            moving_mean_initializer=tf.zeros_initializer(),
+            moving_variance_initializer=tf.ones_initializer(),
+            training=training,
+            fused=True,
+            name='bn5.3'
+        )
+
+        # apply relu
+        conv51 = tf.nn.relu(conv51, name='relu5.3')
+
+    # Max pooling layer 5 - 10x10x512
+    # with tf.name_scope('pool5') as scope:
+    #     pool5 = tf.layers.max_pooling2d(
+    #         conv51_bn_relu,
+    #         pool_size=(2, 2),
+    #         strides=(2, 2),
+    #         padding='SAME',
+    #         name='pool5'
+    #     )
+    #
+    #     if dropout:
+    #         pool5 = tf.layers.dropout(pool5, rate=pooldropout_rate, seed=115, training=training)
+
+    # 1x1 convolution
+
+    # # 20x20x1024
+    # fc_1 = _conv2d_batch_norm(conv51, 1024, kernel_size=(1, 1), stride=(1, 1), training=training, lambd=lamC,
+    #                            name="fc_1", activation="elu")
+
+    # upsample back to 40x40x512
     with tf.name_scope('upsample_1') as scope:
         unpool1 = tf.layers.conv2d_transpose(
-            pool5,
+            conv51,
             filters=512,
             kernel_size=(4, 4),
             strides=(2, 2),
@@ -661,7 +736,7 @@ with graph.as_default():
             name='upsample_1'
         )
 
-    # 20x20x256
+    # 40x40x512
     with tf.name_scope('up_conv1') as scope:
         unpool1 = tf.layers.conv2d(
             unpool1,
@@ -694,92 +769,78 @@ with graph.as_default():
         # activation
         unpool1 = tf.nn.elu(unpool1, name="up_conv1_relu")
 
-    # up_conv 2 - 40x40x256
-    with tf.name_scope('upsample_2') as scope:
-        unpool2 = tf.layers.conv2d_transpose(
-            unpool1,
-            filters=256,
-            kernel_size=(4, 4),
-            strides=(2, 2),
-            padding='SAME',
-            activation=None,
-            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=11435),
-            kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
-            name='upsample_2'
-        )
+    # # downsize conv4.1 to 40x40x56
+    # with tf.name_scope("reduce_4.1") as scope:
+    #     bottleneck_41 = tf.layers.conv2d(
+    #         conv41_bn_relu,
+    #         filters=64,
+    #         kernel_size=(1, 1),
+    #         strides=(1, 1),
+    #         padding='SAME',
+    #         activation=None,
+    #         kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=11759),
+    #         kernel_regularizer=None,
+    #         name='bottleneck_4.1'
+    #     )
+    #
+    #     bottleneck_41 = tf.layers.batch_normalization(
+    #         bottleneck_41,
+    #         axis=-1,
+    #         momentum=0.99,
+    #         epsilon=epsilon,
+    #         center=True,
+    #         scale=True,
+    #         beta_initializer=tf.zeros_initializer(),
+    #         gamma_initializer=tf.ones_initializer(),
+    #         moving_mean_initializer=tf.zeros_initializer(),
+    #         moving_variance_initializer=tf.ones_initializer(),
+    #         training=training,
+    #         fused=True,
+    #         name='bn_bottleneck_4.1'
+    #     )
+    #
+    #     bottleneck_41 = tf.nn.elu(bottleneck_41, name="bottleneck_4.1_relu")
+    #
+    # # 40x40x128
+    # with tf.name_scope("reduce_4.2") as scope:
+    #     bottleneck_41 = tf.layers.conv2d(
+    #         bottleneck_41,
+    #         filters=128,
+    #         kernel_size=(3, 3),
+    #         strides=(1, 1),
+    #         padding='SAME',
+    #         activation=None,
+    #         kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=11759),
+    #         kernel_regularizer=None,
+    #         name='bottleneck_4.2'
+    #     )
+    #
+    #     bottleneck_41 = tf.layers.batch_normalization(
+    #         bottleneck_41,
+    #         axis=-1,
+    #         momentum=0.99,
+    #         epsilon=epsilon,
+    #         center=True,
+    #         scale=True,
+    #         beta_initializer=tf.zeros_initializer(),
+    #         gamma_initializer=tf.ones_initializer(),
+    #         moving_mean_initializer=tf.zeros_initializer(),
+    #         moving_variance_initializer=tf.ones_initializer(),
+    #         training=training,
+    #         fused=True,
+    #         name='bn_bottleneck_4.2'
+    #     )
+    #
+    #     bottleneck_41 = tf.nn.elu(bottleneck_41, name="bottleneck_4.2_relu")
 
-    # downsize conv4.1 to 40x40x56
-    with tf.name_scope("reduce_4.1") as scope:
-        bottleneck_41 = tf.layers.conv2d(
-            conv41_bn_relu,
-            filters=128,
-            kernel_size=(1, 1),
-            strides=(1, 1),
-            padding='SAME',
-            activation=None,
-            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=11759),
-            kernel_regularizer=None,
-            name='bottleneck_4.1'
-        )
+    # concat 2 - 40x40x640
+    # concat2 = tf.concat([unpool1, bottleneck_41], axis=-1, name="upsample_concat_2")
 
-        bottleneck_41 = tf.layers.batch_normalization(
-            bottleneck_41,
-            axis=-1,
-            momentum=0.99,
-            epsilon=epsilon,
-            center=True,
-            scale=True,
-            beta_initializer=tf.zeros_initializer(),
-            gamma_initializer=tf.ones_initializer(),
-            moving_mean_initializer=tf.zeros_initializer(),
-            moving_variance_initializer=tf.ones_initializer(),
-            training=training,
-            fused=True,
-            name='bn_bottleneck_4.1'
-        )
-
-        bottleneck_41 = tf.nn.elu(bottleneck_41, name="bottleneck_4.1_relu")
-
-    # 40x40x128
-    with tf.name_scope("reduce_4.2") as scope:
-        bottleneck_41 = tf.layers.conv2d(
-            bottleneck_41,
-            filters=128,
-            kernel_size=(3, 3),
-            strides=(1, 1),
-            padding='SAME',
-            activation=None,
-            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=11759),
-            kernel_regularizer=None,
-            name='bottleneck_4.2'
-        )
-
-        bottleneck_41 = tf.layers.batch_normalization(
-            bottleneck_41,
-            axis=-1,
-            momentum=0.99,
-            epsilon=epsilon,
-            center=True,
-            scale=True,
-            beta_initializer=tf.zeros_initializer(),
-            gamma_initializer=tf.ones_initializer(),
-            moving_mean_initializer=tf.zeros_initializer(),
-            moving_variance_initializer=tf.ones_initializer(),
-            training=training,
-            fused=True,
-            name='bn_bottleneck_4.2'
-        )
-
-        bottleneck_41 = tf.nn.elu(bottleneck_41, name="bottleneck_4.2_relu")
-
-    # concat 2 - 40x40x256
-    concat2 = tf.concat([unpool2, bottleneck_41], axis=-1, name="upsample_concat_2")
-
-    # 40x40x256
+    # 40x40x512
     with tf.name_scope('up_conv2') as scope:
         unpool21 = tf.layers.conv2d(
-            concat2,
-            filters=256,
+            unpool1,
+            filters=512,
             kernel_size=(3, 3),
             strides=(1, 1),
             padding='SAME',
@@ -812,7 +873,7 @@ with graph.as_default():
     with tf.name_scope('up_conv3') as scope:
         unpool3 = tf.layers.conv2d(
             unpool21,
-            filters=128,
+            filters=256,
             kernel_size=(3, 3),
             strides=(1, 1),
             padding='SAME',
@@ -850,7 +911,7 @@ with graph.as_default():
     with tf.name_scope('up_conv4') as scope:
         unpool4 = tf.layers.conv2d(
             unpool3,
-            filters=64,
+            filters=128,
             kernel_size=(3, 3),
             strides=(1, 1),
             padding='SAME',
@@ -970,13 +1031,11 @@ with graph.as_default():
         bottleneck_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "bottleneck")
         logits_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "logits")
         upsample_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "upsample")
-
-        # retrain vars
-        rt_fc = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "fc_1")
+        conv_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "conv5.2")
 
         # create a training step for vars that should be trained
         # train_op_2 = optimizer.minimize(loss, global_step=global_step, var_list=up_conv5_vars)
-        train_op_2 = optimizer.minimize(loss, global_step=global_step, var_list=bottleneck_vars + logits_vars + deconv_all + fc_vars + upsample_vars)
+        train_op_2 = optimizer.minimize(loss, global_step=global_step, var_list=bottleneck_vars + logits_vars + deconv_all + fc_vars + upsample_vars + conv_vars)
 
     train_op_1 = optimizer.minimize(loss, global_step=global_step)
 
@@ -1108,7 +1167,7 @@ with tf.Session(graph=graph, config=config) as sess:
 
             # create the initializer function to initialize the weights
             # init_fn = load_weights(init_model, exclude=['bottleneck_5.1',"up_conv6", "conv_up_conv6", "bn_up_conv6", "bn_unpool5.1", "up_conv5",'bn_unpool4.1', "up_conv4", "bn_bottleneck_5.1", 'bottleneck_5.2', 'bn_bottleneck_5.2', 'bn_bottleneck_4.1', 'bottleneck_4.2', 'bn_bottleneck_4.2', 'bottleneck_4.1', 'bn_bottleneck_4.1', 'bn_unpool1.1', "up_conv3", "bn_upsample_3", "upsample_3", "up_conv6", "up_conv5", "bn_unpool4.1", 'up_conv4', 'bn_up_conv3', 'up_conv3', 'bn_upsample_2', 'upsample_2', 'bn_bottleneck_4.2', 'bottleneck_4.2', 'bn_bottleneck_4.1', 'bottleneck_4.1', 'bn_bottleneck_5.2', 'bn_bottleneck_5.1', 'bottleneck_5.2', 'bottleneck_5.1', 'bn_upsample_1', 'upsample_1'])
-            init_fn = load_weights(init_model, exclude=["bn_fc_fc_1","bn_fc_fc_2","fc_fc_1","fc_fc_2",'up_conv3', 'bn_up_conv3', "bn_unpool_4.1", "unpool_4.1", 'upsample_1', 'bn_upsample_1', 'up_conv1', 'bn_up_conv1', 'bottleneck_5.1', 'bn_bottleneck_5.1', 'bottleneck_5.2', 'bn_bottleneck_5.2', 'upsample_2', 'bn_upsample_2', 'up_conv2', 'bn_up_conv2', 'bottleneck_4.1', 'bn_bottleneck_4.1', 'bottleneck_4.2', 'bn_bottleneck_4.2', 'up_conv3', 'bn_up_conv3', 'up_conv4', 'bn_up_conv4', "conv_up_conv5", "bn_up_conv5", "conv_up_conv6", "bn_up_conv6", "conv_up_conv7", "bn_up_conv7", 'upsample_4', 'bn_upsample_4', "logits"])
+            init_fn = load_weights(init_model, exclude=['conv5.3',"bn5.3",'conv5.2',"bn5.2", "bn_fc_fc_1","bn_fc_fc_2","fc_fc_1","fc_fc_2",'up_conv3', 'bn_up_conv3', "bn_unpool_4.1", "unpool_4.1", 'upsample_1', 'bn_upsample_1', 'up_conv1', 'bn_up_conv1', 'bottleneck_5.1', 'bn_bottleneck_5.1', 'bottleneck_5.2', 'bn_bottleneck_5.2', 'upsample_2', 'bn_upsample_2', 'up_conv2', 'bn_up_conv2', 'bottleneck_4.1', 'bn_bottleneck_4.1', 'bottleneck_4.2', 'bn_bottleneck_4.2', 'up_conv3', 'bn_up_conv3', 'up_conv4', 'bn_up_conv4', "conv_up_conv5", "bn_up_conv5", "conv_up_conv6", "bn_up_conv6", "conv_up_conv7", "bn_up_conv7", 'upsample_4', 'bn_upsample_4', "logits"])
 
             # init_fn = load_weights(init_model, exclude=['up_conv1', "bn_unpool1.1", "conv_fc_1", "bn_fc_1"])
 

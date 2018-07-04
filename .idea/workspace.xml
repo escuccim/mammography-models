@@ -2,8 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="98c4e5b0-4f90-4540-b87f-9bd6d2ddc583" name="Default" comment="">
+      <change afterPath="$PROJECT_DIR$/3.6.0.01.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/3.6.0.01.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/candidate_3.5.0.01.py" beforeDir="false" afterPath="$PROJECT_DIR$/candidate_3.5.0.01.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/candidate_3.6.0.01.py" beforeDir="false" afterPath="$PROJECT_DIR$/candidate_3.6.0.01.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -38,14 +40,14 @@
       <file leaf-file-name="candidate_3.6.0.01.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/candidate_3.6.0.01.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="186">
-              <caret line="1110" column="60" selection-start-line="1110" selection-start-column="60" selection-end-line="1110" selection-end-column="60" />
+            <state relative-caret-position="251">
+              <caret line="1169" column="64" selection-start-line="1169" selection-start-column="64" selection-end-line="1169" selection-end-column="64" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="3.5.0.01.png" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/3.5.0.01.png">
+      <file leaf-file-name="3.6.0.01.png" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/3.6.0.01.png">
           <provider selected="true" editor-type-id="images" />
         </entry>
       </file>
@@ -273,13 +275,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/candidate_3.5.0.01.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1428">
-          <caret line="84" column="22" selection-start-line="84" selection-start-column="22" selection-end-line="84" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/old_models/candidate_1.1.0.40l.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1283">
@@ -570,6 +565,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="255">
           <caret line="23" column="109" selection-start-line="23" selection-start-column="109" selection-end-line="23" selection-end-column="109" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -601,9 +599,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/3.5.0.01.png">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/candidate_3.5.0.01.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="283">
@@ -621,10 +616,16 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/3.5.0.01.png">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/3.6.0.01.png">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
     <entry file="file://$PROJECT_DIR$/candidate_3.6.0.01.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="186">
-          <caret line="1110" column="60" selection-start-line="1110" selection-start-column="60" selection-end-line="1110" selection-end-column="60" />
+        <state relative-caret-position="251">
+          <caret line="1169" column="64" selection-start-line="1169" selection-start-column="64" selection-end-line="1169" selection-end-column="64" />
         </state>
       </provider>
     </entry>
