@@ -1031,11 +1031,12 @@ with graph.as_default():
         bottleneck_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "bottleneck")
         logits_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "logits")
         upsample_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "upsample")
-        conv_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "conv5.2")
+        conv_vars_2 = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "conv5.2")
+        conv_vars_3 = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "conv5.3")
 
         # create a training step for vars that should be trained
         # train_op_2 = optimizer.minimize(loss, global_step=global_step, var_list=up_conv5_vars)
-        train_op_2 = optimizer.minimize(loss, global_step=global_step, var_list=bottleneck_vars + logits_vars + deconv_all + fc_vars + upsample_vars + conv_vars)
+        train_op_2 = optimizer.minimize(loss, global_step=global_step, var_list=bottleneck_vars + logits_vars + deconv_all + fc_vars + upsample_vars + conv_vars_2 + conv_vars_3)
 
     train_op_1 = optimizer.minimize(loss, global_step=global_step)
 
