@@ -117,7 +117,7 @@ print("Image crop size:", size)
 ## Build the graph
 graph = tf.Graph()
 
-model_name = "model_s3.6.0.02" + model_label + "." + str(dataset) + str(version)
+model_name = "model_s3.6.0.03" + model_label + "." + str(dataset) + str(version)
 ## Change Log
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
@@ -181,6 +181,7 @@ model_name = "model_s3.6.0.02" + model_label + "." + str(dataset) + str(version)
 # 3.5.0.01 - making path to images a placeholder so we can evaluate the test images the same way as train images
 # 3.6.0.01 - simplifying upsampling section to retrain from scratch
 # 3.6.0.02 - removing some layers to speed up training
+# 3.6.0.03 - removing dilated convolutions, they seem to be messing things up
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -644,7 +645,7 @@ with graph.as_default():
             kernel_size=(3, 3),
             strides=(1, 1),
             padding='SAME',
-            dilation_rate=(2, 2),
+            dilation_rate=(1, 1),
             activation=None,
             kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=1193),
             kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
