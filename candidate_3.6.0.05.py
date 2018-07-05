@@ -800,14 +800,14 @@ with graph.as_default():
                                name="up_conv6", activation="relu")
 
     # 320x320x364
-    uconv6 = _conv2d_batch_norm(uconv5, 64, kernel_size=(3, 3), stride=(1, 1), training=training, lambd=lamC,
+    uconv6 = _conv2d_batch_norm(uconv5, 32, kernel_size=(3, 3), stride=(1, 1), training=training, lambd=lamC,
                                name="up_conv7", activation="relu")
 
     # 640x640x32
     with tf.name_scope('upsample_4') as scope:
         up_conv7 = tf.layers.conv2d_transpose(
             uconv6,
-            filters=32,
+            filters=16,
             kernel_size=(4, 4),
             strides=(2, 2),
             padding='SAME',
