@@ -117,7 +117,7 @@ print("Image crop size:", size)
 ## Build the graph
 graph = tf.Graph()
 
-model_name = "model_s3.6.0.04" + model_label + "." + str(dataset) + str(version)
+model_name = "model_s3.6.0.05" + model_label + "." + str(dataset) + str(version)
 ## Change Log
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
@@ -183,6 +183,7 @@ model_name = "model_s3.6.0.04" + model_label + "." + str(dataset) + str(version)
 # 3.6.0.02 - removing some layers to speed up training
 # 3.6.0.03 - removing dilated convolutions, they seem to be messing things up
 # 3.6.0.04 - putting dilated convolution back, replacing first transpose conv with resize
+# 3.6.0.05 - changing number of filters in upsampling section
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -745,16 +746,16 @@ with graph.as_default():
         unpool21 = tf.nn.relu(unpool21, name="up_conv2_relu")
 
 
-    # resize images - 80x80x128
+    # resize images - 80x80x512
     with tf.name_scope('resize_3') as scope:
         new_size = int(size / 8)
         unpool3 = tf.image.resize_images(unpool21, size=[new_size,new_size], method=tf.image.ResizeMethod.NEAREST_NEIGHBOR)
 
-    # convolve resized image - 80x0x64
+    # convolve resized image - 80x80x256
     with tf.name_scope('up_conv4') as scope:
         unpool4 = tf.layers.conv2d(
             unpool3,
-            filters=128,
+            filters=256,
             kernel_size=(3, 3),
             strides=(1, 1),
             padding='SAME',
@@ -786,16 +787,16 @@ with graph.as_default():
         # activation
         unpool4 = tf.nn.relu(unpool4, name='relu10')
 
-    # conv layer - 160x160x64
-    uconv5 = _conv2d_batch_norm(unpool4, 64, kernel_size=(3, 3), stride=(1, 1), training=training, lambd=lamC,
+    # conv layer - 160x160x128
+    uconv5 = _conv2d_batch_norm(unpool4, 128, kernel_size=(3, 3), stride=(1, 1), training=training, lambd=lamC,
                                name="up_conv5", activation="relu")
 
-    # resize to 320x320x64
+    # resize to 320x320x128
     with tf.name_scope('resize_6') as scope:
         unpool6 = tf.image.resize_images(uconv5, size=[size // 2, size // 2], method=tf.image.ResizeMethod.NEAREST_NEIGHBOR)
 
-    # 320x320x32
-    uconv5 = _conv2d_batch_norm(unpool6, 32, kernel_size=(3, 3), stride=(1, 1), training=training, lambd=lamC,
+    # 320x320x64
+    uconv5 = _conv2d_batch_norm(unpool6, 64, kernel_size=(3, 3), stride=(1, 1), training=training, lambd=lamC,
                                name="up_conv6", activation="relu")
 
     # 320x320x32
