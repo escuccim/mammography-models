@@ -808,7 +808,7 @@ with graph.as_default():
         up_conv7 = tf.layers.conv2d_transpose(
             uconv6,
             filters=32,
-            kernel_size=(6, 6),
+            kernel_size=(4, 4),
             strides=(2, 2),
             padding='SAME',
             activation=tf.nn.relu,
@@ -818,18 +818,18 @@ with graph.as_default():
         )
 
     # 640x640x16 - transpose conv to smooth out artifacts
-    # with tf.name_scope('upsample_5') as scope:
-    #     up_conv8 = tf.layers.conv2d_transpose(
-    #         up_conv7,
-    #         filters=16,
-    #         kernel_size=(3, 3),
-    #         strides=(1, 1),
-    #         padding='SAME',
-    #         activation=tf.nn.relu,
-    #         kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=117932),
-    #         kernel_regularizer=None,
-    #         name='upsample_5'
-    #     )
+    with tf.name_scope('upsample_5') as scope:
+        up_conv8 = tf.layers.conv2d_transpose(
+            up_conv7,
+            filters=8,
+            kernel_size=(3, 3),
+            strides=(1, 1),
+            padding='SAME',
+            activation=tf.nn.relu,
+            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=117932),
+            kernel_regularizer=None,
+            name='upsample_5'
+        )
 
     # logits - 640x640x2
     with tf.name_scope('logits') as scope:
