@@ -578,7 +578,7 @@ with graph.as_default():
     with tf.name_scope('conv5') as scope:
         conv5 = tf.layers.conv2d(
             pool4,
-            filters=384,
+            filters=512,
             kernel_size=(3, 3),
             strides=(1, 1),
             padding='SAME',
@@ -610,7 +610,7 @@ with graph.as_default():
     with tf.name_scope('conv5.1') as scope:
         conv5 = tf.layers.conv2d(
             conv5_bn_relu,
-            filters=384,
+            filters=512,
             kernel_size=(3, 3),
             strides=(1, 1),
             padding='SAME',
@@ -639,11 +639,11 @@ with graph.as_default():
         # apply relu
         conv5 = tf.nn.relu(conv5, name='relu5.1')
 
-    # convolution w/ dilation 2 - 20x20x1024
+    # convolution w/ dilation 2 - 20x20x384
     with tf.name_scope('conv5.2') as scope:
         conv51 = tf.layers.conv2d(
             conv5,
-            filters=512,
+            filters=384,
             kernel_size=(3, 3),
             strides=(1, 1),
             padding='SAME',
@@ -673,11 +673,11 @@ with graph.as_default():
         # apply relu
         conv51 = tf.nn.relu(conv51, name='relu5.2')
 
-    # convolution w/ dilation 2 - 20x20x1024
+    # convolution w/ dilation 2 - 20x20x384
     with tf.name_scope('conv5.3') as scope:
         conv51 = tf.layers.conv2d(
             conv51,
-            filters=512,
+            filters=384,
             kernel_size=(3, 3),
             strides=(1, 1),
             padding='SAME',
@@ -707,16 +707,16 @@ with graph.as_default():
         # apply relu
         conv51 = tf.nn.relu(conv51, name='relu5.3')
 
-    # resize images - 40x40x512
+    # resize images - 40x40x384
     with tf.name_scope('resize_1') as scope:
         new_size = int(size // 16)
         unpool1 = tf.image.resize_images(conv51, size=[new_size, new_size], method=tf.image.ResizeMethod.NEAREST_NEIGHBOR)
 
-    # 40x40x384
+    # 40x40x256
     with tf.name_scope('up_conv2') as scope:
         unpool21 = tf.layers.conv2d(
             unpool1,
-            filters=384,
+            filters=256,
             kernel_size=(3, 3),
             strides=(1, 1),
             padding='SAME',
@@ -746,16 +746,16 @@ with graph.as_default():
         unpool21 = tf.nn.relu(unpool21, name="up_conv2_relu")
 
 
-    # resize images - 80x80x384
+    # resize images - 80x80x256
     with tf.name_scope('resize_3') as scope:
         new_size = int(size / 8)
         unpool3 = tf.image.resize_images(unpool21, size=[new_size,new_size], method=tf.image.ResizeMethod.NEAREST_NEIGHBOR)
 
-    # convolve resized image - 80x80x256
+    # convolve resized image - 80x80x128
     with tf.name_scope('up_conv4') as scope:
         unpool4 = tf.layers.conv2d(
             unpool3,
-            filters=256,
+            filters=128,
             kernel_size=(3, 3),
             strides=(1, 1),
             padding='SAME',
@@ -787,23 +787,23 @@ with graph.as_default():
         # activation
         unpool4 = tf.nn.relu(unpool4, name='relu10')
 
-    # conv layer - 160x160x128
-    uconv5 = _conv2d_batch_norm(unpool4, 128, kernel_size=(3, 3), stride=(1, 1), training=training, lambd=lamC,
+    # conv layer - 160x160x64
+    uconv5 = _conv2d_batch_norm(unpool4, 64, kernel_size=(3, 3), stride=(1, 1), training=training, lambd=lamC,
                                name="up_conv5", activation="relu")
 
-    # resize to 320x320x128
+    # resize to 320x320x64
     with tf.name_scope('resize_6') as scope:
         unpool6 = tf.image.resize_images(uconv5, size=[size // 2, size // 2], method=tf.image.ResizeMethod.NEAREST_NEIGHBOR)
 
-    # 320x320x64
-    uconv5 = _conv2d_batch_norm(unpool6, 64, kernel_size=(3, 3), stride=(1, 1), training=training, lambd=lamC,
+    # 320x320x32
+    uconv5 = _conv2d_batch_norm(unpool6, 32, kernel_size=(3, 3), stride=(1, 1), training=training, lambd=lamC,
                                name="up_conv6", activation="relu")
 
-    # 320x320x364
+    # 320x320x32
     uconv6 = _conv2d_batch_norm(uconv5, 32, kernel_size=(3, 3), stride=(1, 1), training=training, lambd=lamC,
                                name="up_conv7", activation="relu")
 
-    # 640x640x32
+    # 640x640x16
     with tf.name_scope('upsample_4') as scope:
         up_conv7 = tf.layers.conv2d_transpose(
             uconv6,
@@ -817,7 +817,7 @@ with graph.as_default():
             name='upsample_4'
         )
 
-    # 640x640x16 - transpose conv to smooth out artifacts
+    # 640x640x8 - transpose conv to smooth out artifacts
     with tf.name_scope('upsample_5') as scope:
         up_conv8 = tf.layers.conv2d_transpose(
             up_conv7,
@@ -1010,7 +1010,7 @@ with tf.Session(graph=graph, config=config) as sess:
 
             # create the initializer function to initialize the weights
             # init_fn = load_weights(init_model, exclude=['bottleneck_5.1',"up_conv6", "conv_up_conv6", "bn_up_conv6", "bn_unpool5.1", "up_conv5",'bn_unpool4.1', "up_conv4", "bn_bottleneck_5.1", 'bottleneck_5.2', 'bn_bottleneck_5.2', 'bn_bottleneck_4.1', 'bottleneck_4.2', 'bn_bottleneck_4.2', 'bottleneck_4.1', 'bn_bottleneck_4.1', 'bn_unpool1.1', "up_conv3", "bn_upsample_3", "upsample_3", "up_conv6", "up_conv5", "bn_unpool4.1", 'up_conv4', 'bn_up_conv3', 'up_conv3', 'bn_upsample_2', 'upsample_2', 'bn_bottleneck_4.2', 'bottleneck_4.2', 'bn_bottleneck_4.1', 'bottleneck_4.1', 'bn_bottleneck_5.2', 'bn_bottleneck_5.1', 'bottleneck_5.2', 'bottleneck_5.1', 'bn_upsample_1', 'upsample_1'])
-            init_fn = load_weights(init_model, exclude=['conv5', 'conv5.1', "bn5", "bn5.1", "upsample_5", 'conv5.3',"bn5.3","bn_fc_fc_1","bn_fc_fc_2","fc_fc_1","fc_fc_2",'up_conv3', 'bn_up_conv3', "bn_unpool_4.1", "unpool_4.1", 'upsample_1', 'bn_upsample_1', 'up_conv1', 'bn_up_conv1', 'bottleneck_5.1', 'bn_bottleneck_5.1', 'bottleneck_5.2', 'bn_bottleneck_5.2', 'upsample_2', 'bn_upsample_2', 'up_conv2', 'bn_up_conv2', 'bottleneck_4.1', 'bn_bottleneck_4.1', 'bottleneck_4.2', 'bn_bottleneck_4.2', 'up_conv3', 'bn_up_conv3', 'up_conv4', 'bn_up_conv4', "conv_up_conv5", "bn_up_conv5", "conv_up_conv6", "bn_up_conv6", "conv_up_conv7", "bn_up_conv7", 'upsample_4', 'bn_upsample_4', "logits"])
+            init_fn = load_weights(init_model, exclude=["upsample_5", 'conv5.3',"bn5.3","bn_fc_fc_1","bn_fc_fc_2","fc_fc_1","fc_fc_2",'up_conv3', 'bn_up_conv3', "bn_unpool_4.1", "unpool_4.1", 'upsample_1', 'bn_upsample_1', 'up_conv1', 'bn_up_conv1', 'bottleneck_5.1', 'bn_bottleneck_5.1', 'bottleneck_5.2', 'bn_bottleneck_5.2', 'upsample_2', 'bn_upsample_2', 'up_conv2', 'bn_up_conv2', 'bottleneck_4.1', 'bn_bottleneck_4.1', 'bottleneck_4.2', 'bn_bottleneck_4.2', 'up_conv3', 'bn_up_conv3', 'up_conv4', 'bn_up_conv4', "conv_up_conv5", "bn_up_conv5", "conv_up_conv6", "bn_up_conv6", "conv_up_conv7", "bn_up_conv7", 'upsample_4', 'bn_upsample_4', "logits"])
 
             # init_fn = load_weights(init_model, exclude=['up_conv1', "bn_unpool1.1", "conv_fc_1", "bn_fc_1"])
 
