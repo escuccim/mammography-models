@@ -808,7 +808,7 @@ with graph.as_default():
         up_conv7 = tf.layers.conv2d_transpose(
             uconv6,
             filters=32,
-            kernel_size=(4, 4),
+            kernel_size=(6, 6),
             strides=(2, 2),
             padding='SAME',
             activation=tf.nn.relu,
