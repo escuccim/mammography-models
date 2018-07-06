@@ -716,7 +716,7 @@ with graph.as_default():
     with tf.name_scope('up_conv2') as scope:
         unpool21 = tf.layers.conv2d(
             unpool1,
-            filters=512,
+            filters=384,
             kernel_size=(3, 3),
             strides=(1, 1),
             padding='SAME',
@@ -755,7 +755,7 @@ with graph.as_default():
     with tf.name_scope('up_conv4') as scope:
         unpool4 = tf.layers.conv2d(
             unpool3,
-            filters=256,
+            filters=192,
             kernel_size=(3, 3),
             strides=(1, 1),
             padding='SAME',
