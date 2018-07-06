@@ -1136,7 +1136,7 @@ with tf.Session(graph=graph, config=config) as sess:
 
             print("Evaluating model...")
             # load the test data
-            X_cv, y_cv = load_validation_data(percentage=1, how=how, which=dataset, scale=True)
+            X_cv, y_cv = load_validation_data(percentage=1, how=how, which=dataset, scale=True, size=size)
             counter = 0
 
             # evaluate on pre-cropped images
@@ -1197,7 +1197,7 @@ with tf.Session(graph=graph, config=config) as sess:
     print("Evaluating on test data")
 
     # evaluate the test data
-    X_te, y_te = load_validation_data(how=how, data="test", which=dataset, scale=True)
+    X_te, y_te = load_validation_data(how=how, data="test", which=dataset, scale=True, size=size)
 
     test_accuracy = []
     test_recall = []

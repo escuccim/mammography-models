@@ -147,7 +147,7 @@ def read_and_decode_single_example(filenames, label_type='label_normal', normali
 
 
 ## load the test data from files
-def load_validation_data(data="validation", how="normal", which=5, percentage=1, scale=False, shuffle_data=1):
+def load_validation_data(data="validation", how="normal", which=5, percentage=1, scale=False, shuffle_data=1, size=640):
     if data == "validation":
         # load the two data files
         if which == 4:
@@ -245,6 +245,15 @@ def load_validation_data(data="validation", how="normal", which=5, percentage=1,
         y_cv[labels == 4] = 2
     elif how == "mask":
         y_cv = labels.astype(np.int32)
+
+        data_size = X_cv.shape[0]
+        if data_size != size:
+            y, x = X_cv.shape[1], X_cv.shape[2]
+            startx = x // 2 - (size // 2)
+            starty = y // 2 - (size // 2)
+
+            X_cv = X_cv[:,starty:starty + size, startx:startx + size,:]
+            y_cv = y_cv[:,starty:starty + size, startx:startx + size,:]
 
     if shuffle_data:
         # shuffle the data
