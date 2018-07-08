@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="98c4e5b0-4f90-4540-b87f-9bd6d2ddc583" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/candidate_3.6.0.05.py" beforeDir="false" afterPath="$PROJECT_DIR$/candidate_3.6.0.05.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -29,8 +28,8 @@
       <file leaf-file-name="candidate_3.6.0.05.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/candidate_3.6.0.05.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="301">
-              <caret line="824" column="29" selection-start-line="824" selection-start-column="29" selection-end-line="824" selection-end-column="29" />
+            <state relative-caret-position="73">
+              <caret line="922" column="60" selection-start-line="922" selection-start-column="60" selection-end-line="922" selection-end-column="60" />
             </state>
           </provider>
         </entry>
@@ -51,7 +50,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>conv1</find>
       <find>batch_size // 2</find>
       <find>test_merged</find>
       <find>which</find>
@@ -81,6 +79,7 @@
       <find>bn_unpool</find>
       <find>bn_unpool4.1</find>
       <find>conv5</find>
+      <find>image_rec_op</find>
     </findStrings>
     <replaceStrings>
       <replace>11_</replace>
@@ -594,13 +593,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/candidate_3.6.0.04.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1220">
-          <caret line="820" column="16" selection-start-line="820" selection-start-column="8" selection-end-line="820" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/training_utils.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="363">
@@ -611,10 +603,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/candidate_3.6.0.04.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-899">
+          <caret line="820" column="16" selection-start-line="820" selection-start-column="8" selection-end-line="820" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/candidate_3.6.0.05.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="301">
-          <caret line="824" column="29" selection-start-line="824" selection-start-column="29" selection-end-line="824" selection-end-column="29" />
+        <state relative-caret-position="73">
+          <caret line="922" column="60" selection-start-line="922" selection-start-column="60" selection-end-line="922" selection-end-column="60" />
         </state>
       </provider>
     </entry>

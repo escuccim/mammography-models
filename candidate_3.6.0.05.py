@@ -919,10 +919,10 @@ with graph.as_default():
         name="image_accuracy",
     )
 
-    image_recall, image_rec_op = tf.metrics.recall(labels=image_truth, predictions=image_predictions,
-                                       updates_collections=[tf.GraphKeys.UPDATE_OPS, 'metrics_ops'], name="image_recall")
-    image_precision, image_prec_op = tf.metrics.precision(labels=image_truth, predictions=image_predictions,
-                                              updates_collections=[tf.GraphKeys.UPDATE_OPS, 'metrics_ops'], name="image_precision")
+    image_recall, image_rec_op = tf.metrics.recall(labels=image_truth, predictions=image_predictions, name="image_recall",
+                                       updates_collections=['metrics_ops'])
+    image_precision, image_prec_op = tf.metrics.precision(labels=image_truth, predictions=image_predictions, name="image_precision",
+                                      updates_collections=['metrics_ops'])
 
 
     tf.summary.scalar('recall_1', recall, collections=["summaries"])
