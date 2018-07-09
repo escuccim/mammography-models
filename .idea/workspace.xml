@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="98c4e5b0-4f90-4540-b87f-9bd6d2ddc583" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/candidate_3.6.0.05.py" beforeDir="false" afterPath="$PROJECT_DIR$/candidate_3.6.0.05.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/candidate_3.6.1.05.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -25,11 +26,20 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="candidate_3.6.0.05.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="candidate_3.6.0.05.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/candidate_3.6.0.05.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="73">
+            <state relative-caret-position="12332">
               <caret line="922" column="60" selection-start-line="922" selection-start-column="60" selection-end-line="922" selection-end-column="60" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="candidate_3.6.1.05.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/candidate_3.6.1.05.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="204">
+              <caret line="119" column="26" selection-start-line="119" selection-start-column="26" selection-end-line="119" selection-end-column="26" />
             </state>
           </provider>
         </entry>
@@ -97,7 +107,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/candidate_1.0.0.38.py" />
         <option value="$PROJECT_DIR$/candidate_1.1.1.01.py" />
         <option value="$PROJECT_DIR$/inception_utils.py" />
         <option value="$PROJECT_DIR$/candidate_1.1.0.01.py" />
@@ -148,6 +157,7 @@
         <option value="$PROJECT_DIR$/candidate_3.6.0.04.py" />
         <option value="$PROJECT_DIR$/training_utils.py" />
         <option value="$PROJECT_DIR$/candidate_3.6.0.05.py" />
+        <option value="$PROJECT_DIR$/candidate_3.6.1.05.py" />
       </list>
     </option>
   </component>
@@ -263,13 +273,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/old_models/model_1.0.1.32.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="27720">
-          <caret line="935" column="72" selection-start-line="935" selection-start-column="72" selection-end-line="935" selection-end-column="72" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/old_models/model_1.0.2.02.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-2673" />
@@ -612,8 +615,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/candidate_3.6.0.05.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="73">
+        <state relative-caret-position="12332">
           <caret line="922" column="60" selection-start-line="922" selection-start-column="60" selection-end-line="922" selection-end-column="60" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/candidate_3.6.1.05.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="119" column="26" selection-start-line="119" selection-start-column="26" selection-end-line="119" selection-end-column="26" />
         </state>
       </provider>
     </entry>
