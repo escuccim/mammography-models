@@ -234,7 +234,6 @@ with graph.as_default():
             filters=32,
             kernel_size=(3, 3),
             strides=(2, 2),
-            dilation_rate=(2, 2),
             padding='SAME',
             activation=None,
             kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=100),
