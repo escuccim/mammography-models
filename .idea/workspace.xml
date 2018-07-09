@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="98c4e5b0-4f90-4540-b87f-9bd6d2ddc583" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/candidate_3.6.2.05.py" beforeDir="false" afterPath="$PROJECT_DIR$/candidate_3.6.2.05.py" afterDir="false" />
-    </list>
+    <list default="true" id="98c4e5b0-4f90-4540-b87f-9bd6d2ddc583" name="Default" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -37,8 +35,8 @@
       <file leaf-file-name="candidate_3.6.2.05.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/candidate_3.6.2.05.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="408">
-              <caret line="206" column="87" selection-start-line="206" selection-start-column="87" selection-end-line="206" selection-end-column="87" />
+            <state relative-caret-position="357">
+              <caret line="119" column="26" selection-start-line="119" selection-start-column="26" selection-end-line="119" selection-end-column="26" />
             </state>
           </provider>
         </entry>
@@ -623,8 +621,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/candidate_3.6.2.05.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="408">
-          <caret line="206" column="87" selection-start-line="206" selection-start-column="87" selection-end-line="206" selection-end-column="87" />
+        <state relative-caret-position="357">
+          <caret line="119" column="26" selection-start-line="119" selection-start-column="26" selection-end-line="119" selection-end-column="26" />
         </state>
       </provider>
     </entry>
