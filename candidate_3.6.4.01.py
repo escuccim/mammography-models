@@ -947,17 +947,17 @@ with graph.as_default():
         name="image_accuracy",
     )
 
-    # image_recall, image_rec_op = tf.metrics.recall(labels=image_truth, predictions=image_predictions,
-    #                                                name="image_recall",
-    #                                                updates_collections=['metrics_ops'])
-    # image_precision, image_prec_op = tf.metrics.precision(labels=image_truth, predictions=image_predictions,
-    #                                                       name="image_precision",
-    #                                                       updates_collections=['metrics_ops'])
+    image_recall, image_rec_op = tf.metrics.recall(labels=image_truth, predictions=image_predictions,
+                                                   name="image_recall",
+                                                   updates_collections=['extra_metrics_ops'])
+    image_precision, image_prec_op = tf.metrics.precision(labels=image_truth, predictions=image_predictions,
+                                                          name="image_precision",
+                                                          updates_collections=['extra_metrics_ops'])
 
     tf.summary.scalar('recall_1', recall, collections=["summaries"])
-    # tf.summary.scalar('recall_per_image', image_recall, collections=["summaries"])
+    tf.summary.scalar('recall_per_image', image_recall, collections=["extra_summaries"])
     tf.summary.scalar('precision_1', precision, collections=["summaries"])
-    # tf.summary.scalar('precision_per_image', image_precision, collections=["summaries"])
+    tf.summary.scalar('precision_per_image', image_precision, collections=["extra_summaries"])
     tf.summary.scalar('f1_score', f1_score, collections=["summaries"])
 
     # Create summary hooks
