@@ -207,7 +207,7 @@ with graph.as_default():
         with tf.device('/cpu:0'):
             if dataset == 100:
                 # decode the image
-                image, label = _read_images("./data/train_images/", size, scale_by=0.5, distort=False,
+                image, label = _read_images("./data/train_images/", size, scale_by=0.6, distort=False,
                                             standardize=normalize)
             else:
                 image, label = read_and_decode_single_example(train_files, label_type=how, normalize=False,
