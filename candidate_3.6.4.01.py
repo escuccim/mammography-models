@@ -789,7 +789,7 @@ with graph.as_default():
     # convolve resized image - 80x80x128
     with tf.name_scope('up_conv4') as scope:
         unpool4 = tf.layers.conv2d(
-            unpool3,
+            unpool21,
             filters=128,
             kernel_size=(3, 3),
             strides=(1, 1),
@@ -822,7 +822,7 @@ with graph.as_default():
                                          method=tf.image.ResizeMethod.NEAREST_NEIGHBOR)
 
     # 320x320x32
-    uconv5 = _conv2d_batch_norm(unpool6, 32, kernel_size=(3, 3), stride=(1, 1), training=training, lambd=lamC,
+    uconv5 = _conv2d_batch_norm(unpool6, 64, kernel_size=(3, 3), stride=(1, 1), training=training, lambd=lamC,
                                 name="up_conv6", activation="relu")
 
     # 320x320x32
