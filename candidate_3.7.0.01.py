@@ -86,7 +86,7 @@ else:
     starting_rate = 0.0001
 
 # start with a slightly lower learning rate since we are re-training later layers
-starting_rate = 0.0007
+# starting_rate = 0.0007
 
 # learning rate decay variables
 steps_per_epoch = int(total_records / batch_size)
