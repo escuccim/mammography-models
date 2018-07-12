@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="98c4e5b0-4f90-4540-b87f-9bd6d2ddc583" name="Default" comment="" />
+    <list default="true" id="98c4e5b0-4f90-4540-b87f-9bd6d2ddc583" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/candidate_3.7.0.01.py" beforeDir="false" afterPath="$PROJECT_DIR$/candidate_3.7.0.01.py" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -32,11 +34,20 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="candidate_3.7.0.01.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="candidate_3.7.0.01.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/candidate_3.7.0.01.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="268">
-              <caret line="89" lean-forward="true" selection-start-line="89" selection-end-line="89" />
+            <state relative-caret-position="255">
+              <caret line="24" column="44" selection-start-line="24" selection-start-column="43" selection-end-line="24" selection-end-column="44" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="candidate_3.8.0.01.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/candidate_3.8.0.01.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="510">
+              <caret line="906" column="31" lean-forward="true" selection-start-line="906" selection-start-column="31" selection-end-line="906" selection-end-column="31" />
             </state>
           </provider>
         </entry>
@@ -99,7 +110,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/candidate_1.0.0.42.py" />
         <option value="$PROJECT_DIR$/vgg_16.py" />
         <option value="$PROJECT_DIR$/model_1.0.3.02.py" />
         <option value="$PROJECT_DIR$/candidate_1.0.0.45.py" />
@@ -150,6 +160,7 @@
         <option value="$PROJECT_DIR$/candidate_3.6.2.05.py" />
         <option value="$PROJECT_DIR$/candidate_3.6.4.01.py" />
         <option value="$PROJECT_DIR$/candidate_3.7.0.01.py" />
+        <option value="$PROJECT_DIR$/candidate_3.8.0.01.py" />
       </list>
     </option>
   </component>
@@ -265,13 +276,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/old_models/model_1.0.0.30.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="25538">
-          <caret line="862" column="72" selection-start-line="862" selection-start-column="72" selection-end-line="862" selection-end-column="72" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/old_models/model_1.0.3.02.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-10428">
@@ -621,8 +625,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/candidate_3.7.0.01.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="268">
-          <caret line="89" lean-forward="true" selection-start-line="89" selection-end-line="89" />
+        <state relative-caret-position="255">
+          <caret line="24" column="44" selection-start-line="24" selection-start-column="43" selection-end-line="24" selection-end-column="44" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/candidate_3.8.0.01.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="510">
+          <caret line="906" column="31" lean-forward="true" selection-start-line="906" selection-start-column="31" selection-end-line="906" selection-end-column="31" />
         </state>
       </provider>
     </entry>

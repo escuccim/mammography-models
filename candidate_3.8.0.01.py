@@ -190,6 +190,7 @@ model_name = "model_s3.7.0.01" + model_label + "." + str(dataset) + str(version)
 # 3.6.1.05 - scaling input to half original size instead of 2/3, maybe will speed up training and/or improve results?
 # 3.6.4.01 - adding extra dilated convolution and super simplifying upsampling section
 # 3.7.0.01 - some minor tweaks to graph, then retraining from scratch
+# 3.8.0.01 - increasing size of model, it may be too small?
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -232,7 +233,7 @@ with graph.as_default():
     with tf.name_scope('conv1') as scope:
         conv1 = tf.layers.conv2d(
             X_adj,
-            filters=32,
+            filters=48,
             kernel_size=(3, 3),
             strides=(2, 2),
             padding='SAME',
@@ -265,7 +266,7 @@ with graph.as_default():
     with tf.name_scope('conv1.1') as scope:
         conv11 = tf.layers.conv2d(
             conv1_bn_relu,
-            filters=32,
+            filters=48,
             kernel_size=(3, 3),
             strides=(1, 1),
             padding='SAME',
@@ -298,7 +299,7 @@ with graph.as_default():
     with tf.name_scope('conv1.2') as scope:
         conv12 = tf.layers.conv2d(
             conv11,
-            filters=32,
+            filters=48,
             kernel_size=(3, 3),
             strides=(1, 1),
             padding='SAME',
@@ -746,11 +747,11 @@ with graph.as_default():
         # apply relu
         conv51 = tf.nn.relu(conv51, name='relu5.3')
 
-    # convolution w/ dilation 2 - 20x20x384
+    # convolution w/ dilation 2 - 20x20x512
     with tf.name_scope('conv5.4') as scope:
         conv51 = tf.layers.conv2d(
             conv51,
-            filters=384,
+            filters=512,
             kernel_size=(3, 3),
             strides=(1, 1),
             padding='SAME',
@@ -780,17 +781,17 @@ with graph.as_default():
         # apply relu
         conv51 = tf.nn.relu(conv51, name='relu5.4')
 
-    # resize images - 80x80x384
+    # resize images - 80x80x512
     with tf.name_scope('resize_1') as scope:
         new_size = int(size // 8)
         unpool1 = tf.image.resize_images(conv51, size=[new_size, new_size],
                                          method=tf.image.ResizeMethod.NEAREST_NEIGHBOR)
 
-    # 80x80x256
+    # 80x80x384
     with tf.name_scope('up_conv2') as scope:
         unpool21 = tf.layers.conv2d(
             unpool1,
-            filters=256,
+            filters=384,
             kernel_size=(3, 3),
             strides=(1, 1),
             padding='SAME',
@@ -819,11 +820,11 @@ with graph.as_default():
         # activation
         unpool21 = tf.nn.relu(unpool21, name="up_conv2_relu")
 
-    # convolve resized image - 80x80x128
+    # convolve resized image - 80x80x256
     with tf.name_scope('up_conv4') as scope:
         unpool4 = tf.layers.conv2d(
             unpool21,
-            filters=128,
+            filters=256,
             kernel_size=(3, 3),
             strides=(1, 1),
             padding='SAME',
@@ -849,25 +850,25 @@ with graph.as_default():
             name='bn_up_conv4'
         )
 
-    # resize to 160x160x128
+    # resize to 160x160x256
     with tf.name_scope('resize_6') as scope:
         unpool6 = tf.image.resize_images(unpool4, size=[size // 4, size // 4],
                                          method=tf.image.ResizeMethod.NEAREST_NEIGHBOR)
 
-    # 160x160x64
-    uconv5 = _conv2d_batch_norm(unpool6, 64, kernel_size=(3, 3), stride=(1, 1), training=training, lambd=lamC,
+    # 160x160x128
+    uconv5 = _conv2d_batch_norm(unpool6, 128, kernel_size=(3, 3), stride=(1, 1), training=training, lambd=lamC,
                                 name="up_conv6", activation="relu")
 
-    # 160x160x32
-    uconv6 = _conv2d_batch_norm(uconv5, 32, kernel_size=(3, 3), stride=(1, 1), training=training, lambd=lamC,
+    # 160x160x128
+    uconv6 = _conv2d_batch_norm(uconv5, 128, kernel_size=(3, 3), stride=(1, 1), training=training, lambd=lamC,
                                 name="up_conv7", activation="relu")
 
-    # upsample - 320x320x16
+    # upsample - 320x320x64
     with tf.name_scope('upsample_4') as scope:
         up_conv7 = tf.layers.conv2d_transpose(
             uconv6,
-            filters=16,
-            kernel_size=(6, 6),
+            filters=64,
+            kernel_size=(4, 4),
             strides=(2, 2),
             padding='SAME',
             activation=tf.nn.relu,
@@ -876,11 +877,15 @@ with graph.as_default():
             name='upsample_4'
         )
 
-    # 640x640x8 - upsample
+    # 320x320x64
+    uconv8 = _conv2d_batch_norm(up_conv7, 64, kernel_size=(3, 3), stride=(1, 1), training=training, lambd=lamC,
+                                name="up_conv8", activation="relu")
+
+    # 640x640x32 - upsample
     with tf.name_scope('upsample_5') as scope:
         up_conv8 = tf.layers.conv2d_transpose(
-            up_conv7,
-            filters=8,
+            uconv8,
+            filters=32,
             kernel_size=(4, 4),
             strides=(2, 2),
             padding='SAME',
@@ -890,12 +895,16 @@ with graph.as_default():
             name='upsample_5'
         )
 
+    # 640x640x32
+    uconv9 = _conv2d_batch_norm(up_conv8, 32, kernel_size=(3, 3), stride=(1, 1), training=training, lambd=lamC,
+                                name="up_conv9", activation="relu")
+
     # logits - 640x640x2
     with tf.name_scope('logits') as scope:
         logits = tf.layers.conv2d(
-            up_conv8,
+            uconv9,
             filters=2,
-            kernel_size=(3, 3),
+            kernel_size=(1, 1),
             strides=(1, 1),
             padding='SAME',
             activation=None,
