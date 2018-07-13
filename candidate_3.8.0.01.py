@@ -896,15 +896,15 @@ with graph.as_default():
         )
 
     # 640x640x32
-    uconv9 = _conv2d_batch_norm(up_conv8, 32, kernel_size=(3, 3), stride=(1, 1), training=training, lambd=lamC,
-                                name="up_conv9", activation="relu")
+    # uconv9 = _conv2d_batch_norm(up_conv8, 32, kernel_size=(3, 3), stride=(1, 1), training=training, lambd=lamC,
+    #                             name="up_conv9", activation="relu")
 
     # logits - 640x640x2
     with tf.name_scope('logits') as scope:
         logits = tf.layers.conv2d(
-            uconv9,
+            up_conv8,
             filters=2,
-            kernel_size=(1, 1),
+            kernel_size=(3, 3),
             strides=(1, 1),
             padding='SAME',
             activation=None,
