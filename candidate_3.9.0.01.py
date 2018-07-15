@@ -949,7 +949,7 @@ with graph.as_default():
 
     # resize the logits
     with tf.name_scope('resize_11') as scope:
-        logits = tf.image.resize_images(unpool4, size=[size, size],
+        logits = tf.image.resize_images(logits, size=[size, size],
                                          method=tf.image.ResizeMethod.NEAREST_NEIGHBOR)
 
     # softmax the logits and take the last dimension
