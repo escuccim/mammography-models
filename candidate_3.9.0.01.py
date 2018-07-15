@@ -598,6 +598,9 @@ with graph.as_default():
             name='bn4.2'
         )
 
+        # residual connection
+        conv41 = conv41 + conv4
+
         # apply relu
         conv41 = tf.nn.relu(conv41, name='relu4.2')
 
@@ -678,12 +681,12 @@ with graph.as_default():
         )
 
         # apply relu
-        conv5 = tf.nn.relu(conv5, name='relu5.1')
+        conv5_relu = tf.nn.relu(conv5, name='relu5.1')
 
     # convolution w/ dilation 2 - 20x20x512
     with tf.name_scope('conv5.2') as scope:
         conv51 = tf.layers.conv2d(
-            conv5,
+            conv5_relu,
             filters=512,
             kernel_size=(3, 3),
             strides=(1, 1),
@@ -778,6 +781,9 @@ with graph.as_default():
             fused=True,
             name='bn5.4'
         )
+
+        # residual connection
+        conv51 = conv51 + conv5
 
         # apply relu
         conv51 = tf.nn.relu(conv51, name='relu5.4')
