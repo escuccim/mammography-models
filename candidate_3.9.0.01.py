@@ -936,7 +936,7 @@ with graph.as_default():
     # logits - 32x320x2
     with tf.name_scope('logits') as scope:
         logits = tf.layers.conv2d(
-            up_conv8,
+            uconv9,
             filters=2,
             kernel_size=(1, 1),
             strides=(1, 1),
