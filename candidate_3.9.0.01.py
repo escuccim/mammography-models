@@ -782,44 +782,11 @@ with graph.as_default():
         # apply relu
         conv51 = tf.nn.relu(conv51, name='relu5.4')
 
-    # "fully connected" layer - 20x20x1024
-    with tf.name_scope('fc_1') as scope:
-        fc1 = tf.layers.conv2d(
-            conv51,
-            filters=768,
-            kernel_size=(3, 3),
-            strides=(1, 1),
-            padding='SAME',
-            activation=None,
-            kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=11932),
-            kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
-            name='fc_1'
-        )
-
-        fc1 = tf.layers.batch_normalization(
-            fc1,
-            axis=-1,
-            momentum=0.99,
-            epsilon=epsilon,
-            center=True,
-            scale=True,
-            beta_initializer=tf.zeros_initializer(),
-            gamma_initializer=tf.ones_initializer(),
-            moving_mean_initializer=tf.zeros_initializer(),
-            moving_variance_initializer=tf.ones_initializer(),
-            training=training,
-            fused=True,
-            name='bn_fc_1'
-        )
-
-        # apply relu
-        fc1 = tf.nn.relu(fc1, name='relu_fc_1')
-
     # "fully connected" layer - 20x20x512
     with tf.name_scope('fc_2') as scope:
         fc1 = tf.layers.conv2d(
-            fc1,
-            filters=512,
+            conv51,
+            filters=768,
             kernel_size=(1, 1),
             strides=(1, 1),
             padding='SAME',
@@ -848,17 +815,17 @@ with graph.as_default():
         # apply relu
         fc1 = tf.nn.relu(fc1, name='relu_fc_2')
 
-    # resize images - 80x80x512
+    # resize images - 80x80x768
     with tf.name_scope('resize_1') as scope:
         new_size = int(size // 8)
         unpool1 = tf.image.resize_images(fc1, size=[new_size, new_size],
                                          method=tf.image.ResizeMethod.NEAREST_NEIGHBOR)
 
-    # 80x80x256
+    # 80x80x512
     with tf.name_scope('up_conv2') as scope:
         unpool21 = tf.layers.conv2d(
             unpool1,
-            filters=256,
+            filters=512,
             kernel_size=(3, 3),
             strides=(1, 1),
             padding='SAME',
