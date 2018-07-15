@@ -715,12 +715,12 @@ with graph.as_default():
         )
 
         # apply relu
-        conv51 = tf.nn.relu(conv51, name='relu5.2')
+        conv51_relu = tf.nn.relu(conv51, name='relu5.2')
 
     # convolution w/ dilation 2 - 20x20x512
     with tf.name_scope('conv5.3') as scope:
-        conv51 = tf.layers.conv2d(
-            conv51,
+        conv53 = tf.layers.conv2d(
+            conv51_relu,
             filters=512,
             kernel_size=(3, 3),
             strides=(1, 1),
@@ -732,8 +732,8 @@ with graph.as_default():
             name='conv5.3'
         )
 
-        conv51 = tf.layers.batch_normalization(
-            conv51,
+        conv53 = tf.layers.batch_normalization(
+            conv53,
             axis=-1,
             momentum=0.99,
             epsilon=epsilon,
@@ -749,12 +749,12 @@ with graph.as_default():
         )
 
         # apply relu
-        conv51 = tf.nn.relu(conv51, name='relu5.3')
+        conv53 = tf.nn.relu(conv53, name='relu5.3')
 
     # convolution w/ dilation 2 - 20x20x512
     with tf.name_scope('conv5.4') as scope:
-        conv51 = tf.layers.conv2d(
-            conv51,
+        conv53 = tf.layers.conv2d(
+            conv53,
             filters=512,
             kernel_size=(3, 3),
             strides=(1, 1),
@@ -766,8 +766,8 @@ with graph.as_default():
             name='conv5.4'
         )
 
-        conv51 = tf.layers.batch_normalization(
-            conv51,
+        conv53 = tf.layers.batch_normalization(
+            conv53,
             axis=-1,
             momentum=0.99,
             epsilon=epsilon,
@@ -783,15 +783,15 @@ with graph.as_default():
         )
 
         # residual connection
-        conv51 = conv51 + conv5
+        conv53 = conv53 + conv51
 
         # apply relu
-        conv51 = tf.nn.relu(conv51, name='relu5.4')
+        conv53 = tf.nn.relu(conv53, name='relu5.4')
 
     # "fully connected" layer - 20x20x512
     with tf.name_scope('fc_2') as scope:
         fc1 = tf.layers.conv2d(
-            conv51,
+            conv53,
             filters=768,
             kernel_size=(1, 1),
             strides=(1, 1),
