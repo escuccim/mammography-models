@@ -618,7 +618,7 @@ with graph.as_default():
     with tf.name_scope('conv5') as scope:
         conv5 = tf.layers.conv2d(
             pool4,
-            filters=512,
+            filters=384,
             kernel_size=(3, 3),
             strides=(1, 1),
             padding='SAME',
@@ -651,7 +651,7 @@ with graph.as_default():
     with tf.name_scope('conv5.1') as scope:
         conv5 = tf.layers.conv2d(
             conv5_bn_relu,
-            filters=512,
+            filters=384,
             kernel_size=(3, 3),
             strides=(1, 1),
             padding='SAME',
@@ -786,7 +786,7 @@ with graph.as_default():
     with tf.name_scope('fc_1') as scope:
         fc1 = tf.layers.conv2d(
             conv51,
-            filters=1024,
+            filters=768,
             kernel_size=(3, 3),
             strides=(1, 1),
             padding='SAME',
