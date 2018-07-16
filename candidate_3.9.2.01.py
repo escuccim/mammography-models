@@ -959,7 +959,7 @@ with graph.as_default():
     train_op_1 = optimizer.minimize(loss, global_step=global_step)
 
     # if we reshape the predictions it won't work with images of other sizes
-    predictions = logits
+    predictions = tf.round(logits)
 
     # squash the predictions into a per image prediction - negative images will have a max of 0
     pred_sum = tf.reduce_sum(predictions, axis=[1, 2])
@@ -981,6 +981,7 @@ with graph.as_default():
     recall, rec_op = tf.metrics.recall(labels=y_adj, predictions=predictions,
                                        updates_collections=[tf.GraphKeys.UPDATE_OPS, 'metrics_ops'],
                                        name="pixel_recall")
+
     precision, prec_op = tf.metrics.precision(labels=y_adj, predictions=predictions,
                                               updates_collections=[tf.GraphKeys.UPDATE_OPS, 'metrics_ops'],
                                               name="pixel_precision")
