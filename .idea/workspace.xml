@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="98c4e5b0-4f90-4540-b87f-9bd6d2ddc583" name="Default" comment="" />
+    <list default="true" id="98c4e5b0-4f90-4540-b87f-9bd6d2ddc583" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -41,11 +43,20 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="candidate_3.9.1.01.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="candidate_3.9.1.01.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/candidate_3.9.1.01.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="438">
-              <caret line="906" column="29" selection-start-line="906" selection-start-column="29" selection-end-line="906" selection-end-column="29" />
+            <state relative-caret-position="999">
+              <caret line="681" column="9" selection-start-line="681" selection-start-column="9" selection-end-line="681" selection-end-column="9" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="candidate_3.9.2.01.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/candidate_3.9.2.01.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="279">
+              <caret line="922" column="22" selection-start-line="922" selection-start-column="22" selection-end-line="922" selection-end-column="22" />
             </state>
           </provider>
         </entry>
@@ -108,7 +119,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/candidate_1.0.0.45.py" />
         <option value="$PROJECT_DIR$/candidate_1.0.0.28.2.py" />
         <option value="$PROJECT_DIR$/model_1.0.0.29.py" />
         <option value="$PROJECT_DIR$/candidate_1.0.3.02.py" />
@@ -159,6 +169,7 @@
         <option value="$PROJECT_DIR$/candidate_3.8.0.01.py" />
         <option value="$PROJECT_DIR$/candidate_3.9.0.01.py" />
         <option value="$PROJECT_DIR$/candidate_3.9.1.01.py" />
+        <option value="$PROJECT_DIR$/candidate_3.9.2.01.py" />
       </list>
     </option>
   </component>
@@ -274,13 +285,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/candidate_1.0.0.29.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="18311">
-          <caret line="654" column="29" selection-start-line="654" selection-start-column="29" selection-end-line="654" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/old_models/vgg_16.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="528">
@@ -630,8 +634,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/candidate_3.9.1.01.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="438">
-          <caret line="906" column="29" selection-start-line="906" selection-start-column="29" selection-end-line="906" selection-end-column="29" />
+        <state relative-caret-position="999">
+          <caret line="681" column="9" selection-start-line="681" selection-start-column="9" selection-end-line="681" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/candidate_3.9.2.01.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="279">
+          <caret line="922" column="22" selection-start-line="922" selection-start-column="22" selection-end-line="922" selection-end-column="22" />
         </state>
       </provider>
     </entry>
