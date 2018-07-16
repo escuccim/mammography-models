@@ -959,7 +959,7 @@ with graph.as_default():
     train_op_1 = optimizer.minimize(loss, global_step=global_step)
 
     # if we reshape the predictions it won't work with images of other sizes
-    predictions = tf.argmax(logits, axis=-1, output_type=tf.int32)
+    predictions = logits
 
     # squash the predictions into a per image prediction - negative images will have a max of 0
     pred_sum = tf.reduce_sum(predictions, axis=[1, 2])
