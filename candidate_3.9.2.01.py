@@ -933,7 +933,7 @@ with graph.as_default():
     weights = tf.multiply(tf.cast(weight, tf.float32), tf.cast(tf.greater(y_adj, 0), tf.float32)) + 1
 
     mean_ce = tf.reduce_mean(
-        tf.losses.sigmoid_cross_entropy(labels=y_adj, logits=logits, weights=weights))
+        tf.losses.sigmoid_cross_entropy(multi_class_labels=y_adj, logits=logits, weights=weights))
 
     # Add in l2 loss
     loss = mean_ce + tf.losses.get_regularization_loss()
