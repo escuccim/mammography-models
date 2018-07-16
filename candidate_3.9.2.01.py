@@ -908,7 +908,7 @@ with graph.as_default():
             kernel_size=(3, 3),
             strides=(1, 1),
             padding='SAME',
-            activation=tf.sigmoid,
+            activation=None,
             kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=117933),
             kernel_regularizer=None,
             name='logits'
@@ -920,7 +920,7 @@ with graph.as_default():
                                          method=tf.image.ResizeMethod.NEAREST_NEIGHBOR)
 
     # softmax the logits and take the last dimension
-    logits_sm = logits
+    logits_sm = tf.sigmoid(logits)
 
     with tf.variable_scope('conv1', reuse=True):
         conv_kernels1 = tf.get_variable('kernel')
@@ -933,7 +933,7 @@ with graph.as_default():
     weights = tf.multiply(tf.cast(weight, tf.float32), tf.cast(tf.greater(y_adj, 0), tf.float32)) + 1
 
     mean_ce = tf.reduce_mean(
-        tf.losses.sigmoid_cross_entropy(multi_class_labels=y_adj, logits=logits, weights=weights))
+        tf.losses.sigmoid_cross_entropy(multi_class_labels=y_adj, logits=logits_sm, weights=weights))
 
     # Add in l2 loss
     loss = mean_ce + tf.losses.get_regularization_loss()
@@ -959,7 +959,7 @@ with graph.as_default():
     train_op_1 = optimizer.minimize(loss, global_step=global_step)
 
     # if we reshape the predictions it won't work with images of other sizes
-    predictions = tf.round(logits)
+    predictions = tf.round(logits_sm)
 
     # squash the predictions into a per image prediction - negative images will have a max of 0
     pred_sum = tf.reduce_sum(predictions, axis=[1, 2])
