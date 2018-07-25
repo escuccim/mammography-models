@@ -891,12 +891,12 @@ with graph.as_default():
         )
 
         # apply relu
-        conv5_relu = tf.nn.relu(conv5, name='relu5.2')
+        conv51_relu = tf.nn.relu(conv51, name='relu5.2')
 
     # convolution w/ dilation 2 - 20x20x512
     with tf.name_scope('conv5.3') as scope:
         conv51 = tf.layers.conv2d(
-            conv5_relu,
+            conv51_relu,
             filters=512,
             kernel_size=(3, 3),
             strides=(1, 1),
