@@ -862,7 +862,7 @@ with graph.as_default():
     # 20x20x384
     with tf.name_scope('conv5.2') as scope:
         conv51 = tf.layers.conv2d(
-            conv5_bn_relu,
+            conv5_relu,
             filters=512,
             kernel_size=(3, 3),
             strides=(1, 1),
