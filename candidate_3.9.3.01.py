@@ -894,7 +894,7 @@ with graph.as_default():
         conv5_relu = tf.nn.relu(conv5, name='relu5.2')
 
     # convolution w/ dilation 2 - 20x20x512
-    with tf.name_scope('conv5.2') as scope:
+    with tf.name_scope('conv5.3') as scope:
         conv51 = tf.layers.conv2d(
             conv5_relu,
             filters=512,
@@ -905,7 +905,7 @@ with graph.as_default():
             activation=None,
             kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=11931),
             kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
-            name='conv5.2'
+            name='conv5.3'
         )
 
         conv51 = tf.layers.batch_normalization(
@@ -921,7 +921,7 @@ with graph.as_default():
             moving_variance_initializer=tf.ones_initializer(),
             training=training,
             fused=True,
-            name='bn5.2'
+            name='bn5.3'
         )
 
         # skip connection
