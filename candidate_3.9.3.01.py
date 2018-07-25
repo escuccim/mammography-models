@@ -120,7 +120,7 @@ print("Image crop size:", size)
 ## Build the graph
 graph = tf.Graph()
 
-model_name = "model_s3.9.3.01" + model_label + "." + str(dataset) + str(version)
+model_name = "model_s3.9.3.02" + model_label + "." + str(dataset) + str(version)
 ## Change Log
 # 0.0.0.4 - increase pool3 to 3x3 with stride 3
 # 0.0.0.6 - reduce pool 3 stride back to 2
@@ -196,6 +196,7 @@ model_name = "model_s3.9.3.01" + model_label + "." + str(dataset) + str(version)
 # 3.9.2.01 - changing last layer to sigmoid instead of logits
 # 3.9.2.02 - adding some residual connections
 # 3.9.3.01 - downsizing image more initially to add more layers, removed pool4, used dilated convolutions afterwards
+# 3.9.3.02 - second conv layer was improperly strided
 
 with graph.as_default():
     training = tf.placeholder(dtype=tf.bool, name="is_training")
@@ -273,7 +274,6 @@ with graph.as_default():
             conv1_bn_relu,
             filters=32,
             kernel_size=(3, 3),
-            strides=(2, 2),
             padding='SAME',
             activation=None,
             kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=100),
