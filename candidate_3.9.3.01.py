@@ -1133,7 +1133,7 @@ with graph.as_default():
     # softmax the logits and take the last dimension
     logits_sm = tf.sigmoid(logits)
 
-    with tf.variable_scope('conv0,1', reuse=True):
+    with tf.variable_scope('conv0.1', reuse=True):
         conv_kernels1 = tf.get_variable('kernel')
         kernel_transposed = tf.transpose(conv_kernels1, [3, 0, 1, 2])
 
