@@ -238,7 +238,7 @@ with graph.as_default():
 
     # Convolutional layer 1 - 320x320x32
     with tf.name_scope('conv0.1') as scope:
-        conv1 = tf.layers.conv2d(
+        conv0 = tf.layers.conv2d(
             X_adj,
             filters=32,
             kernel_size=(3, 3),
@@ -250,8 +250,8 @@ with graph.as_default():
             name='conv0.1'
         )
 
-        conv1 = tf.layers.batch_normalization(
-            conv1,
+        conv0 = tf.layers.batch_normalization(
+            conv0,
             axis=-1,
             momentum=0.99,
             epsilon=epsilon,
@@ -267,7 +267,7 @@ with graph.as_default():
         )
 
         # apply relu
-        conv1_bn_relu = tf.nn.relu(conv1, name='relu0.1')
+        conv1_bn_relu = tf.nn.relu(conv0, name='relu0.1')
 
     # 320x320x32
     with tf.name_scope('conv0.2') as scope:
@@ -329,6 +329,9 @@ with graph.as_default():
             fused=True,
             name='bn0.3'
         )
+
+        # skip connection
+        conv1 = conv1 + conv0
 
         # apply relu
         conv1_bn_relu = tf.nn.relu(conv1, name='relu0.3')
@@ -397,12 +400,12 @@ with graph.as_default():
         )
 
         # apply relu
-        conv11 = tf.nn.relu(conv11, name='relu1.1')
+        conv11_relu = tf.nn.relu(conv11, name='relu1.1')
 
     # 160x160x48
     with tf.name_scope('conv1.2') as scope:
         conv12 = tf.layers.conv2d(
-            conv11,
+            conv11_relu,
             filters=48,
             kernel_size=(3, 3),
             strides=(1, 1),
@@ -461,6 +464,9 @@ with graph.as_default():
             fused=True,
             name='bn1.3'
         )
+
+        # skip connection
+        conv12 = conv12 + conv11
 
         # apply relu
         conv12_relu = tf.nn.relu(conv12, name='relu1.1')
