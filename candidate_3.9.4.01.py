@@ -27,7 +27,7 @@ parser.add_argument("-w", "--weight", help="weight to give to positive examples 
                     type=float)
 parser.add_argument("-v", "--version", help="version or run number to assign to model name", default="")
 parser.add_argument("--distort", help="use online data augmentation", default=False, const=True, nargs="?")
-parser.add_argument("--size", help="size of image to crop (default 640)", default=480, type=int)
+parser.add_argument("--size", help="size of image to crop (default 640)", default=640, type=int)
 args = parser.parse_args()
 
 epochs = args.epochs
