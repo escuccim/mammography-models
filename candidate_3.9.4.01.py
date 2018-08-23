@@ -1145,6 +1145,13 @@ with graph.as_default():
     # Add in l2 loss
     loss = mean_ce + tf.losses.get_regularization_loss()
 
+    # if we reshape the predictions it won't work with images of other sizes
+    predictions = tf.round(logits_sm)
+
+    # calculate IOU
+    iou_score, iou_op = tf.metrics.mean_iou(labels=y_adj, predictions=predictions, num_classes=2,
+                                            updates_collections=[tf.GraphKeys.UPDATE_OPS, 'metrics_ops'],
+                                            name="iou")
     # Adam optimizer
     optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate)
 
@@ -1164,9 +1171,6 @@ with graph.as_default():
         # train_op_2 = optimizer.minimize(loss, global_step=global_step, var_list=up_conv5_vars)
         train_op_2 = optimizer.minimize(loss, global_step=global_step,
                                         var_list=bottleneck_vars + logits_vars + deconv_all + fc_vars + upsample_vars + conv_vars_5)
-
-    # if we reshape the predictions it won't work with images of other sizes
-    predictions = tf.round(logits_sm)
 
     # squash the predictions into a per image prediction - negative images will have a max of 0
     pred_sum = tf.reduce_sum(predictions, axis=[1, 2])
@@ -1194,11 +1198,6 @@ with graph.as_default():
                                               name="pixel_precision")
 
     f1_score = 2 * ((precision * recall) / (precision + recall))
-
-    # calculate IOU
-    iou_score, iou_op = tf.metrics.mean_iou(labels=y_adj, predictions=predictions, num_classes=2,
-                                            updates_collections=[tf.GraphKeys.UPDATE_OPS, 'metrics_ops'],
-                                            name="iou")
 
     # per image metrics
     image_accuracy, image_acc_op = tf.metrics.accuracy(
