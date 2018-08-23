@@ -1194,9 +1194,9 @@ with graph.as_default():
     f1_score = 2 * ((precision * recall) / (precision + recall))
 
     # calculate IOU
-    iou_score, iou_op = tf.metrics.mean_iou(labels=y_adj, predictions=predictions, num_classes=2,
-                                            updates_collections=[tf.GraphKeys.UPDATE_OPS, 'metrics_ops'],
-                                            name="iou")
+    # iou_score, iou_op = tf.metrics.mean_iou(labels=y_adj, predictions=predictions, num_classes=2,
+    #                                         updates_collections=[tf.GraphKeys.UPDATE_OPS, 'metrics_ops'],
+    #                                         name="iou")
 
     train_op_1 = optimizer.minimize(loss, global_step=global_step)
 
@@ -1220,7 +1220,7 @@ with graph.as_default():
     tf.summary.scalar('precision_1', precision, collections=["summaries"])
     tf.summary.scalar('precision_per_image', image_precision, collections=["extra_summaries"])
     tf.summary.scalar('f1_score', f1_score, collections=["summaries"])
-    tf.summary.scalar('iou_score', iou_score, collections=["summaries"])
+    # tf.summary.scalar('iou_score', iou_score, collections=["summaries"])
 
     # Create summary hooks
     tf.summary.scalar('accuracy', accuracy, collections=["summaries"])
