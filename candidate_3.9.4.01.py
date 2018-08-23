@@ -1155,8 +1155,6 @@ with graph.as_default():
     # Adam optimizer
     optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate)
 
-    train_op_1 = optimizer.minimize(loss, global_step=global_step)
-
     # Minimize cross-entropy - freeze certain layers depending on input
     if freeze:
         # make some collections so we can specify what to train
@@ -1168,9 +1166,10 @@ with graph.as_default():
         conv_vars_5 = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "conv5")
 
         # create a training step for vars that should be trained
-        # train_op_2 = optimizer.minimize(loss, global_step=global_step, var_list=up_conv5_vars)
         train_op_2 = optimizer.minimize(loss, global_step=global_step,
                                         var_list=bottleneck_vars + logits_vars + deconv_all + fc_vars + upsample_vars + conv_vars_5)
+
+    train_op_1 = optimizer.minimize(loss, global_step=global_step)
 
     # squash the predictions into a per image prediction - negative images will have a max of 0
     pred_sum = tf.reduce_sum(predictions, axis=[1, 2])
