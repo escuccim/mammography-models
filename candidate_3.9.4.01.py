@@ -93,7 +93,7 @@ steps_per_epoch = int(total_records / batch_size)
 print("Steps per epoch:", steps_per_epoch)
 
 # lambdas
-lamC = 0.000010
+lamC = 0.000000
 lamF = 0.002500
 
 # use dropout
@@ -1003,7 +1003,7 @@ with graph.as_default():
             padding='SAME',
             activation=None,
             kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=11932),
-            kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamC),
+            kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamF),
             name='fc_1'
         )
 
@@ -1117,7 +1117,7 @@ with graph.as_default():
             padding='SAME',
             activation=None,
             kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2, seed=117933),
-            kernel_regularizer=None,
+            kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=lamF),
             name='logits'
         )
 
