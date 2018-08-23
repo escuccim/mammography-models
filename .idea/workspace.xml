@@ -28,6 +28,16 @@
           <entry key="Python" value="57" />
         </counts>
       </usages-collector>
+      <usages-collector id="statistics.file.extensions.open">
+        <counts>
+          <entry key="py" value="1" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.open">
+        <counts>
+          <entry key="Python" value="1" />
+        </counts>
+      </usages-collector>
     </session>
   </component>
   <component name="FileEditorManager">
@@ -47,8 +57,17 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/candidate_3.9.4.01.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="442">
-              <caret line="1167" column="64" selection-start-line="1167" selection-start-column="64" selection-end-line="1167" selection-end-column="64" />
+            <state relative-caret-position="539">
+              <caret line="1322" column="16" lean-forward="true" selection-start-line="1322" selection-start-column="16" selection-end-line="1322" selection-end-column="16" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/candidate_3.6.0.05.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="17">
+              <caret line="866" selection-start-line="866" selection-end-line="866" />
             </state>
           </provider>
         </entry>
@@ -531,13 +550,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/candidate_3.6.0.05.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="12332">
-          <caret line="922" column="60" selection-start-line="922" selection-start-column="60" selection-end-line="922" selection-end-column="60" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/candidate_3.6.2.05.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="98">
@@ -632,10 +644,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/candidate_3.6.0.05.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="866" selection-start-line="866" selection-end-line="866" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/candidate_3.9.4.01.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="442">
-          <caret line="1167" column="64" selection-start-line="1167" selection-start-column="64" selection-end-line="1167" selection-end-column="64" />
+        <state relative-caret-position="539">
+          <caret line="1322" column="16" lean-forward="true" selection-start-line="1322" selection-start-column="16" selection-end-line="1322" selection-end-column="16" />
         </state>
       </provider>
     </entry>
