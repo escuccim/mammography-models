@@ -1194,9 +1194,9 @@ with graph.as_default():
     f1_score = 2 * ((precision * recall) / (precision + recall))
 
     # calculate IOU
-    iou_score, iou_op = tf.metrics.mean_iou(labels=y_adj, predictions=predictions, num_classes=2,
-                                            updates_collections=[tf.GraphKeys.UPDATE_OPS, 'metrics_ops'],
-                                            name="iou")
+    # iou_score, iou_op = tf.metrics.mean_iou(labels=y_adj, predictions=predictions, num_classes=2,
+    #                                         updates_collections=[tf.GraphKeys.UPDATE_OPS, 'metrics_ops'],
+    #                                         name="iou")
 
     train_op_1 = optimizer.minimize(loss, global_step=global_step)
 

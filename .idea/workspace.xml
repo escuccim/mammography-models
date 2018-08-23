@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="98c4e5b0-4f90-4540-b87f-9bd6d2ddc583" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/candidate_3.9.4.01.py" beforeDir="false" afterPath="$PROJECT_DIR$/candidate_3.9.4.01.py" afterDir="false" />
-    </list>
+    <list default="true" id="98c4e5b0-4f90-4540-b87f-9bd6d2ddc583" name="Default" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,8 +45,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/candidate_3.9.4.01.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="442">
-              <caret line="1199" lean-forward="true" selection-start-line="1199" selection-end-line="1199" />
+            <state relative-caret-position="425">
+              <caret line="1198" column="57" lean-forward="true" selection-start-line="1196" selection-start-column="6" selection-end-line="1198" selection-end-column="57" />
             </state>
           </provider>
         </entry>
@@ -634,8 +632,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/candidate_3.9.4.01.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="442">
-          <caret line="1199" lean-forward="true" selection-start-line="1199" selection-end-line="1199" />
+        <state relative-caret-position="425">
+          <caret line="1198" column="57" lean-forward="true" selection-start-line="1196" selection-start-column="6" selection-end-line="1198" selection-end-column="57" />
         </state>
       </provider>
     </entry>
