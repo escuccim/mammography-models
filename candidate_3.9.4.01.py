@@ -1163,8 +1163,6 @@ with graph.as_default():
         train_op_2 = optimizer.minimize(loss, global_step=global_step,
                                         var_list=bottleneck_vars + logits_vars + deconv_all + fc_vars + upsample_vars + conv_vars_5)
 
-    train_op_1 = optimizer.minimize(loss, global_step=global_step)
-
     # if we reshape the predictions it won't work with images of other sizes
     predictions = tf.round(logits_sm)
 
@@ -1199,6 +1197,8 @@ with graph.as_default():
     iou_score, iou_op = tf.metrics.mean_iou(labels=y_adj, predictions=predictions, num_classes=2,
                                             updates_collections=[tf.GraphKeys.UPDATE_OPS, 'metrics_ops'],
                                             name="iou")
+
+    train_op_1 = optimizer.minimize(loss, global_step=global_step)
 
     # per image metrics
     image_accuracy, image_acc_op = tf.metrics.accuracy(
