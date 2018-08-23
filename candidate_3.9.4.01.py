@@ -1148,6 +1148,8 @@ with graph.as_default():
     # Adam optimizer
     optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate)
 
+    train_op_1 = optimizer.minimize(loss, global_step=global_step)
+
     # Minimize cross-entropy - freeze certain layers depending on input
     if freeze:
         # make some collections so we can specify what to train
@@ -1197,8 +1199,6 @@ with graph.as_default():
     iou_score, iou_op = tf.metrics.mean_iou(labels=y_adj, predictions=predictions, num_classes=2,
                                             updates_collections=[tf.GraphKeys.UPDATE_OPS, 'metrics_ops'],
                                             name="iou")
-
-    train_op_1 = optimizer.minimize(loss, global_step=global_step)
 
     # per image metrics
     image_accuracy, image_acc_op = tf.metrics.accuracy(
