@@ -1220,7 +1220,7 @@ with graph.as_default():
     tf.summary.scalar('precision_1', precision, collections=["summaries"])
     tf.summary.scalar('precision_per_image', image_precision, collections=["extra_summaries"])
     tf.summary.scalar('f1_score', f1_score, collections=["summaries"])
-    tf.summary.scalar('iou_score', iou_score, collections=["summaries"])
+    # tf.summary.scalar('iou_score', iou_score, collections=["summaries"])
 
     # Create summary hooks
     tf.summary.scalar('accuracy', accuracy, collections=["summaries"])
