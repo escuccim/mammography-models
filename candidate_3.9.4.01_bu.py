@@ -1145,28 +1145,31 @@ with graph.as_default():
     # Add in l2 loss
     loss = mean_ce + tf.losses.get_regularization_loss()
 
+    # if we reshape the predictions it won't work with images of other sizes
+    predictions = tf.round(logits_sm)
+
+    # calculate IOU
+    iou_score, iou_op = tf.metrics.mean_iou(labels=y_adj, predictions=predictions, num_classes=2,
+                                            updates_collections=[tf.GraphKeys.UPDATE_OPS, 'metrics_ops'],
+                                            name="iou")
     # Adam optimizer
     optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate)
 
     # Minimize cross-entropy - freeze certain layers depending on input
-    if freeze:
-        # make some collections so we can specify what to train
-        deconv_all = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "up_conv")
-        fc_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "fc")
-        bottleneck_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "bottleneck")
-        logits_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "logits")
-        upsample_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "upsample")
-        conv_vars_5 = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "conv5")
-
-        # create a training step for vars that should be trained
-        # train_op_2 = optimizer.minimize(loss, global_step=global_step, var_list=up_conv5_vars)
-        train_op_2 = optimizer.minimize(loss, global_step=global_step,
-                                        var_list=bottleneck_vars + logits_vars + deconv_all + fc_vars + upsample_vars + conv_vars_5)
+    # if freeze:
+    #     # make some collections so we can specify what to train
+    #     deconv_all = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "up_conv")
+    #     fc_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "fc")
+    #     bottleneck_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "bottleneck")
+    #     logits_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "logits")
+    #     upsample_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "upsample")
+    #     conv_vars_5 = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "conv5")
+    #
+    #     # create a training step for vars that should be trained
+    #     train_op_2 = optimizer.minimize(loss, global_step=global_step,
+    #                                     var_list=bottleneck_vars + logits_vars + deconv_all + fc_vars + upsample_vars + conv_vars_5)
 
     train_op_1 = optimizer.minimize(loss, global_step=global_step)
-
-    # if we reshape the predictions it won't work with images of other sizes
-    predictions = tf.round(logits_sm)
 
     # squash the predictions into a per image prediction - negative images will have a max of 0
     pred_sum = tf.reduce_sum(predictions, axis=[1, 2])
@@ -1215,6 +1218,7 @@ with graph.as_default():
     tf.summary.scalar('precision_1', precision, collections=["summaries"])
     tf.summary.scalar('precision_per_image', image_precision, collections=["extra_summaries"])
     tf.summary.scalar('f1_score', f1_score, collections=["summaries"])
+    tf.summary.scalar('iou_score', iou_score, collections=["summaries"])
 
     # Create summary hooks
     tf.summary.scalar('accuracy', accuracy, collections=["summaries"])
@@ -1295,7 +1299,7 @@ with tf.Session(graph=graph, config=config) as sess:
 
             # create the initializer function to initialize the weights
             # init_fn = load_weights(init_model, exclude=['bottleneck_5.1',"up_conv6", "conv_up_conv6", "bn_up_conv6", "bn_unpool5.1", "up_conv5",'bn_unpool4.1', "up_conv4", "bn_bottleneck_5.1", 'bottleneck_5.2', 'bn_bottleneck_5.2', 'bn_bottleneck_4.1', 'bottleneck_4.2', 'bn_bottleneck_4.2', 'bottleneck_4.1', 'bn_bottleneck_4.1', 'bn_unpool1.1', "up_conv3", "bn_upsample_3", "upsample_3", "up_conv6", "up_conv5", "bn_unpool4.1", 'up_conv4', 'bn_up_conv3', 'up_conv3', 'bn_upsample_2', 'upsample_2', 'bn_bottleneck_4.2', 'bottleneck_4.2', 'bn_bottleneck_4.1', 'bottleneck_4.1', 'bn_bottleneck_5.2', 'bn_bottleneck_5.1', 'bottleneck_5.2', 'bottleneck_5.1', 'bn_upsample_1', 'upsample_1'])
-            init_fn = load_weights(init_model, exclude=["upsample_5",'conv5.4',"bn5.4", 'conv5.2',"bn5.2", 'conv5.3',"bn5.3","bn_fc_fc_1","bn_fc_fc_2","fc_fc_1","fc_fc_2",'up_conv3', 'bn_up_conv3', "bn_unpool_4.1", "unpool_4.1", 'upsample_1', 'bn_upsample_1', 'up_conv1', 'bn_up_conv1', 'bottleneck_5.1', 'bn_bottleneck_5.1', 'bottleneck_5.2', 'bn_bottleneck_5.2', 'upsample_2', 'bn_upsample_2', 'up_conv2', 'bn_up_conv2', 'bottleneck_4.1', 'bn_bottleneck_4.1', 'bottleneck_4.2', 'bn_bottleneck_4.2', 'up_conv3', 'bn_up_conv3', 'up_conv4', 'bn_up_conv4', "conv_up_conv5", "bn_up_conv5", "conv_up_conv6", "bn_up_conv6", "conv_up_conv7", "bn_up_conv7", 'upsample_4', 'bn_upsample_4', "logits"])
+            init_fn = load_weights(init_model, exclude=[])
             # init_fn = load_weights(init_model, exclude=[])
 
             # init_fn = load_weights(init_model, exclude=['up_conv1', "bn_unpool1.1", "conv_fc_1", "bn_fc_1"])
@@ -1511,4 +1515,5 @@ with tf.Session(graph=graph, config=config) as sess:
     # unlist the predictions and truth
     test_predictions = flatten(test_predictions)
     ground_truth = flatten(ground_truth)
+
 
