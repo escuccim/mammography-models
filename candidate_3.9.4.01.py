@@ -1144,6 +1144,15 @@ with graph.as_default():
     # Add in l2 loss
     loss = mean_ce + tf.losses.get_regularization_loss()
 
+    # if we reshape the predictions it won't work with images of other sizes
+    predictions = tf.round(logits_sm)
+
+    iou_score, iou_op = tf.metrics.mean_iou(labels=y_adj, predictions=predictions, num_classes=2,
+                                            updates_collections=[tf.GraphKeys.UPDATE_OPS, 'metrics_ops'],
+                                            name="iou")
+
+    # iou_loss = tf.subtract(1, iou_score)
+
     # Adam optimizer
     optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate)
 
@@ -1159,14 +1168,10 @@ with graph.as_default():
         conv_vars_5 = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "conv5")
 
         # create a training step for vars that should be trained
-        # train_op_2 = optimizer.minimize(loss, global_step=global_step, var_list=up_conv5_vars)
         train_op_2 = optimizer.minimize(loss, global_step=global_step,
                                         var_list=bottleneck_vars + logits_vars + deconv_all + fc_vars + upsample_vars + conv_vars_5)
 
     train_op_1 = optimizer.minimize(loss, global_step=global_step)
-
-    # if we reshape the predictions it won't work with images of other sizes
-    predictions = tf.round(logits_sm)
 
     # squash the predictions into a per image prediction - negative images will have a max of 0
     pred_sum = tf.reduce_sum(predictions, axis=[1, 2])
@@ -1194,10 +1199,6 @@ with graph.as_default():
                                               name="pixel_precision")
 
     f1_score = 2 * ((precision * recall) / (precision + recall))
-
-    iou_score, iou_op = tf.metrics.mean_iou(labels=y_adj, predictions=predictions, num_classes=2,
-                                            updates_collections=[tf.GraphKeys.UPDATE_OPS, 'metrics_ops'],
-                                            name="iou")
 
     # per image metrics
     image_accuracy, image_acc_op = tf.metrics.accuracy(
@@ -1340,7 +1341,6 @@ with tf.Session(graph=graph, config=config) as sess:
                 train_op = train_op_2
             else:
                 train_op = train_op_1
-                print("Not freezing...")
 
             # Accuracy values (train) after each batch
             batch_acc = []
@@ -1442,8 +1442,6 @@ with tf.Session(graph=graph, config=config) as sess:
             summary, valid_acc, valid_recall, valid_prec = sess.run(
                 [merged, accuracy, recall, precision],
                 feed_dict={
-                    # X: X_cv[0:2],
-                    # y: y_cv[0:2],
                     training: False
                 })
 
