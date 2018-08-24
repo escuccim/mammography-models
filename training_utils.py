@@ -361,6 +361,22 @@ def download_data(what=4):
             _ = download_file('https://s3.eu-west-3.amazonaws.com/deep.skoo.ch/mammography/test100_labels.zip',
                               'test100_labels.zip')
 
+        if not os.path.exists(os.path.join("data", "test101_labels.npy")):
+            _ = download_file('https://s3.eu-west-3.amazonaws.com/deep.skoo.ch/mammography/test101_labels.zip',
+                              'test101_labels.zip')
+
+        if not os.path.exists(os.path.join("data", "cv101_labels.npy")):
+            _ = download_file('https://s3.eu-west-3.amazonaws.com/deep.skoo.ch/mammography/cv101_labels.zip',
+                              'cv101_labels.zip')
+
+        if not os.path.exists(os.path.join("data", "test101_data.npy")):
+            _ = download_file('https://s3.eu-west-3.amazonaws.com/deep.skoo.ch/mammography/test101_data.zip',
+                              'test101_data.zip')
+
+        if not os.path.exists(os.path.join("data", "cv101_data.npy")):
+            _ = download_file('https://s3.eu-west-3.amazonaws.com/deep.skoo.ch/mammography/cv101_data.zip',
+                              'cv101_data.zip')
+
         if not os.path.exists(os.path.join("data", "train_images", "P_00008_RIGHT_MLO_13_cropped.png")):
             _ = download_file('https://s3.eu-west-3.amazonaws.com/deep.skoo.ch/mammography/train_images2_0.zip',
                               'train_images2_0.zip')

@@ -28,6 +28,7 @@ parser.add_argument("-w", "--weight", help="weight to give to positive examples 
 parser.add_argument("-v", "--version", help="version or run number to assign to model name", default="")
 parser.add_argument("--distort", help="use online data augmentation", default=False, const=True, nargs="?")
 parser.add_argument("--size", help="size of image to crop (default 640)", default=640, type=int)
+parser.add_argument("-i", "--iou", help="use iou loss instead of x-entropy", nargs='?', const=True, default=False)
 args = parser.parse_args()
 
 epochs = args.epochs
@@ -45,6 +46,7 @@ size = args.size
 weight = args.weight - 1
 distort = args.distort
 version = args.version
+iou_loss = args.iou
 
 # figure out how to label the model name
 if how == "label":
@@ -55,9 +57,6 @@ elif how == "mask":
     model_label = "m"
 else:
     model_label = "x"
-
-# precalculated pixel mean of images
-mu = 104.1353
 
 # download the data
 # download_data(what=dataset)
@@ -84,9 +83,6 @@ if not stop and not freeze:
     starting_rate = 0.001
 else:
     starting_rate = 0.0001
-
-# start with a slightly lower learning rate since we are re-training later layers
-# starting_rate = 0.0007
 
 # learning rate decay variables
 steps_per_epoch = int(total_records / batch_size)
@@ -1138,20 +1134,21 @@ with graph.as_default():
     # This will weight the positive examples higher so as to improve recall
     weights = tf.multiply(tf.cast(weight, tf.float32), tf.cast(tf.greater(y_adj, 0), tf.float32)) + 1
 
-    mean_ce = tf.reduce_mean(
-        tf.losses.sigmoid_cross_entropy(multi_class_labels=y_adj, logits=logits_sm, weights=weights))
-
-    # Add in l2 loss
-    loss = mean_ce + tf.losses.get_regularization_loss()
-
-    # if we reshape the predictions it won't work with images of other sizes
     predictions = tf.round(logits_sm)
 
     iou_score, iou_op = tf.metrics.mean_iou(labels=y_adj, predictions=predictions, num_classes=2,
                                             updates_collections=[tf.GraphKeys.UPDATE_OPS, 'metrics_ops'],
                                             name="iou")
 
-    # iou_loss = tf.subtract(1, iou_score)
+    if iou_loss:
+        inter = tf.reduce_sum(tf.mul(logits, y_adj))
+        union = tf.reduce_sum(tf.sub(tf.add(logits, y_adj), tf.mul(logits, y_adj)))
+        loss = tf.sub(tf.constant(1.0, dtype=tf.float32), tf.div(inter, union)) + tf.losses.get_regularization_loss()
+    else:
+        mean_ce = tf.reduce_mean(tf.losses.sigmoid_cross_entropy(multi_class_labels=y_adj, logits=logits_sm, weights=weights))
+
+        # Add in l2 loss
+        loss = mean_ce + tf.losses.get_regularization_loss()
 
     # Adam optimizer
     optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate)
@@ -1259,20 +1256,16 @@ else:
 
 meta_data_every = 1
 log_to_tensorboard = True
-print_every = 5  # how often to print metrics
+print_every = 1 # how often to print metrics
 checkpoint_every = 1  # how often to save model in epochs
-use_gpu = False  # whether or not to use the GPU
 print_metrics = True  # whether to print or plot metrics, if False a plot will be created and updated every epoch
+#
+# # Initialize metrics
+# valid_acc_values = []
+# valid_cost_values = []
+# valid_recall_values = []
 
-# Initialize metrics or load them from disk if they exist
-train_acc_values = []
-train_cost_values = []
-train_lr_values = []
-train_recall_values = []
-valid_acc_values = []
-valid_cost_values = []
-valid_recall_values = []
-
+# create the config
 config = tf.ConfigProto()
 
 # if we are freezing some layers adjust the steps per epoch since we will do one extra training step
@@ -1461,11 +1454,9 @@ with tf.Session(graph=graph, config=config) as sess:
             print("Done evaluating...")
 
             # take the mean of the values to add to the metrics
-            valid_acc_values.append(np.mean(batch_cv_acc))
-            valid_cost_values.append(np.mean(batch_cv_loss))
-            valid_recall_values.append(np.mean(batch_cv_recall))
-
-            train_lr_values.append(lr)
+            # valid_acc_values.append(np.mean(batch_cv_acc))
+            # valid_cost_values.append(np.mean(batch_cv_loss))
+            # valid_recall_values.append(np.mean(batch_cv_recall))
 
             # Print progress every nth epoch to keep output to reasonable amount
             if (epoch % print_every == 0):

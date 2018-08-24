@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="98c4e5b0-4f90-4540-b87f-9bd6d2ddc583" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/candidate_3.9.4.01.py" beforeDir="false" afterPath="$PROJECT_DIR$/candidate_3.9.4.01.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/training_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/training_utils.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -20,12 +21,12 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="182" />
+          <entry key="py" value="344" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Python" value="182" />
+          <entry key="Python" value="344" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -45,8 +46,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/training_utils.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="15" lean-forward="true" selection-start-line="15" selection-end-line="15" />
+            <state relative-caret-position="595">
+              <caret line="377" column="36" selection-start-line="377" selection-start-column="36" selection-end-line="377" selection-end-column="36" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -57,17 +58,11 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/candidate_3.9.4.01.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="168">
-              <caret line="1153" column="42" selection-start-line="1153" selection-start-column="42" selection-end-line="1153" selection-end-column="42" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/candidate_3.9.4.01_bu.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="273">
-              <caret line="1153" column="55" lean-forward="true" selection-start-line="1151" selection-start-column="4" selection-end-line="1153" selection-end-column="55" />
+            <state relative-caret-position="222">
+              <caret line="1456" column="12" selection-start-line="1456" selection-start-column="14" selection-end-line="1458" selection-end-column="66" />
+              <folding>
+                <marker date="1535122959327" expanded="true" signature="53840:54016" ph="..." />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -83,14 +78,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>which</find>
-      <find>Dataset 6</find>
-      <find>weigh</find>
-      <find>convdropout_rate</find>
-      <find>[0:2]</find>
-      <find>overfit</find>
-      <find>png</find>
-      <find>width</find>
       <find>10_</find>
       <find>load_we</find>
       <find>fig</find>
@@ -113,6 +100,14 @@
       <find>image_rec_op</find>
       <find>480</find>
       <find>iou</find>
+      <find>loss</find>
+      <find>mu</find>
+      <find>train_acc_values</find>
+      <find>train_cost_values</find>
+      <find>train_lr_values</find>
+      <find>train_recall_values</find>
+      <find>batch_cv_acc</find>
+      <find>valid_acc_values</find>
     </findStrings>
     <replaceStrings>
       <replace>11_</replace>
@@ -629,16 +624,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/training_utils.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="15" lean-forward="true" selection-start-line="15" selection-end-line="15" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/candidate_3.6.0.05.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="17">
@@ -653,10 +638,23 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/training_utils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="595">
+          <caret line="377" column="36" selection-start-line="377" selection-start-column="36" selection-end-line="377" selection-end-column="36" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/candidate_3.9.4.01.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="168">
-          <caret line="1153" column="42" selection-start-line="1153" selection-start-column="42" selection-end-line="1153" selection-end-column="42" />
+        <state relative-caret-position="222">
+          <caret line="1456" column="12" selection-start-line="1456" selection-start-column="14" selection-end-line="1458" selection-end-column="66" />
+          <folding>
+            <marker date="1535122959327" expanded="true" signature="53840:54016" ph="..." />
+          </folding>
         </state>
       </provider>
     </entry>
