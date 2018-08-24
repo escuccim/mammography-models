@@ -1074,7 +1074,6 @@ with graph.as_default():
     uconv5 = _conv2d_batch_norm(unpool6, 64, kernel_size=(3, 3), stride=(1, 1), training=training, lambd=lamC,
                                 name="up_conv6", activation="relu")
 
-
     # upsample - 320x320x64
     with tf.name_scope('upsample_4') as scope:
         up_conv7 = tf.layers.conv2d_transpose(
@@ -1124,7 +1123,7 @@ with graph.as_default():
     # resize the logits
     with tf.name_scope('resize_11') as scope:
         logits = tf.image.resize_images(logits, size=[size, size],
-                                         method=tf.image.ResizeMethod.NEAREST_NEIGHBOR)
+                                        method=tf.image.ResizeMethod.NEAREST_NEIGHBOR)
 
     # softmax the logits and take the last dimension
     logits_sm = tf.sigmoid(logits)
@@ -1150,6 +1149,7 @@ with graph.as_default():
 
     # Minimize cross-entropy - freeze certain layers depending on input
     if freeze:
+        print("Freezing some variables...")
         # make some collections so we can specify what to train
         deconv_all = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "up_conv")
         fc_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "fc")
@@ -1220,7 +1220,7 @@ with graph.as_default():
     tf.summary.scalar('precision_per_image', image_precision, collections=["extra_summaries"])
     tf.summary.scalar('f1_score', f1_score, collections=["summaries"])
     tf.summary.scalar('iou_score', iou_score, collections=["summaries"])
-    
+
     # Create summary hooks
     tf.summary.scalar('accuracy', accuracy, collections=["summaries"])
     tf.summary.scalar('accuracy_per_image', image_accuracy, collections=["summaries"])
@@ -1299,11 +1299,7 @@ with tf.Session(graph=graph, config=config) as sess:
             sess.run(tf.global_variables_initializer())
 
             # create the initializer function to initialize the weights
-            # init_fn = load_weights(init_model, exclude=['bottleneck_5.1',"up_conv6", "conv_up_conv6", "bn_up_conv6", "bn_unpool5.1", "up_conv5",'bn_unpool4.1', "up_conv4", "bn_bottleneck_5.1", 'bottleneck_5.2', 'bn_bottleneck_5.2', 'bn_bottleneck_4.1', 'bottleneck_4.2', 'bn_bottleneck_4.2', 'bottleneck_4.1', 'bn_bottleneck_4.1', 'bn_unpool1.1', "up_conv3", "bn_upsample_3", "upsample_3", "up_conv6", "up_conv5", "bn_unpool4.1", 'up_conv4', 'bn_up_conv3', 'up_conv3', 'bn_upsample_2', 'upsample_2', 'bn_bottleneck_4.2', 'bottleneck_4.2', 'bn_bottleneck_4.1', 'bottleneck_4.1', 'bn_bottleneck_5.2', 'bn_bottleneck_5.1', 'bottleneck_5.2', 'bottleneck_5.1', 'bn_upsample_1', 'upsample_1'])
             init_fn = load_weights(init_model, exclude=[])
-            # init_fn = load_weights(init_model, exclude=[])
-
-            # init_fn = load_weights(init_model, exclude=['up_conv1', "bn_unpool1.1", "conv_fc_1", "bn_fc_1"])
 
             # run the initializer
             init_fn(sess)
@@ -1318,7 +1314,7 @@ with tf.Session(graph=graph, config=config) as sess:
             init_model = None
         elif restore_model is not None:
             saver.restore(sess, './model/' + restore_model + '.ckpt')
-            print("Restoring model", restore_model)
+            print("Restoring model from", restore_model)
 
             # initial_global_step = global_step.assign(0)
             # sess.run(initial_global_step)
@@ -1344,6 +1340,7 @@ with tf.Session(graph=graph, config=config) as sess:
                 train_op = train_op_2
             else:
                 train_op = train_op_1
+                print("Not freezing...")
 
             # Accuracy values (train) after each batch
             batch_acc = []
