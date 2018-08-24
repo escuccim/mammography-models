@@ -1195,6 +1195,10 @@ with graph.as_default():
 
     f1_score = 2 * ((precision * recall) / (precision + recall))
 
+    iou_score, iou_op = tf.metrics.mean_iou(labels=y_adj, predictions=predictions, num_classes=2,
+                                            updates_collections=[tf.GraphKeys.UPDATE_OPS, 'metrics_ops'],
+                                            name="iou")
+
     # per image metrics
     image_accuracy, image_acc_op = tf.metrics.accuracy(
         labels=image_truth,
@@ -1215,7 +1219,8 @@ with graph.as_default():
     tf.summary.scalar('precision_1', precision, collections=["summaries"])
     tf.summary.scalar('precision_per_image', image_precision, collections=["extra_summaries"])
     tf.summary.scalar('f1_score', f1_score, collections=["summaries"])
-
+    tf.summary.scalar('iou_score', iou_score, collections=["summaries"])
+    
     # Create summary hooks
     tf.summary.scalar('accuracy', accuracy, collections=["summaries"])
     tf.summary.scalar('accuracy_per_image', image_accuracy, collections=["summaries"])
@@ -1295,7 +1300,7 @@ with tf.Session(graph=graph, config=config) as sess:
 
             # create the initializer function to initialize the weights
             # init_fn = load_weights(init_model, exclude=['bottleneck_5.1',"up_conv6", "conv_up_conv6", "bn_up_conv6", "bn_unpool5.1", "up_conv5",'bn_unpool4.1', "up_conv4", "bn_bottleneck_5.1", 'bottleneck_5.2', 'bn_bottleneck_5.2', 'bn_bottleneck_4.1', 'bottleneck_4.2', 'bn_bottleneck_4.2', 'bottleneck_4.1', 'bn_bottleneck_4.1', 'bn_unpool1.1', "up_conv3", "bn_upsample_3", "upsample_3", "up_conv6", "up_conv5", "bn_unpool4.1", 'up_conv4', 'bn_up_conv3', 'up_conv3', 'bn_upsample_2', 'upsample_2', 'bn_bottleneck_4.2', 'bottleneck_4.2', 'bn_bottleneck_4.1', 'bottleneck_4.1', 'bn_bottleneck_5.2', 'bn_bottleneck_5.1', 'bottleneck_5.2', 'bottleneck_5.1', 'bn_upsample_1', 'upsample_1'])
-            init_fn = load_weights(init_model, exclude=["upsample_5",'conv5.4',"bn5.4", 'conv5.2',"bn5.2", 'conv5.3',"bn5.3","bn_fc_fc_1","bn_fc_fc_2","fc_fc_1","fc_fc_2",'up_conv3', 'bn_up_conv3', "bn_unpool_4.1", "unpool_4.1", 'upsample_1', 'bn_upsample_1', 'up_conv1', 'bn_up_conv1', 'bottleneck_5.1', 'bn_bottleneck_5.1', 'bottleneck_5.2', 'bn_bottleneck_5.2', 'upsample_2', 'bn_upsample_2', 'up_conv2', 'bn_up_conv2', 'bottleneck_4.1', 'bn_bottleneck_4.1', 'bottleneck_4.2', 'bn_bottleneck_4.2', 'up_conv3', 'bn_up_conv3', 'up_conv4', 'bn_up_conv4', "conv_up_conv5", "bn_up_conv5", "conv_up_conv6", "bn_up_conv6", "conv_up_conv7", "bn_up_conv7", 'upsample_4', 'bn_upsample_4', "logits"])
+            init_fn = load_weights(init_model, exclude=[])
             # init_fn = load_weights(init_model, exclude=[])
 
             # init_fn = load_weights(init_model, exclude=['up_conv1', "bn_unpool1.1", "conv_fc_1", "bn_fc_1"])
