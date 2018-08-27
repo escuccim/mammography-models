@@ -1144,7 +1144,7 @@ with graph.as_default():
         labels_fl = tf.cast(y_adj, tf.float32)
         inter = tf.reduce_sum(tf.multiply(logits, labels_fl))
         union = tf.reduce_sum(tf.sub(tf.add(logits, labels_fl), tf.multiply(logits, labels_fl)))
-        loss = tf.sub(tf.constant(1.0, dtype=tf.float32), tf.div(inter, union)) + tf.losses.get_regularization_loss()
+        loss = tf.subtract(tf.constant(1.0, dtype=tf.float32), tf.div(inter, union)) + tf.losses.get_regularization_loss()
     else:
         mean_ce = tf.reduce_mean(tf.losses.sigmoid_cross_entropy(multi_class_labels=y_adj, logits=logits_sm, weights=weights))
 
