@@ -1141,12 +1141,14 @@ with graph.as_default():
                                             name="iou")
 
     if iou_loss:
-        labels_fl = tf.cast(y_adj, tf.float32)
-        inter = tf.reduce_sum(tf.multiply(logits, labels_fl))
-        union = tf.reduce_sum(tf.subtract(tf.add(logits, labels_fl), tf.multiply(logits, labels_fl)))
-        loss = tf.subtract(tf.constant(1.0, dtype=tf.float32), tf.div(inter, union)) + tf.losses.get_regularization_loss()
+        logits_fl = tf.reshape(logits, [-1])
+        labels_fl = tf.reshape(tf.cast(y_adj, tf.float32), [-1])
 
-        mean_ce = loss
+        inter = tf.reduce_sum(tf.multiply(logits_fl, labels_fl))
+        union = tf.reduce_sum(tf.subtract(tf.add(logits_fl, labels_fl), tf.multiply(logits_fl, labels_fl)))
+        mean_ce = tf.subtract(tf.constant(1.0, dtype=tf.float32), tf.divide(inter, union))
+
+        loss = mean_ce + tf.losses.get_regularization_loss()
     else:
         mean_ce = tf.reduce_mean(tf.losses.sigmoid_cross_entropy(multi_class_labels=y_adj, logits=logits_sm, weights=weights))
 
@@ -1435,8 +1437,8 @@ with tf.Session(graph=graph, config=config) as sess:
                     })
 
             # one more step to get our metrics
-            summary, valid_acc, valid_recall, valid_prec = sess.run(
-                [merged, accuracy, recall, precision],
+            summary, valid_acc, valid_recall, valid_prec, iou = sess.run(
+                [merged, accuracy, recall, precision, iou_score],
                 feed_dict={
                     training: False
                 })
@@ -1455,11 +1457,6 @@ with tf.Session(graph=graph, config=config) as sess:
             del (y_cv)
 
             print("Done evaluating...")
-
-            # take the mean of the values to add to the metrics
-            # valid_acc_values.append(np.mean(batch_cv_acc))
-            # valid_cost_values.append(np.mean(batch_cv_loss))
-            # valid_recall_values.append(np.mean(batch_cv_recall))
 
             # Print progress every nth epoch to keep output to reasonable amount
             if (epoch % print_every == 0):
@@ -1480,29 +1477,24 @@ with tf.Session(graph=graph, config=config) as sess:
     # evaluate the test data
     X_te, y_te = load_validation_data(how=how, data="test", which=dataset, scale=True, size=size)
 
-    test_accuracy = []
-    test_recall = []
-    test_predictions = []
-    ground_truth = []
     for X_batch, y_batch in get_batches(X_te, y_te, batch_size, distort=False):
-        yhat, test_acc_value, test_recall_value, test_prec_value = sess.run([predictions, acc_op, rec_op, prec_op],
-                                                                            feed_dict=
-                                                                            {
-                                                                                X: X_batch,
-                                                                                y: y_batch,
-                                                                                training: False
-                                                                            })
+        _ = sess.run([metrics_op],
+            feed_dict=
+            {
+                X: X_batch,
+                y: y_batch,
+                training: False
+            })
 
-        test_accuracy.append(test_acc_value)
-        test_recall.append(test_recall_value)
-        test_predictions.append(yhat)
-        ground_truth.append(y_batch)
+    # one more step to get our metrics
+    summary, test_acc, test_recall, test_prec, test_iou = sess.run(
+        [merged, accuracy, recall, precision, iou_score],
+        feed_dict={
+            training: False
+        })
 
     # print the results
-    print("Mean Test Accuracy:", np.mean(test_accuracy))
-    print("Mean Test Recall:", np.mean(test_recall))
-
-    # unlist the predictions and truth
-    test_predictions = flatten(test_predictions)
-    ground_truth = flatten(ground_truth)
-
+    print("Mean Test Accuracy:", test_acc)
+    print("Mean Test Recall:", test_recall)
+    print("Mean Test Precision:", test_prec)
+    print("Mean Test IOU:", test_iou)
