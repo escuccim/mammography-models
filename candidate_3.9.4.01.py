@@ -1142,7 +1142,7 @@ with graph.as_default():
 
     if iou_loss:
         print("Using IOU loss...")
-        logits_fl = tf.reshape(logits, [-1])
+        logits_fl = tf.reshape(logits_sm, [-1])
         labels_fl = tf.reshape(tf.cast(y_adj, tf.float32), [-1])
 
         inter = tf.reduce_sum(tf.multiply(logits_fl, labels_fl))
