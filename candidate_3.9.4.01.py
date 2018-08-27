@@ -1141,8 +1141,8 @@ with graph.as_default():
                                             name="iou")
 
     if iou_loss:
-        inter = tf.reduce_sum(tf.mul(logits, y_adj))
-        union = tf.reduce_sum(tf.sub(tf.add(logits, y_adj), tf.mul(logits, y_adj)))
+        inter = tf.reduce_sum(tf.multiply(logits, y_adj))
+        union = tf.reduce_sum(tf.sub(tf.add(logits, y_adj), tf.multiply(logits, y_adj)))
         loss = tf.sub(tf.constant(1.0, dtype=tf.float32), tf.div(inter, union)) + tf.losses.get_regularization_loss()
     else:
         mean_ce = tf.reduce_mean(tf.losses.sigmoid_cross_entropy(multi_class_labels=y_adj, logits=logits_sm, weights=weights))
