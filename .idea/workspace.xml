@@ -18,22 +18,22 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="697" />
+          <entry key="py" value="796" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Python" value="697" />
+          <entry key="Python" value="796" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="py" value="3" />
+          <entry key="py" value="4" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Python" value="3" />
+          <entry key="Python" value="4" />
         </counts>
       </usages-collector>
     </session>
@@ -52,11 +52,20 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/candidate_3.9.4.01.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="55">
-              <caret line="1126" column="4" lean-forward="true" selection-start-line="1126" selection-start-column="6" selection-end-line="1131" selection-end-column="105" />
+            <state relative-caret-position="383">
+              <caret line="1366" column="69" lean-forward="true" selection-start-line="1366" selection-start-column="69" selection-end-line="1366" selection-end-column="69" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/candidate_3.9.4.02.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="357">
+              <caret line="30" column="23" lean-forward="true" selection-start-line="30" selection-start-column="22" selection-end-line="30" selection-end-column="23" />
             </state>
           </provider>
         </entry>
@@ -72,7 +81,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>10_</find>
       <find>load_we</find>
       <find>fig</find>
       <find>y</find>
@@ -102,6 +110,7 @@
       <find>train_recall_values</find>
       <find>batch_cv_acc</find>
       <find>valid_acc_values</find>
+      <find>kernel</find>
     </findStrings>
     <replaceStrings>
       <replace>11_</replace>
@@ -119,7 +128,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/inception_v4.05.py" />
         <option value="$PROJECT_DIR$/candidate_1.0.0.35.py" />
         <option value="$PROJECT_DIR$/vgg_16.3.py" />
         <option value="$PROJECT_DIR$/vgg_16.2.py" />
@@ -170,6 +178,7 @@
         <option value="$PROJECT_DIR$/candidate_3.9.3.01.py" />
         <option value="$PROJECT_DIR$/training_utils.py" />
         <option value="$PROJECT_DIR$/candidate_3.9.4.01.py" />
+        <option value="$PROJECT_DIR$/candidate_3.9.4.02.py" />
       </list>
     </option>
   </component>
@@ -284,13 +293,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/old_models/candidate_1.1.0.01.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1238">
-          <caret line="118" column="29" selection-start-line="118" selection-start-column="29" selection-end-line="118" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/old_models/model_1.0.1.39n.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="726">
@@ -644,8 +646,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/candidate_3.9.4.01.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="55">
-          <caret line="1126" column="4" lean-forward="true" selection-start-line="1126" selection-start-column="6" selection-end-line="1131" selection-end-column="105" />
+        <state relative-caret-position="383">
+          <caret line="1366" column="69" lean-forward="true" selection-start-line="1366" selection-start-column="69" selection-end-line="1366" selection-end-column="69" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/candidate_3.9.4.02.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="357">
+          <caret line="30" column="23" lean-forward="true" selection-start-line="30" selection-start-column="22" selection-end-line="30" selection-end-column="23" />
         </state>
       </provider>
     </entry>
