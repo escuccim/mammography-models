@@ -20,12 +20,12 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="477" />
+          <entry key="py" value="482" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Python" value="477" />
+          <entry key="Python" value="482" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -58,9 +58,9 @@
         <entry file="file://$PROJECT_DIR$/candidate_3.9.4.01.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="221">
-              <caret line="1148" column="33" selection-start-line="1148" selection-start-column="33" selection-end-line="1148" selection-end-column="33" />
+              <caret line="1148" column="22" selection-start-line="1148" selection-start-column="22" selection-end-line="1148" selection-end-column="22" />
               <folding>
-                <marker date="1535376834541" expanded="true" signature="54047:54223" ph="..." />
+                <marker date="1535376878125" expanded="true" signature="53943:54119" ph="..." />
               </folding>
             </state>
           </provider>
@@ -179,9 +179,9 @@
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="1278" />
+    <option name="x" value="1090" />
     <option name="width" value="1814" />
-    <option name="height" value="1732" />
+    <option name="height" value="1720" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -650,9 +650,9 @@
     <entry file="file://$PROJECT_DIR$/candidate_3.9.4.01.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="221">
-          <caret line="1148" column="33" selection-start-line="1148" selection-start-column="33" selection-end-line="1148" selection-end-column="33" />
+          <caret line="1148" column="22" selection-start-line="1148" selection-start-column="22" selection-end-line="1148" selection-end-column="22" />
           <folding>
-            <marker date="1535376834541" expanded="true" signature="54047:54223" ph="..." />
+            <marker date="1535376878125" expanded="true" signature="53943:54119" ph="..." />
           </folding>
         </state>
       </provider>
