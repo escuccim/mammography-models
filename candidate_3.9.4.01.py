@@ -1141,6 +1141,7 @@ with graph.as_default():
                                             name="iou")
 
     if iou_loss:
+        print("Using IOU loss...")
         logits_fl = tf.reshape(logits, [-1])
         labels_fl = tf.reshape(tf.cast(y_adj, tf.float32), [-1])
 
