@@ -20,12 +20,12 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="430" />
+          <entry key="py" value="440" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Python" value="430" />
+          <entry key="Python" value="440" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -57,10 +57,10 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/candidate_3.9.4.01.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="408">
-              <caret line="1146" column="26" selection-start-line="1146" selection-start-column="26" selection-end-line="1146" selection-end-column="26" />
+            <state relative-caret-position="391">
+              <caret line="1145" column="41" selection-start-line="1145" selection-start-column="41" selection-end-line="1145" selection-end-column="41" />
               <folding>
-                <marker date="1535376676523" expanded="true" signature="53914:54090" ph="..." />
+                <marker date="1535376751403" expanded="true" signature="53919:54095" ph="..." />
               </folding>
             </state>
           </provider>
@@ -649,10 +649,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/candidate_3.9.4.01.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="408">
-          <caret line="1146" column="26" selection-start-line="1146" selection-start-column="26" selection-end-line="1146" selection-end-column="26" />
+        <state relative-caret-position="391">
+          <caret line="1145" column="41" selection-start-line="1145" selection-start-column="41" selection-end-line="1145" selection-end-column="41" />
           <folding>
-            <marker date="1535376676523" expanded="true" signature="53914:54090" ph="..." />
+            <marker date="1535376751403" expanded="true" signature="53919:54095" ph="..." />
           </folding>
         </state>
       </provider>
