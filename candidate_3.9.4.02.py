@@ -1147,7 +1147,7 @@ with graph.as_default():
         labels_fl = tf.reshape(tf.cast(y_adj, tf.float32), [-1])
 
         inter = tf.reduce_sum(tf.multiply(logits_fl, labels_fl))
-        union = tf.reduce_sum(tf.subtract(tf.add(logits_fl, labels_fl), tf.multiply(logits_fl, labels_fl)))
+        union = tf.reduce_sum(tf.subtract(tf.add(logits_fl, labels_fl), inter))
         mean_ce = tf.subtract(tf.constant(1.0, dtype=tf.float32), tf.divide(inter, union))
 
         loss = mean_ce + tf.losses.get_regularization_loss()
