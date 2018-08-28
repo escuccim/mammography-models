@@ -1355,14 +1355,17 @@ with tf.Session(graph=graph, config=config) as sess:
                 # Run training op and update ops
                 if (i % 50 != 0) or (i == 0):
                     # log the kernel images once per epoch
-                    if (i == (steps_per_epoch - 1)) and log_to_tensorboard:
+                    if False: #(i == (steps_per_epoch - 1)) and log_to_tensorboard:
                         _, _, step = sess.run(
-                            [train_op, extra_update_ops, global_step],
+                            [train_op, extra_update_ops, kernel_summaries, global_step],
                             feed_dict={
                                 training: True,
                             },
                             options=run_options,
                             run_metadata=run_metadata)
+
+                        # write the summary
+                        train_writer.add_summary(image_summary, step)
 
                     else:
                         _, _, step = sess.run(
