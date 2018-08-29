@@ -74,7 +74,7 @@ else:
 epsilon = 1e-8
 
 # learning rate
-epochs_per_decay = 10
+epochs_per_decay = 15
 decay_factor = 0.85
 staircase = True
 
@@ -1147,7 +1147,7 @@ with graph.as_default():
         labels_fl = tf.reshape(tf.cast(y_adj, tf.float32), [-1])
 
         inter = tf.reduce_sum(tf.multiply(logits_fl, labels_fl))
-        union = tf.reduce_sum(tf.subtract(tf.add(logits_fl, labels_fl), inter))
+        union = tf.reduce_sum(tf.subtract(tf.add(logits_fl, labels_fl), tf.multiply(logits_fl, labels_fl))
         mean_ce = tf.subtract(tf.constant(1.0, dtype=tf.float32), tf.divide(inter, union))
 
         loss = mean_ce + tf.losses.get_regularization_loss()

@@ -20,12 +20,12 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="818" />
+          <entry key="py" value="819" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Python" value="818" />
+          <entry key="Python" value="819" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -66,8 +66,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/candidate_3.9.4.02.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="332">
-              <caret line="1148" column="64" lean-forward="true" selection-start-line="1148" selection-start-column="64" selection-end-line="1148" selection-end-column="64" />
+            <state relative-caret-position="459">
+              <caret line="1149" column="104" selection-start-line="1149" selection-start-column="104" selection-end-line="1149" selection-end-column="104" />
             </state>
           </provider>
         </entry>
@@ -655,8 +655,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/candidate_3.9.4.02.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="332">
-          <caret line="1148" column="64" lean-forward="true" selection-start-line="1148" selection-start-column="64" selection-end-line="1148" selection-end-column="64" />
+        <state relative-caret-position="459">
+          <caret line="1149" column="104" selection-start-line="1149" selection-start-column="104" selection-end-line="1149" selection-end-column="104" />
         </state>
       </provider>
     </entry>
