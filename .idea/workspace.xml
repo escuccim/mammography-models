@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="98c4e5b0-4f90-4540-b87f-9bd6d2ddc583" name="Default" comment="" />
+    <list default="true" id="98c4e5b0-4f90-4540-b87f-9bd6d2ddc583" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/candidate_3.9.4.02.py" beforeDir="false" afterPath="$PROJECT_DIR$/candidate_3.9.4.02.py" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -18,12 +20,12 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="820" />
+          <entry key="py" value="1081" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Python" value="820" />
+          <entry key="Python" value="1081" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -64,8 +66,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/candidate_3.9.4.02.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="459">
-              <caret line="1149" column="107" selection-start-line="1149" selection-start-column="107" selection-end-line="1149" selection-end-column="107" />
+            <state relative-caret-position="658">
+              <caret line="1161" column="39" selection-start-line="1161" selection-start-column="39" selection-end-line="1161" selection-end-column="39" />
             </state>
           </provider>
         </entry>
@@ -653,8 +655,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/candidate_3.9.4.02.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="459">
-          <caret line="1149" column="107" selection-start-line="1149" selection-start-column="107" selection-end-line="1149" selection-end-column="107" />
+        <state relative-caret-position="658">
+          <caret line="1161" column="39" selection-start-line="1161" selection-start-column="39" selection-end-line="1161" selection-end-column="39" />
         </state>
       </provider>
     </entry>

@@ -1143,13 +1143,23 @@ with graph.as_default():
 
     if not iou_loss:
         print("Using IOU loss...")
+        # flatten the logits and labels
         logits_fl = tf.reshape(logits_sm, [-1])
         labels_fl = tf.reshape(tf.cast(y_adj, tf.float32), [-1])
 
-        inter = tf.reduce_sum(tf.multiply(logits_fl, labels_fl))
-        union = tf.reduce_sum(tf.subtract(tf.add(logits_fl, labels_fl), tf.multiply(logits_fl, labels_fl)))
+        # get the intersection of the logits and labels
+        inter_mat = tf.multiply(logits_fl, labels_fl)
+
+        # reduce the sum for the intersection
+        inter = tf.reduce_sum(inter_mat)
+
+        # union is sum - intersection
+        union = tf.reduce_sum(tf.subtract(tf.add(logits_fl, labels_fl), inter_mat))
+
+        # subtract from 1 so we can minimize
         mean_ce = tf.subtract(tf.constant(1.0, dtype=tf.float32), tf.divide(inter, union))
 
+        # add the regularization losses
         loss = mean_ce + tf.losses.get_regularization_loss()
     else:
         mean_ce = tf.reduce_mean(tf.losses.sigmoid_cross_entropy(multi_class_labels=y_adj, logits=logits_sm, weights=weights))
