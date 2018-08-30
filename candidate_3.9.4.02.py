@@ -96,7 +96,7 @@ lamF = 0.002500
 dropout = True
 fcdropout_rate = 0.25
 convdropout_rate = 0.00
-pooldropout_rate = 0.001
+pooldropout_rate = 0.0001
 upsample_dropout = 0.01
 
 if how == "label":
@@ -1023,6 +1023,9 @@ with graph.as_default():
         # apply relu
         fc1 = tf.nn.relu(fc1, name='relu_fc_1')
 
+        if dropout:
+            fc1 = tf.layers.dropout(fc1, rate=fcdropout_rate, seed=10301, training=training)
+
     # resize images - 80x80x256
     with tf.name_scope('resize_1') as scope:
         new_size = int(size // 8)
@@ -1124,13 +1127,6 @@ with graph.as_default():
 
     # softmax the logits and take the last dimension
     logits_sm = tf.sigmoid(logits)
-
-    # with tf.variable_scope('conv0.1', reuse=True):
-    #     conv_kernels1 = tf.get_variable('kernel')
-    #     kernel_transposed = tf.transpose(conv_kernels1, [3, 0, 1, 2])
-    #
-    # with tf.variable_scope('visualization'):
-    #     tf.summary.image('conv0.1/filters', kernel_transposed, max_outputs=32, collections=["kernels"])
 
     # This will weight the positive examples higher so as to improve recall
     weights = tf.multiply(tf.cast(weight, tf.float32), tf.cast(tf.greater(y_adj, 0), tf.float32)) + 1
