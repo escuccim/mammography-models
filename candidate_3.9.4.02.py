@@ -222,16 +222,16 @@ with graph.as_default():
             X_def, y_def = tf.train.shuffle_batch([image, label], batch_size=batch_size, capacity=75 * batch_size,
                                                   seed=None, num_threads=6, min_after_dequeue=30 * batch_size)
 
+            if distort:
+                X_def, y_def = augment(X_def, y_def, horizontal_flip=True, augment_labels=True, vertical_flip=True,
+                                       mixup=0)
+
         # Placeholders
         X = tf.placeholder_with_default(X_def, shape=[None, size, size, 1])
         y = tf.placeholder_with_default(y_def, shape=[None, size, size, 1])
 
         X_adj = tf.cast(X, tf.float32)
         y_adj = tf.cast(y, tf.int32)
-
-        # optional online data augmentation
-        # if distort:
-        #     X_adj, y_adj = augment(X_adj, y_adj, horizontal_flip=True, augment_labels=True, vertical_flip=True, mixup=0)
 
     # Convolutional layer 1 - 320x320x32
     with tf.name_scope('conv0.1') as scope:
