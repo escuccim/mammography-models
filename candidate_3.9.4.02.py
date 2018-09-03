@@ -213,7 +213,7 @@ with graph.as_default():
         with tf.device('/cpu:0'):
             if dataset == 100:
                 # decode the image
-                image, label = _read_images("./data/train_images/", size, scale_by=0.66, distort=False,
+                image, label = _read_images("./data/train_images/", size, scale_by=0.66, distort=distort,
                                             standardize=normalize)
             else:
                 image, label = read_and_decode_single_example(train_files, label_type=how, normalize=False,
@@ -230,8 +230,8 @@ with graph.as_default():
         y_adj = tf.cast(y, tf.int32)
 
         # optional online data augmentation
-        if distort:
-            X_adj, y_adj = augment(X_adj, y_adj, horizontal_flip=True, augment_labels=True, vertical_flip=True, mixup=0)
+        # if distort:
+        #     X_adj, y_adj = augment(X_adj, y_adj, horizontal_flip=True, augment_labels=True, vertical_flip=True, mixup=0)
 
     # Convolutional layer 1 - 320x320x32
     with tf.name_scope('conv0.1') as scope:

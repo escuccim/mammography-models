@@ -45,7 +45,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/training_utils.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="403">
+            <state relative-caret-position="-13024">
               <caret line="206" column="71" lean-forward="true" selection-start-line="206" selection-start-column="71" selection-end-line="206" selection-end-column="71" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
@@ -57,8 +57,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/candidate_3.9.4.02.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="511">
-              <caret line="1176" column="38" selection-start-line="1176" selection-start-column="38" selection-end-line="1176" selection-end-column="38" />
+            <state relative-caret-position="587">
+              <caret line="234" lean-forward="true" selection-start-line="232" selection-start-column="10" selection-end-line="234" />
             </state>
           </provider>
         </entry>
@@ -636,7 +636,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/training_utils.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="403">
+        <state relative-caret-position="-13024">
           <caret line="206" column="71" lean-forward="true" selection-start-line="206" selection-start-column="71" selection-end-line="206" selection-end-column="71" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
@@ -646,8 +646,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/candidate_3.9.4.02.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="511">
-          <caret line="1176" column="38" selection-start-line="1176" selection-start-column="38" selection-end-line="1176" selection-end-column="38" />
+        <state relative-caret-position="587">
+          <caret line="234" lean-forward="true" selection-start-line="232" selection-start-column="10" selection-end-line="234" />
         </state>
       </provider>
     </entry>
