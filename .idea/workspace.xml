@@ -20,12 +20,12 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="1093" />
+          <entry key="py" value="1206" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Python" value="1093" />
+          <entry key="Python" value="1206" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -54,20 +54,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/candidate_3.9.4.01.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="383">
-              <caret line="1366" column="69" lean-forward="true" selection-start-line="1366" selection-start-column="69" selection-end-line="1366" selection-end-column="69" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/candidate_3.9.4.02.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="409">
-              <caret line="1023" column="46" selection-start-line="1023" selection-start-column="46" selection-end-line="1023" selection-end-column="46" />
+            <state relative-caret-position="511">
+              <caret line="1176" column="38" selection-start-line="1176" selection-start-column="38" selection-end-line="1176" selection-end-column="38" />
             </state>
           </provider>
         </entry>
@@ -629,16 +620,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/training_utils.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="403">
-          <caret line="206" column="71" lean-forward="true" selection-start-line="206" selection-start-column="71" selection-end-line="206" selection-end-column="71" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/candidate_3.9.4.01_bu.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-4473">
@@ -653,10 +634,20 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/training_utils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="403">
+          <caret line="206" column="71" lean-forward="true" selection-start-line="206" selection-start-column="71" selection-end-line="206" selection-end-column="71" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/candidate_3.9.4.02.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="409">
-          <caret line="1023" column="46" selection-start-line="1023" selection-start-column="46" selection-end-line="1023" selection-end-column="46" />
+        <state relative-caret-position="511">
+          <caret line="1176" column="38" selection-start-line="1176" selection-start-column="38" selection-end-line="1176" selection-end-column="38" />
         </state>
       </provider>
     </entry>

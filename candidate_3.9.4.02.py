@@ -1158,7 +1158,24 @@ with graph.as_default():
         # add the regularization losses
         loss = mean_ce + tf.losses.get_regularization_loss()
     else:
-        mean_ce = tf.reduce_mean(tf.losses.sigmoid_cross_entropy(multi_class_labels=y_adj, logits=logits_sm, weights=weights))
+        xe_loss = tf.reduce_mean(tf.losses.sigmoid_cross_entropy(multi_class_labels=y_adj, logits=logits_sm, weights=weights))
+        logits_fl = tf.reshape(logits_sm, [-1])
+        labels_fl = tf.reshape(tf.cast(y_adj, tf.float32), [-1])
+
+        # get the intersection of the logits and labels
+        inter_mat = tf.multiply(logits_fl, labels_fl)
+
+        # reduce the sum for the intersection
+        inter = tf.reduce_sum(inter_mat)
+
+        # union is sum - intersection
+        union = tf.reduce_sum(tf.subtract(tf.add(logits_fl, labels_fl), inter_mat))
+
+        # subtract from 1 so we can minimize
+        iou_loss = tf.subtract(tf.constant(1.0, dtype=tf.float32), tf.divide(inter, union))
+
+        # add iou and xe loss together
+        mean_ce = 0.5 * xe_loss + 0.5 * iou_loss
 
         # Add in l2 loss
         loss = mean_ce + tf.losses.get_regularization_loss()
