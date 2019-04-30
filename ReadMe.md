@@ -24,7 +24,7 @@ Exploratory data analysis was performed on the Wisconsin datasets from the UCI M
 
 Heatmaps were used to discover which features were correlated with the outcome or pathology. Features which were highly correlated with the class were then examined to see the distributions of those features over each class.
 
-![](C:\Users\eric\Documents\Courses\Applied ML 2\capstone-project-ads-ml-c5-s2-38\uci_eda.png)
+![](uci_eda.png)
 
 ​                        <i>Figure 1 - Distribution of features highly correlated to class for WPBC dataset</i> 
 
@@ -34,13 +34,13 @@ This was confirmed by analysis of the MIAS data, seen in Figure 2. While we do n
 
 The importance of the size and edges of masses indicate that the context is important to diagnosing abnormalities. This information was critical in the creation of training datasets.
 
-![](C:\Users\eric\Documents\Courses\Applied ML 2\capstone-project-ads-ml-c5-s2-38\mias_hist.png)
+![](mias_hist.png)
 
 ​                                                     <i>Figure 2 - Radii vs class for MIAS dataset</i> 
 
 Finally PCA was applied to the datasets and the top two principal components were used to generate biplots which indicated that the data was easily linearly separable. As many of the features in the Wisconsin datasets were highly correlated by design it is not surprising that the data is easily distillable into primary components.
 
-![](C:\Users\eric\Documents\Courses\Applied ML 2\capstone-project-ads-ml-c5-s2-38\wdbc_biplot.png)
+![](wdbc_biplot.png)
 
 ​                                                 <i>Figure 3 - Biplot of WDBC dataset PCA vs class</i> 
 
