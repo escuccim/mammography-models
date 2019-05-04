@@ -249,7 +249,7 @@ It seems that rather than causing the issue of predicting all validation example
 ### Effect of Contrast Enhancement
 While performing some exploratory manipulations of the images, we found that increasing the contrast of the scans could bring out subtle features and we added an optional contrast enhancement in the data augmentation part of the model. We see in figure 8 that a contrast adjustment of 2.0 makes all images in the test set appear to be positive.
 
-![](C:\Users\eric\Documents\Courses\Applied ML 2\capstone-project-ads-ml-c5-s2-38\threshold_vs_recall.png)
+![](threshold_vs_recall.png)
 
 ​	                                       <i>Figure 8- Recall vs Threshold by Contrast on Test Data</i> 
 
@@ -259,7 +259,7 @@ A binary softmax classifier has a default threshold of 0.50. We used pr curves d
 
 Figure 9 is the curve for model 1.0.0.35b.98 after 40 epochs of training. The points on the lines indicate the threshold of 0.50. Precision is on the y-axis and recall on the x-axis.
 
-![pr_curve.png](C:\Users\eric\Documents\Machine Learning\mammography\pr_curve.png)
+![pr_curve.png](pr_curve.png)
 
 ​                                                     <i>Figure 9 - PR Curve for model 1.0.0.35b.98</i> 
 
